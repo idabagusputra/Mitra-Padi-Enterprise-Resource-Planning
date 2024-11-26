@@ -1,0 +1,1 @@
+[23-Oct-2024 08:07:56 UTC] PHP Fatal error:  Cannot declare function App\Http\Controllers\escapeshellarg because the name is already in use in /home/mitm9719/public_html/app/Http/Controllers/ReceiptController.php on line 65

@@ -1,0 +1,20 @@
+[13-Nov-2024 16:39:56 UTC] PHP Warning:  require(/home/mitrapad/public_html/vendor/autoload.php): Failed to open stream: No such file or directory in /home/mitrapad/public_html/artisan on line 9
+[13-Nov-2024 16:39:56 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/mitrapad/public_html/vendor/autoload.php' (include_path='.:/opt/alt/php82/usr/share/pear:/opt/alt/php82/usr/share/php:/usr/share/pear:/usr/share/php') in /home/mitrapad/public_html/artisan:9
+Stack trace:
+#0 {main}
+  thrown in /home/mitrapad/public_html/artisan on line 9
+[13-Nov-2024 16:40:04 UTC] PHP Warning:  require(/home/mitrapad/public_html/vendor/autoload.php): Failed to open stream: No such file or directory in /home/mitrapad/public_html/artisan on line 9
+[13-Nov-2024 16:40:04 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/mitrapad/public_html/vendor/autoload.php' (include_path='.:/opt/alt/php82/usr/share/pear:/opt/alt/php82/usr/share/php:/usr/share/pear:/usr/share/php') in /home/mitrapad/public_html/artisan:9
+Stack trace:
+#0 {main}
+  thrown in /home/mitrapad/public_html/artisan on line 9
+[13-Nov-2024 16:40:06 UTC] PHP Warning:  require(/home/mitrapad/public_html/vendor/autoload.php): Failed to open stream: No such file or directory in /home/mitrapad/public_html/artisan on line 9
+[13-Nov-2024 16:40:06 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/mitrapad/public_html/vendor/autoload.php' (include_path='.:/opt/alt/php82/usr/share/pear:/opt/alt/php82/usr/share/php:/usr/share/pear:/usr/share/php') in /home/mitrapad/public_html/artisan:9
+Stack trace:
+#0 {main}
+  thrown in /home/mitrapad/public_html/artisan on line 9
+[13-Nov-2024 16:40:09 UTC] PHP Warning:  require(/home/mitrapad/public_html/vendor/autoload.php): Failed to open stream: No such file or directory in /home/mitrapad/public_html/artisan on line 9
+[13-Nov-2024 16:40:09 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/mitrapad/public_html/vendor/autoload.php' (include_path='.:/opt/alt/php82/usr/share/pear:/opt/alt/php82/usr/share/php:/usr/share/pear:/usr/share/php') in /home/mitrapad/public_html/artisan:9
+Stack trace:
+#0 {main}
+  thrown in /home/mitrapad/public_html/artisan on line 9
