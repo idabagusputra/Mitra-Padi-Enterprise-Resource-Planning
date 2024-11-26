@@ -260,6 +260,7 @@
             </div>
             @endif
 
+
             @if(session('success'))
             <div class="d-flex justify-content-between align-items-center mt-0 mb-4">
                 <div class="alert alert-success alert-dismissible fade show m-0 view-pdf-btn" id="alert-success" role="alert">
