@@ -248,7 +248,7 @@
 <div class="container-fluid">
     <div class="card">
         <div class="card-header pb-0 px-3">
-            <h6 class="mb-0 text-primary">{{ __('Kalkulasi Penggilingan Beras TEST') }}</h6>
+            <h6 class="mb-0 text-primary">{{ __('Kalkulasi Penggilingan Beras TESTER') }}</h6>
         </div>
         <div class="card-body pt-4 p-3">
             @if ($errors->any())
