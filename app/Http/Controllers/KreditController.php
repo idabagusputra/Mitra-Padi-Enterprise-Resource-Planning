@@ -71,7 +71,7 @@ class KreditController extends Controller
         $calculatedKredits = $allKredits->map(function ($kredit) use ($now) {
             $kreditDate = Carbon::parse($kredit->tanggal);
             // Calculate the difference in months
-            $diffInMonths = $kreditDate->diffInMonths($now);
+            $diffInMonths = $kreditDate->diffInMonths($kredit->updated_at);
             // Ensure the difference is negative and floored
             $selisihBulan = floor($diffInMonths);
             // Calculate bunga using the negative difference in months

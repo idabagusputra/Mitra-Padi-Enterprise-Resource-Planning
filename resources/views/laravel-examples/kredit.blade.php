@@ -381,14 +381,14 @@
                                             <p class="text-xs font-weight-bold mb-0">{{ $kredit->keterangan }}</p>
                                         </td>
 
-                                        <td class="text-center">
+                                        <!-- <td class="text-center">
                                             <p class="text-xs font-weight-bold mb-0">
                                                 Rp {{ number_format($kredit->hutang_plus_bunga_update, 2, ',', '.') }} | {{ number_format($kredit->lama_bulan_update) }} Bulan
                                             </p>
                                             <small style="font-size: 0.7rem; color: #999;">
                                                 Bunga: Rp {{ number_format($kredit->bunga_update, 2, ',', '.') }}
                                             </small>
-                                        </td>
+                                        </td> -->
 
                                         <td class="text-center">
                                             <div class="d-flex justify-content-center align-items-center">
