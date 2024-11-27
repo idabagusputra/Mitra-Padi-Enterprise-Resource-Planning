@@ -235,11 +235,13 @@ class GilingController extends Controller
                 }
 
                 foreach ($kredits as $kredit) {
+                    $kredit->timestamps = false;
                     $kredit->update([
                         'status' => true,
-                        'keterangan' => " | Terbayar | Menjadi Hutang Baru: Rp " . number_format(abs($hutangDenganPlusTotalBunga - $dana - $totalPengambilan), 2),
+                        'keterangan' => $kredit->keterangan . " | Terbayar | Menjadi Hutang Baru: Rp " . number_format(abs($hutangDenganPlusTotalBunga - $dana - $totalPengambilan), 2),
                         'updated_at' => $validatedData['created_at'],
                     ]);
+                    $kredit->timestamps = true;
                 }
 
                 Kredit::create([

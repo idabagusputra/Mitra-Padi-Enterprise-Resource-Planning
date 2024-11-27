@@ -259,11 +259,14 @@ class DaftarGilingController extends Controller
 
             $originalKeterangan = $this->removePaymentInfo($kredit->keterangan);
 
+
+            $kredit->timestamps = false;
             $success = $kredit->update([
                 'status' => false,
-                'updated_at' => $kredit->created_at, // Menggunakan nilai created_at dari model
+                'updated_at' => $kredit->created_at,
                 'keterangan' => $originalKeterangan,
             ]);
+            $kredit->timestamps = true;
 
 
             if ($success) {
