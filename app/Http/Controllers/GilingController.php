@@ -193,11 +193,9 @@ class GilingController extends Controller
                 return back()->with('error', 'PDF file could not be generated. Please try again.');
             }
 
-
-            if ($sisaDana < 0) {
-                $kredits = $petani->kredits()->where('status', false)->get();
-                $newHutang = abs($sisaDana);
-
+            $dana_penerima = $dana - $totalPengambilan - $hutangDenganPlusTotalBunga;
+            $kredits = $petani->kredits()->where('status', false)->get();
+            if ($dana_penerima < 0) {
                 foreach ($kredits as $kredit) {
                     $kredit->update([
                         'status' => true,
@@ -205,54 +203,10 @@ class GilingController extends Controller
                     $kredit->updated_at = $tanggalgabahmasuk;
                     $kredit->save();
                 }
-
                 $pembayaranKredit->update([
                     'total_hutang' => $hutangDenganPlusTotalBunga,
                     'dana_terbayar' => $dana,
                 ]);
-            } elseif ($sisaDana > 0) {
-                $kredits = $petani->kredits()->where('status', false)->orderBy('tanggal')->get();
-                $remainingSisaDana = $sisaDana;
-
-                foreach ($kredits as $kredit) {
-                    $totalLamaBulan = $pembayaranKredit->hitungLamaHutangBulan($kredit->tanggal);
-                    $hutangDenganBunga = $kredit->jumlah * (1 + $bungaRate * $totalLamaBulan);
-
-                    if ($remainingSisaDana >= $hutangDenganBunga) {
-                        $kredit->update([
-                            'status' => true,
-                        ]);
-                        $kredit->updated_at = $tanggalgabahmasuk;
-                        $kredit->save();
-
-                        $remainingSisaDana -= $hutangDenganBunga;
-                    } else {
-                        $terbayar = $remainingSisaDana;
-                        $sisaHutang = $hutangDenganBunga - $terbayar;
-
-                        $kredit->update([
-                            'status' => true,
-
-                        ]);
-                        $kredit->updated_at = $tanggalgabahmasuk;
-                        $kredit->save();
-
-
-
-                        $remainingSisaDana = 0;
-                        break;
-                    }
-                }
-
-                foreach ($kredits as $kredit) {
-                    $kredit->update([
-                        'status' => true,
-                        'keterangan' => $kredit->keterangan . " | Terbayar | Menjadi Hutang Baru: Rp " . number_format(abs($hutangDenganPlusTotalBunga - $dana - $totalPengambilan), 2),
-                    ]);
-
-                    $kredit->updated_at = $tanggalgabahmasuk;
-                    $kredit->save();
-                }
 
                 $sisaKredit = Kredit::create([
                     'petani_id' => $petani->id,
@@ -270,22 +224,15 @@ class GilingController extends Controller
                 $sisaKredit->created_at = $tanggalgabahmasuk;
                 $sisaKredit->updated_at = $tanggalgabahmasuk;
                 $sisaKredit->save();
+            } elseif ($dana_penerima > 0) {
+                foreach ($kredits as $kredit) {
+                    $kredit->update([
+                        'status' => true,
+                    ]);
+                    $kredit->updated_at = $tanggalgabahmasuk;
+                    $kredit->save();
+                }
 
-
-
-                // $kreditfalse = $petani->kredits()->where('status', true)->orderBy('tanggal')->get();
-                // foreach ($kreditfalse as $kreditfls) {
-                //     $kreditfls->update([
-                //         'status' => true,
-
-                //     ]);
-                // }
-
-                $pembayaranKredit->update([
-                    'total_hutang' => $hutangDenganPlusTotalBunga,
-                    'dana_terbayar' => $dana - $remainingSisaDana,
-                ]);
-            } else {
                 $pembayaranKredit->update([
                     'total_hutang' => $hutangDenganPlusTotalBunga,
                     'dana_terbayar' => $dana,
