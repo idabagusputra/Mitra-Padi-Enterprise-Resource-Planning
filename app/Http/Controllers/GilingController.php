@@ -199,6 +199,7 @@ class GilingController extends Controller
                 foreach ($kredits as $kredit) {
                     $kredit->update([
                         'status' => true,
+                        'keterangan' => $kredit->keterangan . " | Terbayar | Menjadi Hutang Baru: Rp " . number_format(abs($hutangDenganPlusTotalBunga - $dana - $totalPengambilan), 2),
                     ]);
                     $kredit->updated_at = $tanggalgabahmasuk;
                     $kredit->save();
@@ -228,6 +229,9 @@ class GilingController extends Controller
                 foreach ($kredits as $kredit) {
                     $kredit->update([
                         'status' => true,
+                        'keterangan' => 'Dana: ' . number_format($dana, 2) .
+                            ' | Gabah Masuk: ' . $tanggalgabahmasuk .
+                            ' | Pengambilan: ' . number_format($totalPengambilan, 2),
                     ]);
                     $kredit->updated_at = $tanggalgabahmasuk;
                     $kredit->save();
@@ -237,13 +241,7 @@ class GilingController extends Controller
                     'total_hutang' => $hutangDenganPlusTotalBunga,
                     'dana_terbayar' => $dana,
                 ]);
-
-                $petani->kredits()->where('status', false)->update([
-                    'status' => true,
-                    'keterangan' => DB::raw("CONCAT(keterangan, ' | Terbayar penuh: Rp ', jumlah)")
-                ]);
             }
-
 
 
             return redirect()->route('giling.index')
