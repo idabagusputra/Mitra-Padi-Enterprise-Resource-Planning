@@ -204,7 +204,7 @@ class GilingController extends Controller
                         'keterangan' => $kredit->keterangan . ' | Terbayar | Durasi: ' . number_format($totalLamaBulan, 2) . ' Bulan' .
                             ' | Dana: ' . number_format($dana, 2) .
                             ' | Pengambilan: ' . number_format($totalPengambilan, 2) .
-                            ' | Gabah Masuk: ' . $tanggalgabahmasuk,
+                            ' | Gabah Masuk: ' . \Carbon\Carbon::parse($tanggalgabahmasuk)->toDateString(),
 
                     ]);
                     $kredit->pKredit_id = $pembayaranKredit->id;
@@ -237,7 +237,7 @@ class GilingController extends Controller
                         'keterangan' => $kredit->keterangan . ' | Terbayar | Durasi: ' . number_format($totalLamaBulan, 2) . ' Bulan' .
                             ' | Dana: ' . number_format($dana, 2) .
                             ' | Pengambilan: ' . number_format($totalPengambilan, 2) .
-                            ' | Gabah Masuk: ' . $tanggalgabahmasuk,
+                            ' | Gabah Masuk: ' . \Carbon\Carbon::parse($tanggalgabahmasuk)->toDateString(),
 
                     ]);
                     $kredit->pKredit_id = $pembayaranKredit->id;
