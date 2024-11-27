@@ -261,8 +261,10 @@ class DaftarGilingController extends Controller
 
             $success = $kredit->update([
                 'status' => false,
-                'keterangan' => $originalKeterangan
+                'updated_at' => $kredit->created_at, // Menggunakan nilai created_at dari model
+                'keterangan' => $originalKeterangan,
             ]);
+
 
             if ($success) {
                 Log::info('Kredit berhasil diupdate:', $kredit->toArray());
