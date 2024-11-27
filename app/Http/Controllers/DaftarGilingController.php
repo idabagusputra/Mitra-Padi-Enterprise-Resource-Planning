@@ -232,58 +232,64 @@ class DaftarGilingController extends Controller
         });
     }
 
+
+
     private function reverseKreditChanges(Giling $giling)
     {
         Log::info('Memulai proses reverse kredit untuk Giling ID: ' . $giling->id);
 
+        DB::beginTransaction();
+        try {
+            // Ambil semua ID Kredit dari PembayaranKredit berdasarkan Giling ID
+            $existingKreditIds = PembayaranKredit::where('giling_id', $giling->id)
+                ->pluck('pkredit')
+                ->filter();
 
-        $pembayaranKredits = PembayaranKredit::where('giling_id', $giling->id)->get();
-
-        // Collect IDs of Kredits from PembayaranKredits to exclude from new credits deletion
-        $existingKreditIds = $pembayaranKredits->pluck('pkredit')->filter();
-
-        // Hapus kredit baru yang dihasilkan dari giling
-        $newKredits = Kredit::where('petani_id', $giling->petani_id)
-            ->whereIn('id', $existingKreditIds)
-            ->where('status', false) // Tambahkan kondisi status = true
-            ->get();
-
-        foreach ($newKredits as $kredit) {
-            $kredit->delete();
-            Log::info('Kredit baru dihapus:', ['kredit_id' => $kredit->id]);
-        }
-
-        // Ambil semua kredit yang terkait dengan petani ini dan diupdate saat atau setelah giling
-        $updatedKredits = Kredit::where('petani_id', $giling->petani_id)
-            ->whereIn('id', $existingKreditIds)
-            ->where('status', true)
-            ->get();
-
-        Log::info('Jumlah kredit yang akan diupdate: ' . $updatedKredits->count());
-
-        foreach ($updatedKredits as $kredit) {
-            Log::info('Updating Kredit ID: ' . $kredit->id . ' dari status true ke false');
-
-            $originalKeterangan = $this->removePaymentInfo($kredit->keterangan);
-
-
-            $success = $kredit->update([
-                'status' => false,
-                'keterangan' => $originalKeterangan,
-            ]);
-
-            $kredit->updated_at = $kredit->created_at;
-            $kredit->save();
-
-            if ($success) {
-                Log::info('Kredit berhasil diupdate:', $kredit->toArray());
-            } else {
-                Log::error('Gagal mengupdate Kredit ID: ' . $kredit->id);
+            if ($existingKreditIds->isEmpty()) {
+                Log::info('Tidak ada Kredit yang terkait dengan Giling ID: ' . $giling->id);
+                DB::commit();
+                return;
             }
-        }
 
-        Log::info('Proses reverse kredit selesai untuk Giling ID: ' . $giling->id);
+            // Ambil semua Kredit yang terkait
+            $kredits = Kredit::whereIn('id', $existingKreditIds)->get();
+
+            // Pisahkan Kredit berdasarkan status
+            $newKredits = $kredits->where('status', false);
+            $updatedKredits = $kredits->where('status', true);
+
+            // Hapus kredit baru
+            foreach ($newKredits as $kredit) {
+                $kredit->delete();
+                Log::info('Kredit baru dihapus:', ['kredit_id' => $kredit->id]);
+            }
+
+            // Revert kredit yang diupdate
+            foreach ($updatedKredits as $kredit) {
+                Log::info('Mengembalikan Kredit ID: ' . $kredit->id);
+
+                $originalKeterangan = $this->removePaymentInfo($kredit->keterangan);
+
+                $kredit->update([
+                    'status' => false,
+                    'keterangan' => $originalKeterangan,
+                ]);
+
+                // Set updated_at sama dengan created_at
+                $kredit->updated_at = $kredit->created_at;
+                $kredit->save();
+
+                Log::info('Kredit berhasil dikembalikan:', ['kredit_id' => $kredit->id]);
+            }
+
+            DB::commit();
+            Log::info('Proses reverse kredit selesai untuk Giling ID: ' . $giling->id);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Terjadi kesalahan saat reverse kredit:', ['error' => $e->getMessage()]);
+        }
     }
+
 
     private function removePaymentInfo($keterangan)
     {
