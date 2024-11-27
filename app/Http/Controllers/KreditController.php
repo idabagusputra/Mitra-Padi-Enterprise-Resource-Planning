@@ -68,7 +68,7 @@ class KreditController extends Controller
         // Calculate additional values and prepare data
         $now = Carbon::now();
         $calculatedKredits = $allKredits->map(function ($kredit) use ($now) {
-            $kreditDate = Carbon::parse($kredit->tanggal);
+            $kreditDate = Carbon::parse($kredit->updated_at);
             // Calculate the difference in months
             $diffInMonths = $kreditDate->diffInMonths($now);
             // Ensure the difference is negative and floored
@@ -184,18 +184,39 @@ class KreditController extends Controller
                 return response()->json(['success' => false, 'errors' => $validator->errors()], 422);
             }
 
-            $kredit = Kredit::create($validator->validated());
+            // Ambil data validasi
+            $validatedData = $validator->validated();
 
-            return response()->json(['success' => true, 'message' => 'Kredit berhasil ditambahkan', 'data' => $kredit]);
+            // Konversi tanggal ke format timestamp
+            $timestamp = Carbon::createFromFormat('Y-m-d', $validatedData['tanggal'])->toDateTimeString();
+
+            // Buat instance baru dari model Kredit
+            $kredit = new Kredit($validatedData);
+
+            // Set timestamps secara manual
+            $kredit->created_at = $timestamp;
+            $kredit->updated_at = $timestamp;
+
+            // Simpan model ke database
+            $kredit->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Kredit berhasil ditambahkan',
+                'data' => $kredit,
+            ]);
         } catch (\Exception $e) {
             Log::error('Error creating kredit: ' . $e->getMessage());
             return response()->json(['success' => false, 'message' => 'Terjadi kesalahan saat menambahkan kredit'], 500);
         }
     }
 
+
+
     public function update(Request $request, $id)
     {
         try {
+            // Temukan data kredit berdasarkan ID
             $kredit = Kredit::findOrFail($id);
 
             $validator = Validator::make($request->all(), [
@@ -210,14 +231,31 @@ class KreditController extends Controller
                 return response()->json(['success' => false, 'errors' => $validator->errors()], 422);
             }
 
-            $kredit->update($validator->validated());
+            // Ambil data validasi
+            $validatedData = $validator->validated();
 
-            return response()->json(['success' => true, 'message' => 'Kredit berhasil diperbaharui']);
+            // Konversi tanggal ke format timestamp
+            $timestamp = Carbon::createFromFormat('Y-m-d', $validatedData['tanggal'])->toDateTimeString();
+
+            // Perbarui data kredit
+            $kredit->fill($validatedData);
+            $kredit->updated_at = $timestamp;
+            $kredit->created_at = $timestamp;
+
+            // Simpan perubahan ke database
+            $kredit->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Kredit berhasil diperbaharui',
+                'data' => $kredit,
+            ]);
         } catch (\Exception $e) {
             Log::error('Error updating kredit: ' . $e->getMessage());
             return response()->json(['success' => false, 'message' => 'Terjadi kesalahan saat memperbarui kredit'], 500);
         }
     }
+
 
 
     public function show($id)
