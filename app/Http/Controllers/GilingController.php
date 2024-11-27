@@ -237,16 +237,19 @@ class GilingController extends Controller
                 foreach ($kredits as $kredit) {
                     $kredit->update([
                         'status' => true,
-                        'keterangan' => " | Terbayar | Menjadi Hutang Baru: Rp " . number_format(abs($hutangDenganPlusTotalBunga - $dana - $totalPengambilan), 2)
+                        'keterangan' => " | Terbayar | Menjadi Hutang Baru: Rp " . number_format(abs($hutangDenganPlusTotalBunga - $dana - $totalPengambilan), 2),
+                        'updated_at' => $validatedData['created_at'],
                     ]);
                 }
 
                 Kredit::create([
                     'petani_id' => $petani->id,
                     'pKredit_id' => $pembayaranKredit->id,
-                    'tanggal' => now(),
-                    'keterangan' => ' | Sisa Dana : ' . number_format($dana, 2) .
-                        ', Gabah Masuk: ' . number_format($hutangDenganPlusTotalBunga, 2),
+                    'tanggal' => $validatedData['created_at'],
+                    'created_at' => $validatedData['created_at'],
+                    'updated_at' => $validatedData['created_at'],
+                    'keterangan' => 'Sisa Dana : ' . number_format($dana, 2) .
+                        ' | Gabah Masuk: ' . $validatedData['created_at'],
                     'jumlah' => abs($hutangDenganPlusTotalBunga - $dana - $totalPengambilan),
                     'status' => false
                 ]);
