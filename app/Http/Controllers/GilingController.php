@@ -206,8 +206,6 @@ class GilingController extends Controller
                     $kredit->save();
                 }
 
-
-
                 $pembayaranKredit->update([
                     'total_hutang' => $hutangDenganPlusTotalBunga,
                     'dana_terbayar' => $dana,
