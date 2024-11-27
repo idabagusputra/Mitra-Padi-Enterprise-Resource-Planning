@@ -238,7 +238,7 @@ class DaftarGilingController extends Controller
 
         // Hapus kredit baru yang dihasilkan dari giling
         $newKredits = Kredit::where('petani_id', $giling->petani_id)
-            ->where('created_at', '>=', $giling->updated_at)
+            ->where('status', true) // Tambahkan kondisi status = true
             ->get();
 
         foreach ($newKredits as $kredit) {
@@ -248,7 +248,7 @@ class DaftarGilingController extends Controller
 
         // Ambil semua kredit yang terkait dengan petani ini dan diupdate saat atau setelah giling
         $updatedKredits = Kredit::where('petani_id', $giling->petani_id)
-            ->where('updated_at', '>=', $giling->updated_at)
+            ->where('updated_at', '>=', 'created_at')
             ->where('status', true)
             ->get();
 
