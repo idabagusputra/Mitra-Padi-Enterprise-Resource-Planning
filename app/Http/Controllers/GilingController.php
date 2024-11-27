@@ -203,8 +203,7 @@ class GilingController extends Controller
                         'status' => true,
                         'keterangan' => $kredit->keterangan . ' | Terbayar | Durasi: ' . number_format($totalLamaBulan, 2) . ' Bulan' .
                             ' | Dana: ' . number_format($dana, 2) .
-                            ' | Pengambilan: ' . number_format($totalPengambilan, 2) .
-                            ' | Gabah Masuk: ' . \Carbon\Carbon::parse($tanggalgabahmasuk)->toDateString(),
+                            ' | Pengambilan: ' . number_format($totalPengambilan, 2),
 
                     ]);
                     $kredit->pKredit_id = $pembayaranKredit->id;
@@ -222,7 +221,7 @@ class GilingController extends Controller
                     'tanggal' => $tanggalgabahmasuk,
                     'created_at' => $tanggalgabahmasuk,
                     'updated_at' => $tanggalgabahmasuk,
-                    'keterangan' => 'Sisa Hutang',
+                    'keterangan' => 'Sisa Utang',
                     'jumlah' => abs($hutangDenganPlusTotalBunga - $dana - $totalPengambilan),
                     'status' => false
                 ]);
@@ -236,8 +235,7 @@ class GilingController extends Controller
                         'status' => true,
                         'keterangan' => $kredit->keterangan . ' | Terbayar | Durasi: ' . number_format($totalLamaBulan, 2) . ' Bulan' .
                             ' | Dana: ' . number_format($dana, 2) .
-                            ' | Pengambilan: ' . number_format($totalPengambilan, 2) .
-                            ' | Gabah Masuk: ' . \Carbon\Carbon::parse($tanggalgabahmasuk)->toDateString(),
+                            ' | Pengambilan: ' . number_format($totalPengambilan, 2),
 
                     ]);
                     $kredit->pKredit_id = $pembayaranKredit->id;
