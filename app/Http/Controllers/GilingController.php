@@ -261,8 +261,8 @@ class GilingController extends Controller
                     'created_at' => $tanggalgabahmasuk,
                     'updated_at' => $tanggalgabahmasuk,
                     'keterangan' => 'Dana : ' . number_format($dana, 2) .
-                        ' | Gabah Masuk: ' . $tanggalgabahmasuk,
-                    ' | Sisa Dana : ' . number_format($totalPengambilan, 2),
+                        ' | Gabah Masuk: ' . $tanggalgabahmasuk .
+                        ' | Pengambilan : ' . number_format($totalPengambilan, 2),
                     'jumlah' => abs($hutangDenganPlusTotalBunga - $dana - $totalPengambilan),
                     'status' => false
                 ]);
