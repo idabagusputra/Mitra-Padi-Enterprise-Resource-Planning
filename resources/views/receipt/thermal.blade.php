@@ -321,7 +321,7 @@
                 $totalHutang = $kredit->jumlah + $bunga;
                 @endphp
                 <tr class="calculation-row">
-                    <td>{{ $index + 1 }}. {{ \Carbon\Carbon::parse($kredit->tanggal)->format('d/m/Y') }}</td>
+                    <td>{{ $loop->iteration }}. {{ \Carbon\Carbon::parse($kredit->tanggal)->format('d/m/Y') }}</td>
                     <td>Rp {{ number_format($kredit->jumlah) }}</td>
                     <td>{{ $lamaBulan }} Bln ({{ floor($bungaRate) }}%)</td>
                     <td class="bold">Rp {{ number_format($totalHutang) }}</td>
