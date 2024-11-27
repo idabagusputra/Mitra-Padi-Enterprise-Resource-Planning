@@ -200,7 +200,6 @@ class GilingController extends Controller
                     $kredit->update([
                         'status' => true,
                     ]);
-                    $kredit->keterangan = " | Terbayar | Menjadi Hutang Baru: Rp " . number_format(abs($hutangDenganPlusTotalBunga - $dana - $totalPengambilan), 2);
                     $kredit->updated_at = $tanggalgabahmasuk;
                     $kredit->save();
                 }
