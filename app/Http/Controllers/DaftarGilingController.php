@@ -303,9 +303,13 @@ class DaftarGilingController extends Controller
         $patterns = [
             '/\s*\|\s*Terbayar penuh:.*/',
             '/\s*\|\s*Terbayar sebagian:.*/',
-            '/\s*\|\s*Durasi:.*/',
             '/\s*\|\s*Terbayar.*/',
+            '/\s*\|\s*Dana.*/',
+            '/\s*\|\s*Pengambilan.*/',
+            '/\s*\|\s*Gabah Masuk.*/',
+            '/\s*\|\s*Durasi:.*/',
             '/\s*\|\s*Menjadi Hutang Baru:.*/'
+
 
         ];
 

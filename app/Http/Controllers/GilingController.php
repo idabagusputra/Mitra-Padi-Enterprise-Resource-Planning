@@ -197,8 +197,15 @@ class GilingController extends Controller
             $kredits = $petani->kredits()->where('status', false)->get();
             if ($dana_penerima < 0) {
                 foreach ($kredits as $kredit) {
+                    $totalLamaBulan = $pembayaranKredit->hitungLamaHutangBulan($kredit->tanggal);
+
                     $kredit->update([
                         'status' => true,
+                        'keterangan' => ' | Terbayar | Durasi: ' . number_format($totalLamaBulan, 2) . ' Bulan',
+                        ' | Terbayar | Dana: ' . number_format($dana, 2) .
+                            ' | Pengambilan: ' . number_format($totalPengambilan, 2) .
+                            ' | Gabah Masuk: ' . $tanggalgabahmasuk,
+
                     ]);
                     $kredit->pKredit_id = $pembayaranKredit->id;
                     $kredit->updated_at = $tanggalgabahmasuk;
@@ -215,9 +222,7 @@ class GilingController extends Controller
                     'tanggal' => $tanggalgabahmasuk,
                     'created_at' => $tanggalgabahmasuk,
                     'updated_at' => $tanggalgabahmasuk,
-                    'keterangan' => 'Dana: ' . number_format($dana, 2) .
-                        ' | Gabah Masuk: ' . $tanggalgabahmasuk .
-                        ' | Pengambilan: ' . number_format($totalPengambilan, 2),
+                    'keterangan' => 'Sisa Hutang',
                     'jumlah' => abs($hutangDenganPlusTotalBunga - $dana - $totalPengambilan),
                     'status' => false
                 ]);
@@ -227,11 +232,13 @@ class GilingController extends Controller
                 $sisaKredit->save();
             } elseif ($dana_penerima > 0) {
                 foreach ($kredits as $kredit) {
+                    $totalLamaBulan = $pembayaranKredit->hitungLamaHutangBulan($kredit->tanggal);
                     $kredit->update([
                         'status' => true,
-                        'keterangan' => 'Dana: ' . number_format($dana, 2) .
-                            ' | Gabah Masuk: ' . $tanggalgabahmasuk .
-                            ' | Pengambilan: ' . number_format($totalPengambilan, 2),
+                        'keterangan' => ' | Terbayar | Durasi: ' . number_format($totalLamaBulan, 2) . ' Bulan',
+                        ' | Terbayar | Dana: ' . number_format($dana, 2) .
+                            ' | Pengambilan: ' . number_format($totalPengambilan, 2) .
+                            ' | Gabah Masuk: ' . $tanggalgabahmasuk,
                     ]);
                     $kredit->pKredit_id = $pembayaranKredit->id;
                     $kredit->updated_at = $tanggalgabahmasuk;
