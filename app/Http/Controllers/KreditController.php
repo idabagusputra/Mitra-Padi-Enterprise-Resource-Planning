@@ -71,19 +71,26 @@ class KreditController extends Controller
         $calculatedKredits = $allKredits->map(function ($kredit) use ($now) {
             $kreditDate = Carbon::parse($kredit->tanggal);
 
+            $kreditDate = Carbon::parse($kredit->tanggal);
+
             // Cek apakah tanggal created_at dan updated_at sama (tanpa waktu)
             if ($kredit->created_at->toDateString() === $kredit->updated_at->toDateString()) {
+                // Jika sama, hitung selisih bulan menggunakan now
                 $diffInMonthsUpdate = $kreditDate->diffInMonths($now);
+            } else {
+                // Jika berbeda, hitung selisih bulan menggunakan updated_at
+                $diffInMonthsUpdate = $kreditDate->diffInMonths($kredit->updated_at);
             }
 
-            // Calculate the difference in months
-            $diffInMonths = $kreditDate->diffInMonths($kredit->updated_at);
-            // Ensure the difference is negative and floored
-            $selisihBulan = floor($diffInMonths);
-            // Calculate bunga using the negative difference in months
+            // Ensure the difference is floored
+            $selisihBulan = floor($diffInMonthsUpdate);
+
+            // Calculate bunga menggunakan selisih bulan
             $bunga = $kredit->jumlah * 0.02 * $selisihBulan;
+
             // Calculate hutang plus bunga
             $hutangPlusBunga = $kredit->jumlah + $bunga;
+
 
 
             $diffInMonthsUpdate = $kreditDate->diffInMonths($kredit->update_at);
