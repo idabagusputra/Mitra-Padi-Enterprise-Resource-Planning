@@ -124,9 +124,12 @@ class GilingController extends Controller
             $dana = $giling->calculateDana();
             $sisaDana = $dana - $totalPengambilan;
 
+            $tanggalgabahmasuk =
+                $validatedData['created_at'] = Carbon::parse($validatedData['created_at'])->setTimeFromCurrentTime();
+
 
             $pembayaranKredit = PembayaranKredit::create([
-                'created_at' => $validatedData['created_at'],
+                'created_at' => $tanggalgabahmasuk,
                 'giling_id' => $giling->id,
                 'total_hutang' => $totalHutangDenganBunga,
                 'dana_terbayar' => min($dana, $totalHutangDenganBunga),
@@ -198,7 +201,10 @@ class GilingController extends Controller
                     $kredit->update([
                         'status' => true,
                     ]);
+                    $kredit->updated_at = $tanggalgabahmasuk;
+                    $kredit->save();
                 }
+
 
 
                 $pembayaranKredit->update([
@@ -217,6 +223,9 @@ class GilingController extends Controller
                         $kredit->update([
                             'status' => true,
                         ]);
+                        $kredit->updated_at = $tanggalgabahmasuk;
+                        $kredit->save();
+
                         $remainingSisaDana -= $hutangDenganBunga;
                     } else {
                         $terbayar = $remainingSisaDana;
@@ -226,6 +235,8 @@ class GilingController extends Controller
                             'status' => true,
 
                         ]);
+                        $kredit->updated_at = $tanggalgabahmasuk;
+                        $kredit->save();
 
 
 
@@ -235,26 +246,32 @@ class GilingController extends Controller
                 }
 
                 foreach ($kredits as $kredit) {
-                    $kredit->timestamps = false;
                     $kredit->update([
                         'status' => true,
                         'keterangan' => $kredit->keterangan . " | Terbayar | Menjadi Hutang Baru: Rp " . number_format(abs($hutangDenganPlusTotalBunga - $dana - $totalPengambilan), 2),
-                        'updated_at' => $validatedData['created_at'],
                     ]);
-                    $kredit->timestamps = true;
+
+                    $kredit->updated_at = $tanggalgabahmasuk;
+                    $kredit->save();
                 }
 
-                Kredit::create([
+                $sisaKredit = Kredit::create([
                     'petani_id' => $petani->id,
                     'pKredit_id' => $pembayaranKredit->id,
-                    'tanggal' => $validatedData['created_at'],
-                    'created_at' => $validatedData['created_at'],
-                    'updated_at' => $validatedData['created_at'],
+                    'tanggal' => $tanggalgabahmasuk,
+                    'created_at' => $tanggalgabahmasuk,
+                    'updated_at' => $tanggalgabahmasuk,
                     'keterangan' => 'Sisa Dana : ' . number_format($dana, 2) .
-                        ' | Gabah Masuk: ' . $validatedData['created_at'],
+                        ' | Gabah Masuk: ' . $tanggalgabahmasuk,
                     'jumlah' => abs($hutangDenganPlusTotalBunga - $dana - $totalPengambilan),
                     'status' => false
                 ]);
+
+                $sisaKredit->created_at = $tanggalgabahmasuk;
+                $sisaKredit->updated_at = $tanggalgabahmasuk;
+                $sisaKredit->save();
+
+
 
                 // $kreditfalse = $petani->kredits()->where('status', true)->orderBy('tanggal')->get();
                 // foreach ($kreditfalse as $kreditfls) {
