@@ -237,21 +237,19 @@ class DaftarGilingController extends Controller
         Log::info('Memulai proses reverse kredit untuk Giling ID: ' . $giling->id);
 
         // Hapus kredit baru yang dihasilkan dari giling
-        // Pastikan hanya kredit yang terkait dengan Giling ini yang dihapus
         $newKredits = Kredit::where('petani_id', $giling->petani_id)
-            ->where('status', false)
-            ->where('giling_id', $giling->id)  // Menambahkan filter untuk kredit yang terkait dengan Giling ini
+            ->where('status', false) // Tambahkan kondisi status = true
             ->get();
 
         foreach ($newKredits as $kredit) {
-            $kredit->delete(); // Soft delete jika diperlukan
+            $kredit->forceDelete();
             Log::info('Kredit baru dihapus:', ['kredit_id' => $kredit->id]);
         }
 
         // Ambil semua kredit yang terkait dengan petani ini dan diupdate saat atau setelah giling
         $updatedKredits = Kredit::where('petani_id', $giling->petani_id)
+            ->where('updated_at', '>=', 'created_at')
             ->where('status', true)
-            ->where('giling_id', $giling->id)  // Menambahkan filter untuk memastikan hanya kredit yang terkait dengan Giling ini yang diubah
             ->get();
 
         Log::info('Jumlah kredit yang akan diupdate: ' . $updatedKredits->count());
@@ -260,6 +258,7 @@ class DaftarGilingController extends Controller
             Log::info('Updating Kredit ID: ' . $kredit->id . ' dari status true ke false');
 
             $originalKeterangan = $this->removePaymentInfo($kredit->keterangan);
+
 
             $success = $kredit->update([
                 'status' => false,
@@ -278,7 +277,6 @@ class DaftarGilingController extends Controller
 
         Log::info('Proses reverse kredit selesai untuk Giling ID: ' . $giling->id);
     }
-
 
     private function removePaymentInfo($keterangan)
     {
