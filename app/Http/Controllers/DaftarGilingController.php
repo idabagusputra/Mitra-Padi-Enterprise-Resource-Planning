@@ -240,6 +240,53 @@ class DaftarGilingController extends Controller
 
         DB::beginTransaction();
         try {
+
+            // Ambil petani_id dari giling
+            $petaniId = $giling->petani_id;
+
+            // Ambil semua Kredit dengan status 'true' (lunas) yang terkait dengan petani_id yang sama
+            $lunasKredits = Kredit::where('status', true)
+                ->where('petani_id', $petaniId)
+                ->get();
+
+            // Ambil semua Kredit dengan status 'false' (belum lunas) yang terkait dengan petani_id yang sama
+            $belumLunasKredits = Kredit::where('status', false)
+                ->where('petani_id', $petaniId)
+                ->get();
+
+            if ($lunasKredits->isEmpty()) {
+                Log::info('Tidak ada Kredit dengan status lunas untuk petani_id: ' . $petaniId);
+                DB::commit();
+                return;
+            }
+
+            if ($belumLunasKredits->isEmpty()) {
+                Log::info('Tidak ada Kredit dengan status belum lunas untuk petani_id: ' . $petaniId);
+                DB::commit();
+                return;
+            }
+
+            // Ambil pKredit_id dari Kredit terakhir dengan status 'true' (lunas)
+            $lastPaidKredit = $lunasKredits->last();  // Mengambil data kredit terakhir dalam koleksi
+
+            Log::info('Kredit dengan status lunas terakhir ditemukan dengan pKredit_id: ' . $lastPaidKredit->pKredit_id);
+
+            // Update semua kredit dengan status 'false' (belum lunas) untuk menggunakan pKredit_id dari kredit terakhir yang lunas
+            foreach ($belumLunasKredits as $kredit) {
+                $kredit->update([
+                    'pKredit_id' => $lastPaidKredit->pKredit_id, // Update dengan pKredit_id dari kredit terakhir yang lunas
+                ]);
+
+                Log::info('Kredit ID ' . $kredit->id . ' telah diperbarui dengan pKredit ID: ' . $lastPaidKredit->pKredit_id);
+            }
+
+
+
+
+
+
+
+
             // Ambil semua ID PembayaranKredit berdasarkan Giling ID
             $pembayaranKreditIds = PembayaranKredit::where('giling_id', $giling->id)
                 ->pluck('id')
@@ -274,26 +321,19 @@ class DaftarGilingController extends Controller
             foreach ($updatedKredits as $kredit) {
                 Log::info('Mengembalikan Kredit ID: ' . $kredit->id);
 
-                // Simpan nilai pKredit sebelumnya
-                $originalPKredit = $kredit->pKredit_id;
-
-                // Ambil keterangan asli jika ada perubahan sebelumnya
                 $originalKeterangan = $this->removePaymentInfo($kredit->keterangan);
 
-                // Lakukan update pada status dan keterangan
                 $kredit->update([
                     'status' => false,
                     'keterangan' => $originalKeterangan,
-                    'pKredit_id' => $originalPKredit,  // Kembalikan pKredit ke nilai sebelumnya
                 ]);
 
-                // Set updated_at sama dengan created_at agar tetap konsisten
+                // Set updated_at sama dengan created_at
                 $kredit->updated_at = $kredit->created_at;
                 $kredit->save();
 
                 Log::info('Kredit berhasil dikembalikan:', ['kredit_id' => $kredit->id]);
             }
-
 
             DB::commit();
             Log::info('Proses reverse kredit selesai untuk Giling ID: ' . $giling->id);
