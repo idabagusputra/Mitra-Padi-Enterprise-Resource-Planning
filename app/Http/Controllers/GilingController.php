@@ -197,13 +197,13 @@ class GilingController extends Controller
             $kredits = $petani->kredits()->where('status', false)->get();
             if ($dana_penerima < 0) {
                 foreach ($kredits as $kredit) {
-                    $kredit->update([
-                        'status' => true,
-                        'keterangan' => $kredit->keterangan . " | Terbayar | Menjadi Hutang Baru: Rp " . number_format(abs($hutangDenganPlusTotalBunga - $dana - $totalPengambilan), 2),
-                    ]);
+                    $keterangan = $kredit->keterangan . " | Terbayar | Menjadi Hutang Baru: Rp " . number_format(abs($hutangDenganPlusTotalBunga - $dana - $totalPengambilan), 2);
+                    $kredit->status = true;
+                    $kredit->keterangan = $keterangan;
                     $kredit->updated_at = $tanggalgabahmasuk;
                     $kredit->save();
                 }
+
                 $pembayaranKredit->update([
                     'total_hutang' => $hutangDenganPlusTotalBunga,
                     'dana_terbayar' => $dana,
