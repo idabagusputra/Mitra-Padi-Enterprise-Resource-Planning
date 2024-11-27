@@ -124,8 +124,9 @@ class GilingController extends Controller
             $dana = $giling->calculateDana();
             $sisaDana = $dana - $totalPengambilan;
 
-            $tanggalgabahmasuk =
-                $validatedData['created_at'] = Carbon::parse($validatedData['created_at'])->setTimeFromCurrentTime();
+            $tanggalgabahmasukTGL = $validatedData['created_at'];
+
+            $tanggalgabahmasuk = Carbon::parse($tanggalgabahmasukTGL)->setTimeFrom(now());
 
 
             $pembayaranKredit = PembayaranKredit::create([
