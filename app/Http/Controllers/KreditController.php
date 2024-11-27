@@ -78,10 +78,32 @@ class KreditController extends Controller
             $bunga = $kredit->jumlah * 0.02 * $selisihBulan;
             // Calculate hutang plus bunga
             $hutangPlusBunga = $kredit->jumlah + $bunga;
-            // Set attributes with the updated calculations
+
+
+            $diffInMonthsUpdate = $kreditDate->diffInMonths($kredit->update_at);
+
+            // Cek apakah tanggal created_at dan updated_at sama
+            if ($kredit->created_at->eq($kredit->update_at)) {
+                $diffInMonthsUpdate = 0;
+            }
+
+            // Pastikan perbedaan bulan menjadi negatif dan dibulatkan ke bawah
+            $selisihBulanUpdate = floor($diffInMonthsUpdate);
+
+            // Hitung bunga menggunakan perbedaan bulan yang negatif
+            $bungaUpdate = $kredit->jumlah * 0.02 * $selisihBulanUpdate;
+
+            // Hitung hutang ditambah bunga
+            $hutangPlusBungaUpdate = $kredit->jumlah + $bungaUpdate;
+
+
+
             $kredit->setAttribute('hutang_plus_bunga', ($hutangPlusBunga)); // Round down
+            $kredit->setAttribute('hutang_plus_bunga_update', ($hutangPlusBungaUpdate)); // Round down
             $kredit->setAttribute('lama_bulan', $selisihBulan); // Use negative difference in months
+            $kredit->setAttribute('lama_bulan_update', $selisihBulanUpdate); // Use negative difference in months
             $kredit->setAttribute('bunga', floor($bunga)); // Round down the bunga
+            $kredit->setAttribute('bunga_update', floor($bungaUpdate)); // Round down the bunga
             Log::info("Kredit ID: {$kredit->id}, Jumlah: {$kredit->jumlah}, Lama Bulan: {$selisihBulan}, Bunga: {$bunga}, Total: {$kredit->hutang_plus_bunga}");
             return $kredit;
         });
