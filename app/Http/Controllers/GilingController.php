@@ -226,7 +226,6 @@ class GilingController extends Controller
                     'jumlah' => abs($hutangDenganPlusTotalBunga - $dana - $totalPengambilan),
                     'status' => false
                 ]);
-
                 $sisaKredit->created_at = $tanggalgabahmasuk;
                 $sisaKredit->updated_at = $tanggalgabahmasuk;
                 $sisaKredit->save();
