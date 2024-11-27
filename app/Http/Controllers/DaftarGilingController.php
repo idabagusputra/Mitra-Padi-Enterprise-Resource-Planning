@@ -236,19 +236,26 @@ class DaftarGilingController extends Controller
     {
         Log::info('Memulai proses reverse kredit untuk Giling ID: ' . $giling->id);
 
+
+        $pembayaranKredits = PembayaranKredit::where('giling_id', $giling->id)->get();
+
+        // Collect IDs of Kredits from PembayaranKredits to exclude from new credits deletion
+        $existingKreditIds = $pembayaranKredits->pluck('pkredit')->filter();
+
         // Hapus kredit baru yang dihasilkan dari giling
         $newKredits = Kredit::where('petani_id', $giling->petani_id)
+            ->whereIn('id', $existingKreditIds)
             ->where('status', false) // Tambahkan kondisi status = true
             ->get();
 
         foreach ($newKredits as $kredit) {
-            $kredit->forceDelete();
+            $kredit->delete();
             Log::info('Kredit baru dihapus:', ['kredit_id' => $kredit->id]);
         }
 
         // Ambil semua kredit yang terkait dengan petani ini dan diupdate saat atau setelah giling
         $updatedKredits = Kredit::where('petani_id', $giling->petani_id)
-            ->where('updated_at', '>=', 'created_at')
+            ->whereIn('id', $existingKreditIds)
             ->where('status', true)
             ->get();
 
