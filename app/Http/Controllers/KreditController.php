@@ -80,12 +80,11 @@ class KreditController extends Controller
             $hutangPlusBunga = $kredit->jumlah + $bunga;
 
 
-            // Cek apakah created_at atau updated_at null atau tanggalnya sama
-            if (!$kredit->created_at || !$kredit->update_at || $kredit->created_at->eq($kredit->update_at)) {
+            $diffInMonthsUpdate = $kreditDate->diffInMonths($kredit->update_at);
+
+            // Cek apakah tanggal created_at dan updated_at sama
+            if ($kredit->created_at->eq($kredit->updated_at)) {
                 $diffInMonthsUpdate = 0;
-            } else {
-                // Jika tidak null dan tanggalnya berbeda, hitung selisih bulan
-                $diffInMonthsUpdate = $kreditDate->diffInMonths($kredit->update_at);
             }
 
             // Pastikan perbedaan bulan menjadi negatif dan dibulatkan ke bawah
