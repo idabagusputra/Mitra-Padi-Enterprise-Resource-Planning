@@ -254,31 +254,23 @@ class DaftarGilingController extends Controller
                 ->where('petani_id', $petaniId)
                 ->get();
 
-            if ($lunasKredits->isEmpty()) {
-                Log::info('Tidak ada Kredit dengan status lunas untuk petani_id: ' . $petaniId);
-                DB::commit();
-                return;
+
+            if ($belumLunasKredits->isNotEmpty()) {
+                // Ambil pKredit_id dari Kredit terakhir dengan status 'true' (lunas)
+                $lastPaidKredit = $lunasKredits->last();  // Mengambil data kredit terakhir dalam koleksi
+
+                Log::info('Kredit dengan status lunas terakhir ditemukan dengan pKredit_id: ' . $lastPaidKredit->pKredit_id);
+
+                // Update semua kredit dengan status 'false' (belum lunas) untuk menggunakan pKredit_id dari kredit terakhir yang lunas
+                foreach ($belumLunasKredits as $kredit) {
+                    $kredit->update([
+                        'pKredit_id' => $lastPaidKredit->pKredit_id, // Update dengan pKredit_id dari kredit terakhir yang lunas
+                    ]);
+
+                    Log::info('Kredit ID ' . $kredit->id . ' telah diperbarui dengan pKredit ID: ' . $lastPaidKredit->pKredit_id);
+                }
             }
 
-            if ($belumLunasKredits->isEmpty()) {
-                Log::info('Tidak ada Kredit dengan status belum lunas untuk petani_id: ' . $petaniId);
-                DB::commit();
-                return;
-            }
-
-            // Ambil pKredit_id dari Kredit terakhir dengan status 'true' (lunas)
-            $lastPaidKredit = $lunasKredits->last();  // Mengambil data kredit terakhir dalam koleksi
-
-            Log::info('Kredit dengan status lunas terakhir ditemukan dengan pKredit_id: ' . $lastPaidKredit->pKredit_id);
-
-            // Update semua kredit dengan status 'false' (belum lunas) untuk menggunakan pKredit_id dari kredit terakhir yang lunas
-            foreach ($belumLunasKredits as $kredit) {
-                $kredit->update([
-                    'pKredit_id' => $lastPaidKredit->pKredit_id, // Update dengan pKredit_id dari kredit terakhir yang lunas
-                ]);
-
-                Log::info('Kredit ID ' . $kredit->id . ' telah diperbarui dengan pKredit ID: ' . $lastPaidKredit->pKredit_id);
-            }
 
 
 
