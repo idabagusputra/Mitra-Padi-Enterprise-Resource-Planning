@@ -278,16 +278,32 @@ class DaftarGilingController extends Controller
         Log::info('Proses reverse kredit selesai untuk Giling ID: ' . $giling->id);
     }
 
+    // private function removePaymentInfo($keterangan)
+    // {
+    //     $patterns = [
+    //         '/\s*\|\s*Terbayar penuh:.*/',
+    //         '/\s*\|\s*Terbayar sebagian:.*/',
+    //         '/\s*\|\s*Durasi:.*/',
+    //         '/\s*\|\s*Menjadi Hutang Baru:.*/'
+    //     ];
+
+    //     return preg_replace($patterns, '', $keterangan);
+    // }
+
+
     private function removePaymentInfo($keterangan)
     {
         $patterns = [
-            '/\s*\|\s*Terbayar penuh:.*/',
-            '/\s*\|\s*Terbayar sebagian:.*/',
-            '/\s*\|\s*Durasi:.*/',
-            '/\s*\|\s*Menjadi Hutang Baru:.*/'
+            '/Dana\s*:\s*[\d.,]+/',               // Menghapus bagian "Dana: ..."
+            '/\|\s*Gabah Masuk:\s*[\w\s-]+/',     // Menghapus bagian "Gabah Masuk: ..."
+            '/\|\s*Pengambilan\s*:\s*[\d.,]+/'    // Menghapus bagian "Pengambilan: ..."
         ];
 
-        return preg_replace($patterns, '', $keterangan);
+        // Menghapus pola-pola yang cocok dari string keterangan
+        $keterangan = preg_replace($patterns, '', $keterangan);
+
+        // Membersihkan spasi ekstra atau karakter "|"
+        return trim(preg_replace('/\s*\|\s*/', ' | ', $keterangan), '| ');
     }
 
 

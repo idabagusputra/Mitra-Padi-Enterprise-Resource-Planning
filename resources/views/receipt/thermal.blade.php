@@ -298,36 +298,42 @@
         </table>
 
         <table>
-            <tr class="bold-border-top">
-                <th>Hutang</th>
-                <th>Jumlah</th>
-                <th>Bunga</th>
-                <th>Total</th>
-            </tr>
-            @if($giling->petani->kredits->where('status', false)->isNotEmpty())
-            @php
-            $pembayaranKredit = $giling->pembayaranKredits->first();
-            $bungaRate = $pembayaranKredit ? $pembayaranKredit->bunga : 0;
-            @endphp
-            @foreach($giling->petani->kredits->where('status', false) as $index => $kredit)
-            @php
-            $lamaBulan = $pembayaranKredit ? $pembayaranKredit->hitungLamaHutangBulan($kredit->tanggal) : 0;
-            $bunga = $kredit->jumlah * ($bungaRate / 100) * $lamaBulan;
-            $totalHutang = $kredit->jumlah + $bunga;
-            @endphp
-            <tr class="calculation-row">
-                <td>{{ $index + 1 }}. {{ \Carbon\Carbon::parse($kredit->tanggal)->format('d/m/Y') }}</td>
-                <td>Rp {{ number_format($kredit->jumlah) }}</td>
-                <td>{{ $lamaBulan }} Bln ({{ floor($bungaRate) }}%)</td>
-                <td class="bold">Rp {{ number_format($totalHutang) }}</td>
-            </tr>
-            @endforeach
-            @else
-            <tr class="calculation-row">
-                <td colspan="4">Tidak ada data hutang</td>
-            </tr>
-            @endif
+            <thead>
+                <tr class="bold-border-top">
+                    <th>Hutang</th>
+                    <th>Jumlah</th>
+                    <th>Bunga</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @php
+                // Ambil data yang diperlukan
+                $filteredKredits = $giling->petani->kredits->where('status', false)->sortBy('tanggal');
+                $pembayaranKredit = $giling->pembayaranKredits->first();
+                $bungaRate = $pembayaranKredit ? $pembayaranKredit->bunga : 0;
+                @endphp
+
+                @forelse ($filteredKredits as $index => $kredit)
+                @php
+                $lamaBulan = $pembayaranKredit ? $pembayaranKredit->hitungLamaHutangBulan($kredit->tanggal) : 0;
+                $bunga = $kredit->jumlah * ($bungaRate / 100) * $lamaBulan;
+                $totalHutang = $kredit->jumlah + $bunga;
+                @endphp
+                <tr class="calculation-row">
+                    <td>{{ $index + 1 }}. {{ \Carbon\Carbon::parse($kredit->tanggal)->format('d/m/Y') }}</td>
+                    <td>Rp {{ number_format($kredit->jumlah) }}</td>
+                    <td>{{ $lamaBulan }} Bln ({{ floor($bungaRate) }}%)</td>
+                    <td class="bold">Rp {{ number_format($totalHutang) }}</td>
+                </tr>
+                @empty
+                <tr class="calculation-row">
+                    <td colspan="4">Tidak ada data hutang</td>
+                </tr>
+                @endforelse
+            </tbody>
         </table>
+
 
         <table>
             <div></div>
