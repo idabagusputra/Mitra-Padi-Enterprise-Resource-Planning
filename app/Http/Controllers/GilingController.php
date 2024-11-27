@@ -197,7 +197,6 @@ class GilingController extends Controller
                 foreach ($kredits as $kredit) {
                     $kredit->update([
                         'status' => true,
-                        'keterangan' => "Terbayar | Menjadi Hutang Baru: Rp " . number_format($newHutang, 2)
                     ]);
                 }
 
@@ -217,8 +216,6 @@ class GilingController extends Controller
                     if ($remainingSisaDana >= $hutangDenganBunga) {
                         $kredit->update([
                             'status' => true,
-                            'keterangan' => $kredit->keterangan . " | Terbayar penuh: Rp " . number_format($hutangDenganBunga, 2) .
-                                ' | Durasi: ' . number_format($totalLamaBulan, 2) . ' Bulan'
                         ]);
                         $remainingSisaDana -= $hutangDenganBunga;
                     } else {
@@ -227,9 +224,7 @@ class GilingController extends Controller
 
                         $kredit->update([
                             'status' => true,
-                            'keterangan' => $kredit->keterangan . " | Terbayar sebagian: Rp " . number_format($terbayar, 2) .
-                                ' | Sisa hutang: Rp ' . number_format($sisaHutang, 2) .
-                                ' | Durasi: ' . number_format($totalLamaBulan, 2) . ' Bulan'
+
                         ]);
 
 
@@ -242,7 +237,7 @@ class GilingController extends Controller
                 foreach ($kredits as $kredit) {
                     $kredit->update([
                         'status' => true,
-                        'keterangan' => $kredit->keterangan . " | OK "
+                        'keterangan' => " | Terbayar | Menjadi Hutang Baru: Rp " . number_format(abs($hutangDenganPlusTotalBunga - $dana - $totalPengambilan), 2)
                     ]);
                 }
 
@@ -250,11 +245,19 @@ class GilingController extends Controller
                     'petani_id' => $petani->id,
                     'pKredit_id' => $pembayaranKredit->id,
                     'tanggal' => now(),
-                    'keterangan' => 'Sisa hutang dari pembayaran sebagian | Sisa Dana : ' . number_format($dana, 2) .
-                        ', Total Hutang: ' . number_format($hutangDenganPlusTotalBunga, 2),
+                    'keterangan' => ' | Sisa Dana : ' . number_format($dana, 2) .
+                        ', Gabah Masuk: ' . number_format($hutangDenganPlusTotalBunga, 2),
                     'jumlah' => abs($hutangDenganPlusTotalBunga - $dana - $totalPengambilan),
                     'status' => false
                 ]);
+
+                // $kreditfalse = $petani->kredits()->where('status', true)->orderBy('tanggal')->get();
+                // foreach ($kreditfalse as $kreditfls) {
+                //     $kreditfls->update([
+                //         'status' => true,
+
+                //     ]);
+                // }
 
                 $pembayaranKredit->update([
                     'total_hutang' => $hutangDenganPlusTotalBunga,
