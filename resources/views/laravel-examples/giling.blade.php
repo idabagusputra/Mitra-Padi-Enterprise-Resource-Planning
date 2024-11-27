@@ -242,8 +242,6 @@
 <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script> -->
 
 
-
-
 @section('content')
 <div class="container-fluid">
     <div class="card">
