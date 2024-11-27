@@ -70,6 +70,12 @@ class KreditController extends Controller
         $now = Carbon::now();
         $calculatedKredits = $allKredits->map(function ($kredit) use ($now) {
             $kreditDate = Carbon::parse($kredit->tanggal);
+
+            // Cek apakah tanggal created_at dan updated_at sama
+            if ($kredit->created_at->eq($kredit->updated_at)) {
+                $diffInMonthsUpdate =
+                    $kreditDate->diffInMonths($now);
+            }
             // Calculate the difference in months
             $diffInMonths = $kreditDate->diffInMonths($kredit->updated_at);
             // Ensure the difference is negative and floored
