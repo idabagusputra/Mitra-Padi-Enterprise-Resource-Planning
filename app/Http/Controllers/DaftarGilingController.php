@@ -240,19 +240,25 @@ class DaftarGilingController extends Controller
 
         DB::beginTransaction();
         try {
-            // Ambil semua ID Kredit dari PembayaranKredit berdasarkan Giling ID
-            $existingKreditIds = PembayaranKredit::where('giling_id', $giling->id)
-                ->pluck('pkredit')
+            // Ambil semua ID PembayaranKredit berdasarkan Giling ID
+            $pembayaranKreditIds = PembayaranKredit::where('giling_id', $giling->id)
+                ->pluck('id')
                 ->filter();
 
-            if ($existingKreditIds->isEmpty()) {
-                Log::info('Tidak ada Kredit yang terkait dengan Giling ID: ' . $giling->id);
+            if ($pembayaranKreditIds->isEmpty()) {
+                Log::info('Tidak ada PembayaranKredit yang terkait dengan Giling ID: ' . $giling->id);
                 DB::commit();
                 return;
             }
 
-            // Ambil semua Kredit yang terkait
-            $kredits = Kredit::whereIn('id', $existingKreditIds)->get();
+            // Ambil semua Kredit yang terkait dengan PembayaranKredit tersebut
+            $kredits = Kredit::whereIn('pKredit_id', $pembayaranKreditIds)->get();
+
+            if ($kredits->isEmpty()) {
+                Log::info('Tidak ada Kredit yang terkait dengan PembayaranKredit.');
+                DB::commit();
+                return;
+            }
 
             // Pisahkan Kredit berdasarkan status
             $newKredits = $kredits->where('status', false);
@@ -289,6 +295,7 @@ class DaftarGilingController extends Controller
             Log::error('Terjadi kesalahan saat reverse kredit:', ['error' => $e->getMessage()]);
         }
     }
+
 
 
     private function removePaymentInfo($keterangan)
