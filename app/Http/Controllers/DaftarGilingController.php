@@ -282,8 +282,6 @@ class DaftarGilingController extends Controller
     private function removePaymentInfo($keterangan)
     {
         $patterns = [
-            '/\s*\|\s*Terbayar.*/',
-            '/\s*\|\s*Menjadi Hutang Baru:.*/',
             '/\s*\|\s*Terbayar penuh:.*/',
             '/\s*\|\s*Terbayar sebagian:.*/',
             '/\s*\|\s*Durasi:.*/',
