@@ -200,6 +200,7 @@ class GilingController extends Controller
                     $kredit->update([
                         'status' => true,
                     ]);
+                    $kredit->pKredit_id = $pembayaranKredit->id;
                     $kredit->updated_at = $tanggalgabahmasuk;
                     $kredit->save();
                 }
@@ -232,6 +233,7 @@ class GilingController extends Controller
                             ' | Gabah Masuk: ' . $tanggalgabahmasuk .
                             ' | Pengambilan: ' . number_format($totalPengambilan, 2),
                     ]);
+                    $kredit->pKredit_id = $pembayaranKredit->id;
                     $kredit->updated_at = $tanggalgabahmasuk;
                     $kredit->save();
                 }
