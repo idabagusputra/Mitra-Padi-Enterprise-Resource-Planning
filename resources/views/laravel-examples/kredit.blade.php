@@ -338,7 +338,7 @@
                                             <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Utang + Bunga</th>
                                             <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Status</th>
                                             <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Keterangan</th>
-                                            <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Utang + Bunga Terbayar</th>
+                                            <!-- <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Utang + Bunga Terbayar</th> -->
                                             <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Action</th>
                                         </tr>
                                     </thead>

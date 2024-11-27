@@ -71,8 +71,6 @@ class KreditController extends Controller
         $calculatedKredits = $allKredits->map(function ($kredit) use ($now) {
             $kreditDate = Carbon::parse($kredit->tanggal);
 
-            $kreditDate = Carbon::parse($kredit->tanggal);
-
             // Cek apakah tanggal created_at dan updated_at sama (tanpa waktu)
             if ($kredit->created_at->toDateString() === $kredit->updated_at->toDateString()) {
                 // Jika sama, hitung selisih bulan menggunakan now
