@@ -201,17 +201,6 @@ class GilingController extends Controller
                     ]);
                 }
 
-                Kredit::create([
-                    'petani_id' => $petani->id,
-                    'pKredit_id' => $pembayaranKredit->id,
-                    'tanggal' => now(),
-                    'keterangan' => 'Dana tidak mencukupi! ' .
-                        '| Dana: ' . number_format($dana, 2) .
-                        '| Total Hutang: ' . number_format($hutangDenganPlusTotalBunga, 2) .
-                        '| Total Pengambilan: ' . number_format($totalPengambilan, 2),
-                    'jumlah' => $newHutang,
-                    'status' => false
-                ]);
 
                 $pembayaranKredit->update([
                     'total_hutang' => $hutangDenganPlusTotalBunga,
@@ -243,21 +232,29 @@ class GilingController extends Controller
                                 ' | Durasi: ' . number_format($totalLamaBulan, 2) . ' Bulan'
                         ]);
 
-                        Kredit::create([
-                            'petani_id' => $petani->id,
-                            'pKredit_id' => $pembayaranKredit->id,
-                            'tanggal' => now(),
-                            'keterangan' => 'Sisa hutang dari pembayaran sebagian | Sisa Dana : ' . number_format($dana, 2) .
-                                ', Total Hutang: ' . number_format($hutangDenganPlusTotalBunga, 2) .
-                                ', Total Pengambilan: ' . number_format($totalPengambilan, 2),
-                            'jumlah' => $sisaHutang,
-                            'status' => false
-                        ]);
+
 
                         $remainingSisaDana = 0;
                         break;
                     }
                 }
+
+                foreach ($kredits as $kredit) {
+                    $kredit->update([
+                        'status' => true,
+                        'keterangan' => $kredit->keterangan . " | OK "
+                    ]);
+                }
+
+                Kredit::create([
+                    'petani_id' => $petani->id,
+                    'pKredit_id' => $pembayaranKredit->id,
+                    'tanggal' => now(),
+                    'keterangan' => 'Sisa hutang dari pembayaran sebagian | Sisa Dana : ' . number_format($dana, 2) .
+                        ', Total Hutang: ' . number_format($hutangDenganPlusTotalBunga, 2),
+                    'jumlah' => abs($hutangDenganPlusTotalBunga - $dana - $totalPengambilan),
+                    'status' => false
+                ]);
 
                 $pembayaranKredit->update([
                     'total_hutang' => $hutangDenganPlusTotalBunga,
