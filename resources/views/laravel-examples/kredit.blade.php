@@ -332,8 +332,8 @@
                                             <th class="text-uppercase text-primary font-weight-bolder ps-2" style="font-size: 0.85rem;">Petani</th>
                                             <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Alamat</th>
                                             <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Tanggal</th>
-                                            <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Created_At</th>
-                                            <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Updated_At</th>
+                                            <!-- <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Created_At</th> -->
+                                            <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Update</th>
                                             <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Jumlah</th>
                                             <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Utang + Bunga</th>
                                             <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Status</th>
@@ -359,11 +359,12 @@
                                         <td class="text-center">
                                             <p class="text-xs font-weight-bold mb-0">{{ $kredit->tanggal }}</p>
                                         </td>
-                                        <td class="text-center">
+                                        <!-- <td class="text-center">
                                             <p class="text-xs font-weight-bold mb-0">{{ $kredit->created_at }}</p>
-                                        </td>
+                                        </td> -->
                                         <td class="text-center">
-                                            <p class="text-xs font-weight-bold mb-0">{{ $kredit->updated_at }}</p>
+                                            <p class="text-xs font-weight-bold mb-0">{{ $kredit->updated_at->format('Y-m-d') }}</p>
+
                                         </td>
                                         <td class="text-center">
                                             <p class="text-xs font-weight-bold mb-0">Rp {{ number_format($kredit->jumlah, 2, ',', '.') }}</p>
