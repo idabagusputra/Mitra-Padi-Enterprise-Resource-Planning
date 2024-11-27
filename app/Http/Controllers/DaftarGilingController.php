@@ -274,19 +274,26 @@ class DaftarGilingController extends Controller
             foreach ($updatedKredits as $kredit) {
                 Log::info('Mengembalikan Kredit ID: ' . $kredit->id);
 
+                // Simpan nilai pKredit sebelumnya
+                $originalPKredit = $kredit->pKredit_id;
+
+                // Ambil keterangan asli jika ada perubahan sebelumnya
                 $originalKeterangan = $this->removePaymentInfo($kredit->keterangan);
 
+                // Lakukan update pada status dan keterangan
                 $kredit->update([
                     'status' => false,
                     'keterangan' => $originalKeterangan,
+                    'pKredit_id' => $originalPKredit,  // Kembalikan pKredit ke nilai sebelumnya
                 ]);
 
-                // Set updated_at sama dengan created_at
+                // Set updated_at sama dengan created_at agar tetap konsisten
                 $kredit->updated_at = $kredit->created_at;
                 $kredit->save();
 
                 Log::info('Kredit berhasil dikembalikan:', ['kredit_id' => $kredit->id]);
             }
+
 
             DB::commit();
             Log::info('Proses reverse kredit selesai untuk Giling ID: ' . $giling->id);
