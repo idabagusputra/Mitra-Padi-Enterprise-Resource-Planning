@@ -33,9 +33,21 @@ class KreditReportController extends Controller
         });
 
         // Urutkan data sesuai sortOrder
-        $sortedKredits = $calculatedKredits->sortBy(function ($item) {
-            return [$item->tanggal, $item->id];
-        }, SORT_REGULAR, $sortOrder === 'desc');
+        // $sortedKredits = $calculatedKredits->sortBy(function ($item) {
+        //     return [$item->tanggal, $item->id];
+        // }, SORT_REGULAR, $sortOrder === 'desc');
+
+        $sortedKredits = $calculatedKredits->sortBy(
+            function ($item) {
+                return [
+                    $item->status ? 0 : 1,  // Status false (0) di atas, true (1) di bawah
+                    $item->tanggal,
+                    $item->id
+                ];
+            },
+            SORT_REGULAR,
+            $sortOrder === 'desc'
+        );
 
         // Kelompokkan kredit berdasarkan nama petani
         $groupedByPetani = $sortedKredits->groupBy(function ($kredit) {
