@@ -124,10 +124,17 @@ class KreditController extends Controller
             return $kredit;
         });
 
-        // Sort the collection
-        $sortedKredits = $calculatedKredits->sortBy(function ($item) {
-            return [$item->tanggal, $item->id];
-        }, SORT_REGULAR, $sortOrder === 'desc');
+        $sortedKredits = $calculatedKredits->sortBy(
+            function ($item) {
+                return [
+                    $item->status == 1 ? 0 : 0, // Prioritaskan status 1 di bagian atas
+                    $item->tanggal,
+                    $item->id
+                ];
+            },
+            SORT_REGULAR,
+            $sortOrder === 'desc'
+        );
 
         $kreditsBelumLunas = $calculatedKredits->where('status', 0);
 
