@@ -80,7 +80,7 @@ class KreditController extends Controller
                 $diffInMonthsUpdate = $kreditDate->diffInMonths($kredit->updated_at);
 
                 // Jika diffInMonthsUpdate bernilai negatif, set nilainya menjadi 0
-                if ($diffInMonthsUpdate < 0) {
+                if ($diffInMonthsUpdate <= 0) {
                     $diffInMonthsUpdate = 0;
                 }
             }
