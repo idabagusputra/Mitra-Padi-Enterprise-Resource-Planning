@@ -73,12 +73,15 @@ class KreditController extends Controller
 
             // Cek apakah tanggal created_at dan updated_at sama (tanpa waktu)
             if ($kredit->created_at->format('Y-m-d') === $kredit->updated_at->format('Y-m-d')) {
-                // Jika sama, hitung selisih bulan menggunakan now
-                $diffInMonthsUpdate = max(0, $kreditDate->diffInMonths($now));
+                // Jika sama, hitung selisih hari dan konversi ke bulan jika cukup
+                $diffInDays = $kreditDate->diffInDays($now);
+                $diffInMonthsUpdate = floor($diffInDays / 30); // Anggap 1 bulan = 30 hari
             } else {
-                // Hitung selisih bulan menggunakan updated_at
-                $diffInMonthsUpdate = max(0, $kreditDate->diffInMonths($kredit->updated_at));
+                // Jika tidak sama, gunakan selisih hari dari updated_at
+                $diffInDays = $kreditDate->diffInDays($kredit->updated_at);
+                $diffInMonthsUpdate = floor($diffInDays / 30);
             }
+
 
             // Ensure the difference is floored
             $selisihBulan = floor($diffInMonthsUpdate);
