@@ -54,8 +54,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/search-kredit-ryclebin', [KreditTrashController::class, 'search'])->name('search.kredit');
     Route::get('/api/kredit-ryclebin/autocomplete', [KreditTrashController::class, 'autocomplete']);
     Route::get('/search-petani', [KreditTrashController::class, 'searchPetani'])->name('search.petani');
-    Route::get('/laporan-kredit-ryclebin', [KreditTrashController::class, 'generatePdf'])->name('laporan.kredit');
-    Route::get('/kredit-ryclebin/cetak-laporan', [KreditTrashController::class, 'downloadLaporanKredit'])->name('laporan.kredit.cetak');
+    // Route::get('/laporan-kredit-ryclebin', [KreditTrashController::class, 'generatePdf'])->name('laporan.kredit');
+    // Route::get('/kredit-ryclebin/cetak-laporan', [KreditTrashController::class, 'downloadLaporanKredit'])->name('laporan.kredit.cetak');
     Route::patch('/kredit-ryclebin/restore/{id}', [KreditTrashController::class, 'restore'])->name('kredit-ryclebin.restore');
 
 
