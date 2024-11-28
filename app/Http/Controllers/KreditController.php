@@ -69,20 +69,15 @@ class KreditController extends Controller
         // Calculate additional values and prepare data
         $now = Carbon::now();
         $calculatedKredits = $allKredits->map(function ($kredit) use ($now) {
-            $kreditDate = Carbon::parse($kredit->tanggal)->setTime(0, 0);
+            $kreditDate = Carbon::parse($kredit->tanggal);
 
             // Cek apakah tanggal created_at dan updated_at sama (tanpa waktu)
-            if ($kredit->created_at->toDateString() === $kredit->updated_at->toDateString()) {
+            if ($kredit->created_at->format('Y-m-d') === $kredit->updated_at->format('Y-m-d')) {
                 // Jika sama, hitung selisih bulan menggunakan now
-                $diffInMonthsUpdate = $kreditDate->diffInMonths($now);
+                $diffInMonthsUpdate = max(0, $kreditDate->diffInMonths($now));
             } else {
                 // Hitung selisih bulan menggunakan updated_at
-                $diffInMonthsUpdate = $kreditDate->diffInMonths($kredit->updated_at);
-
-                // Jika diffInMonthsUpdate bernilai negatif, set nilainya menjadi 0
-                if ($diffInMonthsUpdate < 0) {
-                    $diffInMonthsUpdate = 0;
-                }
+                $diffInMonthsUpdate = max(0, $kreditDate->diffInMonths($kredit->updated_at));
             }
 
             // Ensure the difference is floored
