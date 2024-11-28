@@ -76,8 +76,13 @@ class KreditController extends Controller
                 // Jika sama, hitung selisih bulan menggunakan now
                 $diffInMonthsUpdate = $kreditDate->diffInMonths($now);
             } else {
-                // Jika berbeda, hitung selisih bulan menggunakan updated_at
+                // Hitung selisih bulan menggunakan updated_at
                 $diffInMonthsUpdate = $kreditDate->diffInMonths($kredit->updated_at);
+
+                // Jika diffInMonthsUpdate bernilai negatif, set nilainya menjadi 0
+                if ($diffInMonthsUpdate < 0) {
+                    $diffInMonthsUpdate = 0;
+                }
             }
 
             // Ensure the difference is floored
