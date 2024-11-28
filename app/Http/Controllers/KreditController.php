@@ -74,7 +74,7 @@ class KreditController extends Controller
             // Cek apakah tanggal created_at dan updated_at sama (tanpa waktu)
             if ($kredit->created_at->toDateString() === $kredit->updated_at->toDateString()) {
                 // Jika sama, hitung selisih bulan menggunakan now
-                $diffInMonthsUpdate = $kreditDate->diffInMonths($now);
+                $diffInMonthsUpdate = $kreditDate->startOfMonth()->diffInMonths($now->startOfMonth());
             } else {
                 // Hitung selisih bulan menggunakan updated_at
                 $diffInMonthsUpdate = $kreditDate->diffInMonths($kredit->updated_at);
