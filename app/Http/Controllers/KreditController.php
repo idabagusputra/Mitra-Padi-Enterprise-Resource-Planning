@@ -127,9 +127,9 @@ class KreditController extends Controller
         $sortedKredits = $calculatedKredits->sortBy(
             function ($item) {
                 return [
-                    $item->status == 0 ? 0 : 1, // Prioritaskan status 0 di bagian atas
                     $item->tanggal,
-                    $item->id
+                    $item->id,
+                    $item->status == 0 ? 0 : 1, // Prioritaskan status 0 di bagian atas
                 ];
             },
             SORT_REGULAR,
