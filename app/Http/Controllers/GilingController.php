@@ -201,9 +201,9 @@ class GilingController extends Controller
 
                     $kredit->update([
                         'status' => true,
-                        'keterangan' => $kredit->keterangan . ' | Terbayar | Durasi: ' . number_format($totalLamaBulan) . ' Bulan' .
+                        'keterangan' => $kredit->keterangan . ' | Terbayar' .
                             ' | Dana: ' . number_format($dana, 2) .
-                            ' | Pengambilan: ' . number_format($totalPengambilan, 2),
+                            ' | Pengambilan: ' . number_format($totalPengambilan ?? 0, 2)
 
                     ]);
                     $kredit->pKredit_id = $pembayaranKredit->id;
@@ -233,9 +233,9 @@ class GilingController extends Controller
                     $totalLamaBulan = $pembayaranKredit->hitungLamaHutangBulan($kredit->tanggal);
                     $kredit->update([
                         'status' => true,
-                        'keterangan' => $kredit->keterangan . ' | Terbayar | Durasi: ' . number_format($totalLamaBulan) . ' Bulan' .
+                        'keterangan' => $kredit->keterangan . ' | Terbayar' .
                             ' | Dana: ' . number_format($dana, 2) .
-                            ' | Pengambilan: ' . number_format($totalPengambilan, 2),
+                            ' | Pengambilan: ' . number_format($totalPengambilan ?? 0, 2)
 
                     ]);
                     $kredit->pKredit_id = $pembayaranKredit->id;
