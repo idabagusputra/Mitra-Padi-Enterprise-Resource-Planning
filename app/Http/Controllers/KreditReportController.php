@@ -18,9 +18,22 @@ class KreditReportController extends Controller
 
         $allKredits = Kredit::with('petani')->get();
         $now = Carbon::now();
-
         $calculatedKredits = $allKredits->map(function ($kredit) use ($now) {
             $kreditDate = Carbon::parse($kredit->tanggal);
+
+            // Cek apakah tanggal created_at dan updated_at sama (tanpa waktu)
+            if ($kredit->created_at->toDateString() === $kredit->updated_at->toDateString()) {
+                // Jika sama, hitung selisih bulan menggunakan now
+                $diffInMonthsUpdate = $kreditDate->diffInMonths($now);
+            } else {
+                // Hitung selisih bulan menggunakan updated_at
+                $diffInMonthsUpdate = $kreditDate->diffInMonths($kredit->updated_at);
+
+                // Jika diffInMonthsUpdate bernilai negatif, set nilainya menjadi 0
+                if ($diffInMonthsUpdate < 0) {
+                    $diffInMonthsUpdate = 0;
+                }
+            }
             $selisihBulan = $kreditDate->diffInMonths($now);
             $bunga = $kredit->jumlah * 0.02 * $selisihBulan;
             $hutangPlusBunga = $kredit->jumlah + $bunga;
