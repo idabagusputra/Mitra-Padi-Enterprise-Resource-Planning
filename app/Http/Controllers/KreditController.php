@@ -69,7 +69,7 @@ class KreditController extends Controller
         // Calculate additional values and prepare data
         $now = Carbon::now();
         $calculatedKredits = $allKredits->map(function ($kredit) use ($now) {
-            $kreditDate = Carbon::parse($kredit->tanggal);
+            $kreditDate = Carbon::parse($kredit->tanggal)->setTime(0, 0);
 
             // Cek apakah tanggal created_at dan updated_at sama (tanpa waktu)
             if ($kredit->created_at->toDateString() === $kredit->updated_at->toDateString()) {
