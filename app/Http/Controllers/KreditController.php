@@ -73,13 +73,8 @@ class KreditController extends Controller
 
             // Cek apakah tanggal created_at dan updated_at sama (tanpa waktu)
             if ($kredit->created_at->toDateString() === $kredit->updated_at->toDateString()) {
-                // Cek apakah waktu (jam, menit, detik) pada kedua tanggal adalah 00:00:00
-                if ($kredit->created_at->format('H:i:s') === '00:00:00' && $kredit->updated_at->format('H:i:s') === '00:00:00') {
-                    $diffInMonthsUpdate = 0; // Jika jam 00:00:00, nilai perbedaan bulan adalah 0
-                } else {
-                    // Hitung selisih bulan menggunakan now
-                    $diffInMonthsUpdate = $kreditDate->diffInMonths($now);
-                }
+                // Jika sama, hitung selisih bulan menggunakan now
+                $diffInMonthsUpdate = $kreditDate->diffInMonths($now);
             } else {
                 // Hitung selisih bulan menggunakan updated_at
                 $diffInMonthsUpdate = $kreditDate->diffInMonths($kredit->updated_at);
