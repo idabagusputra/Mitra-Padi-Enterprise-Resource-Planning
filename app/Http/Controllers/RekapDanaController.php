@@ -196,10 +196,11 @@ class RekapDanaController extends Controller
         try {
             // Simpan data ke dalam tabel rekap_dana
             RekapDana::create($data); // Pastikan mass assignment diatur di model
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Data berhasil disimpan.'
-            ], 201);
+            // return response()->json([
+            //     'status' => 'success',
+            //     'message' => 'Data berhasil disimpan.'
+            // ], 201);
+            return view('daftar-rekapan-dana');
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
