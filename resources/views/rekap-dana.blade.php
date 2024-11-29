@@ -14,7 +14,9 @@
 
     .btn-css {
 
-        width: 23.28% !important;
+        /* width: 23.28% !important; */
+        /* width: 170.867 !important; */
+        width: 200 !important;
         min-height: 59.2px;
 
     }
