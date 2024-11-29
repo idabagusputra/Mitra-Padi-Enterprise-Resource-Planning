@@ -200,7 +200,7 @@ class RekapDanaController extends Controller
             //     'status' => 'success',
             //     'message' => 'Data berhasil disimpan.'
             // ], 201);
-            return view('daftar-rekapan-dana');
+            return redirect()->route('rekapDana.index');
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
