@@ -16,7 +16,8 @@ use App\Http\Controllers\DaftarGilingTrashController; // Tambahkan ini
 use App\Http\Controllers\KreditPembayaranKreditController; // Tambahkan ini
 use App\Http\Controllers\KreditReportController;
 use App\Http\Controllers\KreditTrashController;
-
+use App\Http\Controllers\RekapDanaController;
+use App\Models\RekapDana;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['middleware' => 'auth'], function () {
@@ -103,6 +104,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::delete('/daftar-giling-ryclebin/{id}', [DaftarGilingTrashController::class, 'destroy'])->name('daftar-giling-ryclebin.destroy');
     Route::patch('/daftar-giling-ryclebin/restore/{id}', [DaftarGilingTrashController::class, 'restore'])->name('daftar-giling-ryclebin.restore');
 
+
+    Route::resource('rekap-dana', RekapDanaController::class);
+    Route::get('/daftar-rekapan-dana', [RekapDanaController::class, 'indexDaftar'])->name('rekapDana.index');
+    Route::post('/rekap-dana/store', [RekapDanaController::class, 'store'])->name('rekapdana.store');
 
 
     // User profile and authentication

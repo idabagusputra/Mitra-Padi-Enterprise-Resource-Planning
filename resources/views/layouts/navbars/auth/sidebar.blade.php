@@ -106,6 +106,24 @@
                 </a>
             </li>
 
+            <li class="nav-item">
+                <a class="nav-link {{ (Request::is('rekap-dana') ? 'active' : '') }}" href="{{ url('rekap-dana') }}">
+                    <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i style="font-size: 1rem;" class="bi bi-currency-dollar ps-2 pe-2 text-center text-dark {{ (Request::is('rekap-dana') ? 'text-white' : 'text-dark') }} " aria-hidden="true"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Rekap Dana</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link {{ (Request::is('daftar-rekapan-dana') ? 'active' : '') }}" href="{{ url('daftar-rekapan-dana') }}">
+                    <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i style="font-size: 1rem;" class="bi bi-list-check ps-2 pe-2 text-center text-dark {{ (Request::is('daftar-rekapan-dana') ? 'text-white' : 'text-dark') }} " aria-hidden="true"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Daftar Rekapan Dana</span>
+                </a>
+            </li>
+
             <!-- Add a divider -->
             <div class="pt-3">
                 <hr class="horizontal dark mt-0">

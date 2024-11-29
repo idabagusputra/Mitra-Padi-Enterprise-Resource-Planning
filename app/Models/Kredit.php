@@ -38,4 +38,14 @@ class Kredit extends Model
     {
         return $this->belongsToMany(PembayaranKredit::class);
     }
+
+    // Method untuk menghitung total hutang_plus_bunga untuk kredit yang belum lunas
+    public static function calculateTotalKredit()
+    {
+        // Mengambil data kredit yang belum lunas (status = 0)
+        $kreditsBelumLunas = self::where('status', 0)->get(); // Mengambil kredit yang statusnya 0 (belum lunas)
+
+        // Menghitung total hutang_plus_bunga
+        return $kreditsBelumLunas->sum('jumlah');
+    }
 }
