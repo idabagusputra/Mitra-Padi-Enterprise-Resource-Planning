@@ -381,176 +381,174 @@
 
 
 
+                                    <!-- Edit Kredit Modal -->
+                                    @foreach($kredits as $kredit)
 
-                                    <!-- Pagination -->
-                                    <div class="d-flex pagination-css justify-content-between align-items-center ps-2 mt-3 mb-3 mx-3">
-                                        <div>
-                                            Showing
-                                            <strong>{{ $kredits->firstItem() }}</strong> to
-                                            <strong>{{ $kredits->lastItem() }}</strong> of
-                                            <strong>{{ $kredits->total() }}</strong> entries
-                                        </div>
-                                        <div>
-                                            @if ($kredits->lastPage() > 1)
-                                            <nav>
-                                                <ul class="pagination m-0">
-                                                    {{-- Previous Button --}}
-                                                    @if ($kredits->currentPage() > 1)
-                                                    <li class="page-item">
-                                                        <a class="page-link" href="{{ $kredits->previousPageUrl() }}" aria-label="Previous">
-                                                            <span aria-hidden="true">&laquo;</span>
-                                                        </a>
-                                                    </li>
-                                                    @endif
-
-                                                    @php
-                                                    $currentPage = $kredits->currentPage();
-                                                    $lastPage = $kredits->lastPage();
-                                                    @endphp
-
-                                                    {{-- Always show first page --}}
-                                                    <li class="page-item {{ $currentPage == 1 ? 'active' : '' }}">
-                                                        <a class="page-link" href="{{ $kredits->url(1) }}">1</a>
-                                                    </li>
-
-                                                    {{-- Middle pages logic --}}
-                                                    @php
-                                                    $start = max(2, $currentPage - 1);
-                                                    $end = min($lastPage - 1, $currentPage + 1);
-                                                    @endphp
-
-                                                    @for ($i = $start; $i <= $end; $i++)
-                                                        <li class="page-item {{ $currentPage == $i ? 'active' : '' }}">
-                                                        <a class="page-link" href="{{ $kredits->url($i) }}">{{ $i }}</a>
-                                                        </li>
-                                                        @endfor
-
-                                                        {{-- Always show last page --}}
-                                                        @if ($lastPage > 1)
-                                                        <li class="page-item {{ $currentPage == $lastPage ? 'active' : '' }}">
-                                                            <a class="page-link" href="{{ $kredits->url($lastPage) }}">{{ $lastPage }}</a>
-                                                        </li>
-                                                        @endif
-
-                                                        {{-- Next Button --}}
-                                                        @if ($currentPage < $lastPage)
-                                                            <li class="page-item">
-                                                            <a class="page-link" href="{{ $kredits->nextPageUrl() }}" aria-label="Next">
-                                                                <span aria-hidden="true">&raquo;</span>
-                                                            </a>
-                                                            </li>
-                                                            @endif
-                                                </ul>
-                                            </nav>
-                                            @endif
+                                    <div class="modal fade modal-top" id="editKreditModal{{ $kredit->id }}" tabindex="-1" role="dialog" aria-labelledby="editKreditModalLabel{{ $kredit->id }}" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="editKreditModalLabel{{ $kredit->id }}">Edit Kredit</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <form id="editKreditForm{{ $kredit->id }}" action="{{ route('kredit-nasabah-palu.update', $kredit->id) }}" method="POST">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <!-- ... (form fields) ... -->
+                                                    <div class="modal-body">
+                                                        <div class="form-group">
+                                                            <label for="tanggal">Nama</label>
+                                                            <input class="form-control" id="nama" name="nama" value="{{ $kredit->nama }}" required>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="tanggal">Tanggal</label>
+                                                            <input type="date" class="form-control" id="tanggal" name="tanggal" value="{{ date('Y-m-d', strtotime($kredit->tanggal)) }}" required>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="jumlah">Jumlah</label>
+                                                            <input type="number" class="form-control" id="jumlah" name="jumlah" step="0.01" value="{{ $kredit->jumlah }}" required>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="keterangan">Keterangan</label>
+                                                            <textarea class="form-control" id="keterangan" name="keterangan" required>{{ $kredit->keterangan }}</textarea>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="status">Status</label>
+                                                            <select class="form-control" id="status" name="status" required>
+                                                                <option value="0" {{ $kredit->status == 0 ? 'selected' : '' }}>Belum Lunas</option>
+                                                                <option value="1" {{ $kredit->status == 1 ? 'selected' : '' }}>Lunas</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
+                                                        <button type="submit" class="btn bg-gradient-primary">Save changes</button>
+                                                    </div>
+                                                </form>
+                                            </div>
                                         </div>
                                     </div>
+                                    @endforeach
+
+                                    <!-- Add Kredit Modal -->
+                                    <div class="modal fade modal-top" id="addKreditModal" tabindex="-1" role="dialog" aria-labelledby="addKreditModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="addKreditModalLabel">Add New Kredit</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <form action="{{ route('kredit-nasabah-palu.store') }}" method="POST">
+                                                    @csrf
+                                                    <div class="modal-body">
+                                                        <div class="form-group">
+                                                            <label for="tanggal">Nama</label>
+                                                            <input class="form-control" id="nama" name="nama" value="" required>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="tanggal">Tanggal</label>
+                                                            <input type="date" class="form-control" id="tanggal" name="tanggal" value="{{ date('Y-m-d') }}" required>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="jumlah">Jumlah</label>
+                                                            <input type="number" class="form-control" id="jumlah" name="jumlah" step="0.01" required>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="keterangan">Keterangan</label>
+                                                            <textarea class="form-control" id="keterangan" name="keterangan" required></textarea>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="status">Status</label>
+                                                            <select class="form-control" id="status" name="status" required>
+                                                                <option value="0">Belum Lunas</option>
+                                                                <option value="1">Lunas</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
+                                                        <button type="submit" class="btn bg-gradient-primary">Save changes</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </table>
+
+                            </div>
+                            <!-- Pagination -->
+                            <div class="d-flex pagination-css justify-content-between align-items-center ps-2 mt-3 mb-3 mx-3">
+                                <div>
+                                    Showing
+                                    <strong>{{ $kredits->firstItem() }}</strong> to
+                                    <strong>{{ $kredits->lastItem() }}</strong> of
+                                    <strong>{{ $kredits->total() }}</strong> entries
+                                </div>
+                                <div>
+                                    @if ($kredits->lastPage() > 1)
+                                    <nav>
+                                        <ul class="pagination m-0">
+                                            {{-- Previous Button --}}
+                                            @if ($kredits->currentPage() > 1)
+                                            <li class="page-item">
+                                                <a class="page-link" href="{{ $kredits->previousPageUrl() }}" aria-label="Previous">
+                                                    <span aria-hidden="true">&laquo;</span>
+                                                </a>
+                                            </li>
+                                            @endif
+
+                                            @php
+                                            $currentPage = $kredits->currentPage();
+                                            $lastPage = $kredits->lastPage();
+                                            @endphp
+
+                                            {{-- Always show first page --}}
+                                            <li class="page-item {{ $currentPage == 1 ? 'active' : '' }}">
+                                                <a class="page-link" href="{{ $kredits->url(1) }}">1</a>
+                                            </li>
+
+                                            {{-- Middle pages logic --}}
+                                            @php
+                                            $start = max(2, $currentPage - 1);
+                                            $end = min($lastPage - 1, $currentPage + 1);
+                                            @endphp
+
+                                            @for ($i = $start; $i <= $end; $i++)
+                                                <li class="page-item {{ $currentPage == $i ? 'active' : '' }}">
+                                                <a class="page-link" href="{{ $kredits->url($i) }}">{{ $i }}</a>
+                                                </li>
+                                                @endfor
+
+                                                {{-- Always show last page --}}
+                                                @if ($lastPage > 1)
+                                                <li class="page-item {{ $currentPage == $lastPage ? 'active' : '' }}">
+                                                    <a class="page-link" href="{{ $kredits->url($lastPage) }}">{{ $lastPage }}</a>
+                                                </li>
+                                                @endif
+
+                                                {{-- Next Button --}}
+                                                @if ($currentPage < $lastPage)
+                                                    <li class="page-item">
+                                                    <a class="page-link" href="{{ $kredits->nextPageUrl() }}" aria-label="Next">
+                                                        <span aria-hidden="true">&raquo;</span>
+                                                    </a>
+                                                    </li>
+                                                    @endif
+                                        </ul>
+                                    </nav>
+                                    @endif
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-
-            <!-- Edit Kredit Modal -->
-            @foreach($kredits as $kredit)
-
-            <div class="modal fade" id="editKreditModal{{ $kredit->id }}" tabindex="-1" role="dialog" aria-labelledby="editKreditModalLabel{{ $kredit->id }}" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="editKreditModalLabel{{ $kredit->id }}">Edit Kredit</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <form id="editKreditForm{{ $kredit->id }}" action="{{ route('kredit-nasabah-palu.update', $kredit->id) }}" method="POST">
-                            @csrf
-                            @method('PUT')
-                            <!-- ... (form fields) ... -->
-                            <div class="modal-body">
-                                <div class="form-group">
-                                    <label for="tanggal">Nama</label>
-                                    <input class="form-control" id="nama" name="nama" value="{{ $kredit->nama }}" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="tanggal">Tanggal</label>
-                                    <input type="date" class="form-control" id="tanggal" name="tanggal" value="{{ date('Y-m-d', strtotime($kredit->tanggal)) }}" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="jumlah">Jumlah</label>
-                                    <input type="number" class="form-control" id="jumlah" name="jumlah" step="0.01" value="{{ $kredit->jumlah }}" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="keterangan">Keterangan</label>
-                                    <textarea class="form-control" id="keterangan" name="keterangan" required>{{ $kredit->keterangan }}</textarea>
-                                </div>
-                                <div class="form-group">
-                                    <label for="status">Status</label>
-                                    <select class="form-control" id="status" name="status" required>
-                                        <option value="0" {{ $kredit->status == 0 ? 'selected' : '' }}>Belum Lunas</option>
-                                        <option value="1" {{ $kredit->status == 1 ? 'selected' : '' }}>Lunas</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="submit" class="btn bg-gradient-primary">Save changes</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            @endforeach
-
-            <!-- Add Kredit Modal -->
-            <div class="modal fade" id="addKreditModal" tabindex="-1" role="dialog" aria-labelledby="addKreditModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="addKreditModalLabel">Add New Kredit</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <form action="{{ route('kredit-nasabah-palu.store') }}" method="POST">
-                            @csrf
-                            <div class="modal-body">
-                                <div class="form-group">
-                                    <label for="tanggal">Nama</label>
-                                    <input class="form-control" id="nama" name="nama" value="" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="tanggal">Tanggal</label>
-                                    <input type="date" class="form-control" id="tanggal" name="tanggal" value="{{ date('Y-m-d') }}" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="jumlah">Jumlah</label>
-                                    <input type="number" class="form-control" id="jumlah" name="jumlah" step="0.01" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="keterangan">Keterangan</label>
-                                    <textarea class="form-control" id="keterangan" name="keterangan" required></textarea>
-                                </div>
-                                <div class="form-group">
-                                    <label for="status">Status</label>
-                                    <select class="form-control" id="status" name="status" required>
-                                        <option value="0">Belum Lunas</option>
-                                        <option value="1">Lunas</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="submit" class="btn bg-gradient-primary">Save changes</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            </table>
-
         </div>
 
 
 
 
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 const petaniIdInput = document.getElementById('petani_id');
