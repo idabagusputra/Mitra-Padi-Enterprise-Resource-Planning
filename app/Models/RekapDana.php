@@ -37,4 +37,33 @@ class RekapDana extends Model
     ];
 
     // Anda juga bisa menambahkan metode akses (getter) atau manipulasi data lainnya jika diperlukan.
+
+    // Method to calculate Kelompok 1 total
+    public function getKelompok1Total()
+    {
+        return $this->bri + $this->bni + $this->tunai + $this->mama + $this->total_kredit + $this->nasabah_palu;
+    }
+
+    // Method to calculate Kelompok 2 total
+    public function getKelompok2Total()
+    {
+        return $this->stok_beras_total + $this->ongkos_jemur_total + $this->beras_terpinjam_total;
+    }
+
+    // Method to calculate Kelompok 3 total
+    public function getKelompok3Total()
+    {
+        return $this->pinjaman_bank + $this->titipan_petani + $this->utang_beras + $this->utang_ke_operator;
+    }
+
+    // Method to calculate the final 'rekapan_dana'
+    public function calculateRekapanDana()
+    {
+        $kelompok1Total = $this->getKelompok1Total();
+        $kelompok2Total = $this->getKelompok2Total();
+        $kelompok3Total = $this->getKelompok3Total();
+
+        // Calculate rekapan_dana
+        return $kelompok1Total + $kelompok2Total - $kelompok3Total;
+    }
 }

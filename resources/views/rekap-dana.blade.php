@@ -25,9 +25,9 @@
 @section('content')
 <div class="container-fluid">
     <div class="card">
-        <div class="card-header pb-0 px-3">
+        <!-- <div class="card-header pb-0 px-3">
             <h6 class="mb-0 text-primary">{{ __('Keuangan') }}</h6>
-        </div>
+        </div> -->
         <div class="card-body pt-4 p-3">
             @if ($errors->any())
             <div class="mt-3 alert alert-primary alert-dismissible fade show" role="alert">

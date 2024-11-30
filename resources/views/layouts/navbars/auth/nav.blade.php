@@ -117,7 +117,7 @@
                         @if(isset($latestNotifications) && $latestNotifications->count() > 0)
                         @foreach($latestNotifications as $notification)
                         <li class="mb-2">
-                            <a class="dropdown-item border-radius-md view-pdf-btn"
+                            <a class="dropdown-item border-radius-md view-pdf-btn-nav"
                                 href="#"
                                 data-id="{{ $notification['id'] }}"
                                 data-bs-toggle="modal"
@@ -241,7 +241,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Event listener untuk notifikasi
-        const notificationLinks = document.querySelectorAll('.view-pdf-btn');
+        const notificationLinks = document.querySelectorAll('.view-pdf-btn-nav');
 
         notificationLinks.forEach(function(link) {
             link.addEventListener('click', function(e) {

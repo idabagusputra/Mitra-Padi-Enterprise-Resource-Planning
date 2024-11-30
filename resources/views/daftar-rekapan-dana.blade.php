@@ -212,7 +212,7 @@
                                         <p class="text-xs font-weight-bold mb-0 ">{{ $rekapDana->id }}</p>
                                     </td>
                                     <td class="text-center">
-                                        <a href="#" class="btn btn-link text-dark mb-0 view-pdf-btn" data-id="{{ $rekapDana->id }}">
+                                        <a href="#" class="btn btn-link text-dark mb-0 view-pdf-btn-daftarRekapanDana" data-id="{{ $rekapDana->id }}">
                                             <i class="bi bi-eye text-dark me-2" aria-hidden="true"></i>
                                             View
                                         </a>
@@ -310,6 +310,7 @@
     </div>
 </div>
 
+<!-- Modal PDF -->
 <div class="modal fade" id="pdfModal" tabindex="-1" aria-labelledby="pdfModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -318,7 +319,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <iframe id="pdfViewer" style="width: 100%; height: 500px;" frameborder="0"></iframe>
+                <iframe id="pdfViewer" class="pdf-viewer" frameborder="0"></iframe>
             </div>
             <div class="modal-footer d-flex justify-content-between">
                 <button id="printPdf" class="btn btn-primary">Print</button>
@@ -330,6 +331,77 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+
+        // Event listener untuk notifikasi
+        const notificationLinks = document.querySelectorAll('.view-pdf-btn-daftarRekapanDana');
+
+
+        notificationLinks.forEach(function(link) {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                const gilingId = this.getAttribute('data-id');
+                console.log('Opening PDF for Giling ID:', gilingId);
+
+                if (!gilingId) {
+                    console.error('No giling ID found');
+                    return;
+                }
+
+                const pdfPath = `/rekapan_dana/Rekapan_Dana_${gilingId}.pdf`;
+
+                // Set src viewer PDF
+                const pdfViewer = document.getElementById('pdfViewer');
+                pdfViewer.src = pdfPath;
+
+                // Update modal title
+                document.getElementById('pdfModalLabel').textContent = `Receipt #${gilingId}`;
+
+                // Tampilkan modal dengan opsi backdrop yang dimodifikasi
+                const pdfModal = new bootstrap.Modal(document.getElementById('pdfModal'), {
+                    backdrop: 'static',
+                    keyboard: false
+                });
+                pdfModal.show();
+
+                // Close dropdown menu after clicking
+                const dropdownMenu = this.closest('.dropdown-menu');
+                if (dropdownMenu) {
+                    const dropdownToggle = document.querySelector('[data-bs-toggle="dropdown"]');
+                    if (dropdownToggle) {
+                        const dropdown = bootstrap.Dropdown.getInstance(dropdownToggle);
+                        if (dropdown) dropdown.hide();
+                    }
+                }
+            });
+        });
+
+        // Event listener untuk tombol Close dan Print
+        const modal = document.getElementById('pdfModal');
+        if (modal) {
+            // Event saat modal ditutup
+            modal.addEventListener('hidden.bs.modal', function() {
+                // Reset backdrop opacity
+                document.body.classList.remove('modal-open');
+                const backdrops = document.getElementsByClassName('modal-backdrop');
+                while (backdrops.length > 0) {
+                    backdrops[0].parentNode.removeChild(backdrops[0]);
+                }
+            });
+
+            // Event listener untuk tombol Print
+            const printButton = document.getElementById('printPdf');
+            if (printButton) {
+                printButton.addEventListener('click', function() {
+                    const pdfViewer = document.getElementById('pdfViewer');
+                    if (pdfViewer && pdfViewer.contentWindow) {
+                        pdfViewer.contentWindow.print();
+                    }
+                });
+            }
+        }
+
         const petaniIdInput = document.getElementById('petani_id');
 
         // Fungsi untuk setup autocomplete
@@ -428,66 +500,7 @@
 
         let scrollPosition = 0;
 
-        document.querySelectorAll('.view-pdf-btn').forEach(function(button) {
-            button.addEventListener('click', function(e) {
-                e.preventDefault();
-                scrollPosition = window.pageYOffset;
-                const gilingId = this.getAttribute('data-id');
-                const pdfPath = `/receipts/receipt-${gilingId}.pdf`;
 
-                // Set src viewer PDF
-                document.getElementById('pdfViewer').src = pdfPath;
-
-                // Update modal title
-                document.getElementById('pdfModalLabel').textContent = `Receipt #${gilingId}`;
-
-                const modalElement = document.getElementById('pdfModal');
-                const pdfModal = new bootstrap.Modal(modalElement);
-
-                // Handle modal events to fix mobile scrolling
-                modalElement.addEventListener('shown.bs.modal', function() {
-                    document.body.style.overflow = 'hidden';
-                });
-
-                modalElement.addEventListener('hidden.bs.modal', function() {
-                    document.body.style.overflow = 'auto';
-                    document.body.style.position = 'relative';
-                    // Reset any inline styles that might affect scrolling
-                    window.scrollTo(0, window.scrollY);
-                });
-
-                // Add click event listener to close modal when clicking outside
-                modalElement.addEventListener('click', function(event) {
-                    if (event.target === modalElement) {
-                        pdfModal.hide();
-                    }
-                });
-
-                // Add click event listener for close buttons
-                document.querySelectorAll('[data-bs-dismiss="modal"]').forEach(button => {
-                    button.addEventListener('click', () => {
-                        pdfModal.hide();
-                    });
-                });
-
-                pdfModal.show();
-            });
-        });
-
-
-        // Dalam event hidden.bs.modal
-        modalElement.addEventListener('hidden.bs.modal', function() {
-            document.body.style.overflow = 'auto';
-            document.body.style.position = 'relative';
-            document.body.style.top = '';
-            window.scrollTo(0, scrollPosition);
-        });
-
-        // Event listener for Print button
-        document.getElementById('printPdf').addEventListener('click', function() {
-            const pdfViewer = document.getElementById('pdfViewer').contentWindow;
-            pdfViewer.print();
-        });
     });
 </script>
 

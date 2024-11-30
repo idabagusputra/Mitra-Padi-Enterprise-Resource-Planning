@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\View;
 use Carbon\Carbon;
 use Dompdf\Dompdf;
 use Dompdf\Options;
+use Google\Client;
+use Google\Service\Drive;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
@@ -32,110 +34,193 @@ class RekapDanaController extends Controller
 
     public function indexDaftar()
     {
-        // Mengambil data dari tabel 'rekap_dana' dengan pagination 20 per halaman
-        $rekapDanas = RekapDana::paginate(20);
+        // Mengambil data dari tabel 'rekap_dana' dengan pagination 20 per halaman, diurutkan berdasarkan 'id' terbaru
+        $rekapDanas = RekapDana::orderBy('id', 'desc')->paginate(20);
 
         // Mengirim data ke view 'daftar-rekapan-dana'
-        return view('daftar-rekapan-dana', compact('rekapDanas'));
+        return view(
+            'daftar-rekapan-dana',
+            compact('rekapDanas')
+        );
     }
 
 
-    public function generatePdf(Request $request)
+
+    public function generatePdfRekapDana($rekapId)
     {
-        // Tetapkan langsung nilai 'desc' untuk sortOrder
-        $sortOrder = 'desc';
+        $rekapDana = RekapDana::findOrFail($rekapId);  // Find the RekapDana by ID
 
-        $allKredits = Kredit::with('petani')->get();
-        $now = Carbon::now();
-        $calculatedKredits = $allKredits->map(function ($kredit) use ($now) {
-            $kreditDate = Carbon::parse($kredit->tanggal);
+        if (!$rekapDana) {
+            Log::error("Rekap Dana not found for ID: {$rekapId}");
+            abort(404, 'Data Rekap Dana tidak ditemukan.');
+        }
 
-            // Cek apakah tanggal created_at dan updated_at sama (tanpa waktu)
-            if ($kredit->created_at->toDateString() === $kredit->updated_at->toDateString()) {
-                // Jika sama, hitung selisih bulan menggunakan now
-                $diffInMonthsUpdate = $kreditDate->diffInMonths($now);
-            } else {
-                // Hitung selisih bulan menggunakan updated_at
-                $diffInMonthsUpdate = $kreditDate->diffInMonths($kredit->updated_at);
-
-                // Jika diffInMonthsUpdate bernilai negatif, set nilainya menjadi 0
-                if ($diffInMonthsUpdate < 0) {
-                    $diffInMonthsUpdate = 0;
-                }
-            }
-            $selisihBulan = $kreditDate->diffInMonths($now);
-            $bunga = $kredit->jumlah * 0.02 * $selisihBulan;
-            $hutangPlusBunga = $kredit->jumlah + $bunga;
-
-            $kredit->setAttribute('hutang_plus_bunga', $hutangPlusBunga);
-            $kredit->setAttribute('lama_bulan', $selisihBulan);
-            $kredit->setAttribute('bunga', $bunga);
-
-            return $kredit;
-        });
-
-        // Urutkan data sesuai sortOrder
-        // $sortedKredits = $calculatedKredits->sortBy(function ($item) {
-        //     return [$item->tanggal, $item->id];
-        // }, SORT_REGULAR, $sortOrder === 'desc');
-
-        $sortedKredits = $calculatedKredits->sortBy(
-            function ($item) {
-                return [
-                    $item->status ? 0 : 1,  // Status false (0) di atas, true (1) di bawah
-                    $item->tanggal,
-                    $item->id
-                ];
-            },
-            SORT_REGULAR,
-            $sortOrder === 'desc'
-        );
-
-        // Kelompokkan kredit berdasarkan nama petani
-        $groupedByPetani = $sortedKredits->groupBy(function ($kredit) {
-            return $kredit->petani->nama; // Asumsi 'nama' adalah kolom di model Petani
-        });
-
-        // Hitung ringkasan data
-        $kreditsBelumLunas = $calculatedKredits->where('status', 0);
-        $jumlahPetaniBelumLunas = $kreditsBelumLunas->pluck('petani_id')->unique()->count();
-        $totalKreditBelumLunas = $kreditsBelumLunas->sum('jumlah');
-        $totalKreditPlusBungaBelumLunas = $kreditsBelumLunas->sum('hutang_plus_bunga');
-
-        // Hitung ringkasan data
-        $kreditsLunas = $calculatedKredits->where('status', 1);
-        $jumlahPetaniLunas = $kreditsLunas->pluck('petani_id')->unique()->count();
-        $totalKreditLunas = $kreditsLunas->sum('jumlah');
-        $totalKreditPlusBungaLunas = $kreditsLunas->sum('hutang_plus_bunga');
+        // Fetch totals for each kelompok
+        $kelompok1Total = $rekapDana->getKelompok1Total();
+        $kelompok2Total = $rekapDana->getKelompok2Total();
+        $kelompok3Total = $rekapDana->getKelompok3Total();
 
 
-        // Render HTML menggunakan Blade
-        $html = View::make('kreditReport', [
-            'groupedKredits' => $groupedByPetani, // Mengirimkan data yang sudah dikelompokkan
-            'jumlahPetaniBelumLunas' => $jumlahPetaniBelumLunas,
-            'totalKreditBelumLunas' => $totalKreditBelumLunas,
-            'totalKreditPlusBungaBelumLunas' => $totalKreditPlusBungaBelumLunas,
-            // Menambahkan data untuk yang sudah lunas
-            'jumlahPetaniLunas' => $jumlahPetaniLunas,
-            'totalKreditLunas' => $totalKreditLunas,
-            'totalKreditPlusBungaLunas' => $totalKreditPlusBungaLunas
+        // Calculate 'rekapan_dana'
+        $rekapanDana = $rekapDana->calculateRekapanDana();
+
+        // Setup Dompdf options
+        $options = new Options();
+        $options->set('isRemoteEnabled', true);
+        $options->set('isHtml5ParserEnabled', true);
+        $options->set('defaultFont', 'sans-serif');
+        $options->set('isFontSubsettingEnabled', true);
+        $options->set('defaultMediaType', 'print');
+        $options->set('dpi', 96);
+        $dompdf = new Dompdf($options);
+
+        // Gunakan ukuran kertas A4 standar dengan margin 2 mm di setiap sisi
+        // Konversi 2 mm ke dalam satuan point (1 mm = 2.83464567 point)
+        $marginInPoints = 2 * 2.83464567;
+        $dompdf->setPaper('A4', 'portrait', [
+            'margin-top' => $marginInPoints,
+            'margin-right' => $marginInPoints,
+            'margin-bottom' => $marginInPoints,
+            'margin-left' => $marginInPoints
+        ]);
+
+
+        // Ambil HTML untuk konten PDF
+        $htmlContent = view('rekapanDanaPDF', [
+            'created_at' => $rekapDana->created_at,
+            'bri' => $rekapDana->bri,
+            'bni' => $rekapDana->bni,
+            'tunai' => $rekapDana->tunai,
+            'mama' => $rekapDana->mama,
+            'total_kredit' => $rekapDana->total_kredit,
+            'nasabah_palu' => $rekapDana->nasabah_palu,
+            'stok_beras_jumlah' => $rekapDana->stok_beras_jumlah,
+            'stok_beras_harga' => $rekapDana->stok_beras_harga,
+            'stok_beras_total' => $rekapDana->stok_beras_total,
+            'ongkos_jemur_jumlah' => $rekapDana->ongkos_jemur_jumlah,
+            'ongkos_jemur_harga' => $rekapDana->ongkos_jemur_harga,
+            'ongkos_jemur_total' => $rekapDana->ongkos_jemur_total,
+            'beras_terpinjam_jumlah' => $rekapDana->beras_terpinjam_jumlah,
+            'beras_terpinjam_harga' => $rekapDana->beras_terpinjam_harga,
+            'beras_terpinjam_total' => $rekapDana->beras_terpinjam_total,
+            'pinjaman_bank' => $rekapDana->pinjaman_bank,
+            'titipan_petani' => $rekapDana->titipan_petani,
+            'utang_beras' => $rekapDana->utang_beras,
+            'utang_ke_operator' => $rekapDana->utang_ke_operator,
+            'kelompok1Total' => $kelompok1Total,
+            'kelompok2Total' => $kelompok2Total,
+            'kelompok3Total' => $kelompok3Total,
+            'rekapan_dana' => $rekapanDana,
+            'viewKelompok1Total' => $kelompok1Total,
+            'viewKelompok2Total' => $kelompok2Total,
+            'viewKelompok3Total' => $kelompok3Total,
         ])->render();
 
 
-        // Generate PDF dengan Dompdf
-        $options = new Options();
-        $options->set('defaultFont', 'Arial');
-        $dompdf = new Dompdf($options);
-        $dompdf->loadHtml($html);
-        $dompdf->setPaper('A4', 'portrait');
+        // Add default CSS to ensure the layout is correct
+        $defaultCss = '
+        <style>
+            @page {
+                margin: 0mm 6mm 6mm 6mm;
+            }
+            body {
+                font-family: sans-serif;
+                margin: 0;
+                font-size: 10pt;
+                line-height: 1;
+            }
+            * {
+                box-sizing: border-box;
+            }
+            table {
+                width: 100%;
+            }
+            .text-center {
+                text-align: center;
+            }
+            .text-right {
+                text-align: right;
+            }
+            .font-bold {
+                font-weight: bold;
+            }
+            .total {
+                font-weight: bold;
+                text-align: right;
+            }
+        </style>
+    ';
+
+        // Combine the CSS and HTML content
+        $htmlContent = $defaultCss . $htmlContent;
+
+
+        $dompdf->loadHtml($htmlContent);
+
+        // Render the PDF (first pass)
         $dompdf->render();
 
-        // Stream PDF ke browser
-        // Ubah stream menjadi download
-        return $dompdf->stream('Laporan_Kredit_' . date('Y-m-d_H-i-s') . '.pdf', [
-            'Attachment' => true,
-            'Content-Type' => 'application/pdf'
-        ]);
+        // Define the PDF file name using only the 'id' from the $rekapDana object
+        $pdfFileName = 'Rekapan_Dana_' . $rekapDana->id . '.pdf';
+
+
+
+        $pdfPath = public_path('rekapan_dana');
+
+
+        // Ensure directory exists
+        if (!file_exists($pdfPath)) {
+            mkdir($pdfPath, 0755, true);
+        }
+
+        $pdfFullPath = $pdfPath . '/' . $pdfFileName;
+
+        try {
+            // Save the PDF to the server
+            file_put_contents($pdfFullPath, $dompdf->output());
+
+            // Set up Google Drive client
+            $client = new Client();
+            $client->setAuthConfig(storage_path('app/google-drive-credentials.json'));
+            $client->addScope(Drive::DRIVE);
+
+            $driveService = new Drive($client);
+
+            // Check folder existence (example folder ID)
+            try {
+                $folderCheck = $driveService->files->get('104G4glHVz6jE1iqk0-f5s0sN-pU0THpv', [
+                    'fields' => 'id,name'
+                ]);
+                Log::info('Folder found: ' . $folderCheck->getName());
+            } catch (\Exception $e) {
+                Log::error('Failed to access folder: ' . $e->getMessage());
+                throw new \Exception('Folder cannot be accessed');
+            }
+
+            // Prepare file metadata
+            $fileMetadata = new Drive\DriveFile([
+                'name' => $pdfFileName . date('Y-m-d_H-i-s') . '.pdf',
+                'parents' => ['104G4glHVz6jE1iqk0-f5s0sN-pU0THpv']
+            ]);
+
+            // Upload file to Google Drive
+            $file = $driveService->files->create($fileMetadata, [
+                'data' => $dompdf->output(),
+                'mimeType' => 'application/pdf',
+                'uploadType' => 'multipart',
+                'fields' => 'id,webViewLink'
+            ]);
+
+            // Return details for further use
+            return [
+                'pdf_path' => $pdfFullPath, // Server-side PDF path
+                'file_id' => $file->id,      // Google Drive file ID
+                'web_view_link' => $file->webViewLink // Google Drive link
+            ];
+        } catch (\Exception $e) {
+            Log::error('PDF Generation or Upload failed: ' . $e->getMessage());
+            throw $e;
+        }
     }
 
     public function store(Request $request)
@@ -201,13 +286,24 @@ class RekapDanaController extends Controller
         $data['beras_terpinjam_total'] = $berasTerpinjamTotal;
         $data['rekapan_dana'] = $rekapanDana;
 
+
+        // Menghitung nilai rekapan_dana = Kelompok 1 + Kelompok 2 (total) - Kelompok 3
+        $viewKelompok1Total = $data['bri'] + $data['bni'] + $data['tunai'] + $data['mama'] + $totalKreditPetani + $totalKreditNasabahPalu;
+        $viewKelompok2Total = $stokBerasTotal + $ongkosJemurTotal + $berasTerpinjamTotal;
+        $viewKelompok3Total = $data['pinjaman_bank'] + $data['titipan_petani'] + $data['utang_beras'] + $data['utang_ke_operator'];
+
         try {
             // Simpan data ke dalam tabel rekap_dana
-            RekapDana::create($data); // Pastikan mass assignment diatur di model
+            $rekapDana = RekapDana::create($data); // Store the new record and assign it to the $rekapDana variable
+
+            // Call the generatePdfRekapDana method after storing the record
+            $this->generatePdfRekapDana($rekapDana->id); // Pass the id of the newly created record to generate the PDF
+
             // return response()->json([
             //     'status' => 'success',
             //     'message' => 'Data berhasil disimpan.'
             // ], 201);
+
             return redirect()->route('rekapDana.index');
         } catch (\Exception $e) {
             return response()->json([
