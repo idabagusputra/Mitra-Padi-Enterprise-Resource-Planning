@@ -292,24 +292,17 @@ class RekapDanaController extends Controller
         $viewKelompok2Total = $stokBerasTotal + $ongkosJemurTotal + $berasTerpinjamTotal;
         $viewKelompok3Total = $data['pinjaman_bank'] + $data['titipan_petani'] + $data['utang_beras'] + $data['utang_ke_operator'];
 
-        try {
-            // Simpan data ke dalam tabel rekap_dana
-            $rekapDana = RekapDana::create($data); // Store the new record and assign it to the $rekapDana variable
+        // Simpan data ke dalam tabel rekap_dana
+        $rekapDana = RekapDana::create($data); // Store the new record and assign it to the $rekapDana variable
 
-            // Call the generatePdfRekapDana method after storing the record
-            $this->generatePdfRekapDana($rekapDana->id); // Pass the id of the newly created record to generate the PDF
+        // Call the generatePdfRekapDana method after storing the record
+        $this->generatePdfRekapDana($rekapDana->id); // Pass the id of the newly created record to generate the PDF
 
-            // return response()->json([
-            //     'status' => 'success',
-            //     'message' => 'Data berhasil disimpan.'
-            // ], 201);
+        // return response()->json([
+        //     'status' => 'success',
+        //     'message' => 'Data berhasil disimpan.'
+        // ], 201);
 
-            return redirect()->route('rekapDana.index');
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Terjadi kesalahan saat menyimpan data: ' . $e->getMessage()
-            ], 500);
-        }
+        return redirect()->route('rekapDana.index');
     }
 }
