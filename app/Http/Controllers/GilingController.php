@@ -202,6 +202,7 @@ class GilingController extends Controller
                             ' | Pengambilan: Rp. ' . number_format($totalPengambilan ?? 0, 2)
 
                     ]);
+
                     $kredit->pKredit_id = $pembayaranKredit->id;
                     $kredit->updated_at = $tanggalgabahmasuk;
                     $kredit->save();
