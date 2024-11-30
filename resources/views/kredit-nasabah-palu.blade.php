@@ -181,6 +181,18 @@
             padding-bottom: 3 !important;
             margin: 0 !important;
         } */
+
+        .modal-top {
+            z-index: 9999;
+        }
+
+        .modal {
+            z-index: 9999;
+        }
+
+        .modal-backdrop {
+            z-index: 9998;
+        }
     }
 </style>
 
