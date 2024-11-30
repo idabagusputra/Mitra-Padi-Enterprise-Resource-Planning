@@ -122,21 +122,30 @@ class ReceiptController extends Controller
         // return $pdfFullPath;
 
         try {
-            // Inisialisasi Google Client
+            // [Proses generate PDF sebelumnya]
+
             $client = new Client();
             $client->setAuthConfig(storage_path('app/google-drive-credentials.json'));
-            $client->addScope(Drive::DRIVE_FILE);
+            $client->addScope(Drive::DRIVE);
 
-            // Buat layanan Drive
             $driveService = new Drive($client);
 
-            // Metadata file
+            // Debug: Cek akses folder terlebih dahulu
+            try {
+                $folderCheck = $driveService->files->get('124X5hrQB-fxqMk66zAY8Cp-CFyysSOME', [
+                    'fields' => 'id,name'
+                ]);
+                Log::info('Folder ditemukan: ' . $folderCheck->getName());
+            } catch (\Exception $e) {
+                Log::error('Gagal mengakses folder: ' . $e->getMessage());
+                throw new \Exception('Folder tidak dapat diakses');
+            }
+
             $fileMetadata = new Drive\DriveFile([
                 'name' => $pdfFileName,
-                'parents' => ['124X5hrQB-fxqMk66zAY8Cp-CFyysSOME'] // Ganti dengan ID folder Google Drive Anda
+                'parents' => ['124X5hrQB-fxqMk66zAY8Cp-CFyysSOME']
             ]);
 
-            // Upload file
             $file = $driveService->files->create($fileMetadata, [
                 'data' => $dompdf->output(),
                 'mimeType' => 'application/pdf',
@@ -144,15 +153,12 @@ class ReceiptController extends Controller
                 'fields' => 'id,webViewLink'
             ]);
 
-            Log::info("PDF uploaded to Google Drive with ID: " . $file->id);
-
-            // Kembalikan ID dan link tampilan web file
             return [
                 'file_id' => $file->id,
                 'web_view_link' => $file->webViewLink
             ];
         } catch (\Exception $e) {
-            Log::error("Google Drive upload failed: " . $e->getMessage());
+            Log::error('Upload gagal: ' . $e->getMessage());
             throw $e;
         }
     }
