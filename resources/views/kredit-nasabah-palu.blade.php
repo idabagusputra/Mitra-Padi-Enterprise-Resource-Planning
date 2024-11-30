@@ -363,7 +363,7 @@
                                                     <i class="bi bi-pencil-square text-dark me-2" aria-hidden="true"></i>
                                                     Edit
                                                 </a>
-                                                <form action="{{ route('kredit.destroy', $kredit->id) }}" method="POST" class="d-inline">
+                                                <form action="{{ route('kredit-nasabah-palu.destroy', $kredit->id) }}" method="POST" class="d-inline">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-link text-danger px-2 mb-0" onclick="return confirm('Are you sure you want to delete this item?')">
@@ -807,7 +807,6 @@
                 } else {
                     console.error('Add Kredit form not found');
                 }
-
             });
         </script>
 
