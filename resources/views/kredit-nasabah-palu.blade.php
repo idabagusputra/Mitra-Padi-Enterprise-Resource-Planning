@@ -252,6 +252,100 @@
                             </form>
 
 
+                            <!-- Edit Kredit Modal -->
+                            @foreach($kredits as $kredit)
+
+                            <div class="modal fade modal-top" id="editKreditModal{{ $kredit->id }}" tabindex="-1" role="dialog" aria-labelledby="editKreditModalLabel{{ $kredit->id }}" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="editKreditModalLabel{{ $kredit->id }}">Edit Kredit</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <form id="editKreditForm{{ $kredit->id }}" action="{{ route('kredit-nasabah-palu.update', $kredit->id) }}" method="POST">
+                                            @csrf
+                                            @method('PUT')
+                                            <!-- ... (form fields) ... -->
+                                            <div class="modal-body">
+                                                <div class="form-group">
+                                                    <label for="tanggal">Nama</label>
+                                                    <input class="form-control" id="nama" name="nama" value="{{ $kredit->nama }}" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="tanggal">Tanggal</label>
+                                                    <input type="date" class="form-control" id="tanggal" name="tanggal" value="{{ date('Y-m-d', strtotime($kredit->tanggal)) }}" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="jumlah">Jumlah</label>
+                                                    <input type="number" class="form-control" id="jumlah" name="jumlah" step="0.01" value="{{ $kredit->jumlah }}" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="keterangan">Keterangan</label>
+                                                    <textarea class="form-control" id="keterangan" name="keterangan" required>{{ $kredit->keterangan }}</textarea>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="status">Status</label>
+                                                    <select class="form-control" id="status" name="status" required>
+                                                        <option value="0" {{ $kredit->status == 0 ? 'selected' : '' }}>Belum Lunas</option>
+                                                        <option value="1" {{ $kredit->status == 1 ? 'selected' : '' }}>Lunas</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn bg-gradient-primary">Save changes</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            @endforeach
+
+                            <!-- Add Kredit Modal -->
+                            <div class="modal fade modal-top" id="addKreditModal" tabindex="-1" role="dialog" aria-labelledby="addKreditModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="addKreditModalLabel">Add New Kredit</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <form action="{{ route('kredit-nasabah-palu.store') }}" method="POST">
+                                            @csrf
+                                            <div class="modal-body">
+                                                <div class="form-group">
+                                                    <label for="tanggal">Nama</label>
+                                                    <input class="form-control" id="nama" name="nama" value="" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="tanggal">Tanggal</label>
+                                                    <input type="date" class="form-control" id="tanggal" name="tanggal" value="{{ date('Y-m-d') }}" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="jumlah">Jumlah</label>
+                                                    <input type="number" class="form-control" id="jumlah" name="jumlah" step="0.01" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="keterangan">Keterangan</label>
+                                                    <textarea class="form-control" id="keterangan" name="keterangan" required></textarea>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="status">Status</label>
+                                                    <select class="form-control" id="status" name="status" required>
+                                                        <option value="0">Belum Lunas</option>
+                                                        <option value="1">Lunas</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn bg-gradient-primary">Save changes</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            </table>
+
                         </div>
 
 
@@ -393,99 +487,7 @@
 
 
 
-                                    <!-- Edit Kredit Modal -->
-                                    @foreach($kredits as $kredit)
 
-                                    <div class="modal fade modal-top" id="editKreditModal{{ $kredit->id }}" tabindex="-1" role="dialog" aria-labelledby="editKreditModalLabel{{ $kredit->id }}" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="editKreditModalLabel{{ $kredit->id }}">Edit Kredit</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <form id="editKreditForm{{ $kredit->id }}" action="{{ route('kredit-nasabah-palu.update', $kredit->id) }}" method="POST">
-                                                    @csrf
-                                                    @method('PUT')
-                                                    <!-- ... (form fields) ... -->
-                                                    <div class="modal-body">
-                                                        <div class="form-group">
-                                                            <label for="tanggal">Nama</label>
-                                                            <input class="form-control" id="nama" name="nama" value="{{ $kredit->nama }}" required>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="tanggal">Tanggal</label>
-                                                            <input type="date" class="form-control" id="tanggal" name="tanggal" value="{{ date('Y-m-d', strtotime($kredit->tanggal)) }}" required>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="jumlah">Jumlah</label>
-                                                            <input type="number" class="form-control" id="jumlah" name="jumlah" step="0.01" value="{{ $kredit->jumlah }}" required>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="keterangan">Keterangan</label>
-                                                            <textarea class="form-control" id="keterangan" name="keterangan" required>{{ $kredit->keterangan }}</textarea>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="status">Status</label>
-                                                            <select class="form-control" id="status" name="status" required>
-                                                                <option value="0" {{ $kredit->status == 0 ? 'selected' : '' }}>Belum Lunas</option>
-                                                                <option value="1" {{ $kredit->status == 1 ? 'selected' : '' }}>Lunas</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
-                                                        <button type="submit" class="btn bg-gradient-primary">Save changes</button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    @endforeach
-
-                                    <!-- Add Kredit Modal -->
-                                    <div class="modal fade modal-top" id="addKreditModal" tabindex="-1" role="dialog" aria-labelledby="addKreditModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="addKreditModalLabel">Add New Kredit</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <form action="{{ route('kredit-nasabah-palu.store') }}" method="POST">
-                                                    @csrf
-                                                    <div class="modal-body">
-                                                        <div class="form-group">
-                                                            <label for="tanggal">Nama</label>
-                                                            <input class="form-control" id="nama" name="nama" value="" required>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="tanggal">Tanggal</label>
-                                                            <input type="date" class="form-control" id="tanggal" name="tanggal" value="{{ date('Y-m-d') }}" required>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="jumlah">Jumlah</label>
-                                                            <input type="number" class="form-control" id="jumlah" name="jumlah" step="0.01" required>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="keterangan">Keterangan</label>
-                                                            <textarea class="form-control" id="keterangan" name="keterangan" required></textarea>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="status">Status</label>
-                                                            <select class="form-control" id="status" name="status" required>
-                                                                <option value="0">Belum Lunas</option>
-                                                                <option value="1">Lunas</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
-                                                        <button type="submit" class="btn bg-gradient-primary">Save changes</button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </table>
 
                             </div>
                             <!-- Pagination -->
