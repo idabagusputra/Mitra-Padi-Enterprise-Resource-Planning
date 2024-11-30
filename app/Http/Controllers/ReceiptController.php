@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Google\Client;
+use Google\Service\Drive;
 use App\Models\DaftarGiling;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -108,16 +110,51 @@ class ReceiptController extends Controller
 
         $pdfFullPath = $pdfPath . '/' . $pdfFileName;
 
+        // try {
+        //     // Save PDF to file
+        //     file_put_contents($pdfFullPath, $dompdf->output());
+        //     Log::info("PDF generated successfully: {$pdfFullPath}");
+        // } catch (\Exception $e) {
+        //     Log::error("PDF generation failed: " . $e->getMessage());
+        //     throw $e;
+        // }
+
+        // return $pdfFullPath;
+
         try {
-            // Save PDF to file
-            file_put_contents($pdfFullPath, $dompdf->output());
-            Log::info("PDF generated successfully: {$pdfFullPath}");
+            // Inisialisasi Google Client
+            $client = new Client();
+            $client->setAuthConfig(storage_path('app/google-drive-credentials.json'));
+            $client->addScope(Drive::DRIVE_FILE);
+
+            // Buat layanan Drive
+            $driveService = new Drive($client);
+
+            // Metadata file
+            $fileMetadata = new Drive\DriveFile([
+                'name' => $pdfFileName,
+                'parents' => ['124X5hrQB-fxqMk66zAY8Cp-CFyysSOME'] // Ganti dengan ID folder Google Drive Anda
+            ]);
+
+            // Upload file
+            $file = $driveService->files->create($fileMetadata, [
+                'data' => $dompdf->output(),
+                'mimeType' => 'application/pdf',
+                'uploadType' => 'multipart',
+                'fields' => 'id,webViewLink'
+            ]);
+
+            Log::info("PDF uploaded to Google Drive with ID: " . $file->id);
+
+            // Kembalikan ID dan link tampilan web file
+            return [
+                'file_id' => $file->id,
+                'web_view_link' => $file->webViewLink
+            ];
         } catch (\Exception $e) {
-            Log::error("PDF generation failed: " . $e->getMessage());
+            Log::error("Google Drive upload failed: " . $e->getMessage());
             throw $e;
         }
-
-        return $pdfFullPath;
     }
 
     public function printLatest()
