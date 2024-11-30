@@ -25,7 +25,7 @@
                 </a>
             </li> -->
             <li class="nav-item mt-2">
-                <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6 py-2">Data Master</h6>
+                <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6 py-2">Data Utama</h6>
 
             </li>
             <li class="nav-item">
@@ -44,7 +44,7 @@
 
 
             <li class="nav-item mt-2">
-                <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6 py-2">Financial</h6>
+                <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6 py-2">Keuangan</h6>
 
             </li>
             <!-- <li class="nav-item">
@@ -97,12 +97,14 @@
 
 
 
+
+
             <li class="nav-item">
-                <a class="nav-link {{ (Request::is('daftar-giling') ? 'active' : '') }}" href="{{ url('daftar-giling') }}">
+                <a class="nav-link {{ (Request::is('kredit-nasabah-palu') ? 'active' : '') }}" href="{{ url('kredit-nasabah-palu') }}">
                     <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i style="font-size: 1rem;" class="bi bi-list-check ps-2 pe-2 text-center text-dark {{ (Request::is('daftar-giling') ? 'text-white' : 'text-dark') }} " aria-hidden="true"></i>
+                        <i style="font-size: 1rem;" class="bi bi-currency-dollar ps-2 pe-2 text-center text-dark {{ (Request::is('kredit-nasabah-palu') ? 'text-white' : 'text-dark') }} " aria-hidden="true"></i>
                     </div>
-                    <span class="nav-link-text ms-1">Daftar Giling</span>
+                    <span class="nav-link-text ms-1">Kredit Nasabah Palu</span>
                 </a>
             </li>
 
@@ -115,14 +117,8 @@
                 </a>
             </li>
 
-            <li class="nav-item">
-                <a class="nav-link {{ (Request::is('daftar-rekapan-dana') ? 'active' : '') }}" href="{{ url('daftar-rekapan-dana') }}">
-                    <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i style="font-size: 1rem;" class="bi bi-list-check ps-2 pe-2 text-center text-dark {{ (Request::is('daftar-rekapan-dana') ? 'text-white' : 'text-dark') }} " aria-hidden="true"></i>
-                    </div>
-                    <span class="nav-link-text ms-1">Daftar Rekapan Dana</span>
-                </a>
-            </li>
+
+
 
             <!-- Add a divider -->
             <div class="pt-3">
@@ -130,7 +126,7 @@
             </div>
 
             <li class="nav-item mt-2">
-                <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6 py-2">transaction</h6>
+                <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6 py-2">Transaksi</h6>
 
             </li>
 
@@ -151,6 +147,43 @@
                     <span class="nav-link-text ms-1">Nota Giling</span>
                 </a>
             </li>
+
+
+
+
+
+
+
+            <!-- Add a divider -->
+            <div class="pt-3">
+                <hr class="horizontal dark mt-0">
+            </div>
+
+            <li class="nav-item mt-2">
+                <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6 py-2">daftar transaksi</h6>
+
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link {{ (Request::is('daftar-giling') ? 'active' : '') }}" href="{{ url('daftar-giling') }}">
+                    <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i style="font-size: 1rem;" class="bi bi-list-check ps-2 pe-2 text-center text-dark {{ (Request::is('daftar-giling') ? 'text-white' : 'text-dark') }} " aria-hidden="true"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Daftar Giling</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link {{ (Request::is('daftar-rekapan-dana') ? 'active' : '') }}" href="{{ url('daftar-rekapan-dana') }}">
+                    <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i style="font-size: 1rem;" class="bi bi-list-check ps-2 pe-2 text-center text-dark {{ (Request::is('daftar-rekapan-dana') ? 'text-white' : 'text-dark') }} " aria-hidden="true"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Daftar Rekapan Dana</span>
+                </a>
+            </li>
+
+
+
 
 
 

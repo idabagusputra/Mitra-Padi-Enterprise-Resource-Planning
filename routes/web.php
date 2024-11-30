@@ -17,6 +17,7 @@ use App\Http\Controllers\KreditPembayaranKreditController; // Tambahkan ini
 use App\Http\Controllers\KreditReportController;
 use App\Http\Controllers\KreditTrashController;
 use App\Http\Controllers\RekapDanaController;
+use App\Http\Controllers\KreditNasabahPaluController;
 use App\Models\RekapDana;
 use Illuminate\Support\Facades\Route;
 
@@ -46,6 +47,14 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/search-petani', [KreditController::class, 'searchPetani'])->name('search.petani');
     Route::get('/laporan-kredit', [KreditReportController::class, 'generatePdf'])->name('laporan.kredit');
     Route::get('/kredit/cetak-laporan', [KreditController::class, 'downloadLaporanKredit'])->name('laporan.kredit.cetak');
+
+    // Kredit Nasabah Palu routes
+    Route::resource('kredit-nasabah-palu', KreditNasabahPaluController::class);
+    Route::get('/search-kredit', [KreditNasabahPaluController::class, 'search'])->name('search.kredit');
+    Route::get('/api/kredit/autocomplete', [KreditNasabahPaluController::class, 'autocomplete']);
+    Route::get('/search-nama', [KreditNasabahPaluController::class, 'searchPetani'])->name('search.petani');
+    Route::get('/laporan-kredit', [KreditNasabahPaluController::class, 'generatePdf'])->name('laporan.kredit');
+    Route::get('/kredit/cetak-laporan', [KreditNasabahPaluController::class, 'downloadLaporanKredit'])->name('laporan.kredit.cetak');
 
     // Kredit Trash routes
     Route::resource('kredit-ryclebin', KreditTrashController::class);

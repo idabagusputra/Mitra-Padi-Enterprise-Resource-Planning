@@ -57,9 +57,17 @@
                     <!-- Field Total Kredit -->
                     <div class="col-md-4 mb-3">
                         <div class="form-group">
-                            <label for="total_kredit" class="form-control-label">Total Kredit</label>
+                            <label for="total_kredit" class="form-control-label">Total Kredit Petani</label>
                             <input class="form-control readonly-transparent" type="text"
-                                value="Rp. {{ number_format($totalKredit, 2, ',', '.') }}"
+                                value="Rp. {{ number_format($totalKreditPetani, 2, ',', '.') }}"
+                                readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="form-group">
+                            <label for="total_kredit" class="form-control-label">Total Kredit Nasabah Palu</label>
+                            <input class="form-control readonly-transparent" type="text"
+                                value="Rp. {{ number_format($totalKreditNasabahPalu, 2, ',', '.') }}"
                                 readonly>
                         </div>
                     </div>
@@ -67,10 +75,9 @@
                     @php
                     $kelompok1 = [
                     'bri' => ['label' => 'B R I'],
-                    'bni' => ['label' => 'B N I'],
-                    'nasabah_palu' => ['label' => 'Nasabah Palu'],
                     'tunai' => ['label' => 'Tunai'],
-                    'mama' => ['label' => 'Mama']
+                    'mama' => ['label' => 'Mama'],
+                    'bni' => ['label' => 'B N I'],
                     ];
                     @endphp
 

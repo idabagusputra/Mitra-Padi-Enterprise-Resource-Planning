@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kredit;
+use App\Models\KreditNasabahPalu;
 use App\Models\RekapDana;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
@@ -19,11 +20,14 @@ class RekapDanaController extends Controller
     // Method untuk menampilkan halaman form input dan data total_kredit_plus_bunga
     public function index()
     {
-        // Menghitung total kredit plus bunga menggunakan method dari model Kredit
-        $totalKredit = Kredit::calculateTotalKredit();
+        // Menghitung total_kredit_plus_bunga dengan memanggil method di model Kredit
+        $totalKreditPetani = Kredit::calculateTotalKredit();
+
+        // Menghitung total_kredit_plus_bunga dengan memanggil method di model Kredit
+        $totalKreditNasabahPalu = KreditNasabahPalu::calculateTotalKreditNasabahPalu();
 
         // Mengirim data ke view 'rekap-dana.blade.php'
-        return view('rekap-dana', compact('totalKredit'));
+        return view('rekap-dana', compact('totalKreditPetani', 'totalKreditNasabahPalu'));
     }
 
     public function indexDaftar()
@@ -139,7 +143,6 @@ class RekapDanaController extends Controller
         // Validasi input
         $validator = Validator::make($request->all(), [
             // Kelompok 1
-            'nasabah_palu' => 'required|numeric',
             'bri' => 'required|numeric',
             'bni' => 'required|numeric',
             'tunai' => 'required|numeric',
@@ -169,7 +172,11 @@ class RekapDanaController extends Controller
         }
 
         // Menghitung total_kredit_plus_bunga dengan memanggil method di model Kredit
-        $totalKredit = Kredit::calculateTotalKredit();
+        $totalKreditPetani = Kredit::calculateTotalKredit();
+
+        // Menghitung total_kredit_plus_bunga dengan memanggil method di model Kredit
+        $totalKreditNasabahPalu = KreditNasabahPalu::calculateTotalKreditNasabahPalu();
+
 
         // Ambil data dari request
         $data = $request->all();
@@ -180,14 +187,15 @@ class RekapDanaController extends Controller
         $berasTerpinjamTotal = $data['beras_terpinjam_jumlah'] * $data['beras_terpinjam_harga'];
 
         // Menghitung nilai rekapan_dana = Kelompok 1 + Kelompok 2 (total) - Kelompok 3
-        $kelompok1Total = $data['nasabah_palu'] + $data['bri'] + $data['bni'] + $data['tunai'] + $data['mama'];
+        $kelompok1Total = $data['bri'] + $data['bni'] + $data['tunai'] + $data['mama'];
         $kelompok2Total = $stokBerasTotal + $ongkosJemurTotal + $berasTerpinjamTotal;
         $kelompok3Total = $data['pinjaman_bank'] + $data['titipan_petani'] + $data['utang_beras'] + $data['utang_ke_operator'];
 
-        $rekapanDana = $kelompok1Total + $kelompok2Total - $kelompok3Total - $totalKredit;
+        $rekapanDana = $kelompok1Total + $kelompok2Total + $totalKreditNasabahPalu + $totalKreditPetani - $kelompok3Total;
 
         // Menambahkan nilai total_kredit dan rekapan_dana sebelum disimpan
-        $data['total_kredit'] = $totalKredit;
+        $data['total_kredit'] = $totalKreditPetani;
+        $data['nasabah_palu'] = $totalKreditNasabahPalu;
         $data['stok_beras_total'] = $stokBerasTotal;
         $data['ongkos_jemur_total'] = $ongkosJemurTotal;
         $data['beras_terpinjam_total'] = $berasTerpinjamTotal;
