@@ -398,7 +398,7 @@
                                                     <div class="modal-body">
                                                         <div class="form-group">
                                                             <label for="tanggal">Nama</label>
-                                                            <input class="form-control" id="nama" name="nama" value="nama" required>
+                                                            <input class="form-control" id="nama" name="nama" value="{{ $kredit->nama }}" required>
                                                         </div>
                                                         <div class="form-group">
                                                             <label for="tanggal">Tanggal</label>
@@ -443,7 +443,7 @@
                                                     <div class="modal-body">
                                                         <div class="form-group">
                                                             <label for="tanggal">Nama</label>
-                                                            <input class="form-control" id="nama" name="nama" value="nama" required>
+                                                            <input class="form-control" id="nama" name="nama" value="" required>
                                                         </div>
                                                         <div class="form-group">
                                                             <label for="tanggal">Tanggal</label>
@@ -726,58 +726,83 @@
                 if (addKreditForm && addKreditModal) {
                     let isSubmitting = false; // Flag untuk mencegah multiple submission
 
-                    addKreditForm.addEventListener('submit', async function(event) {
+                    addKreditForm.addEventListener('submit', function(event) {
                         event.preventDefault();
 
-                        if (isSubmitting) return; // Cek jika sedang dalam proses submit
-
-                        // Validasi field nama
-                        const namaInput = this.querySelector('input[name="nama"]');
-                        if (!namaInput || !namaInput.value.trim()) {
-                            alert('Silakan masukkan nama sebelum menyimpan.');
+                        // Cek jika sedang dalam proses submit
+                        if (isSubmitting) {
                             return;
                         }
 
+                        if (!petaniIdInput || !petaniIdInput.value) {
+                            alert('Silakan pilih petani sebelum menyimpan.');
+                            return;
+                        }
+
+                        // Ambil tombol submit
                         const submitButton = this.querySelector('button[type="submit"]');
+
+                        // Set flag dan nonaktifkan tombol
                         isSubmitting = true;
-                        if (submitButton) submitButton.disabled = true;
+                        if (submitButton) {
+                            submitButton.disabled = true;
+                        }
 
                         const formData = new FormData(this);
+                        // Ensure petani_id is added to formData
+                        formData.set('petani_id', petaniIdInput.value);
+                        console.log('Petani ID before send:', petaniIdInput.value);
+                        console.log('Form data before send:', Object.fromEntries(formData));
 
-                        try {
-                            const response = await fetch(this.action, {
+                        fetch(this.action, {
                                 method: 'POST',
                                 body: formData,
                                 headers: {
                                     'X-Requested-With': 'XMLHttpRequest',
                                     'Accept': 'application/json',
-                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                                 },
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    console.log('New kredit added successfully');
+                                    // Reset form fields
+                                    addKreditForm.reset();
+                                    // Clear petani search input and reset petani_id
+                                    const petaniSearchInput = document.getElementById('petani_search');
+                                    if (petaniSearchInput) {
+                                        petaniSearchInput.value = '';
+                                    }
+                                    if (petaniIdInput) {
+                                        petaniIdInput.value = '';
+                                    }
+                                    // Close the modal
+                                    const modal = bootstrap.Modal.getInstance(addKreditModal);
+                                    if (modal) {
+                                        modal.hide();
+                                    }
+                                    // Reload the page
+                                    location.reload();
+                                } else {
+                                    console.error('Error adding new kredit:', data);
+                                    alert('Error adding new kredit: ' + (data.message || JSON.stringify(data)));
+                                    // Reset flag dan aktifkan tombol kembali jika error
+                                    isSubmitting = false;
+                                    if (submitButton) {
+                                        submitButton.disabled = false;
+                                    }
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                alert('An error occurred while adding new kredit: ' + error);
+                                // Reset flag dan aktifkan tombol kembali jika error
+                                isSubmitting = false;
+                                if (submitButton) {
+                                    submitButton.disabled = false;
+                                }
                             });
-
-                            const data = await response.json();
-
-                            if (response.ok && data.success) {
-                                console.log('New kredit added successfully');
-                                addKreditForm.reset();
-
-                                // Tutup modal
-                                const modal = bootstrap.Modal.getInstance(addKreditModal);
-                                if (modal) modal.hide();
-
-                                // Reload halaman
-                                location.reload();
-                            } else {
-                                console.error('Error adding new kredit:', data);
-                                alert('Error: ' + (data.message || 'Terjadi kesalahan.'));
-                            }
-                        } catch (error) {
-                            console.error('Error:', error);
-                            alert('An error occurred while adding new kredit: ' + error.message);
-                        } finally {
-                            isSubmitting = false;
-                            if (submitButton) submitButton.disabled = false;
-                        }
                     });
                 } else {
                     console.error('Add Kredit form not found');
