@@ -398,7 +398,7 @@
                                                     <div class="modal-body">
                                                         <div class="form-group">
                                                             <label for="tanggal">Nama</label>
-                                                            <input class="form-control" id="nama" name="nama" value="{{ $kredit->nama }}" required>
+                                                            <input class="form-control" id="nama" name="nama" value="nama" required>
                                                         </div>
                                                         <div class="form-group">
                                                             <label for="tanggal">Tanggal</label>
