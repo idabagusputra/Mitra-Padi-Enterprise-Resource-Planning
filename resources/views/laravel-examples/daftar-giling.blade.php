@@ -526,68 +526,50 @@
         let scrollPosition = 0;
 
         document.querySelectorAll('.view-pdf-btn').forEach(function(button) {
-            button.addEventListener('click', async function(e) {
+            button.addEventListener('click', function(e) {
                 e.preventDefault();
                 scrollPosition = window.pageYOffset;
                 const gilingId = this.getAttribute('data-id');
+                const pdfPath = `/receipts/receipt-${gilingId}.pdf`;
 
-                // Fetch the PDF link from your backend
-                try {
-                    const response = await fetch(`/get-pdf-link/${gilingId}`);
-                    if (!response.ok) {
-                        throw new Error('Failed to fetch PDF link');
+                // Set src viewer PDF
+                document.getElementById('pdfViewer').src = pdfPath;
+
+                // Update modal title
+                document.getElementById('pdfModalLabel').textContent = `Receipt #${gilingId}`;
+
+                const modalElement = document.getElementById('pdfModal');
+                const pdfModal = new bootstrap.Modal(modalElement);
+
+                // Handle modal events to fix mobile scrolling
+                modalElement.addEventListener('shown.bs.modal', function() {
+                    document.body.style.overflow = 'hidden';
+                });
+
+                modalElement.addEventListener('hidden.bs.modal', function() {
+                    document.body.style.overflow = 'auto';
+                    document.body.style.position = 'relative';
+                    // Reset any inline styles that might affect scrolling
+                    window.scrollTo(0, window.scrollY);
+                });
+
+                // Add click event listener to close modal when clicking outside
+                modalElement.addEventListener('click', function(event) {
+                    if (event.target === modalElement) {
+                        pdfModal.hide();
                     }
+                });
 
-                    const data = await response.json();
-                    if (!data.web_view_link) {
-                        throw new Error('No PDF link returned from server');
-                    }
-
-                    const pdfPath = data.web_view_link;
-
-                    // Set src viewer PDF
-                    document.getElementById('pdfViewer').src = pdfPath;
-
-                    // Update modal title
-                    document.getElementById('pdfModalLabel').textContent = `Receipt #${gilingId}`;
-
-                    const modalElement = document.getElementById('pdfModal');
-                    const pdfModal = new bootstrap.Modal(modalElement);
-
-                    // Handle modal events to fix mobile scrolling
-                    modalElement.addEventListener('shown.bs.modal', function() {
-                        document.body.style.overflow = 'hidden';
+                // Add click event listener for close buttons
+                document.querySelectorAll('[data-bs-dismiss="modal"]').forEach(button => {
+                    button.addEventListener('click', () => {
+                        pdfModal.hide();
                     });
+                });
 
-                    modalElement.addEventListener('hidden.bs.modal', function() {
-                        document.body.style.overflow = 'auto';
-                        document.body.style.position = 'relative';
-                        // Reset any inline styles that might affect scrolling
-                        window.scrollTo(0, window.scrollY);
-                    });
-
-                    // Add click event listener to close modal when clicking outside
-                    modalElement.addEventListener('click', function(event) {
-                        if (event.target === modalElement) {
-                            pdfModal.hide();
-                        }
-                    });
-
-                    // Add click event listener for close buttons
-                    document.querySelectorAll('[data-bs-dismiss="modal"]').forEach(button => {
-                        button.addEventListener('click', () => {
-                            pdfModal.hide();
-                        });
-                    });
-
-                    pdfModal.show();
-                } catch (error) {
-                    console.error('Error loading PDF:', error.message);
-                    alert('Failed to load PDF. Please try again.');
-                }
+                pdfModal.show();
             });
         });
-
 
 
         // Dalam event hidden.bs.modal

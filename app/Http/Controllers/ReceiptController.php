@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DaftarGiling;
 use Google\Client;
 use Google\Service\Drive;
-use App\Models\DaftarGiling;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
@@ -110,44 +110,35 @@ class ReceiptController extends Controller
 
         $pdfFullPath = $pdfPath . '/' . $pdfFileName;
 
-        // try {
-        //     // Save PDF to file
-        //     file_put_contents($pdfFullPath, $dompdf->output());
-        //     Log::info("PDF generated successfully: {$pdfFullPath}");
-        // } catch (\Exception $e) {
-        //     Log::error("PDF generation failed: " . $e->getMessage());
-        //     throw $e;
-        // }
-
-        // return $pdfFullPath;
-
         try {
-            // [Proses generate PDF sebelumnya]
+            // Save PDF to file
+            file_put_contents($pdfFullPath, $dompdf->output());
 
+            // Set up Google Drive client
             $client = new Client();
             $client->setAuthConfig(storage_path('app/google-drive-credentials.json'));
             $client->addScope(Drive::DRIVE);
 
             $driveService = new Drive($client);
 
-            // Debug: Cek akses folder terlebih dahulu
+            // Check folder access
             try {
                 $folderCheck = $driveService->files->get('124X5hrQB-fxqMk66zAY8Cp-CFyysSOME', [
                     'fields' => 'id,name'
                 ]);
-                Log::info('Folder ditemukan: ' . $folderCheck->getName());
+                Log::info('Folder found: ' . $folderCheck->getName());
             } catch (\Exception $e) {
-                Log::error('Gagal mengakses folder: ' . $e->getMessage());
-                throw new \Exception('Folder tidak dapat diakses');
+                Log::error('Failed to access folder: ' . $e->getMessage());
+                throw new \Exception('Folder cannot be accessed');
             }
 
-            // Menyiapkan metadata file
+            // Prepare file metadata
             $fileMetadata = new Drive\DriveFile([
                 'name' => $pdfFileName,
                 'parents' => ['124X5hrQB-fxqMk66zAY8Cp-CFyysSOME']
             ]);
 
-            // Meng-upload file
+            // Upload file to Google Drive
             $file = $driveService->files->create($fileMetadata, [
                 'data' => $dompdf->output(),
                 'mimeType' => 'application/pdf',
@@ -155,70 +146,17 @@ class ReceiptController extends Controller
                 'fields' => 'id,webViewLink'
             ]);
 
-            // Setelah file di-upload, ubah pengaturan berbagi menjadi publik
-            $permission = new \Google\Service\Drive\Permission();
-            $permission->setType('anyone');
-            $permission->setRole('reader'); // Set to 'reader' so anyone can view the file
-
-            // Menerapkan pengaturan berbagi ke file
-            $driveService->permissions->create($file->id, $permission);
-
-            // Mengembalikan informasi file yang di-upload
+            // Return file path along with Drive details for further use
             return [
-                'file_id' => $file->id,
-                'web_view_link' => $file->webViewLink
+                'pdf_path' => $pdfFullPath, // PDF file path
+                'file_id' => $file->id,      // Google Drive file ID
+                'web_view_link' => $file->webViewLink // Google Drive file view link
             ];
         } catch (\Exception $e) {
-            Log::error('Upload gagal: ' . $e->getMessage());
+            Log::error('Upload failed: ' . $e->getMessage());
             throw $e;
         }
     }
-
-    public function getPdfLinkFromDrive($gilingId)
-    {
-        $client = new Client();
-        $client->setAuthConfig(storage_path('app/google-drive-credentials.json'));
-        $client->addScope([Drive::DRIVE, Drive::DRIVE_FILE]);
-        $client->setAccessType('offline');  // Untuk refresh token
-
-        $driveService = new Drive($client);
-
-        $gilingFileName = 'receipt-' . $gilingId . '.pdf';
-        $folderId = '124X5hrQB-fxqMk66zAY8Cp-CFyysSOME'; // ID folder tempat file disimpan
-
-        try {
-            // Mencari file berdasarkan nama dan ID folder
-            $files = $driveService->files->listFiles([
-                'q' => "name = '{$gilingFileName}' and '{$folderId}' in parents",
-                'fields' => 'files(id, webViewLink, name)',
-            ]);
-
-            if (count($files->getFiles()) > 0) {
-                // Ambil file pertama (karena nama unik)
-                $file = $files->getFiles()[0];
-
-                // Mengatur file agar dapat diakses oleh siapa saja yang memiliki link
-                $permission = new \Google\Service\Drive\Permission();
-                $permission->setType('anyone');
-                $permission->setRole('reader'); // Set ke 'reader' agar file dapat dibaca oleh publik
-
-                // Memberikan izin kepada file tersebut
-                $driveService->permissions->create($file->getId(), $permission);
-
-                // Mengembalikan link file yang sudah dapat diakses publik
-                return [
-                    'file_id' => $file->getId(),
-                    'web_view_link' => $file->getWebViewLink(),
-                ];
-            } else {
-                return response()->json(['error' => 'File not found in Google Drive'], 404);
-            }
-        } catch (\Exception $e) {
-            Log::error('Error while retrieving PDF from Drive: ' . $e->getMessage());
-            return response()->json(['error' => 'Error fetching PDF link'], 500);
-        }
-    }
-
 
     public function printLatest()
     {
@@ -247,13 +185,19 @@ class ReceiptController extends Controller
     public function printPdf($id)
     {
         try {
+            // Find DaftarGiling record by ID
             $daftarGiling = DaftarGiling::findOrFail($id);
-            $pdfFullPath = $this->generatePdf($daftarGiling->id);
 
+            // Generate the PDF and get the file path
+            $result = $this->generatePdf($daftarGiling->id); // Assuming generatePdf returns the file path
+            $pdfFullPath = $result['pdf_path']; // Retrieve the generated PDF file path from the result
+
+            // Check if the generated PDF exists
             if (!file_exists($pdfFullPath)) {
                 throw new \Exception("PDF file not found");
             }
 
+            // Return the PDF file as an inline response
             return response()->file($pdfFullPath, [
                 'Content-Type' => 'application/pdf',
                 'Content-Disposition' => 'inline; filename="receipt-' . $daftarGiling->id . '.pdf"',
@@ -263,6 +207,7 @@ class ReceiptController extends Controller
                 'X-Content-Type-Options' => 'nosniff'
             ]);
         } catch (\Exception $e) {
+            // Log the error and return a JSON error response
             Log::error('Error in printPdf: ' . $e->getMessage());
             return response()->json(['error' => 'Failed to generate PDF'], 500);
         }
