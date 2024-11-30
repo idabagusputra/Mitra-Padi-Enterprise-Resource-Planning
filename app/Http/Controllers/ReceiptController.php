@@ -141,11 +141,13 @@ class ReceiptController extends Controller
                 throw new \Exception('Folder tidak dapat diakses');
             }
 
+            // Menyiapkan metadata file
             $fileMetadata = new Drive\DriveFile([
                 'name' => $pdfFileName,
                 'parents' => ['124X5hrQB-fxqMk66zAY8Cp-CFyysSOME']
             ]);
 
+            // Meng-upload file
             $file = $driveService->files->create($fileMetadata, [
                 'data' => $dompdf->output(),
                 'mimeType' => 'application/pdf',
@@ -153,6 +155,15 @@ class ReceiptController extends Controller
                 'fields' => 'id,webViewLink'
             ]);
 
+            // Setelah file di-upload, ubah pengaturan berbagi menjadi publik
+            $permission = new \Google\Service\Drive\Permission();
+            $permission->setType('anyone');
+            $permission->setRole('reader'); // Set to 'reader' so anyone can view the file
+
+            // Menerapkan pengaturan berbagi ke file
+            $driveService->permissions->create($file->id, $permission);
+
+            // Mengembalikan informasi file yang di-upload
             return [
                 'file_id' => $file->id,
                 'web_view_link' => $file->webViewLink
@@ -162,6 +173,52 @@ class ReceiptController extends Controller
             throw $e;
         }
     }
+
+    public function getPdfLinkFromDrive($gilingId)
+    {
+        $client = new Client();
+        $client->setAuthConfig(storage_path('app/google-drive-credentials.json'));
+        $client->addScope([Drive::DRIVE, Drive::DRIVE_FILE]);
+        $client->setAccessType('offline');  // Untuk refresh token
+
+        $driveService = new Drive($client);
+
+        $gilingFileName = 'receipt-' . $gilingId . '.pdf';
+        $folderId = '124X5hrQB-fxqMk66zAY8Cp-CFyysSOME'; // ID folder tempat file disimpan
+
+        try {
+            // Mencari file berdasarkan nama dan ID folder
+            $files = $driveService->files->listFiles([
+                'q' => "name = '{$gilingFileName}' and '{$folderId}' in parents",
+                'fields' => 'files(id, webViewLink, name)',
+            ]);
+
+            if (count($files->getFiles()) > 0) {
+                // Ambil file pertama (karena nama unik)
+                $file = $files->getFiles()[0];
+
+                // Mengatur file agar dapat diakses oleh siapa saja yang memiliki link
+                $permission = new \Google\Service\Drive\Permission();
+                $permission->setType('anyone');
+                $permission->setRole('reader'); // Set ke 'reader' agar file dapat dibaca oleh publik
+
+                // Memberikan izin kepada file tersebut
+                $driveService->permissions->create($file->getId(), $permission);
+
+                // Mengembalikan link file yang sudah dapat diakses publik
+                return [
+                    'file_id' => $file->getId(),
+                    'web_view_link' => $file->getWebViewLink(),
+                ];
+            } else {
+                return response()->json(['error' => 'File not found in Google Drive'], 404);
+            }
+        } catch (\Exception $e) {
+            Log::error('Error while retrieving PDF from Drive: ' . $e->getMessage());
+            return response()->json(['error' => 'Error fetching PDF link'], 500);
+        }
+    }
+
 
     public function printLatest()
     {

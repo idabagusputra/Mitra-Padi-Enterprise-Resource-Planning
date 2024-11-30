@@ -69,6 +69,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::patch('/kredit-ryclebin/restore/{id}', [KreditTrashController::class, 'restore'])->name('kredit-ryclebin.restore');
 
 
+    Route::get('/get-pdf-link/{gilingId}', [ReceiptController::class, 'getPdfLinkFromDrive']);
 
 
     // Debit routes
