@@ -185,13 +185,9 @@ class GilingController extends Controller
 
             // Generate the PDF before updating kredit status
             $receiptController = new ReceiptController();
-            $pdfPath = $receiptController->generatePdf($daftarGiling->id, $unpaidKredits);
+            $receiptController->generatePdf($daftarGiling->id, $unpaidKredits);
 
-            // Check if the file exists
-            if (!file_exists($pdfPath)) {
-                Log::error("PDF file not found: " . $pdfPath);
-                return back()->with('error', 'PDF file could not be generated. Please try again.');
-            }
+
 
             $dana_penerima = $dana - $totalPengambilan - $hutangDenganPlusTotalBunga;
             $kredits = $petani->kredits()->where('status', false)->get();
