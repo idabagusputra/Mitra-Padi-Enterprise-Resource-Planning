@@ -18,11 +18,14 @@ class KreditReportController extends Controller
 
     public function index()
     {
-        // Menggunakan paginate() untuk mengambil 10 data per halaman
-        $rekapanKredits = RekapKredit::orderBy('id', 'desc')->paginate(20); // Ambil 10 data per halaman
+        // Ambil 1 data terbaru berdasarkan id terbesar
+        $rekapanKreditTerbaru = RekapKredit::orderBy('id', 'desc')->first(); // Mengambil 1 data terbaru
 
-        // Mengirim data ke view 'daftar-rekapan-kredit.blade.php'
-        return view('daftar-rekapan-kredit', compact('rekapanKredits'));
+        // Menggunakan paginate() untuk mengambil 20 data per halaman
+        $rekapanKredits = RekapKredit::orderBy('id', 'desc')->paginate(20);
+
+        // Mengirim data terbaru dan data lainnya ke view
+        return view('daftar-rekapan-kredit', compact('rekapanKredits', 'rekapanKreditTerbaru'));
     }
 
     public function findPdf(Request $request)

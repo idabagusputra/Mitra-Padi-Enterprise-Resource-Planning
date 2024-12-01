@@ -55,13 +55,16 @@ class RekapDanaController extends Controller
 
     public function indexDaftar()
     {
+        // Ambil 1 data terbaru berdasarkan id terbesar
+        $rekapDanaTerbaru = RekapDana::orderBy('id', 'desc')->first(); // Mengambil 1 data terbaru
+
         // Mengambil data dari tabel 'rekap_dana' dengan pagination 20 per halaman, diurutkan berdasarkan 'id' terbaru
         $rekapDanas = RekapDana::orderBy('id', 'desc')->paginate(20);
 
-        // Mengirim data ke view 'daftar-rekapan-dana'
+        // Mengirim data terbaru dan data lainnya ke view
         return view(
             'daftar-rekapan-dana',
-            compact('rekapDanas')
+            compact('rekapDanas', 'rekapDanaTerbaru')
         );
     }
 
