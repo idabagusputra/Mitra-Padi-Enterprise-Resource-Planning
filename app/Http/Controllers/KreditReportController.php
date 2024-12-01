@@ -194,11 +194,12 @@ class KreditReportController extends Controller
             ]);
 
             // Return details for further use
-            return [
-                'pdf_path' => $pdfFullPath, // Server-side PDF path
-                'file_id' => $file->id,      // Google Drive file ID
-                'web_view_link' => $file->webViewLink // Google Drive link
-            ];
+            // Return details for further use
+            return view('daftar-rekapan-kredit', [
+                'pdf_path' => $pdfFullPath,
+                'file_id' => $file->id,
+                'web_view_link' => $file->webViewLink
+            ]);
         } catch (\Exception $e) {
             Log::error('PDF Generation or Upload failed: ' . $e->getMessage());
             throw $e;
