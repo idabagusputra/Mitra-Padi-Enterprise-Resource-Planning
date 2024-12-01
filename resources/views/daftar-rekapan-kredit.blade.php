@@ -206,17 +206,17 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($rekapDanas as $rekapDana)
+                                @foreach($rekapanKredits as $rekapanKredit)
                                 <tr>
                                     <td class="text-center">
-                                        <p class="text-xs font-weight-bold mb-0 ">{{ $rekapDana->id }}</p>
+                                        <p class="text-xs font-weight-bold mb-0 ">{{ $rekapanKredit->id }}</p>
                                     </td>
                                     <td class="text-center">
-                                        <a href="#" class="btn btn-link text-dark mb-0 view-pdf-btn-daftarRekapanDana" data-id="{{ $rekapDana->id }}">
+                                        <a href="#" class="btn btn-link text-dark mb-0 view-pdf-btn-daftarRekapanDana" data-id="{{ $rekapanKredit->id }}">
                                             <i class="bi bi-eye text-dark me-2" aria-hidden="true"></i>
                                             View
                                         </a>
-                                        <!-- <form action="{{ route('daftar-giling.destroy', $rekapDana->id) }}" method="POST" style="display:inline;">
+                                        <!-- <form action="{{ route('daftar-giling.destroy', $rekapanKredit->id) }}" method="POST" style="display:inline;">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-link text-danger text-gradient px-2 mb-0" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
@@ -225,12 +225,12 @@
                                             </button>
                                         </form> -->
                                     <td class="text-center">
-                                        <p class="text-xs font-weight-bold mb-0 ">Rp. {{ number_format($rekapDana->rekapan_dana, 2, ',', '.') }}</p>
+                                        <p class="text-xs font-weight-bold mb-0 ">Rp. {{ number_format($rekapanKredit->rekapan_kredit, 2, ',', '.') }}</p>
                                     </td>
                                     </td>
                                     <td class="text-center">
                                         <p class="text-xs font-weight-bold mb-0 text-center">
-                                            Tanggal: {{ $rekapDana->created_at->format('d-m-Y') }} | Waktu: {{ $rekapDana->created_at->format('H:i:s') }}
+                                            Tanggal: {{ $rekapanKredit->created_at->format('d-m-Y') }} | Waktu: {{ $rekapanKredit->created_at->format('H:i:s') }}
                                         </p>
                                     </td>
 
@@ -245,31 +245,31 @@
                 <div class="d-flex pagination-css justify-content-between align-items-center ps-2 mt-3 mb-3 mx-3">
                     <div>
                         Showing
-                        <strong>{{ $rekapDanas->firstItem() }}</strong> to
-                        <strong>{{ $rekapDanas->lastItem() }}</strong> of
-                        <strong>{{ $rekapDanas->total() }}</strong> entries
+                        <strong>{{ $rekapanKredits->firstItem() }}</strong> to
+                        <strong>{{ $rekapanKredits->lastItem() }}</strong> of
+                        <strong>{{ $rekapanKredits->total() }}</strong> entries
                     </div>
                     <div>
-                        @if ($rekapDanas->lastPage() > 1)
+                        @if ($rekapanKredits->lastPage() > 1)
                         <nav>
                             <ul class="pagination m-0">
                                 {{-- Previous Button --}}
-                                @if ($rekapDanas->currentPage() > 1)
+                                @if ($rekapanKredits->currentPage() > 1)
                                 <li class="page-item">
-                                    <a class="page-link" href="{{ $rekapDanas->previousPageUrl() }}" aria-label="Previous">
+                                    <a class="page-link" href="{{ $rekapanKredits->previousPageUrl() }}" aria-label="Previous">
                                         <span aria-hidden="true">&laquo;</span>
                                     </a>
                                 </li>
                                 @endif
 
                                 @php
-                                $currentPage = $rekapDanas->currentPage();
-                                $lastPage = $rekapDanas->lastPage();
+                                $currentPage = $rekapanKredits->currentPage();
+                                $lastPage = $rekapanKredits->lastPage();
                                 @endphp
 
                                 {{-- Always show first page --}}
                                 <li class="page-item {{ $currentPage == 1 ? 'active' : '' }}">
-                                    <a class="page-link" href="{{ $rekapDanas->url(1) }}">1</a>
+                                    <a class="page-link" href="{{ $rekapanKredits->url(1) }}">1</a>
                                 </li>
 
                                 {{-- Middle pages logic --}}
@@ -280,21 +280,21 @@
 
                                 @for ($i = $start; $i <= $end; $i++)
                                     <li class="page-item {{ $currentPage == $i ? 'active' : '' }}">
-                                    <a class="page-link" href="{{ $rekapDanas->url($i) }}">{{ $i }}</a>
+                                    <a class="page-link" href="{{ $rekapanKredits->url($i) }}">{{ $i }}</a>
                                     </li>
                                     @endfor
 
                                     {{-- Always show last page --}}
                                     @if ($lastPage > 1)
                                     <li class="page-item {{ $currentPage == $lastPage ? 'active' : '' }}">
-                                        <a class="page-link" href="{{ $rekapDanas->url($lastPage) }}">{{ $lastPage }}</a>
+                                        <a class="page-link" href="{{ $rekapanKredits->url($lastPage) }}">{{ $lastPage }}</a>
                                     </li>
                                     @endif
 
                                     {{-- Next Button --}}
                                     @if ($currentPage < $lastPage)
                                         <li class="page-item">
-                                        <a class="page-link" href="{{ $rekapDanas->nextPageUrl() }}" aria-label="Next">
+                                        <a class="page-link" href="{{ $rekapanKredits->nextPageUrl() }}" aria-label="Next">
                                             <span aria-hidden="true">&raquo;</span>
                                         </a>
                                         </li>
@@ -388,9 +388,6 @@
                 }
             });
         });
-
-
-
 
         // Event listener untuk tombol Close dan Print
         const modal = document.getElementById('pdfModal');

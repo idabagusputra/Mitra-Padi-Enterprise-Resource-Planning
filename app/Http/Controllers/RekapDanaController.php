@@ -32,6 +32,27 @@ class RekapDanaController extends Controller
         return view('rekap-dana', compact('totalKreditPetani', 'totalKreditNasabahPalu'));
     }
 
+    public function findPdf(Request $request)
+    {
+        $gilingId = $request->input('gilingId');
+        $folderPath = public_path('rekapan_dana');
+
+        // Cari file yang sesuai pola
+        $matchingFiles = glob("{$folderPath}/Rekapan_Dana_{$gilingId}_*.pdf");
+
+        if (!empty($matchingFiles)) {
+            // Ambil file pertama yang cocok
+            $pdfPath = str_replace(public_path(), '', $matchingFiles[0]);
+            return response()->json([
+                'pdfPath' => $pdfPath
+            ]);
+        }
+
+        return response()->json([
+            'pdfPath' => null
+        ]);
+    }
+
     public function indexDaftar()
     {
         // Mengambil data dari tabel 'rekap_dana' dengan pagination 20 per halaman, diurutkan berdasarkan 'id' terbaru
@@ -161,7 +182,7 @@ class RekapDanaController extends Controller
         $dompdf->render();
 
         // Define the PDF file name using only the 'id' from the $rekapDana object
-        $pdfFileName = 'Rekapan_Dana_' . $rekapDana->id . '.pdf';
+        $pdfFileName = 'Rekapan_Dana_' . $rekapDana->id . '_' . date('Y-m-d_H-i-s') . '.pdf';
 
 
 
@@ -199,7 +220,7 @@ class RekapDanaController extends Controller
 
             // Prepare file metadata
             $fileMetadata = new Drive\DriveFile([
-                'name' => $pdfFileName . date('Y-m-d_H-i-s') . '.pdf',
+                'name' => $pdfFileName . '.pdf',
                 'parents' => ['104G4glHVz6jE1iqk0-f5s0sN-pU0THpv']
             ]);
 
