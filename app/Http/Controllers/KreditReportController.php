@@ -19,7 +19,7 @@ class KreditReportController extends Controller
     public function index()
     {
         // Menggunakan paginate() untuk mengambil 10 data per halaman
-        $rekapanKredits = RekapKredit::paginate(20); // Ambil 10 data per halaman
+        $rekapanKredits = RekapKredit::orderBy('id', 'desc')->paginate(20); // Ambil 10 data per halaman
 
         // Mengirim data ke view 'daftar-rekapan-kredit.blade.php'
         return view('daftar-rekapan-kredit', compact('rekapanKredits'));
