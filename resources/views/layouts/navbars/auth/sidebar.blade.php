@@ -204,7 +204,7 @@
             </div>
 
             <li class="nav-item mt-2">
-                <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6 py-2">Ryclebin</h6>
+                <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6 py-2">Tempat Sampah</h6>
 
             </li>
             <li class="nav-item">
