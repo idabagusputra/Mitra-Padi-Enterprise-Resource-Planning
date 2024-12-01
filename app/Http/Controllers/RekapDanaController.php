@@ -233,11 +233,18 @@ class RekapDanaController extends Controller
             ]);
 
             // Return details for further use
-            return view('daftar-rekapan-dana', [
-                'pdf_path' => $pdfFullPath,
-                'file_id' => $file->id,
-                'web_view_link' => $file->webViewLink
-            ]);
+            // return [
+            //     'pdf_path' => $pdfFullPath, // Server-side PDF path
+            //     'file_id' => $file->id,      // Google Drive file ID
+            //     'web_view_link' => $file->webViewLink // Google Drive link
+            // ];
+
+            // // Redirect ke URL /daftar-rekapan-dana tanpa data query
+            // return redirect('/daftar-rekapan-dana');
+
+            return redirect()->route('rekapDana.index')
+                ->with('success', 'Rekapan Dana berhasil dibuat.')
+                ->with('newGilingId', $rekapDana->id);
         } catch (\Exception $e) {
             Log::error('PDF Generation or Upload failed: ' . $e->getMessage());
             throw $e;
@@ -324,6 +331,8 @@ class RekapDanaController extends Controller
         //     'message' => 'Data berhasil disimpan.'
         // ], 201);
 
-        return redirect()->route('rekapDana.index');
+        return redirect()->route('rekapDana.index')
+            ->with('success', 'Rekapan Dana berhasil dibuat.')
+            ->with('newGilingId', $rekapDana->id);
     }
 }

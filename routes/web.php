@@ -122,6 +122,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/find-pdf', [RekapDanaController::class, 'findPdf']);
 
     Route::resource('daftar-rekapan-kredit', KreditReportController::class);
+    Route::get('/daftar-rekapan-kredit', [KreditReportController::class, 'index'])->name('rekapKredit.index');
     Route::post('/rekap-kredit/store', [KreditReportController::class, 'store'])->name('rekapKredit.store');
     // Di routes/web.php
     Route::get('/find-pdf', [KreditReportController::class, 'findPdf']);
