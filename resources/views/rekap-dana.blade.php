@@ -103,7 +103,7 @@
                     $kelompok2 = [
                     'stok_beras_jumlah' => ['label' => 'Jumlah Stok Beras'],
                     'beras_terpinjam_jumlah' => ['label' => 'Jumlah Beras Terpinjam'],
-                    'ongkos_jemur_jumlah' => ['label' => 'Jumlah Ongkos Jemur'],
+                    'ongkos_jemur_jumlah' => ['label' => 'Jumlah Gabah Belum Giling'],
                     'stok_beras_harga' => ['label' => 'Harga Stok Beras'],
                     'beras_terpinjam_harga' => ['label' => 'Harga Beras Terpinjam'],
                     'ongkos_jemur_harga' => ['label' => 'Harga Ongkos Jemur']
