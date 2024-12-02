@@ -353,7 +353,7 @@
 
                 try {
                     // Cari file dengan fetch API atau AJAX
-                    const response = await fetch(`/find-pdf-rekap-dana?gilingId=${gilingId}`);
+                    const response = await fetch(`/find-pdf?gilingId=${gilingId}`);
                     const data = await response.json();
 
                     if (data.pdfPath) {
