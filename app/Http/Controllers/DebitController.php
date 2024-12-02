@@ -167,6 +167,18 @@ class DebitController extends Controller
         // Ambil semua kredit yang terkait dengan debit ini
         $relatedKredits = Kredit::where('debit_id', $debit->id)->get();
 
+        $petaniId = $debit->petani_id;
+
+        // Ambil semua kredit yang terkait dengan petani_id dan memenuhi kondisi
+        $relatedTrueKredits = Kredit::where('petani_id', $petaniId)
+            ->where('status', true)
+            ->whereNull('deleted_at')
+            ->get();
+
+        // Tentukan debit_id terbaru
+        $latestDebitId = $relatedTrueKredits->max('debit_id');
+        // Ambil kredit dengan debit_id yang lebih lama (sebelumnya)
+        $previousKredits = $relatedTrueKredits->where('debit_id', '<', $latestDebitId);
 
 
         Log::info('Jumlah kredit yang akan direset: ' . $relatedKredits->count());
@@ -180,16 +192,7 @@ class DebitController extends Controller
                 $kredit->delete(); // Soft delete
             }
             // Jika status kredit adalah 1 (true)
-
-            // Ambil semua kredit yang terkait dengan debit ini
-            $trueRelatedKredits = Kredit::where('status', true)->get();
-
-            $petaniId = $trueRelatedKredits->first()->petani_id;
-
-            // Cari debit terakhir berdasarkan petani_id
-            $lastDebit = Debit::where('petani_id', $petaniId)->latest()->first();
-
-            if ($kredit->status === true) {
+            else {
                 Log::info('Mereset Kredit ID: ' . $kredit->id);
 
                 // Hapus informasi pembayaran dari keterangan
@@ -200,7 +203,7 @@ class DebitController extends Controller
                 $success = $kredit->update([
                     'status' => false,
                     'keterangan' => $originalKeterangan,
-                    'debit_id' => $lastDebit->id, // Hapus referensi ke debit
+                    'debit_id' => $previousKredits->id, // Hapus referensi ke debit
                     'updated_at' => $kreditTanggal,
                 ]);
 
