@@ -21,9 +21,11 @@ use App\Http\Controllers\KreditNasabahPaluController;
 use App\Models\RekapDana;
 use Illuminate\Support\Facades\Route;
 
+
+
 Route::group(['middleware' => 'auth'], function () {
     // Dashboard and other static pages
-    Route::get('/', [HomeController::class, 'home']);
+    Route::get('/', [GilingController::class, 'index']);
     Route::view('dashboard', 'dashboard')->name('dashboard');
     Route::view('billing', 'billing')->name('billing');
     Route::view('profile', 'profile')->name('profile');
@@ -135,6 +137,7 @@ Route::group(['middleware' => 'auth'], function () {
 });
 
 Route::group(['middleware' => 'guest'], function () {
+    Route::get('/', [HomeController::class, 'home']);
     Route::get('/register', [RegisterController::class, 'create']);
     Route::post('/register', [RegisterController::class, 'store']);
     Route::get('/login', [SessionsController::class, 'create'])->name('login');
