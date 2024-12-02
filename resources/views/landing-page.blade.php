@@ -166,9 +166,9 @@
 
             <div class="container" data-aos="fade-up" data-aos-delay="100">
 
-                <div class="row align-items-center">
+                <div class="row align-items-center mt-5">
                     <div class="col-lg-6">
-                        <div class="hero-content" data-aos="fade-up" data-aos-delay="200">
+                        <div class="hero-content mt-5" data-aos="fade-up" data-aos-delay="200">
                             <div class="company-badge mb-4">
                                 <i class="bi bi-gear-fill me-2"></i>
                                 Mengubah Padi Menjadi Beras Berkualitas
