@@ -115,7 +115,7 @@
                     <td>Rp. {{ number_format($bri, 2, ',', '.') }}</td>
                 </tr>
                 <tr>
-                    <td>Bni</td>
+                    <td>BNI</td>
                     <td>Rp. {{ number_format($bni, 2, ',', '.') }}</td>
                 </tr>
                 <tr>
