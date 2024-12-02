@@ -348,11 +348,11 @@
                 }
 
                 // Folder path di direktori public
-                const folderPath = '/rekapan_dana';
+                const folderPath = '/rekapan_kredit';
 
                 try {
                     // Cari file dengan fetch API atau AJAX
-                    const response = await fetch(`/find-pdf?gilingId=${gilingId}`);
+                    const response = await fetch(`/find-pdf-rekap-kredit?gilingId=${gilingId}`);
                     const data = await response.json();
 
                     if (data.pdfPath) {
