@@ -180,6 +180,11 @@ class DebitController extends Controller
         // Ambil kredit dengan debit_id yang lebih lama (sebelumnya)
         $previousKredits = $relatedTrueKredits->where('debit_id', '<', $latestDebitId);
 
+        // Ambil semua debit_id dari previousKredits
+        $debitPreviusIds = $previousKredits->map(function ($kredit) {
+            return $kredit->debit_id;
+        });
+
 
         Log::info('Jumlah kredit yang akan direset: ' . $relatedKredits->count());
 
@@ -203,7 +208,7 @@ class DebitController extends Controller
                 $success = $kredit->update([
                     'status' => false,
                     'keterangan' => $originalKeterangan,
-                    'debit_id' => $previousKredits->debit_id, // Hapus referensi ke debit
+                    'debit_id' => $debitPreviusIds, // Hapus referensi ke debit
                     'updated_at' => $kreditTanggal,
                 ]);
 
