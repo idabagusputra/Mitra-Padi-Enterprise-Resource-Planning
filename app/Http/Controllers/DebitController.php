@@ -203,7 +203,7 @@ class DebitController extends Controller
                 $success = $kredit->update([
                     'status' => false,
                     'keterangan' => $originalKeterangan,
-                    'debit_id' => $previousKredits->id, // Hapus referensi ke debit
+                    'debit_id' => $previousKredits->debit_id, // Hapus referensi ke debit
                     'updated_at' => $kreditTanggal,
                 ]);
 
