@@ -320,10 +320,10 @@
 
                                     <!-- Kontainer teks sebagai tautan -->
                                     <div>
-                                        <a href="https://wa.me/6281145148" class="text-decoration-none text-dark" target="_blank">
+                                        <a href="https://wa.me/0811451486" class="text-decoration-none text-dark" target="_blank">
                                             <p class="contact-label ms-2 mb-0 text-muted small">Klik untuk mulai chat di WhatsApp</p>
                                         </a>
-                                        <a href="https://wa.me/6281145148" class="text-decoration-none text-dark" target="_blank">
+                                        <a href="https://wa.me/0811451486" class="text-decoration-none text-dark" target="_blank">
                                             <p class="contact-number ms-2 fw-bold">+62 811-451-486</p>
                                         </a>
                                     </div>
