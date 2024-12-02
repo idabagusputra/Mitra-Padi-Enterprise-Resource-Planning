@@ -160,6 +160,7 @@
                                 Mengubah Padi Menjadi Beras Berkualitas
                             </div>
 
+
                             <h1 class="mb-4">
                                 Mitra Padi <br>
 
