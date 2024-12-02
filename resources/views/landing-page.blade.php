@@ -7,13 +7,8 @@
             display: none;
         }
 
-        body {
-            padding-top: 0;
-            padding-left: 2rem;
-            /* Padding kiri */
-            padding-right: 2rem;
-            /* Padding kanan */
-        }
+
+
 
         #about,
         #features,
@@ -25,14 +20,23 @@
         #clients,
         #stats,
         #faq,
+        #hero,
         #call-to-action {
             padding-top: 0;
             /* Mengatur padding atas menjadi 0 */
+            padding-left: 2rem;
+            /* Padding kiri */
+            padding-right: 2rem;
+            /* Padding kanan */
         }
 
         #features {
             padding-top: 0;
             /* Mengatur padding atas menjadi 0 */
+            padding-left: 2rem;
+            /* Padding kiri */
+            padding-right: 2rem;
+            /* Padding kanan */
         }
     }
 
@@ -41,6 +45,7 @@
             display: none;
         }
 
+        #hero,
         #about,
         #features,
         #features-2,
@@ -54,6 +59,7 @@
         #call-to-action {
             padding-top: 0;
             /* Mengatur padding atas menjadi 0 */
+
         }
 
         #features {
