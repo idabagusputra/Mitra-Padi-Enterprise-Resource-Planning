@@ -97,6 +97,7 @@ class Debit extends Model
                         $kredit->status = true;
                         $kredit->keterangan = $kredit->keterangan . ' | Terbayar Sebagian | Debit: Rp ' . number_format($this->jumlah, 2) .
                             ' | Sisa Hutang: Rp ' . number_format($sisaHutang, 2);
+                        $kredit->updated_at = $creditDate;
                         $kredit->save();
                     }
                     $this->keterangan .= ' | Terbayar Sebagian | Kredit: Rp ' . number_format($totalHutangDenganBunga, 2) .
