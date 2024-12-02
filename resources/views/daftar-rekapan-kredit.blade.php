@@ -352,7 +352,7 @@
 
                 try {
                     // Cari file dengan fetch API atau AJAX
-                    const response = await fetch(`/find-pdf?gilingId=${gilingId}`);
+                    const response = await fetch(`/find-pdf-kredit?gilingId=${gilingId}`);
                     const data = await response.json();
 
                     if (data.pdfPath) {

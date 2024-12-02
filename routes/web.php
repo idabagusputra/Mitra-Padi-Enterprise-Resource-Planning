@@ -119,13 +119,13 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/daftar-rekapan-dana', [RekapDanaController::class, 'indexDaftar'])->name('rekapDana.index');
     Route::post('/rekap-dana/store', [RekapDanaController::class, 'store'])->name('rekapdana.store');
     // Di routes/web.php
-    Route::get('/find-pdf', [RekapDanaController::class, 'findPdf']);
+    Route::get('/find-pdf-dana', [RekapDanaController::class, 'findPdf']);
 
     Route::resource('daftar-rekapan-kredit', KreditReportController::class);
     Route::get('/daftar-rekapan-kredit', [KreditReportController::class, 'index'])->name('rekapKredit.index');
     Route::post('/rekap-kredit/store', [KreditReportController::class, 'store'])->name('rekapKredit.store');
     // Di routes/web.php
-    Route::get('/find-pdf', [KreditReportController::class, 'findPdf']);
+    Route::get('/find-pdf-kredit', [KreditReportController::class, 'findPdf']);
 
 
     // User profile and authentication
