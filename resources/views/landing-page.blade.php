@@ -20,7 +20,6 @@
         #clients,
         #stats,
         #faq,
-        #hero,
         #call-to-action {
             padding-top: 0;
             /* Mengatur padding atas menjadi 0 */
@@ -28,6 +27,12 @@
             /* Padding kiri */
             padding-right: 2rem;
             /* Padding kanan */
+        }
+
+        #hero {
+            padding-left: 2rem;
+            /* Padding kiri */
+            padding-right: 2rem;
         }
 
         #features {
