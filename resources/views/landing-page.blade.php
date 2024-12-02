@@ -314,16 +314,16 @@
                                 <div class="contact-info d-flex align-items-center gap-3">
                                     <!-- Ikon sebagai tautan -->
 
-                                    <a href="https://wa.me/0811451486" class="bg-light rounded-circle p-2 d-flex align-items-center justify-content-center text-decoration-none" target="_blank">
+                                    <a href="https://wa.me/62811451486" class="bg-light rounded-circle p-2 d-flex align-items-center justify-content-center text-decoration-none" target="_blank">
                                         <i class="bi bi-telephone-fill text-primary"></i>
                                     </a>
 
                                     <!-- Kontainer teks sebagai tautan -->
                                     <div>
-                                        <a href="https://wa.me/0811451486" class="text-decoration-none text-dark" target="_blank">
+                                        <a href="https://wa.me/62811451486" class="text-decoration-none text-dark" target="_blank">
                                             <p class="contact-label ms-2 mb-0 text-muted small">Klik untuk mulai chat di WhatsApp</p>
                                         </a>
-                                        <a href="https://wa.me/0811451486" class="text-decoration-none text-dark" target="_blank">
+                                        <a href="https://wa.me/62811451486" class="text-decoration-none text-dark" target="_blank">
                                             <p class="contact-number ms-2 fw-bold">+62 811-451-486</p>
                                         </a>
                                     </div>
