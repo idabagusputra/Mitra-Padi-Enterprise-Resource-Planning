@@ -177,13 +177,16 @@ class DebitController extends Controller
 
         // Tentukan debit_id terbaru
         $latestDebitId = $relatedTrueKredits->max('debit_id');
+
         // Ambil kredit dengan debit_id yang lebih lama (sebelumnya)
         $previousKredits = $relatedTrueKredits->where('debit_id', '<', $latestDebitId);
 
-        // Ambil semua debit_id dari previousKredits
-        $debitPreviusIds = $previousKredits->map(function ($kredit) {
-            return $kredit->debit_id;
-        });
+        // Ambil semua debit_id dari previousKredits dan pastikan hanya ada satu nilai unik
+        $debitPreviousIds = $previousKredits->pluck('debit_id')->unique();
+
+        // Jika Anda hanya ingin mengambil satu debit_id pertama (dari yang lebih lama)
+        $oneDebitPreviousId = $debitPreviousIds->first();
+
 
 
         Log::info('Jumlah kredit yang akan direset: ' . $relatedKredits->count());
@@ -208,7 +211,7 @@ class DebitController extends Controller
                 $success = $kredit->update([
                     'status' => false,
                     'keterangan' => $originalKeterangan,
-                    'debit_id' => $debitPreviusIds, // Hapus referensi ke debit
+                    'debit_id' => $oneDebitPreviousId, // Hapus referensi ke debit
                     'updated_at' => $kreditTanggal,
                 ]);
 
