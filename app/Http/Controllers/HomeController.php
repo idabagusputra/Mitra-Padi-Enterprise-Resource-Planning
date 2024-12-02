@@ -8,6 +8,7 @@ class HomeController extends Controller
 {
     public function home()
     {
-        return redirect()->route('giling.index'); // Redirect to the giling index route
+        // return redirect()->route('giling.index'); // Redirect to the giling index route
+        return view('landing-page');
     }
 }
