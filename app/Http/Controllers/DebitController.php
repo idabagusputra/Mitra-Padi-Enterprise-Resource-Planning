@@ -167,8 +167,11 @@ class DebitController extends Controller
         // Ambil semua kredit yang terkait dengan debit ini
         $relatedKredits = Kredit::where('debit_id', $debit->id)->get();
 
+        // Ambil semua kredit yang terkait dengan debit ini
+        $relatedPetaniKredits = Kredit::where('petani_id', $debit->petani_id)->get();
+
         // Filter hanya yang memiliki status true
-        $trueRelatedKredits = $relatedKredits->filter(function ($kredit) {
+        $trueRelatedKredits = $relatedPetaniKredits->filter(function ($kredit) {
             return $kredit->status == true;
         });
 
