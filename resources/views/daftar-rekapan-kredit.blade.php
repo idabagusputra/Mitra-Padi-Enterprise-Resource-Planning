@@ -200,7 +200,7 @@
                                 <tr>
                                     <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">ID</th>
                                     <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Action</th>
-                                    <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Rekapan Dana</th>
+                                    <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Rekapan Kredit</th>
                                     <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Tanggal Pembuatan</th>
 
                                 </tr>
