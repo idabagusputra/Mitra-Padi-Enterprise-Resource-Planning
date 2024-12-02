@@ -8,7 +8,10 @@
         }
 
 
+        body {
+            padding-top: 3;
 
+        }
 
         #about,
         #features,
