@@ -102,11 +102,13 @@ class Debit extends Model
                         $kredit->keterangan = $kredit->keterangan . ' | Terbayar Sebagian | Debit: Rp ' . number_format($this->jumlah, 2) .
                             ' | Sisa Hutang: Rp ' . number_format($sisaHutang, 2);
                         $kredit->updated_at = $creditDate;
+                        $kredit->debit_id = $lastDebit->id;
                         $kredit->save();
                     }
                     $this->keterangan .= ' | Terbayar Sebagian | Kredit: Rp ' . number_format($totalHutangDenganBunga, 2) .
                         ' | Sisa Hutang: Rp ' . number_format($sisaHutang, 2);
                     // Create a new Kredit entry for the remaining debt
+
                     Kredit::create([
                         'debit_id' => $lastDebit->id,
                         'petani_id' => $this->petani_id,

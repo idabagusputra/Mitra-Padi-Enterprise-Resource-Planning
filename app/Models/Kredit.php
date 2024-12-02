@@ -14,7 +14,7 @@ class Kredit extends Model
     protected $dates = ['tanggal'];
 
 
-    protected $fillable = ['petani_id', 'pKredit_id', 'tanggal', 'keterangan', 'jumlah', 'status'];
+    protected $fillable = ['petani_id', 'pKredit_id', 'tanggal', 'keterangan', 'jumlah', 'status', 'debit_id', 'updated_at'];
 
     protected $casts = [
         'status' => 'boolean',
