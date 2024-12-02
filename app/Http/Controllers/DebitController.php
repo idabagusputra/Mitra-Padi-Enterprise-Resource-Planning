@@ -158,12 +158,17 @@ class DebitController extends Controller
     //     Log::info('Proses reverse pembayaran selesai untuk Debit ID: ' . $debit->id);
     // }
 
+
     private function reversePaymentChanges(Debit $debit)
     {
+
         Log::info('Memulai proses reverse pembayaran untuk Debit ID: ' . $debit->id);
 
         // Ambil semua kredit yang terkait dengan debit ini
         $relatedKredits = Kredit::where('debit_id', $debit->id)->get();
+
+        // Panggil metode debitStatusTrueTerakhir dari model
+        $lastDebit = $relatedKredits->debitStatusTrueTerakhir();
 
         Log::info('Jumlah kredit yang akan direset: ' . $relatedKredits->count());
 
@@ -187,7 +192,7 @@ class DebitController extends Controller
                 $success = $kredit->update([
                     'status' => false,
                     'keterangan' => $originalKeterangan,
-                    'debit_id' => null, // Hapus referensi ke debit
+                    'debit_id' => $lastDebit, // Hapus referensi ke debit
                     'updated_at' => $kreditTanggal,
                 ]);
 

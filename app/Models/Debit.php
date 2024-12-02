@@ -26,6 +26,21 @@ class Debit extends Model
         return $this->belongsTo(Petani::class, 'petani_id', 'id');
     }
 
+    public function debitStatusTrueTerakhir()
+    {
+        // Mengambil semua kredit dengan status false
+        $kredits = $this->petani->kredits()->where('status', true)->get();
+
+        // Mengambil debit_id terakhir dari koleksi kredits
+        $lastDebitId = $kredits->last()?->debit_id;
+
+        // Jika lastDebitId ditemukan, kembalikan data debit, jika tidak, kembalikan null
+        $lastDebit = $lastDebitId ? Debit::find($lastDebitId) : null;
+
+        return $lastDebit;
+    }
+
+
     public function calculateTotalHutangDenganBunga()
     {
         if (!$this->petani) {
