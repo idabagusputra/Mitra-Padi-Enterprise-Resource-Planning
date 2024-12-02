@@ -167,18 +167,7 @@ class DebitController extends Controller
         // Ambil semua kredit yang terkait dengan debit ini
         $relatedKredits = Kredit::where('debit_id', $debit->id)->get();
 
-        // Ambil semua kredit yang terkait dengan debit ini
-        $relatedPetaniKredits = Kredit::where('petani_id', $debit->petani_id)->get();
 
-        // Filter hanya yang memiliki status true
-        $trueRelatedKredits = $relatedPetaniKredits->filter(function ($kredit) {
-            return $kredit->status == true;
-        });
-
-        $petaniId = $trueRelatedKredits->last()?->petani_id;
-
-        // Cari debit terakhir berdasarkan petani_id
-        $lastDebit = Debit::where('petani_id', $petaniId)->latest()->first();
 
         Log::info('Jumlah kredit yang akan direset: ' . $relatedKredits->count());
 
@@ -191,7 +180,16 @@ class DebitController extends Controller
                 $kredit->delete(); // Soft delete
             }
             // Jika status kredit adalah 1 (true)
-            else {
+
+            // Ambil semua kredit yang terkait dengan debit ini
+            $trueRelatedKredits = Kredit::where('status', true)->get();
+
+            $petaniId = $trueRelatedKredits->first()->petani_id;
+
+            // Cari debit terakhir berdasarkan petani_id
+            $lastDebit = Debit::where('petani_id', $petaniId)->latest()->first();
+
+            if ($kredit->status === true) {
                 Log::info('Mereset Kredit ID: ' . $kredit->id);
 
                 // Hapus informasi pembayaran dari keterangan
