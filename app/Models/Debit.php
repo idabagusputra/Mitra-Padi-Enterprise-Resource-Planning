@@ -13,7 +13,7 @@ class Debit extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['petani_id', 'jumlah', 'bunga', 'keterangan', 'tanggal'];
+    protected $fillable = ['petani_id', 'jumlah', 'bunga', 'keterangan', 'tanggal', 'updated_at'];
 
     protected $dates = ['tanggal'];
 
@@ -76,6 +76,10 @@ class Debit extends Model
             $totalHutangDenganBunga = $this->calculateTotalHutangDenganBunga();
             $paymentDate = $this->tanggal ? Carbon::parse($this->tanggal) : Carbon::now();
             $kredits = $this->petani->kredits()->where('status', false)->get();
+
+            // Mengambil data debits terakhir untuk petani yang bersangkutan
+            $lastDebit = Debit::orderBy('created_at', 'desc')->first();
+
             // Check if there are outstanding credits
             if ($kredits->isNotEmpty()) {
                 // Get the first outstanding credit (if you are certain there is only one)
@@ -104,6 +108,7 @@ class Debit extends Model
                         ' | Sisa Hutang: Rp ' . number_format($sisaHutang, 2);
                     // Create a new Kredit entry for the remaining debt
                     Kredit::create([
+                        'debit_id' => $lastDebit->id,
                         'petani_id' => $this->petani_id,
                         'tanggal' => $this->tanggal,
                         'jumlah' => $sisaHutang,

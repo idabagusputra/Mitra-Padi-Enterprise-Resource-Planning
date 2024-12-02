@@ -8,6 +8,7 @@ use App\Models\Petani;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 
 
 
@@ -114,43 +115,87 @@ class DebitController extends Controller
         });
     }
 
+    // private function reversePaymentChanges(Debit $debit)
+    // {
+    //     Log::info('Memulai proses reverse pembayaran untuk Debit ID: ' . $debit->id);
+
+    //     // Hapus kredit baru yang dibuat setelah pembayaran debit
+    //     $newKredits = Kredit::where('petani_id', $debit->petani_id)
+    //         ->where('created_at', '>=', $debit->created_at)
+    //         ->get();
+
+    //     foreach ($newKredits as $kredit) {
+    //         Log::info('Menghapus Kredit baru:', ['kredit_id' => $kredit->id]);
+    //         $kredit->forceDelete();
+    //     }
+
+    //     // Ambil semua kredit yang diupdate saat pembayaran
+    //     $updatedKredits = Kredit::where('petani_id', $debit->petani_id)
+    //         ->where('updated_at', '>=', $debit->created_at)
+    //         ->where('status', true)
+    //         ->get();
+
+    //     Log::info('Jumlah kredit yang akan direset: ' . $updatedKredits->count());
+
+    //     foreach ($updatedKredits as $kredit) {
+    //         Log::info('Mereset Kredit ID: ' . $kredit->id);
+
+    //         // Hapus informasi pembayaran dari keterangan
+    //         $originalKeterangan = $this->removePaymentInfo($kredit->keterangan);
+
+    //         $success = $kredit->update([
+    //             'status' => false,
+    //             'keterangan' => $originalKeterangan
+    //         ]);
+
+    //         if ($success) {
+    //             Log::info('Kredit berhasil direset:', $kredit->toArray());
+    //         } else {
+    //             Log::error('Gagal mereset Kredit ID: ' . $kredit->id);
+    //         }
+    //     }
+
+    //     Log::info('Proses reverse pembayaran selesai untuk Debit ID: ' . $debit->id);
+    // }
+
     private function reversePaymentChanges(Debit $debit)
     {
         Log::info('Memulai proses reverse pembayaran untuk Debit ID: ' . $debit->id);
 
-        // Hapus kredit baru yang dibuat setelah pembayaran debit
-        $newKredits = Kredit::where('petani_id', $debit->petani_id)
-            ->where('created_at', '>=', $debit->created_at)
-            ->get();
+        // Ambil semua kredit yang terkait dengan debit ini
+        $relatedKredits = Kredit::where('debit_id', $debit->id)->get();
 
-        foreach ($newKredits as $kredit) {
-            Log::info('Menghapus Kredit baru:', ['kredit_id' => $kredit->id]);
-            $kredit->forceDelete();
-        }
+        Log::info('Jumlah kredit yang akan direset: ' . $relatedKredits->count());
 
-        // Ambil semua kredit yang diupdate saat pembayaran
-        $updatedKredits = Kredit::where('petani_id', $debit->petani_id)
-            ->where('updated_at', '>=', $debit->created_at)
-            ->where('status', true)
-            ->get();
+        foreach ($relatedKredits as $kredit) {
+            Log::info('Memproses Kredit ID: ' . $kredit->id);
 
-        Log::info('Jumlah kredit yang akan direset: ' . $updatedKredits->count());
+            // Jika status kredit adalah 0 (false) dan memiliki debit_id yang sama
+            if ($kredit->status === false) {
+                Log::info('Soft delete Kredit ID: ' . $kredit->id);
+                $kredit->delete(); // Soft delete
+            }
+            // Jika status kredit adalah 1 (true)
+            else {
+                Log::info('Mereset Kredit ID: ' . $kredit->id);
 
-        foreach ($updatedKredits as $kredit) {
-            Log::info('Mereset Kredit ID: ' . $kredit->id);
+                // Hapus informasi pembayaran dari keterangan
+                $originalKeterangan = $this->removePaymentInfo($kredit->keterangan);
 
-            // Hapus informasi pembayaran dari keterangan
-            $originalKeterangan = $this->removePaymentInfo($kredit->keterangan);
+                $kreditTanggal = $kredit->tanggal ? Carbon::parse($kredit->tanggal) : null;
 
-            $success = $kredit->update([
-                'status' => false,
-                'keterangan' => $originalKeterangan
-            ]);
+                $success = $kredit->update([
+                    'status' => false,
+                    'keterangan' => $originalKeterangan,
+                    'debit_id' => null, // Hapus referensi ke debit
+                    'updated_at' => $kreditTanggal,
+                ]);
 
-            if ($success) {
-                Log::info('Kredit berhasil direset:', $kredit->toArray());
-            } else {
-                Log::error('Gagal mereset Kredit ID: ' . $kredit->id);
+                if ($success) {
+                    Log::info('Kredit berhasil direset:', $kredit->toArray());
+                } else {
+                    Log::error('Gagal mereset Kredit ID: ' . $kredit->id);
+                }
             }
         }
 
