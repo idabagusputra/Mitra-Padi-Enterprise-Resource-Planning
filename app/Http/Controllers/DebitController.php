@@ -167,9 +167,13 @@ class DebitController extends Controller
         // Ambil semua kredit yang terkait dengan debit ini
         $relatedKredits = Kredit::where('debit_id', $debit->id)->get();
 
-        $petaniId = $relatedKredits->first()->petani_id;
+        // Ambil semua kredit yang terkait dengan debit ini
+        $trueRelatedKredits = Kredit::where('debit_id', $debit->id)->where('status', true)->get();
 
-        $lastDebit = Debit::where('petani_id', $petaniId)->where('status', true)->latest()->first();
+        $petaniId = $trueRelatedKredits->first()->petani_id;
+
+        // Cari debit terakhir berdasarkan petani_id
+        $lastDebit = Debit::where('petani_id', $petaniId)->latest()->first();
 
         Log::info('Jumlah kredit yang akan direset: ' . $relatedKredits->count());
 
