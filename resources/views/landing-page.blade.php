@@ -774,7 +774,7 @@
         </section><!-- /Clients Section -->
 
         <!-- Testimonials Section -->
-        <!-- <section id="testimonials" class="testimonials section light-background"> -->
+        <!-- <section id="testimonials" class="testimonials section "> -->
         <section id="testimonials" class="testimonials section">
 
             <!-- Section Title -->
@@ -899,7 +899,7 @@
         </section><!-- /Stats Section -->
 
         <!-- Services Section -->
-        <section id="services" class="services section light-background">
+        <section id="services" class="services section ">
 
             <!-- Section Title -->
             <div class="container section-title" data-aos="fade-up">
@@ -970,7 +970,7 @@
         </section><!-- /Services Section -->
 
         <!-- Pricing Section -->
-        <section id="pricing" class="pricing section light-background">
+        <section id="pricing" class="pricing section ">
 
             <!-- Section Title -->
             <div class="container section-title" data-aos="fade-up">
@@ -1104,7 +1104,7 @@
         </section><!-- /Pricing Section -->
 
         <!-- Faq Section -->
-        <section class="faq-9 faq section light-background" id="faq">
+        <section class="faq-9 faq section " id="faq">
 
             <div class="container">
                 <div class="row">
@@ -1195,7 +1195,7 @@
         </section><!-- /Call To Action 2 Section -->
 
         <!-- Contact Section -->
-        <section id="contact" class="contact section light-background">
+        <section id="contact" class="contact section ">
 
             <!-- Section Title -->
             <div class="container section-title" data-aos="fade-up">
