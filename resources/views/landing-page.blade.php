@@ -36,6 +36,10 @@
             padding-right: 2rem;
         }
 
+        .play {
+            justify-content: center;
+        }
+
         #features {
             padding-top: 0;
             /* Mengatur padding atas menjadi 0 */
@@ -57,6 +61,10 @@
     @media (max-width: 1024px) {
         .hide-on-mobile {
             display: none;
+        }
+
+        .play {
+            justify-content: center;
         }
 
         #hero,
@@ -191,12 +199,22 @@
                                 Pabrik pengolahan padi di Desa Tolai yang mengubah gabah menjadi beras melalui proses pembersihan, pengeringan, penggilingan, dan pengemasan, mendukung distribusi hasil panen petani lokal.
                             </p>
 
-                            <div class="hero-buttons">
-                                <!-- <a href="/login" class="btn btn-primary me-0 me-sm-2 mx-1">Login</a> -->
-                                <a href="https://youtu.be/luWj5P-MWlI?si=Byjnyse-ETBGYgg0" class=" btn-link  mt-sm-0 glightbox">
-                                    <i class="bi bi-play-circle me-1"></i>
-                                    Play Video
-                                </a>
+                            <div class="d-flex align-items-center play" style="gap: 30px;">
+                                <div class="hero-buttons">
+                                    <!-- <a href="/login" class="btn btn-primary me-0 me-sm-2 mx-1">Login</a> -->
+                                    <a href="https://youtu.be/P0U9eqLbkmE?feature=shared" class=" btn-link  mt-sm-0 glightbox">
+                                        <i class="bi bi-play-circle me-1"></i>
+                                        Play Video
+                                    </a>
+                                </div>
+
+                                <div class="hero-buttons">
+                                    <!-- <a href="/login" class="btn btn-primary me-0 me-sm-2 mx-1">Login</a> -->
+                                    <a href="https://youtu.be/luWj5P-MWlI?si=Byjnyse-ETBGYgg0" class=" btn-link  mt-sm-0 glightbox">
+                                        <i class="bi bi-play-circle me-1"></i>
+                                        Play Video
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
