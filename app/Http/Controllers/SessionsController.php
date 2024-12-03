@@ -10,28 +10,13 @@ class SessionsController extends Controller
 {
     public function create()
     {
-        // If already logged in and trying to access the login page, redirect to giling.index
-        if (Auth::check() && request()->routeIs('login')) {
+        // return redirect()->route('giling.index');
+        // Jika sudah login, langsung redirect ke halaman giling
+        if (Auth::check()) {
             return redirect()->route('giling.index');
         }
 
-        // If already logged in and trying to access the login page, redirect to giling.index
-        if (Auth::check() && request()->routeIs('/')) {
-            return redirect()->route('home');
-        }
-
-        // If not logged in and trying to access the login page, allow access to the login view
-        if (!Auth::check() && request()->routeIs('login')) {
-            return view('session.login-session');  // Return the login view directly
-        }
-
-        // If not logged in and trying to access any page other than login, redirect to home
-        if (!Auth::check()) {
-            return redirect()->route('home');
-        }
-
-        // If already logged in, redirect to giling.index
-        return redirect()->route('giling.index');
+        return view('session.login-session');
     }
 
     public function store()
