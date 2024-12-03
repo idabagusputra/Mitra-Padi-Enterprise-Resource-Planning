@@ -988,7 +988,7 @@
 
                     <!-- Basic Plan -->
                     <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
-                        <div class="pricing-card">
+                        <div class="pricing-card" style="background-color: #FFECC8">
                             <h3>Basic Plan</h3>
                             <div class="price">
                                 <span class="currency">$</span>
@@ -1061,7 +1061,7 @@
 
                     <!-- Premium Plan -->
                     <div class="col-lg-4" data-aos="fade-up" data-aos-delay="300">
-                        <div class="pricing-card">
+                        <div class="pricing-card" style="background-color: #FFECC8">
                             <h3>Premium Plan</h3>
                             <div class="price">
                                 <span class="currency">$</span>
