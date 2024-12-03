@@ -51,7 +51,7 @@
     --background-color: #fc8f54;
     --default-color: #ffffff;
     --heading-color: #ffffff;
-    --surface-color: #409dfd;
+    --surface-color: #f29f58;
     --contrast-color: #ffffff;
 }
 
@@ -1325,7 +1325,7 @@ section,
 }
 
 .features-cards .feature-box.blue i {
-    color: #20a5f8;
+    color: #f29f58;
 }
 
 .features-cards .feature-box.green {
