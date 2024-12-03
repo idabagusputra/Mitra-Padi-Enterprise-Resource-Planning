@@ -15,6 +15,11 @@ class SessionsController extends Controller
             return redirect()->route('giling.index');
         }
 
+        // If already logged in and trying to access the login page, redirect to giling.index
+        if (Auth::check() && request()->routeIs('/')) {
+            return redirect()->route('home');
+        }
+
         // If not logged in and trying to access the login page, allow access to the login view
         if (!Auth::check() && request()->routeIs('login')) {
             return view('session.login-session');  // Return the login view directly
