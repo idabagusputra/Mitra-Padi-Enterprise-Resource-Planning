@@ -16,8 +16,7 @@ class SessionsController extends Controller
             return redirect()->route('giling.index');
         }
 
-        // If not logged in, redirect to home page
-        return redirect()->route('home');
+        return view('session.login-session');
     }
 
     public function store()
