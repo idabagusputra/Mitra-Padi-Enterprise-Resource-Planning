@@ -78,6 +78,10 @@
             /* Mengatur padding atas menjadi 0 */
         }
 
+        .heroo {
+            margin-top: 6rem;
+        }
+
 
     }
 </style>
