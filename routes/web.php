@@ -136,7 +136,22 @@ Route::group(['middleware' => 'auth'], function () {
 });
 
 Route::group(['middleware' => 'guest'], function () {
-    Route::get('/', [HomeController::class, 'home']);
+    Route::get('/', function () {
+        return view('landing-page'); // Or whatever your home page should be
+    })->name('home');
+    Route::get('/giling', function () {
+        return redirect('/');
+    });
+    Route::get('/kredit', function () {
+        return redirect('/');
+    });
+    Route::get('/daftar-giling', function () {
+        return redirect('/');
+    });
+    Route::get('/petani', function () {
+        return redirect('/');
+    });
+
     Route::get('/register', [RegisterController::class, 'create']);
     Route::post('/register', [RegisterController::class, 'store']);
     Route::get('/login', [SessionsController::class, 'create'])->name('login');
