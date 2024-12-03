@@ -202,7 +202,7 @@
                             <div class="d-flex align-items-center play" style="gap: 30px;">
                                 <div class="hero-buttons">
                                     <!-- <a href="/login" class="btn btn-primary me-0 me-sm-2 mx-1">Login</a> -->
-                                    <a href="https://youtu.be/P0U9eqLbkmE?feature=shared" class=" btn-link  mt-sm-0 glightbox">
+                                    <a href="https://youtu.be/OPNMwT99CHY?feature=shared" class=" btn-link  mt-sm-0 glightbox">
                                         <i class="bi bi-play-circle me-1"></i>
                                         Play Video
                                     </a>
@@ -210,11 +210,12 @@
 
                                 <div class="hero-buttons">
                                     <!-- <a href="/login" class="btn btn-primary me-0 me-sm-2 mx-1">Login</a> -->
-                                    <a href="https://youtu.be/luWj5P-MWlI?si=Byjnyse-ETBGYgg0" class=" btn-link  mt-sm-0 glightbox">
+                                    <a href="https://youtu.be/P0U9eqLbkmE?feature=shared" class=" btn-link  mt-sm-0 glightbox">
                                         <i class="bi bi-play-circle me-1"></i>
                                         Play Video
                                     </a>
                                 </div>
+
                             </div>
                         </div>
                     </div>
