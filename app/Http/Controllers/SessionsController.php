@@ -50,7 +50,7 @@ class SessionsController extends Controller
             // Handle expired CSRF token
             if ($e instanceof \Illuminate\Session\TokenMismatchException) {
                 // Redirect ke login page dengan pesan yang sesuai
-                return redirect()->route('login')
+                return redirect()->route('home')
                     ->with('error', 'Session has expired. Please try again.');
             }
             throw $e;
