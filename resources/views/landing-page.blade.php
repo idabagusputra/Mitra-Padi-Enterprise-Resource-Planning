@@ -44,6 +44,14 @@
             padding-right: 2rem;
             /* Padding kanan */
         }
+
+        .heroo {
+            margin-top: 6rem;
+        }
+
+        .mobile-gearfont {
+            font-size: 13px;
+        }
     }
 
     @media (max-width: 1024px) {
@@ -83,7 +91,7 @@
 
     <!-- Favicons -->
     <link href="assets/img/favicon.png" rel="icon">
-    <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+    <link href="assets/img/apple-touch-icon-landing.png" rel="apple-touch-icon">
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com" rel="preconnect">
@@ -149,7 +157,7 @@
                 <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
             </nav>
 
-            <a class="btn-getstarted" href="Login">Login</a>
+            <a class="btn-getstarted" href="/login">Login</a>
 
         </div>
     </header>
@@ -161,10 +169,10 @@
 
             <div class="container" data-aos="fade-up" data-aos-delay="100">
 
-                <div class="row align-items-center mt-5">
+                <div class="row align-items-center heroo">
                     <div class="col-lg-6">
-                        <div class="hero-content mt-5" data-aos="fade-up" data-aos-delay="200">
-                            <div class="company-badge mb-4">
+                        <div class="hero-content" data-aos="fade-up" data-aos-delay="200">
+                            <div class="company-badge mb-4 heroo mobile-gearfont">
                                 <i class="bi bi-gear-fill me-2"></i>
                                 Mengubah Padi Menjadi Beras Berkualitas
                             </div>
@@ -175,13 +183,13 @@
                                 <span class="accent-text">UD Penggilingan Padi Putra Manuaba</span>
                             </h1>
 
-                            <p class="mb-4 mb-md-5">
+                            <p class="mb-4 md-5">
                                 Pabrik pengolahan padi di Desa Tolai yang mengubah gabah menjadi beras melalui proses pembersihan, pengeringan, penggilingan, dan pengemasan, mendukung distribusi hasil panen petani lokal.
                             </p>
 
                             <div class="hero-buttons">
-                                <a href="/login" class="btn btn-primary me-0 me-sm-2 mx-1">Login</a>
-                                <a href="https://youtu.be/luWj5P-MWlI?si=Byjnyse-ETBGYgg0" class="btn btn-link mt-2 mt-sm-0 glightbox">
+                                <!-- <a href="/login" class="btn btn-primary me-0 me-sm-2 mx-1">Login</a> -->
+                                <a href="https://youtu.be/luWj5P-MWlI?si=Byjnyse-ETBGYgg0" class=" btn-link  mt-sm-0 glightbox">
                                     <i class="bi bi-play-circle me-1"></i>
                                     Play Video
                                 </a>
@@ -191,7 +199,7 @@
 
                     <div class="col-lg-6">
                         <div class="hero-image" data-aos="zoom-out" data-aos-delay="300">
-                            <img src="assets/img/gilinganTampakAtas.webp" alt="Hero Image" class="img-fluid main-image rounded-4 hide-on-mobile">
+                            <img src="assets/img/gilinganTampakAtas.webp" alt="Hero Image" style="width: 636px; height: 427.6px;" class="heroo img-fluid main-image rounded-4 hide-on-mobile">
 
                             <!-- <div class="customers-badge">
                                 <div class="customer-avatars">
@@ -315,7 +323,7 @@
                                     <!-- Ikon sebagai tautan -->
 
                                     <a href="https://wa.me/62811451486" class="bg-light rounded-circle p-2 d-flex align-items-center justify-content-center text-decoration-none" target="_blank">
-                                        <i class="bi bi-telephone-fill text-primary"></i>
+                                        <i class="bi bi-telephone-fill" style="color: #FC8F54;"></i>
                                     </a>
 
                                     <!-- Kontainer teks sebagai tautan -->
@@ -357,8 +365,8 @@
 
             <!-- Section Title -->
             <div class="container section-title" data-aos="fade-up">
-                <h2>Features</h2>
-                <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
+                <h2>Keunggulan</h2>
+                <p>UD Penggilingan Padi Putra Manuaba menghadirkan teknologi dan proses pengolahan padi yang efisien dan berkualitas, mendukung petani lokal dalam menghasilkan beras bermutu tinggi.</p>
             </div><!-- End Section Title -->
 
             <div class="container">
@@ -369,19 +377,29 @@
 
                         <li class="nav-item">
                             <a class="nav-link active show" data-bs-toggle="tab" data-bs-target="#features-tab-1">
-                                <h4>Modisit</h4>
+                                <h4>Teknologi</h4>
                             </a>
                         </li><!-- End tab nav item -->
 
                         <li class="nav-item">
                             <a class="nav-link" data-bs-toggle="tab" data-bs-target="#features-tab-2">
-                                <h4>Praesenti</h4>
+                                <h4>Kontrol</h4>
                             </a><!-- End tab nav item -->
 
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" data-bs-toggle="tab" data-bs-target="#features-tab-3">
-                                <h4>Explica</h4>
+                                <h4>Ekonomi</h4>
+                            </a>
+                        </li><!-- End tab nav item -->
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" data-bs-target="#features-tab-4">
+                                <h4>Distribusi</h4>
+                            </a>
+                        </li><!-- End tab nav item -->
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" data-bs-target="#features-tab-5">
+                                <h4>Komitmen</h4>
                             </a>
                         </li><!-- End tab nav item -->
 
@@ -394,15 +412,16 @@
                     <div class="tab-pane fade active show" id="features-tab-1">
                         <div class="row">
                             <div class="col-lg-6 order-2 order-lg-1 mt-3 mt-lg-0 d-flex flex-column justify-content-center">
-                                <h3>Voluptatem dignissimos provident</h3>
+                                <h3>Teknologi Pengolahan Canggih</h3>
                                 <p class="fst-italic">
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-                                    magna aliqua.
+                                    Teknologi Pengolahan Canggih
+                                    Kami menggunakan peralatan modern mutakhir yang mengintegrasikan teknologi terkini untuk memaksimalkan kualitas dan efisiensi setiap tahap pengolahan padi.
                                 </p>
                                 <ul>
-                                    <li><i class="bi bi-check2-all"></i> <span>Ullamco laboris nisi ut aliquip ex ea commodo consequat.</span></li>
-                                    <li><i class="bi bi-check2-all"></i> <span>Duis aute irure dolor in reprehenderit in voluptate velit.</span></li>
-                                    <li><i class="bi bi-check2-all"></i> <span>Ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate trideta storacalaperda mastiro dolore eu fugiat nulla pariatur.</span></li>
+                                    <li><i class="bi bi-check2-all"></i> <span>Mesin pembersih gabah dengan sistem filter multi-tahap.</span></li>
+                                    <li><i class="bi bi-check2-all"></i> <span>Alat pengering otomatis dengan kontrol suhu presisi.</span></li>
+                                    <li><i class="bi bi-check2-all"></i> <span>Mesin penggilingan berteknologi tinggi untuk hasil giling optimal.</span></li>
+                                    <li><i class="bi bi-check2-all"></i> <span>Sistem sortasi elektronik untuk memisahkan beras berkualitas.</span></li>
                                 </ul>
                             </div>
                             <div class="col-lg-6 order-1 order-lg-2 text-center">
@@ -414,16 +433,17 @@
                     <div class="tab-pane fade" id="features-tab-2">
                         <div class="row">
                             <div class="col-lg-6 order-2 order-lg-1 mt-3 mt-lg-0 d-flex flex-column justify-content-center">
-                                <h3>Neque exercitationem debitis</h3>
+                                <h3>Kontrol Kualitas Ketat</h3>
                                 <p class="fst-italic">
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-                                    magna aliqua.
+                                    Kontrol Kualitas Ketat
+                                    Komitmen kami terhadap kualitas tercermin dalam serangkaian pemeriksaan menyeluruh yang menjamin setiap butir beras memenuhi standar tertinggi.
                                 </p>
                                 <ul>
-                                    <li><i class="bi bi-check2-all"></i> <span>Ullamco laboris nisi ut aliquip ex ea commodo consequat.</span></li>
-                                    <li><i class="bi bi-check2-all"></i> <span>Duis aute irure dolor in reprehenderit in voluptate velit.</span></li>
-                                    <li><i class="bi bi-check2-all"></i> <span>Provident mollitia neque rerum asperiores dolores quos qui a. Ipsum neque dolor voluptate nisi sed.</span></li>
-                                    <li><i class="bi bi-check2-all"></i> <span>Ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate trideta storacalaperda mastiro dolore eu fugiat nulla pariatur.</span></li>
+                                    <li><i class="bi bi-check2-all"></i> <span>Pemeriksaan awal kondisi gabah saat penerimaan.</span></li>
+                                    <li><i class="bi bi-check2-all"></i> <span>Pengujian kadar air dan kemurnian gabah.</span></li>
+                                    <li><i class="bi bi-check2-all"></i> <span>Proses sortasi manual dan otomatis.</span></li>
+                                    <li><i class="bi bi-check2-all"></i> <span>Pengecekan akhir sebelum pengemasan.</span></li>
+                                    <li><i class="bi bi-check2-all"></i> <span>Standarisasi mutu sesuai ketentuan kesehatan pangan.</span></li>
                                 </ul>
                             </div>
                             <div class="col-lg-6 order-1 order-lg-2 text-center">
@@ -435,16 +455,59 @@
                     <div class="tab-pane fade" id="features-tab-3">
                         <div class="row">
                             <div class="col-lg-6 order-2 order-lg-1 mt-3 mt-lg-0 d-flex flex-column justify-content-center">
-                                <h3>Voluptatibus commodi accusamu</h3>
-                                <ul>
-                                    <li><i class="bi bi-check2-all"></i> <span>Ullamco laboris nisi ut aliquip ex ea commodo consequat.</span></li>
-                                    <li><i class="bi bi-check2-all"></i> <span>Duis aute irure dolor in reprehenderit in voluptate velit.</span></li>
-                                    <li><i class="bi bi-check2-all"></i> <span>Provident mollitia neque rerum asperiores dolores quos qui a. Ipsum neque dolor voluptate nisi sed.</span></li>
-                                </ul>
+                                <h3>Dukungan Ekonomi Petani Lokal</h3>
                                 <p class="fst-italic">
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-                                    magna aliqua.
+                                    Dukungan Ekonomi Petani Lokal Kami tidak sekadar mengolah padi, tetapi membangun ekosistem ekonomi yang mendukung kesejahteraan petani melalui berbagai program pemberdayaan.
                                 </p>
+                                <ul>
+                                    <li><i class="bi bi-check2-all"></i> <span>Harga pembelian gabah yang kompetitif.</span></li>
+                                    <li><i class="bi bi-check2-all"></i> <span>Pembayaran tepat waktu.</span></li>
+                                    <li><i class="bi bi-check2-all"></i> <span>Bimbingan teknis budidaya padi.</span></li>
+                                    <li><i class="bi bi-check2-all"></i> <span>Fasilitasi akses pasar yang lebih luas.</span></li>
+                                    <li><i class="bi bi-check2-all"></i> <span>Program kemitraan berkelanjutan.</span></li>
+                                </ul>
+                            </div>
+                            <div class="col-lg-6 order-1 order-lg-2 text-center">
+                                <img src="assets/img/features-illustration-3.webp" alt="" class="img-fluid">
+                            </div>
+                        </div>
+                    </div><!-- End tab content item -->
+
+                    <div class="tab-pane fade" id="features-tab-4">
+                        <div class="row">
+                            <div class="col-lg-6 order-2 order-lg-1 mt-3 mt-lg-0 d-flex flex-column justify-content-center">
+                                <h3>Sistem Distribusi Efisien</h3>
+                                <p class="fst-italic">
+                                    Sistem Distribusi Efisien Infrastruktur distribusi canggih kami memastikan beras sampai ke konsumen dalam kondisi prima, tepat waktu, dan dengan kualitas terjamin. </p>
+                                <ul>
+                                    <li><i class="bi bi-check2-all"></i> <span>Armada distribusi terawat dan terjadwal.</span></li>
+                                    <li><i class="bi bi-check2-all"></i> <span>Sistem pelacakan pengiriman modern.</span></li>
+                                    <li><i class="bi bi-check2-all"></i> <span>Kemasan produk yang higienis dan aman.</span></li>
+                                    <li><i class="bi bi-check2-all"></i> <span>Jangkauan distribusi regional.</span></li>
+                                    <li><i class="bi bi-check2-all"></i> <span>Layanan pengiriman tepat waktu.</span></li>
+                                </ul>
+                            </div>
+                            <div class="col-lg-6 order-1 order-lg-2 text-center">
+                                <img src="assets/img/features-illustration-3.webp" alt="" class="img-fluid">
+                            </div>
+                        </div>
+                    </div><!-- End tab content item -->
+
+                    <div class="tab-pane fade" id="features-tab-5">
+                        <div class="row">
+                            <div class="col-lg-6 order-2 order-lg-1 mt-3 mt-lg-0 d-flex flex-column justify-content-center">
+                                <h3>Komitmen Keberlanjutan dan Inovasi Pengolahan</h3>
+                                <p class="fst-italic">
+                                    Komitmen Keberlanjutan dan Inovasi Pengolahan Kami mengintegrasikan praktik ramah lingkungan dengan teknologi canggih untuk mendukung keberlanjutan produksi dan lingkungan.
+                                </p>
+                                <ul>
+                                    <li><i class="bi bi-check2-all"></i> <span>Praktik ramah lingkungan dalam pengolahan.</span></li>
+                                    <li><i class="bi bi-check2-all"></i> <span>Pengurangan limbah produksi.</span></li>
+                                    <li><i class="bi bi-check2-all"></i> <span>Penggunaan energi terbarukan.</span></li>
+                                    <li><i class="bi bi-check2-all"></i> <span>Sistem pengering mandiri berteknologi maju.</span></li>
+                                    <li><i class="bi bi-check2-all"></i> <span>Pengelolaan air dan energi efisien.</span></li>
+                                    <li><i class="bi bi-check2-all"></i> <span>Program daur ulang dan konservasi.</span></li>
+                                </ul>
                             </div>
                             <div class="col-lg-6 order-1 order-lg-2 text-center">
                                 <img src="assets/img/features-illustration-3.webp" alt="" class="img-fluid">
@@ -464,39 +527,37 @@
             <div class="container">
 
                 <div class="row gy-4">
-
                     <div class="col-xl-3 col-md-6" data-aos="zoom-in" data-aos-delay="100">
                         <div class="feature-box orange">
                             <i class="bi bi-award"></i>
-                            <h4>Corporis voluptates</h4>
-                            <p>Consequuntur sunt aut quasi enim aliquam quae harum pariatur laboris nisi ut aliquip</p>
+                            <h4>Kualitas Premium</h4>
+                            <p>Kami menjamin setiap butir beras yang dihasilkan memenuhi standar kualitas tertinggi melalui proses sortasi dan kontrol ketat</p>
                         </div>
                     </div><!-- End Feature Borx-->
 
                     <div class="col-xl-3 col-md-6" data-aos="zoom-in" data-aos-delay="200">
                         <div class="feature-box blue">
                             <i class="bi bi-patch-check"></i>
-                            <h4>Explicabo consectetur</h4>
-                            <p>Est autem dicta beatae suscipit. Sint veritatis et sit quasi ab aut inventore</p>
+                            <h4>Teknologi Modern</h4>
+                            <p>Didukung oleh mesin-mesin pengolahan padi canggih yang memastikan efisiensi dan kualitas tinggi dalam setiap proses produksi</p>
                         </div>
                     </div><!-- End Feature Borx-->
 
                     <div class="col-xl-3 col-md-6" data-aos="zoom-in" data-aos-delay="300">
                         <div class="feature-box green">
                             <i class="bi bi-sunrise"></i>
-                            <h4>Ullamco laboris</h4>
-                            <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt</p>
+                            <h4>Dukung Petani Lokal</h4>
+                            <p>Berkomitmen memberdayakan ekonomi petani setempat melalui kemitraan, harga adil, dan akses pasar yang lebih luas</p>
                         </div>
                     </div><!-- End Feature Borx-->
 
                     <div class="col-xl-3 col-md-6" data-aos="zoom-in" data-aos-delay="400">
                         <div class="feature-box red">
                             <i class="bi bi-shield-check"></i>
-                            <h4>Labore consequatur</h4>
-                            <p>Aut suscipit aut cum nemo deleniti aut omnis. Doloribus ut maiores omnis facere</p>
+                            <h4>Distribusi Terpercaya</h4>
+                            <p>Sistem distribusi profesional dengan jaminan ketepatan waktu, kemasan higienis, dan jangkauan pemasaran yang luas</p>
                         </div>
                     </div><!-- End Feature Borx-->
-
                 </div>
 
             </div>
