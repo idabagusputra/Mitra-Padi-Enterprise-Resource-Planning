@@ -774,6 +774,7 @@
         </section><!-- /Clients Section -->
 
         <!-- Testimonials Section -->
+        <!-- <section id="testimonials" class="testimonials section light-background"> -->
         <section id="testimonials" class="testimonials section light-background">
 
             <!-- Section Title -->
