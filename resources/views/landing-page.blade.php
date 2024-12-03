@@ -345,7 +345,7 @@
                                 <div class="contact-info d-flex align-items-center gap-3">
                                     <!-- Ikon sebagai tautan -->
 
-                                    <a href="https://wa.me/62811451486" class="bg-light rounded-circle p-2 d-flex align-items-center justify-content-center text-decoration-none" target="_blank">
+                                    <a href="https://wa.me/62811451486" class="bg-light p-2 d-flex align-items-center justify-content-center text-decoration-none" target="_blank">
                                         <i class="bi bi-telephone-fill" style="color: #FC8F54;"></i>
                                     </a>
 
