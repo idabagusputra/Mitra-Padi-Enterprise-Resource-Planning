@@ -37,7 +37,8 @@
         }
 
         .hero-content {
-            margin-bottom: 0rem;
+            margin-bottom: 0rem !important;
+
         }
 
         .play {
@@ -68,7 +69,8 @@
         }
 
         .hero-content {
-            margin-bottom: 0rem;
+            margin-bottom: 0rem !important;
+
         }
 
         .play {
