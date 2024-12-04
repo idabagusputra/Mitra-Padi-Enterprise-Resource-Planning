@@ -90,7 +90,12 @@
             margin-top: 6rem;
         }
 
+    }
 
+    @media (min-width: 1025px) {
+        .hide-on-web {
+            display: none !important;
+        }
     }
 </style>
 
@@ -300,7 +305,9 @@
                     <!-- <div class="col-xl-5" data-aos="fade-up" data-aos-delay="200"> -->
                     <div data-aos="fade-up" data-aos-delay="200">
                         <span class="about-meta">Tentang Kami</span>
+
                         <h2 class="about-title">UD Penggilingan Padi Putra Manuaba</h2>
+                        <img src="assets/img/gilinganTampakAtas.webp" alt="" class="img-fluid mb-3 rounded-4 hide-on-web">
                         <p class="about-description"> Pabrik pengolahan padi yang beroperasi di wilayah Desa Tolai, mengubah padi (gabah) menjadi beras mentah melalui serangkaian proses yang meliputi penerimaan, pembersihan, pengeringan, penggilingan, sortasi, dan pengemasan, dengan tujuan membantu petani setempat dalam mengolah dan mendistribusikan hasil panen mereka ke pasar atau konsumen.</p>
 
                         <div class="row feature-list-wrapper">
