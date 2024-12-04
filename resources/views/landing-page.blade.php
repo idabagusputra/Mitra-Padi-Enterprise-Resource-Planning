@@ -36,6 +36,10 @@
             padding-right: 2rem;
         }
 
+        .hero-content {
+            margin-bottom: 0rem;
+        }
+
         .play {
             justify-content: center;
         }
@@ -61,6 +65,10 @@
     @media (max-width: 1024px) {
         .hide-on-mobile {
             display: none;
+        }
+
+        .hero-content {
+            margin-bottom: 0rem;
         }
 
         .play {
