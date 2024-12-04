@@ -222,7 +222,7 @@
 
                     <div class="col-lg-6">
                         <div class="hero-image" data-aos="zoom-out" data-aos-delay="300">
-                            <img src="assets/img/gilinganTampakAtas.webp" alt="Hero Image" style="width: 636px; height: 427.6px;" class="heroo img-fluid main-image rounded-4 hide-on-mobile">
+                            <img src="assets/img/gilinganTampakAtas2.webp" alt="Hero Image" style="width: 636px; height: 427.6px;" class="heroo img-fluid main-image rounded-4 hide-on-mobile">
 
                             <!-- <div class="customers-badge">
                                 <div class="customer-avatars">
