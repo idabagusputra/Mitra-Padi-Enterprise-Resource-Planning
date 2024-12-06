@@ -178,7 +178,7 @@ class KreditReportController extends Controller
             $r2Url = "https://pub-b2576acededb43e08e7292257cd6a4c8.r2.dev/{$r2FileName}";
 
             // Menyimpan URL Cloudinary ke database
-            $rekapKreditDB->cloudflare_r2_url = $r2Url;
+            $rekapKreditDB->S3_url = $r2Url;
             $rekapKreditDB->save();
 
             // Set up Google Drive client
