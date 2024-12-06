@@ -247,7 +247,7 @@
             <tr class="calculation-row">
                 <td class="small-text">Jual Konga</td>
                 <td>:</td>
-                <td>{{ number_format($giling->jumlah_konga), 2}} × Rp {{ number_format($giling->harga_konga) }}</td>
+                <td>{{ number_format($giling->jumlah_konga, 2) }} × Rp {{ number_format($giling->harga_konga) }}</td>
                 <td>=</td>
                 <td class="bold">Rp {{ number_format($giling->calculateJualKonga()) }}</td>
 
@@ -257,7 +257,7 @@
             <tr class="calculation-row">
                 <td class="small-text">Jual Menir</td>
                 <td>:</td>
-                <td>{{ number_format($giling->jumlah_menir), 2}} × Rp {{ number_format($giling->harga_menir) }}</td>
+                <td>{{ number_format($giling->jumlah_menir, 2)}} × Rp {{ number_format($giling->harga_menir) }}</td>
                 <td>=</td>
                 <td class="bold">Rp {{ number_format($giling->calculateJualMenir()) }}</td>
 
