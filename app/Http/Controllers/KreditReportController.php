@@ -161,6 +161,7 @@ class KreditReportController extends Controller
                 'credentials' => [
                     'key' => env('R2_ACCESS_KEY_ID'),
                     'secret' => env('R2_SECRET_ACCESS_KEY'),
+                    'token' => env('R2_SESSION_TOKEN') // Optional token key
                 ]
             ]);
 
