@@ -73,19 +73,19 @@ class GilingController extends Controller
             $validator = Validator::make($request->all(), [
                 'created_at' => 'required|date', // Menjamin bahwa input adalah tanggal yang valid
                 'petani_id' => 'required|exists:petanis,id',
-                'giling_kotor' => 'required|regex:/^\d+(\.\d+)?$/', // Validasi angka desimal dengan titik
-                'biaya_giling' => 'required|regex:/^\d+(\.\d+)?$/', // Validasi angka desimal dengan titik
-                'pulang' => 'required|regex:/^\d+(\.\d+)?$/', // Validasi angka desimal dengan titik
-                'pinjam' => 'required|regex:/^\d+(\.\d+)?$/', // Validasi angka desimal dengan titik
-                'biaya_buruh_giling' => 'required|regex:/^\d+(\.\d+)?$/', // Validasi angka desimal dengan titik
-                'biaya_buruh_jemur' => 'required|regex:/^\d+(\.\d+)?$/', // Validasi angka desimal dengan titik
-                'jemur' => 'required|regex:/^\d+(\.\d+)?$/', // Validasi angka desimal dengan titik
-                'jumlah_konga' => 'required|regex:/^\d+(\.\d+)?$/', // Validasi angka desimal dengan titik
-                'harga_konga' => 'required|regex:/^\d+(\.\d+)?$/', // Validasi angka desimal dengan titik
-                'jumlah_menir' => 'required|regex:/^\d+(\.\d+)?$/', // Validasi angka desimal dengan titik
-                'harga_menir' => 'required|regex:/^\d+(\.\d+)?$/', // Validasi angka desimal dengan titik
-                'harga_jual' => 'required|regex:/^\d+(\.\d+)?$/', // Validasi angka desimal dengan titik
-                'bunga' => 'required|numeric|min:0|max:100', // Bunga harus angka antara 0 dan 100
+                'giling_kotor' => 'required|numeric',
+                'biaya_giling' => 'required|numeric',
+                'pulang' => 'required|numeric',
+                'pinjam' => 'required|numeric',
+                'biaya_buruh_giling' => 'required|numeric',
+                'biaya_buruh_jemur' => 'required|numeric',
+                'jemur' => 'required|numeric',
+                'jumlah_konga' => 'required|numeric',
+                'harga_konga' => 'required|numeric',
+                'jumlah_menir' => 'required|numeric',
+                'harga_menir' => 'required|numeric',
+                'harga_jual' => 'required|numeric',
+                'bunga' => 'required|numeric|min:0|max:100',
                 'pengambilans' => 'nullable|array',
                 'pengambilans.*.keterangan' => 'required|string',
                 'pengambilans.*.keterangan_custom' => 'required_if:pengambilans.*.keterangan,custom',
@@ -94,9 +94,24 @@ class GilingController extends Controller
             ]);
 
 
+
+            // if ($validator->fails()) {
+            //     // Mengambil semua input yang diterima
+            //     $inputData = $request->all();
+
+            //     // Mengembalikan respons JSON dengan error validasi dan nilai input
+            //     return response()->json([
+            //         'status' => 'error',
+            //         'message' => 'Validation failed',
+            //         'errors' => $validator->errors(),
+            //         'input' => $inputData, // Menyertakan data input yang diterima
+            //     ], 422); // 422 adalah status kode untuk Unprocessable Entity (kesalahan validasi)
+            // }
+
             if ($validator->fails()) {
                 return redirect()->back()->withErrors($validator)->withInput();
             }
+
 
             $validatedData = $validator->validated();
 

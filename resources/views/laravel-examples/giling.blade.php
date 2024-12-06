@@ -538,7 +538,8 @@
         document.querySelector('form').addEventListener('submit', function(e) {
             // Tambahkan pengecekan apakah form sedang di-submit
             numberInputs.forEach(input => {
-                input.value = input.dataset.rawValue;
+                // Hapus koma dari nilai input
+                input.value = input.dataset.rawValue.replace(/,/g, '');
             });
             if (this.getAttribute('data-submitting') === 'true') {
                 e.preventDefault();
