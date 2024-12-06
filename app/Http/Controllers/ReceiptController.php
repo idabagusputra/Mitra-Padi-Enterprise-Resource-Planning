@@ -102,7 +102,8 @@ class ReceiptController extends Controller
         $dompdf->render();
 
         // Define PDF path
-        $pdfFileName = $giling->id . '_' . 'Nota_Giling_' . date('Y-m-d_H-i-s') . '.pdf';
+        // $pdfFileName = $giling->id . '_' . 'Nota_Giling_' . date('Y-m-d_H-i-s') . '.pdf';
+        $pdfFileName = 'receipt-' . $giling->id . '.pdf';
         $pdfPath = public_path('receipts');
 
         // Ensure directory exists
