@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 use Dompdf\Dompdf;
 use Dompdf\Options;
+use Illuminate\Support\Facades\DB;
+use Aws\S3\S3Client;
 
 class ReceiptController extends Controller
 {
@@ -100,7 +102,7 @@ class ReceiptController extends Controller
         $dompdf->render();
 
         // Define PDF path
-        $pdfFileName = 'receipt-' . $giling->id . '.pdf';
+        $pdfFileName = $giling->id . '_' . 'Nota_Giling_' . date('Y-m-d_H-i-s') . '.pdf';
         $pdfPath = public_path('receipts');
 
         // Ensure directory exists
@@ -113,6 +115,37 @@ class ReceiptController extends Controller
         try {
             // Save PDF to file
             file_put_contents($pdfFullPath, $dompdf->output());
+            // Generate the PDF content
+            $pdfContent = $dompdf->output();
+
+            // Cloudflare R2 Upload
+            $r2Client = new S3Client([
+                'version' => 'latest',
+                'region' => 'auto',
+                'endpoint' => 'https://c9961806b72189a4d763edfd8dc0e55f.r2.cloudflarestorage.com',
+                'credentials' => [
+                    'key' => '2abc6cf8c76a71e84264efef65031933',
+                    'secret' => '1aa2ca39d8480cdbf846807ad5a7a1e492e72ee9a947ead03ef5d8ad67dea45d',
+                ]
+            ]);
+
+            $r2FileName = 'Nota_Giling/' . $giling->id . '_Nota_Giling_' . date('Y-m-d_H-i-s') . '.pdf';
+
+            $r2Upload = $r2Client->putObject([
+                'Bucket' => 'mitra-padi', // Nama bucket Anda
+                'Body' => $pdfContent,
+                'Key' => $r2FileName,
+                'ContentType' => 'application/pdf',
+                'ACL' => 'public-read'
+            ]);
+
+            // Dapatkan URL publik R2
+            $r2Url = "https://pub-b2576acededb43e08e7292257cd6a4c8.r2.dev/{$r2FileName}";
+
+            // Menyimpan URL Cloudinary ke database
+            $daftarGiling->s3_url = $r2Url;
+            $daftarGiling->save();
+
 
             // Set up Google Drive client
             $client = new Client();

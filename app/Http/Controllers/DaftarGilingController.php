@@ -72,7 +72,25 @@ class DaftarGilingController extends Controller
         return view('laravel-examples.daftar-giling', compact('daftarGilings', 'search', 'sortOrder', 'alamatList'));
     }
 
+    public function findPdf(Request $request)
+    {
+        $gilingId = $request->input('gilingId');
 
+        // Cari di database untuk R2 URL
+        $rekapan = DB::table('daftar_gilings')->where('id', $gilingId)->first();
+
+        if ($rekapan && !empty($rekapan->s3_url)) {
+            // Gunakan URL R2 jika tersedia
+            return response()->json([
+                'pdfPath' => $rekapan->s3_url
+            ]);
+        }
+
+        // Jika tidak ditemukan URL
+        return response()->json([
+            'pdfPath' => null
+        ], 404);
+    }
     // ... (other methods remain the same)
 
     public function search(Request $request)

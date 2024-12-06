@@ -126,7 +126,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/rekap-kredit/store', [KreditReportController::class, 'store'])->name('rekapKredit.store');
     // Di routes/web.php
     Route::get('/find-pdf-kredit', [KreditReportController::class, 'findPdf']);
-
+    Route::get('/find-pdf-nota-giling', [DaftarGilingController::class, 'findPdf']);
 
     // User profile and authentication
     Route::get('/logout', [SessionsController::class, 'destroy']);

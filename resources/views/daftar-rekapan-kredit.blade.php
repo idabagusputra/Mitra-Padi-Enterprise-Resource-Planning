@@ -322,17 +322,21 @@
                 <iframe id="pdfViewer" class="pdf-viewer" frameborder="0"></iframe>
             </div>
             <div class="modal-footer d-flex justify-content-between">
+
                 <button id="printPdf" class="btn btn-primary">Print</button>
+
+                <iframe id="pdfIframe" sandbox="allow-scripts allow-same-origin" style="display:none;"></iframe>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
 </div>
 
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.14.305/pdf.min.js"></script> -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
 
-        // Event listener untuk notifikasi
+        // Event listener for notifikasi
         const notificationLinks = document.querySelectorAll('.view-pdf-btn-daftarRekapanDana');
 
         notificationLinks.forEach(function(link) {
@@ -349,7 +353,7 @@
                 }
 
                 try {
-                    // Fetch URL dari backend
+                    // Fetch URL from backend
                     const response = await fetch(`/find-pdf-kredit?gilingId=${gilingId}`);
 
                     if (!response.ok) {
@@ -361,19 +365,46 @@
                     const data = await response.json();
 
                     if (data.pdfPath) {
-                        // Set src viewer PDF ke URL yang diterima
+                        // Set src viewer PDF to the received URL
                         const pdfViewer = document.getElementById('pdfViewer');
                         pdfViewer.src = data.pdfPath;
 
                         // Update modal title
                         document.getElementById('pdfModalLabel').textContent = `Rekapan Dana #${gilingId}`;
 
-                        // Tampilkan modal
+                        // Show modal
                         const pdfModal = new bootstrap.Modal(document.getElementById('pdfModal'), {
                             backdrop: 'static',
                             keyboard: false,
                         });
                         pdfModal.show();
+
+                        // Handle modal events to fix mobile scrolling
+                        const modalElement = document.getElementById('pdfModal');
+                        modalElement.addEventListener('shown.bs.modal', function() {
+                            document.body.style.overflow = 'hidden';
+                        });
+
+                        modalElement.addEventListener('hidden.bs.modal', function() {
+                            document.body.style.overflow = 'auto';
+                            document.body.style.position = 'relative';
+                            // Reset any inline styles that might affect scrolling
+                            window.scrollTo(0, window.scrollY);
+                        });
+
+                        // Add click event listener to close modal when clicking outside
+                        modalElement.addEventListener('click', function(event) {
+                            if (event.target === modalElement) {
+                                pdfModal.hide();
+                            }
+                        });
+
+                        // Add click event listener for close buttons
+                        document.querySelectorAll('[data-bs-dismiss="modal"]').forEach(button => {
+                            button.addEventListener('click', () => {
+                                pdfModal.hide();
+                            });
+                        });
                     } else {
                         console.error('No PDF file found in the response.');
                         alert('File PDF tidak ditemukan.');
@@ -383,7 +414,7 @@
                     alert('Terjadi kesalahan saat mencari file PDF.');
                 }
 
-                // Tutup dropdown menu setelah klik
+                // Close dropdown menu after click
                 const dropdownMenu = this.closest('.dropdown-menu');
                 if (dropdownMenu) {
                     const dropdownToggle = document.querySelector('[data-bs-toggle="dropdown"]');
@@ -395,31 +426,295 @@
             });
         });
 
+        document.getElementById('printPdf').addEventListener('click', function() {
+            const tempIframe = document.createElement('iframe');
 
-        // Event listener untuk tombol Close dan Print
-        const modal = document.getElementById('pdfModal');
-        if (modal) {
-            // Event saat modal ditutup
-            modal.addEventListener('hidden.bs.modal', function() {
-                // Reset backdrop opacity
-                document.body.classList.remove('modal-open');
-                const backdrops = document.getElementsByClassName('modal-backdrop');
-                while (backdrops.length > 0) {
-                    backdrops[0].parentNode.removeChild(backdrops[0]);
+            // Ganti URL menggunakan proxy CORS alternatif
+            tempIframe.src = 'https://corsproxy.io/https://pub-b2576acededb43e08e7292257cd6a4c8.r2.dev/Laporan_Kredit/Rekapan_Kredit_27_2024-12-07_04-19-07.pdf';
+            tempIframe.style.display = 'none';
+            document.body.appendChild(tempIframe);
+
+            tempIframe.onload = function() {
+                tempIframe.contentWindow.postMessage({
+                    type: 'print'
+                }, '*');
+            };
+
+            window.addEventListener('message', function(event) {
+                if (event.data.type === 'print') {
+                    const iframeWindow = event.source;
+                    if (iframeWindow && typeof iframeWindow.print === 'function') {
+                        iframeWindow.focus();
+                        iframeWindow.print();
+                    } else {
+                        console.error('Print function not available in iframe.');
+                        alert('Browser tidak mendukung pencetakan PDF langsung.');
+                    }
                 }
             });
+        });
 
-            // Event listener untuk tombol Print
-            const printButton = document.getElementById('printPdf');
-            if (printButton) {
-                printButton.addEventListener('click', function() {
-                    const pdfViewer = document.getElementById('pdfViewer');
-                    if (pdfViewer && pdfViewer.contentWindow) {
-                        pdfViewer.contentWindow.print();
-                    }
-                });
-            }
-        }
+
+
+
+
+
+
+
+        //ini conlose lengkap
+        // document.getElementById('printPdf').addEventListener('click', function() {
+        //     const pdfViewer = document.getElementById('pdfViewer');
+        //     if (pdfViewer) {
+        //         console.log('PDF Source:', pdfViewer.src); // Log URL PDF
+
+        //         // Tambahkan header untuk debug
+        //         fetch(pdfViewer.src, {
+        //                 method: 'HEAD', // Cek header response
+        //                 mode: 'cors', // Aktifkan CORS
+        //                 headers: {
+        //                     'Accept': 'application/pdf'
+        //                 }
+        //             })
+        //             .then(response => {
+        //                 console.log('Fetch Response:', response);
+
+        //                 // Periksa status dan header
+        //                 console.log('Status:', response.status);
+        //                 console.log('Headers:', Object.fromEntries(response.headers));
+        //             })
+        //             .catch(error => {
+        //                 console.error('Fetch Error:', error);
+        //             });
+
+        //         try {
+        //             const tempIframe = document.createElement('iframe');
+        //             tempIframe.style.position = 'fixed';
+        //             tempIframe.style.top = '-9999px';
+        //             tempIframe.style.width = '1px';
+        //             tempIframe.style.height = '1px';
+
+        //             tempIframe.src = pdfViewer.src;
+
+        //             // Log event iframe
+        //             tempIframe.onload = () => {
+        //                 console.log('Iframe loaded successfully');
+
+        //                 try {
+        //                     const iframeWindow = tempIframe.contentWindow;
+        //                     console.log('Iframe Window:', iframeWindow);
+
+        //                     // Tambahkan pengecekan eksplisit
+        //                     if (iframeWindow && typeof iframeWindow.print === 'function') {
+        //                         iframeWindow.focus();
+        //                         iframeWindow.print();
+        //                     } else {
+        //                         console.error('Print function not available');
+        //                         alert('Browser tidak mendukung pencetakan PDF langsung.');
+        //                     }
+
+        //                     // Hapus iframe
+        //                     setTimeout(() => {
+        //                         document.body.removeChild(tempIframe);
+        //                     }, 1000);
+        //                 } catch (printError) {
+        //                     console.error('Print Error Details:', {
+        //                         name: printError.name,
+        //                         message: printError.message,
+        //                         stack: printError.stack
+        //                     });
+        //                     alert('Gagal mencetak. Lihat konsol untuk detail.');
+        //                 }
+        //             };
+
+        //             // Event error iframe
+        //             tempIframe.onerror = (error) => {
+        //                 console.error('Iframe Load Error:', error);
+        //                 alert('Gagal memuat PDF di iframe.');
+        //             };
+
+        //             document.body.appendChild(tempIframe);
+        //         } catch (error) {
+        //             console.error('Proses Pencetakan Error:', {
+        //                 name: error.name,
+        //                 message: error.message,
+        //                 stack: error.stack
+        //             });
+        //             alert('Terjadi kesalahan saat memproses PDF.');
+        //         }
+        //     } else {
+        //         alert('PDF viewer tidak ditemukan.');
+        //     }
+        // });
+
+        // document.getElementById('printPdf').addEventListener('click', function() {
+        //     const pdfViewer = document.getElementById('pdfViewer');
+        //     if (pdfViewer) {
+        //         console.log('PDF Source:', pdfViewer.src); // Log URL PDF
+
+        //         // Tambahkan header untuk debug
+        //         fetch(pdfViewer.src, {
+        //                 method: 'HEAD', // Cek header response
+        //                 mode: 'cors', // Aktifkan CORS
+        //                 headers: {
+        //                     'Accept': 'application/pdf'
+        //                 }
+        //             })
+        //             .then(response => {
+        //                 console.log('Fetch Response:', response);
+
+        //                 // Periksa status dan header
+        //                 console.log('Status:', response.status);
+        //                 console.log('Headers:', Object.fromEntries(response.headers));
+        //             })
+        //             .catch(error => {
+        //                 console.error('Fetch Error:', error);
+        //             });
+
+        //         try {
+        //             const tempIframe = document.createElement('iframe');
+        //             tempIframe.style.position = 'fixed';
+        //             tempIframe.style.top = '-9999px';
+        //             tempIframe.style.width = '1px';
+        //             tempIframe.style.height = '1px';
+
+        //             tempIframe.src = pdfViewer.src;
+
+        //             // Log event iframe
+        //             tempIframe.onload = () => {
+        //                 console.log('Iframe loaded successfully');
+
+        //                 try {
+        //                     const iframeWindow = tempIframe.contentWindow;
+        //                     console.log('Iframe Window:', iframeWindow);
+
+        //                     // Tambahkan pengecekan eksplisit
+        //                     if (iframeWindow && typeof iframeWindow.print === 'function') {
+        //                         iframeWindow.focus();
+        //                         iframeWindow.print();
+        //                     } else {
+        //                         console.error('Print function not available');
+        //                         alert('Browser tidak mendukung pencetakan PDF langsung.');
+        //                     }
+
+        //                     // Hapus iframe
+        //                     setTimeout(() => {
+        //                         document.body.removeChild(tempIframe);
+        //                     }, 1000);
+        //                 } catch (printError) {
+        //                     console.error('Print Error Details:', {
+        //                         name: printError.name,
+        //                         message: printError.message,
+        //                         stack: printError.stack
+        //                     });
+        //                     alert('Gagal mencetak. Lihat konsol untuk detail.');
+        //                 }
+        //             };
+
+        //             // Event error iframe
+        //             tempIframe.onerror = (error) => {
+        //                 console.error('Iframe Load Error:', error);
+        //                 alert('Gagal memuat PDF di iframe.');
+        //             };
+
+        //             document.body.appendChild(tempIframe);
+        //         } catch (error) {
+        //             console.error('Proses Pencetakan Error:', {
+        //                 name: error.name,
+        //                 message: error.message,
+        //                 stack: error.stack
+        //             });
+        //             alert('Terjadi kesalahan saat memproses PDF.');
+        //         }
+        //     } else {
+        //         alert('PDF viewer tidak ditemukan.');
+        //     }
+        // });
+
+        // document.getElementById('printPdf').addEventListener('click', function() {
+        //     const pdfViewer = document.getElementById('pdfViewer');
+        //     if (pdfViewer) {
+        //         const iframeWindow = pdfViewer.contentWindow;
+        //         if (iframeWindow) {
+        //             try {
+        //                 iframeWindow.print();
+        //             } catch (error) {
+        //                 console.error('Gagal mencetak PDF:', error);
+        //                 alert('Browser tidak mengizinkan pencetakan langsung dari iframe.');
+        //             }
+        //         } else {
+        //             alert('Tidak dapat mengakses contentWindow dari PDF viewer.');
+        //         }
+        //     } else {
+        //         alert('PDF viewer tidak ditemukan.');
+        //     }
+        // });
+
+        //INI API
+
+        // document.getElementById('printPdf').addEventListener('click', function() {
+        //     const pdfViewer = document.getElementById('pdfViewer');
+        //     if (pdfViewer) {
+        //         try {
+        //             // Ambil URL PDF dari iframe
+        //             const pdfUrl = pdfViewer.src;
+
+        //             // Buat elemen iframe tersembunyi
+        //             const hiddenIframe = document.createElement('iframe');
+        //             hiddenIframe.src = pdfUrl;
+        //             hiddenIframe.style.display = 'none';
+
+        //             // Tambahkan ke body
+        //             document.body.appendChild(hiddenIframe);
+
+        //             // Tunggu iframe dimuat
+        //             hiddenIframe.onload = () => {
+        //                 // Coba gunakan print API
+        //                 hiddenIframe.contentWindow.print();
+
+        //                 // Hapus iframe setelah selesai
+        //                 setTimeout(() => {
+        //                     document.body.removeChild(hiddenIframe);
+        //                 }, 500);
+        //             };
+        //         } catch (error) {
+        //             console.error('Gagal memproses PDF:', error);
+        //             alert('Terjadi kesalahan saat memproses PDF.');
+        //         }
+        //     } else {
+        //         alert('PDF viewer tidak ditemukan.');
+        //     }
+        // });
+
+
+
+
+
+
+
+        // // Event listener untuk tombol Close dan Print
+        // const modal = document.getElementById('pdfModal');
+        // if (modal) {
+        //     // Event saat modal ditutup
+        //     modal.addEventListener('hidden.bs.modal', function() {
+        //         // Reset backdrop opacity
+        //         document.body.classList.remove('modal-open');
+        //         const backdrops = document.getElementsByClassName('modal-backdrop');
+        //         while (backdrops.length > 0) {
+        //             backdrops[0].parentNode.removeChild(backdrops[0]);
+        //         }
+        //     });
+
+        //     // Event listener untuk tombol Print
+        //     const printButton = document.getElementById('printPdf');
+        //     if (printButton) {
+        //         printButton.addEventListener('click', function() {
+        //             const pdfViewer = document.getElementById('pdfViewer');
+        //             if (pdfViewer && pdfViewer.contentWindow) {
+        //                 pdfViewer.contentWindow.print();
+        //             }
+        //         });
+        //     }
+        // }
 
         const petaniIdInput = document.getElementById('petani_id');
 
