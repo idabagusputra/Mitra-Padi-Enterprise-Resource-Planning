@@ -157,7 +157,30 @@
             <div></div>
         </table>
 
+
+
         <table>
+
+            @php
+            // Fungsi untuk menentukan jumlah desimal pada angka
+            function getDecimalPlaces($value) {
+            $value = (string)$value;
+            if (strpos($value, '.') !== false) {
+            return strlen(substr(strrchr($value, '.'), 1));
+            }
+            return 0; // Tidak ada desimal
+            }
+
+            // Mendapatkan jumlah desimal untuk kedua nilai
+            $decimalPlacesGilingKotor = getDecimalPlaces($giling->giling_kotor);
+            $decimalPlacesBerasBersih = getDecimalPlaces($giling->calculateBerasBersih());
+            $decimalPlacesKonga = getDecimalPlaces($giling->jumlah_konga);
+            $decimalPlacesMenir = getDecimalPlaces($giling->jumlah_menir);
+
+            @endphp
+
+
+
             <tr class="bold-border-top">
                 <td>Kalkulasi</td>
                 <td></td>
@@ -170,7 +193,7 @@
             <tr class="bold-border-top-top calculation-row">
                 <td class="small-text"> Giling Kotor</td>
                 <td>:</td>
-                <td>{{ number_format($giling->giling_kotor) }} Kg</td>
+                <td>{{ number_format($giling->giling_kotor, $decimalPlacesGilingKotor) }} Kg</td>
                 <td></td>
                 <td></td>
 
@@ -179,7 +202,7 @@
             <tr class="calculation-row">
                 <td class="small-text">Ongkos Giling</td>
                 <td>:</td>
-                <td>{{ number_format($giling->giling_kotor) }} × {{ number_format($giling->biaya_giling) }}%</td>
+                <td>{{ number_format($giling->giling_kotor, $decimalPlacesGilingKotor) }} × {{ number_format($giling->biaya_giling) }}%</td>
                 <td>=</td>
                 <td>{{ number_format($giling->calculateBiayaGiling(), 2) }} Kg</td>
 
@@ -207,7 +230,7 @@
             <tr class="calculation-row">
                 <td class="small-text">Beras Bersih</td>
                 <td>:</td>
-                <td>{{ number_format($giling->calculateBerasBersih(), 2) }} Kg</td>
+                <td>{{ number_format($giling->calculateBerasBersih(), $decimalPlacesBerasBersih) }} Kg</td>
                 <td></td>
                 <td></td>
 
@@ -217,7 +240,7 @@
             <tr class="calculation-row">
                 <td class="small-text">Beras Jual</td>
                 <td>:</td>
-                <td>{{ number_format($giling->calculateBerasJual() / $giling->harga_jual, 2) }} × Rp {{ number_format($giling->harga_jual) }}</td>
+                <td>{{ number_format($giling->calculateBerasBersih(), $decimalPlacesBerasBersih) }} Kg × Rp {{ number_format($giling->harga_jual) }}</td>
                 <td>=</td>
                 <td class="bold">Rp {{ number_format($giling->calculateBerasJual()) }}</td>
 
@@ -227,7 +250,7 @@
             <tr class="calculation-row">
                 <td class="small-text">Buruh Giling</td>
                 <td>:</td>
-                <td>{{ number_format($giling->giling_kotor) }} × Rp {{ number_format($giling->biaya_buruh_giling) }}</td>
+                <td>{{ number_format($giling->giling_kotor, $decimalPlacesGilingKotor) }} × Rp {{ number_format($giling->biaya_buruh_giling) }}</td>
                 <td>=</td>
                 <td class="bold">Rp {{ number_format($giling->calculateBuruhGiling()) }}</td>
 
@@ -247,7 +270,7 @@
             <tr class="calculation-row">
                 <td class="small-text">Jual Konga</td>
                 <td>:</td>
-                <td>{{ number_format($giling->jumlah_konga, 2) }} × Rp {{ number_format($giling->harga_konga) }}</td>
+                <td>{{ number_format($giling->jumlah_konga, $decimalPlacesKonga) }} × Rp {{ number_format($giling->harga_konga) }}</td>
                 <td>=</td>
                 <td class="bold">Rp {{ number_format($giling->calculateJualKonga()) }}</td>
 
@@ -257,7 +280,7 @@
             <tr class="calculation-row">
                 <td class="small-text">Jual Menir</td>
                 <td>:</td>
-                <td>{{ number_format($giling->jumlah_menir, 2)}} × Rp {{ number_format($giling->harga_menir) }}</td>
+                <td>{{ number_format($giling->jumlah_menir, $decimalPlacesMenir)}} × Rp {{ number_format($giling->harga_menir) }}</td>
                 <td>=</td>
                 <td class="bold">Rp {{ number_format($giling->calculateJualMenir()) }}</td>
 
