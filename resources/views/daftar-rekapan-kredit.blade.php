@@ -427,28 +427,23 @@
         document.getElementById('printPdf').addEventListener('click', function() {
             const pdfViewer = document.getElementById('pdfViewer');
             if (pdfViewer && pdfViewer.src) {
-                // Buka halaman PDF di jendela yang sama
-                const printWindow = window.open(pdfViewer.src, '_self');
+                // Muat PDF langsung di halaman saat ini
+                window.location.href = pdfViewer.src;
 
-                printWindow.onload = function() {
-                    // Setelah halaman dimuat dan siap dicetak
-                    printWindow.focus();
-                    printWindow.print();
-
-                    // Setelah selesai mencetak, reload halaman ini
-                    printWindow.onafterprint = function() {
-                        window.location.reload();
-                    };
+                // Setelah PDF selesai dimuat, beri fokus ke halaman ini
+                window.onload = function() {
+                    window.focus();
+                    window.print();
                 };
 
-                printWindow.onerror = function(error) {
-                    console.error('Error loading PDF:', error);
-                    alert('Gagal membuka PDF untuk pencetakan.');
+                window.onafterprint = function() {
+                    window.location.reload(); // reload halaman saat ini setelah selesai mencetak
                 };
             } else {
                 alert('PDF viewer tidak ditemukan.');
             }
         });
+
 
 
 
