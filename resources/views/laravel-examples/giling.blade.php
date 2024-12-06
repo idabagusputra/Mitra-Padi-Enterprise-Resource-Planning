@@ -534,8 +534,6 @@
 
 
 
-
-
         // Modify form submission to send raw values
         document.querySelector('form').addEventListener('submit', function(e) {
             // Tambahkan pengecekan apakah form sedang di-submit
