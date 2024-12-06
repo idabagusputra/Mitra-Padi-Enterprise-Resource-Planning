@@ -204,7 +204,7 @@
                 <td>:</td>
                 <td>{{ number_format($giling->giling_kotor, $decimalPlacesGilingKotor) }} × {{ number_format($giling->biaya_giling) }}%</td>
                 <td>=</td>
-                <td>{{ number_format($giling->calculateBiayaGiling(), 2) }} Kg</td>
+                <td>{{ number_format($giling->calculateBiayaGiling(), 3) }} Kg</td>
 
 
 

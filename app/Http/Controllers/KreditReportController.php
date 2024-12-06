@@ -160,7 +160,7 @@ class KreditReportController extends Controller
                 'endpoint' => 'https://c9961806b72189a4d763edfd8dc0e55f.r2.cloudflarestorage.com',
                 'credentials' => [
                     'key' => env('R2_ACCESS_KEY_ID'),
-                    'secret' => env('R2_SECRET_ACCESS_KEY')
+                    'secret' => env('R2_SECRET_ACCESS_KEY'),
                 ]
             ]);
 
