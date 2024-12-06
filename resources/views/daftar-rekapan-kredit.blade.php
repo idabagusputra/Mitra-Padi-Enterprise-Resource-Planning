@@ -324,8 +324,6 @@
             <div class="modal-footer d-flex justify-content-between">
 
                 <button id="printPdf" class="btn btn-primary">Print</button>
-
-                <iframe id="pdfIframe" sandbox="allow-scripts allow-same-origin" style="display:none;"></iframe>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
@@ -427,36 +425,30 @@
         });
 
         document.getElementById('printPdf').addEventListener('click', function() {
-            const tempIframe = document.createElement('iframe');
+            const pdfViewer = document.getElementById('pdfViewer');
+            if (pdfViewer && pdfViewer.src) {
+                // Buka halaman PDF di jendela yang sama
+                const printWindow = window.open(pdfViewer.src, '_self');
 
-            // Ganti URL menggunakan proxy CORS alternatif
-            tempIframe.src = 'https://corsproxy.io/https://pub-b2576acededb43e08e7292257cd6a4c8.r2.dev/Laporan_Kredit/Rekapan_Kredit_27_2024-12-07_04-19-07.pdf';
-            tempIframe.style.display = 'none';
-            document.body.appendChild(tempIframe);
+                printWindow.onload = function() {
+                    // Setelah halaman dimuat dan siap dicetak
+                    printWindow.focus();
+                    printWindow.print();
 
-            tempIframe.onload = function() {
-                tempIframe.contentWindow.postMessage({
-                    type: 'print'
-                }, '*');
-            };
+                    // Setelah selesai mencetak, reload halaman ini
+                    printWindow.onafterprint = function() {
+                        window.location.reload();
+                    };
+                };
 
-            window.addEventListener('message', function(event) {
-                if (event.data.type === 'print') {
-                    const iframeWindow = event.source;
-                    if (iframeWindow && typeof iframeWindow.print === 'function') {
-                        iframeWindow.focus();
-                        iframeWindow.print();
-                    } else {
-                        console.error('Print function not available in iframe.');
-                        alert('Browser tidak mendukung pencetakan PDF langsung.');
-                    }
-                }
-            });
+                printWindow.onerror = function(error) {
+                    console.error('Error loading PDF:', error);
+                    alert('Gagal membuka PDF untuk pencetakan.');
+                };
+            } else {
+                alert('PDF viewer tidak ditemukan.');
+            }
         });
-
-
-
-
 
 
 
