@@ -42,10 +42,10 @@ class KreditReportController extends Controller
         // Cari di database untuk R2 URL
         $rekapan = DB::table('rekap_kredit')->where('id', $gilingId)->first();
 
-        if ($rekapan && !empty($rekapan->cloudflare_r2_url)) {
+        if ($rekapan && !empty($rekapan->s3_url)) {
             // Gunakan URL R2 jika tersedia
             return response()->json([
-                'pdfPath' => $rekapan->cloudflare_r2_url
+                'pdfPath' => $rekapan->s3_url
             ]);
         }
 
