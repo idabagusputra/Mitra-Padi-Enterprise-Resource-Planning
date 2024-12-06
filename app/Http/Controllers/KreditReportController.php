@@ -12,6 +12,13 @@ use Dompdf\Options;
 use Illuminate\Support\Facades\Log;
 use Google\Client;
 use Google\Service\Drive;
+use Cloudinary\Cloudinary;
+use Cloudinary\Configuration\Configuration;
+use Illuminate\Support\Facades\DB;
+use Aws\S3\S3Client;
+use Aws\Exception\AwsException;
+
+
 
 class KreditReportController extends Controller
 {
@@ -31,23 +38,23 @@ class KreditReportController extends Controller
     public function findPdf(Request $request)
     {
         $gilingId = $request->input('gilingId');
-        $folderPath = public_path('rekapan_kredit');
 
-        // Cari file yang sesuai pola
-        $matchingFiles = glob("{$folderPath}/Rekapan_Kredit_{$gilingId}_*.pdf");
+        // Cari di database untuk R2 URL
+        $rekapan = DB::table('rekap_kredit')->where('id', $gilingId)->first();
 
-        if (!empty($matchingFiles)) {
-            // Ambil file pertama yang cocok
-            $pdfPath = str_replace(public_path(), '', $matchingFiles[0]);
+        if ($rekapan && !empty($rekapan->cloudflare_r2_url)) {
+            // Gunakan URL R2 jika tersedia
             return response()->json([
-                'pdfPath' => $pdfPath
+                'pdfPath' => $rekapan->cloudflare_r2_url
             ]);
         }
 
+        // Jika tidak ditemukan URL
         return response()->json([
             'pdfPath' => null
-        ]);
+        ], 404);
     }
+
 
 
 
@@ -85,11 +92,6 @@ class KreditReportController extends Controller
             return $kredit;
         });
 
-        // Urutkan data sesuai sortOrder
-        // $sortedKredits = $calculatedKredits->sortBy(function ($item) {
-        //     return [$item->tanggal, $item->id];
-        // }, SORT_REGULAR, $sortOrder === 'desc');
-
         $sortedKredits = $calculatedKredits->sortBy(
             function ($item) {
                 return [
@@ -119,7 +121,6 @@ class KreditReportController extends Controller
         $totalKreditLunas = $kreditsLunas->sum('jumlah');
         $totalKreditPlusBungaLunas = $kreditsLunas->sum('hutang_plus_bunga');
 
-
         // Render HTML menggunakan Blade
         $html = View::make('kreditReport', [
             'groupedKredits' => $groupedByPetani, // Mengirimkan data yang sudah dikelompokkan
@@ -137,7 +138,6 @@ class KreditReportController extends Controller
             'rekapan_kredit' => $totalKreditBelumLunas,
         ]);
 
-
         // Generate PDF dengan Dompdf
         $options = new Options();
         $options->set('defaultFont', 'Arial');
@@ -149,20 +149,37 @@ class KreditReportController extends Controller
         // Define the PDF file name using only the 'id' from the $rekapDana object
         $pdfFileName = 'Rekapan_Kredit_' . $rekapKreditDB->id . '_' . date('Y-m-d_H-i-s') . '.pdf';
 
-
-        $pdfPath = public_path('rekapan_kredit');
-
-
-        // Ensure directory exists
-        if (!file_exists($pdfPath)) {
-            mkdir($pdfPath, 0755, true);
-        }
-
-        $pdfFullPath = $pdfPath . '/' . $pdfFileName;
-
         try {
-            // Save the PDF to the server
-            file_put_contents($pdfFullPath, $dompdf->output());
+            // Generate the PDF content
+            $pdfContent = $dompdf->output();
+
+            // Cloudflare R2 Upload
+            $r2Client = new S3Client([
+                'version' => 'latest',
+                'region' => 'auto',
+                'endpoint' => 'https://c9961806b72189a4d763edfd8dc0e55f.r2.cloudflarestorage.com',
+                'credentials' => [
+                    'key' => env('R2_ACCESS_KEY_ID'),
+                    'secret' => env('R2_SECRET_ACCESS_KEY')
+                ]
+            ]);
+
+            $r2FileName = 'Laporan_Kredit/Rekapan_Kredit_' . $rekapKreditDB->id . '_' . date('Y-m-d_H-i-s') . '.pdf';
+
+            $r2Upload = $r2Client->putObject([
+                'Bucket' => 'mitra-padi', // Nama bucket Anda
+                'Body' => $pdfContent,
+                'Key' => $r2FileName,
+                'ContentType' => 'application/pdf',
+                'ACL' => 'public-read'
+            ]);
+
+            // Dapatkan URL publik R2
+            $r2Url = "https://pub-b2576acededb43e08e7292257cd6a4c8.r2.dev/{$r2FileName}";
+
+            // Menyimpan URL Cloudinary ke database
+            $rekapKreditDB->cloudflare_r2_url = $r2Url;
+            $rekapKreditDB->save();
 
             // Set up Google Drive client
             $client = new Client();
@@ -190,18 +207,11 @@ class KreditReportController extends Controller
 
             // Upload file to Google Drive
             $file = $driveService->files->create($fileMetadata, [
-                'data' => $dompdf->output(),
+                'data' => $pdfContent,
                 'mimeType' => 'application/pdf',
                 'uploadType' => 'multipart',
                 'fields' => 'id,webViewLink'
             ]);
-
-            // Return details for further use
-            // return [
-            //     'pdf_path' => $pdfFullPath, // Server-side PDF path
-            //     'file_id' => $file->id,      // Google Drive file ID
-            //     'web_view_link' => $file->webViewLink // Google Drive link
-            // ];
 
             return redirect()->route('rekapKredit.index')
                 ->with('success', 'Rekapan Kredit berhasil dibuat.')
@@ -210,13 +220,5 @@ class KreditReportController extends Controller
             Log::error('PDF Generation or Upload failed: ' . $e->getMessage());
             throw $e;
         }
-
-
-        // Stream PDF ke browser
-        // Ubah stream menjadi download
-        return $dompdf->stream('Laporan_Kredit_' . date('Y-m-d_H-i-s') . '.pdf', [
-            'Attachment' => true,
-            'Content-Type' => 'application/pdf'
-        ]);
     }
 }

@@ -334,6 +334,7 @@
 
         // Event listener untuk notifikasi
         const notificationLinks = document.querySelectorAll('.view-pdf-btn-daftarRekapanDana');
+
         notificationLinks.forEach(function(link) {
             link.addEventListener('click', async function(e) {
                 e.preventDefault();
@@ -347,37 +348,42 @@
                     return;
                 }
 
-                // Folder path di direktori public
-                const folderPath = '/rekapan_kredit';
-
                 try {
-                    // Cari file dengan fetch API atau AJAX
+                    // Fetch URL dari backend
                     const response = await fetch(`/find-pdf-kredit?gilingId=${gilingId}`);
+
+                    if (!response.ok) {
+                        console.error('Error fetching PDF:', response.statusText);
+                        alert('File PDF tidak ditemukan.');
+                        return;
+                    }
+
                     const data = await response.json();
 
                     if (data.pdfPath) {
-                        // Set src viewer PDF
+                        // Set src viewer PDF ke URL yang diterima
                         const pdfViewer = document.getElementById('pdfViewer');
                         pdfViewer.src = data.pdfPath;
 
                         // Update modal title
                         document.getElementById('pdfModalLabel').textContent = `Rekapan Dana #${gilingId}`;
 
-                        // Tampilkan modal dengan opsi backdrop yang dimodifikasi
+                        // Tampilkan modal
                         const pdfModal = new bootstrap.Modal(document.getElementById('pdfModal'), {
                             backdrop: 'static',
                             keyboard: false,
                         });
                         pdfModal.show();
                     } else {
-                        console.error('No PDF file found');
-                        // Tambahkan notifikasi error untuk pengguna
+                        console.error('No PDF file found in the response.');
+                        alert('File PDF tidak ditemukan.');
                     }
                 } catch (error) {
                     console.error('Error finding PDF:', error);
+                    alert('Terjadi kesalahan saat mencari file PDF.');
                 }
 
-                // Close dropdown menu after clicking
+                // Tutup dropdown menu setelah klik
                 const dropdownMenu = this.closest('.dropdown-menu');
                 if (dropdownMenu) {
                     const dropdownToggle = document.querySelector('[data-bs-toggle="dropdown"]');
@@ -388,6 +394,7 @@
                 }
             });
         });
+
 
         // Event listener untuk tombol Close dan Print
         const modal = document.getElementById('pdfModal');

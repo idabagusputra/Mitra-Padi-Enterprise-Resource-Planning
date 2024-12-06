@@ -496,68 +496,45 @@
             // Format saat halaman dimuat
             formatNumber(input);
 
-            // Mencegah input selain angka
-            input.addEventListener('keypress', function(e) {
-                // Mengizinkan hanya angka dan tombol kontrol
-                if (!/[\d]/.test(e.key) &&
-                    e.key !== 'Backspace' &&
-                    e.key !== 'Delete' &&
-                    e.key !== 'ArrowLeft' &&
-                    e.key !== 'ArrowRight' &&
-                    e.key !== 'Tab') {
-                    e.preventDefault();
-                }
-            });
-
-            // Mencegah paste konten selain angka
-            input.addEventListener('paste', function(e) {
-                e.preventDefault();
-                const pastedText = (e.clipboardData || window.clipboardData).getData('text');
-                if (/^\d+$/.test(pastedText)) {
-                    const value = this.value.replace(/\D/g, '');
-                    this.dataset.rawValue = value;
-                    formatNumber(this);
-                }
-            });
-
             // Format saat input berubah
             input.addEventListener('input', function(e) {
-                let value = this.value.replace(/\D/g, '');
+                let value = this.value; // Ambil seluruh input
                 this.dataset.rawValue = value;
-                formatNumber(this);
-            });
-
-            // Saat fokus, tampilkan nilai asli
-            input.addEventListener('focus', function(e) {
-                this.value = this.dataset.rawValue;
-                // Posisikan kursor di akhir
-                const length = this.value.length;
-                this.setSelectionRange(length, length);
-            });
-
-            // Saat blur, format ulang
-            input.addEventListener('blur', function(e) {
                 formatNumber(this);
             });
         });
 
         function formatNumber(input) {
-            let value = input.value.replace(/\D/g, '');
+            let value = input.value;
+
+            // Menyimpan nilai mentah tanpa format
             input.dataset.rawValue = value;
 
-            if (value !== '') {
-                value = parseInt(value);
-                // Khusus untuk field bunga, tambahkan 2 desimal
-                if (input.id === 'bunga') {
-                    // input.value = value.toLocaleString('id-ID', {
-                    //     minimumFractionDigits: 2,
-                    //     maximumFractionDigits: 2
-                    // });
-                } else {
-                    input.value = value.toLocaleString('id-ID');
-                }
+            // Pisahkan bagian integer dan desimal
+            let [integer, decimal] = value.split('.');
+
+            // Hapus semua karakter yang tidak valid dari bagian integer (kecuali angka)
+            integer = integer.replace(/[^\d]/g, '');
+
+            // Format bagian integer dengan koma sebagai pemisah ribuan
+            if (integer) {
+                integer = integer.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
             }
+
+            // Gabungkan kembali bagian integer dan desimal jika ada
+            if (decimal !== undefined) {
+                value = integer + '.' + decimal;
+            } else {
+                value = integer;
+            }
+
+            // Mengatur nilai input field dengan format yang benar
+            input.value = value;
         }
+
+
+
+
 
         // Modify form submission to send raw values
         document.querySelector('form').addEventListener('submit', function(e) {
@@ -647,15 +624,31 @@
         }
 
         function formatNumber(input) {
-            if (!input.dataset.rawValue) {
-                input.dataset.rawValue = input.value.replace(/\D/g, '');
+            let value = input.value;
+
+            // Menyimpan nilai mentah tanpa format
+            input.dataset.rawValue = value;
+
+            // Pisahkan bagian integer dan desimal
+            let [integer, decimal] = value.split('.');
+
+            // Hapus semua karakter yang tidak valid dari bagian integer (kecuali angka)
+            integer = integer.replace(/[^\d]/g, '');
+
+            // Format bagian integer dengan koma sebagai pemisah ribuan
+            if (integer) {
+                integer = integer.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
             }
-            const value = input.dataset.rawValue;
-            if (value === '') {
-                input.value = '';
-                return;
+
+            // Gabungkan kembali bagian integer dan desimal jika ada
+            if (decimal !== undefined) {
+                value = integer + '.' + decimal;
+            } else {
+                value = integer;
             }
-            input.value = Number(value).toLocaleString('id-ID');
+
+            // Mengatur nilai input field dengan format yang benar
+            input.value = value;
         }
 
         function initializeNumberFormatting(inputs) {
@@ -663,48 +656,14 @@
                 // Format saat halaman dimuat
                 formatNumber(input);
 
-                // Mencegah input selain angka
-                input.addEventListener('keypress', function(e) {
-                    if (!/[\d]/.test(e.key) &&
-                        e.key !== 'Backspace' &&
-                        e.key !== 'Delete' &&
-                        e.key !== 'ArrowLeft' &&
-                        e.key !== 'ArrowRight' &&
-                        e.key !== 'Tab') {
-                        e.preventDefault();
-                    }
-                });
-
-                // Mencegah paste konten selain angka
-                input.addEventListener('paste', function(e) {
-                    e.preventDefault();
-                    const pastedText = (e.clipboardData || window.clipboardData).getData('text');
-                    if (/^\d+$/.test(pastedText)) {
-                        this.dataset.rawValue = pastedText;
-                        formatNumber(this);
-                    }
-                });
-
                 // Format saat input berubah
                 input.addEventListener('input', function(e) {
-                    let value = this.value.replace(/\D/g, '');
+                    let value = this.value; // Ambil seluruh input
                     this.dataset.rawValue = value;
                     formatNumber(this);
                 });
-
-                // Saat fokus, tampilkan nilai asli
-                input.addEventListener('focus', function(e) {
-                    this.value = this.dataset.rawValue || '';
-                    // Posisikan kursor di akhir
-                    const length = this.value.length;
-                    this.setSelectionRange(length, length);
-                });
-
-                // Saat blur, format ulang
-                input.addEventListener('blur', function(e) {
-                    formatNumber(this);
-                });
             });
+
         }
 
         // Initialize existing number inputs when page loads
