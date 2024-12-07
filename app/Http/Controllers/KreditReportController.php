@@ -177,8 +177,10 @@ class KreditReportController extends Controller
                 'Body' => $pdfContent,
                 'Key' => $r2FileName,
                 'ContentType' => 'application/pdf',
+                'ContentDisposition' => 'inline', // Tambahkan header Content-Disposition
                 'ACL' => 'public-read'
             ]);
+
 
             // Dapatkan URL publik R2
             $r2Url = "https://pub-b2576acededb43e08e7292257cd6a4c8.r2.dev/{$r2FileName}";
