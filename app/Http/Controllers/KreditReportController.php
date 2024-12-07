@@ -35,29 +35,50 @@ class KreditReportController extends Controller
         return view('daftar-rekapan-kredit', compact('rekapanKredits', 'rekapanKreditTerbaru'));
     }
 
+    // public function findPdf(Request $request)
+    // {
+    //     $gilingId = $request->input('gilingId');
+
+    //     // Cari di database untuk R2 URL
+    //     $rekapan = DB::table('rekap_kredit')->where('id', $gilingId)->first();
+
+    //     if ($rekapan && !empty($rekapan->s3_url)) {
+
+
+    //         return response()->json([
+    //             'pdfPath' => $rekapan->s3_url
+    //         ], 200, [
+    //             'Access-Control-Allow-Origin' => '*', // Izinkan semua origin
+    //             'Access-Control-Allow-Methods' => 'GET, POST, OPTIONS',
+    //             'Access-Control-Allow-Headers' => 'Content-Type, Authorization'
+    //         ]);
+    //     }
+
+    //     // Jika tidak ditemukan URL
+    //     return response()->json([
+    //         'pdfPath' => null
+    //     ], 404)->header('Access-Control-Allow-Origin', '*'); // Izinkan semua origin
+    // }
+
     public function findPdf(Request $request)
     {
         $gilingId = $request->input('gilingId');
+        $folderPath = public_path('rekapan_kredit');
 
-        // Cari di database untuk R2 URL
-        $rekapan = DB::table('rekap_kredit')->where('id', $gilingId)->first();
+        // Cari file yang sesuai pola
+        $matchingFiles = glob("{$folderPath}/Rekapan_Kredit_{$gilingId}_*.pdf");
 
-        if ($rekapan && !empty($rekapan->s3_url)) {
-
-
+        if (!empty($matchingFiles)) {
+            // Ambil file pertama yang cocok
+            $pdfPath = str_replace(public_path(), '', $matchingFiles[0]);
             return response()->json([
-                'pdfPath' => $rekapan->s3_url
-            ], 200, [
-                'Access-Control-Allow-Origin' => '*', // Izinkan semua origin
-                'Access-Control-Allow-Methods' => 'GET, POST, OPTIONS',
-                'Access-Control-Allow-Headers' => 'Content-Type, Authorization'
+                'pdfPath' => $pdfPath
             ]);
         }
 
-        // Jika tidak ditemukan URL
         return response()->json([
             'pdfPath' => null
-        ], 404)->header('Access-Control-Allow-Origin', '*'); // Izinkan semua origin
+        ]);
     }
 
 
@@ -155,9 +176,26 @@ class KreditReportController extends Controller
         // Define the PDF file name using only the 'id' from the $rekapDana object
         $pdfFileName = 'Rekapan_Kredit_' . $rekapKreditDB->id . '_' . date('Y-m-d_H-i-s') . '.pdf';
 
+
+        $pdfPath = public_path('rekapan_kredit');
+
+
+        // Ensure directory exists
+        if (!file_exists($pdfPath)) {
+            mkdir($pdfPath, 0755, true);
+        }
+
+        $pdfFullPath = $pdfPath . '/' . $pdfFileName;
+
+
+
         try {
+
             // Generate the PDF content
             $pdfContent = $dompdf->output();
+
+            // Save the PDF to the server
+            file_put_contents($pdfFullPath,  $pdfContent);
 
             // Cloudflare R2 Upload
             $r2Client = new S3Client([
