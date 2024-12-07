@@ -15,6 +15,7 @@ use Google\Service\Drive;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Aws\S3\S3Client;
 
 class RekapDanaController extends Controller
 {
@@ -200,8 +201,42 @@ class RekapDanaController extends Controller
         $pdfFullPath = $pdfPath . '/' . $pdfFileName;
 
         try {
+
+            // Generate the PDF content
+            $pdfContent = $dompdf->output();
+
             // Save the PDF to the server
-            file_put_contents($pdfFullPath, $dompdf->output());
+            file_put_contents($pdfFullPath, $pdfContent);
+
+            // Cloudflare R2 Upload
+            $r2Client = new S3Client([
+                'version' => 'latest',
+                'region' => 'auto',
+                'endpoint' => 'https://c9961806b72189a4d763edfd8dc0e55f.r2.cloudflarestorage.com',
+                'credentials' => [
+                    'key' => '2abc6cf8c76a71e84264efef65031933',
+                    'secret' => '1aa2ca39d8480cdbf846807ad5a7a1e492e72ee9a947ead03ef5d8ad67dea45d',
+                ]
+            ]);
+
+            $r2FileName = 'Laporan_Dana/Rekapan_Dana_' . $rekapDana->id . '_' . date('Y-m-d_H-i-s') . '.pdf';
+
+            $r2Upload = $r2Client->putObject([
+                'Bucket' => 'mitra-padi', // Nama bucket Anda
+                'Body' => $pdfContent,
+                'Key' => $r2FileName,
+                'ContentType' => 'application/pdf',
+                'ContentDisposition' => 'inline', // Tambahkan header Content-Disposition
+                'ACL' => 'public-read'
+            ]);
+
+
+            // Dapatkan URL publik R2
+            $r2Url = "https://pub-b2576acededb43e08e7292257cd6a4c8.r2.dev/{$r2FileName}";
+
+            // Menyimpan URL Cloudinary ke database
+            $rekapDana->s3_url = $r2Url;
+            $rekapDana->save();
 
             // Set up Google Drive client
             $client = new Client();
