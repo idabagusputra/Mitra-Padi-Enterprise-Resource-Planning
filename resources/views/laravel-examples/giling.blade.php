@@ -727,6 +727,8 @@
             pdfModal.show();
         }
 
+
+
         // Event listener for View buttons
         document.querySelectorAll('.view-pdf-btn').forEach(function(button) {
             button.addEventListener('click', function(e) {
