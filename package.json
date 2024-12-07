@@ -20,6 +20,8 @@
     },
     "dependencies": {
         "bootstrap-icons": "^1.11.3",
+        "pdfjs-dist": "^4.9.155",
+        "print-js": "^1.6.0",
         "puppeteer": "^23.5.3"
     }
 }

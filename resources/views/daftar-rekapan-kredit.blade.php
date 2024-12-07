@@ -319,7 +319,8 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <iframe id="pdfViewer" class="pdf-viewer" frameborder="0"></iframe>
+                <iframe id="pdfViewer" class="pdf-viewer" loading="lazy" style="width:100%; height:100%;" frameborder="0"></iframe>
+
             </div>
             <div class="modal-footer d-flex justify-content-between">
                 <iframe id="pdfViewer" style="display: none;" src="URL_PDF_ANDA"></iframe>
@@ -333,6 +334,8 @@
 <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.14.305/pdf.min.js"></script> -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/printjs/1.6.0/print.min.js"></script>
+<script src="https://printjs-4de6.kxcdn.com/print.min.js"></script>
+<link rel="stylesheet" href="https://printjs-4de6.kxcdn.com/print.min.css">
 <script>
     document.addEventListener('DOMContentLoaded', function() {
 
@@ -353,9 +356,7 @@
                 }
 
                 try {
-                    // Fetch URL from backend
                     const response = await fetch(`/find-pdf-kredit?gilingId=${gilingId}`);
-
                     if (!response.ok) {
                         console.error('Error fetching PDF:', response.statusText);
                         alert('File PDF tidak ditemukan.');
@@ -363,43 +364,29 @@
                     }
 
                     const data = await response.json();
-
                     if (data.pdfPath) {
-                        // Set src viewer PDF to the received URL
                         const pdfViewer = document.getElementById('pdfViewer');
                         pdfViewer.src = data.pdfPath;
 
-                        // Update modal title
                         document.getElementById('pdfModalLabel').textContent = `Rekapan Dana #${gilingId}`;
 
-                        // Show modal
                         const pdfModal = new bootstrap.Modal(document.getElementById('pdfModal'), {
                             backdrop: 'static',
                             keyboard: false,
                         });
                         pdfModal.show();
 
-                        // Handle modal events to fix mobile scrolling
                         const modalElement = document.getElementById('pdfModal');
                         modalElement.addEventListener('shown.bs.modal', function() {
                             document.body.style.overflow = 'hidden';
+                            document.body.style.position = 'fixed';
                         });
 
                         modalElement.addEventListener('hidden.bs.modal', function() {
-                            document.body.style.overflow = 'auto';
-                            document.body.style.position = 'relative';
-                            // Reset any inline styles that might affect scrolling
-                            window.scrollTo(0, window.scrollY);
+                            document.body.style.overflow = '';
+                            document.body.style.position = '';
                         });
 
-                        // Add click event listener to close modal when clicking outside
-                        modalElement.addEventListener('click', function(event) {
-                            if (event.target === modalElement) {
-                                pdfModal.hide();
-                            }
-                        });
-
-                        // Add click event listener for close buttons
                         document.querySelectorAll('[data-bs-dismiss="modal"]').forEach(button => {
                             button.addEventListener('click', () => {
                                 pdfModal.hide();
@@ -413,62 +400,124 @@
                     console.error('Error finding PDF:', error);
                     alert('Terjadi kesalahan saat mencari file PDF.');
                 }
-
-                // Close dropdown menu after click
-                const dropdownMenu = this.closest('.dropdown-menu');
-                if (dropdownMenu) {
-                    const dropdownToggle = document.querySelector('[data-bs-toggle="dropdown"]');
-                    if (dropdownToggle) {
-                        const dropdown = bootstrap.Dropdown.getInstance(dropdownToggle);
-                        if (dropdown) dropdown.hide();
-                    }
-                }
             });
         });
 
         document.getElementById('printPdf').addEventListener('click', function() {
             const pdfViewer = document.getElementById('pdfViewer');
             if (pdfViewer) {
-                try {
-                    // Ambil URL PDF dari iframe
-                    const pdfUrl = pdfViewer.src;
+                const pdfUrl = pdfViewer.src;
 
-                    // Buat iframe tersembunyi
-                    const hiddenIframe = document.createElement('iframe');
-                    hiddenIframe.style.display = 'none';
+                pdfjsLib.getDocument(pdfUrl).promise.then(function(pdf) {
+                    const numPages = pdf.numPages;
+                    const printWindow = window.open('', '', 'width=800,height=600');
+                    printWindow.document.open();
+                    printWindow.document.write(`
+                <html>
+                <head>
+                    <style>
+                        @media print {
+                            body {
+                                margin: 0;
+                                padding: 0;
+                            }
+                            img {
+                                display: block;
+                                page-break-inside: avoid;
+                                width: 100%;
+                                height: auto;
+                                margin: 0;
+                                padding: 0;
+                            }
+                            @page {
+                                size: auto;
+                                margin: 0mm;
+                            }
+                        }
+                        body {
+                            margin: 0;
+                            padding: 0;
+                        }
+                        img {
+                            display: block;
+                            max-width: 100%;
+                            height: auto;
+                            margin: 0;
+                            padding: 0;
+                        }
+                    </style>
+                </head>
+                <body>
+            `);
 
-                    // Mengambil PDF dan mencetak langsung tanpa masalah CORS
-                    fetch(pdfUrl)
-                        .then(response => response.blob())
-                        .then(blob => {
-                            const blobUrl = URL.createObjectURL(blob);
-                            hiddenIframe.src = blobUrl;
+                    // Fungsi rekursif untuk merender setiap halaman
+                    function renderPage(pageNum) {
+                        if (pageNum > numPages) {
+                            // Semua halaman sudah dirender
+                            printWindow.document.write('</body></html>');
+                            printWindow.document.close();
 
-                            // Tunggu iframe dimuat
-                            hiddenIframe.onload = () => {
-                                // Gunakan window.print() setelah iframe dimuat
-                                hiddenIframe.contentWindow.print();
+                            setTimeout(() => {
+                                printWindow.print();
+                                printWindow.close();
+                            }, 100);
 
-                                // // Hapus iframe setelah selesai
-                                // setTimeout(() => {
-                                //     document.body.removeChild(hiddenIframe);
-                                // }, 5000);
-                            };
+                            return;
+                        }
 
-                            document.body.appendChild(hiddenIframe);
-                        })
-                        .catch(error => {
-                            console.error('Gagal memproses PDF:', error);
-                            alert('Terjadi kesalahan saat memproses PDF.');
+                        pdf.getPage(pageNum).then(function(page) {
+                            const canvas = document.createElement('canvas');
+                            const context = canvas.getContext('2d');
+
+                            const viewport = page.getViewport({
+                                scale: 1.5
+                            });
+                            canvas.height = viewport.height;
+                            canvas.width = viewport.width;
+
+                            page.render({
+                                canvasContext: context,
+                                viewport: viewport,
+                            }).promise.then(function() {
+                                // Periksa apakah halaman memiliki konten
+                                const isBlank = checkIfCanvasIsBlank(canvas);
+                                if (!isBlank) {
+                                    // Tambahkan halaman ke jendela cetak
+                                    printWindow.document.write(
+                                        `<img src="${canvas.toDataURL()}" />`
+                                    );
+                                }
+
+                                // Render halaman berikutnya
+                                renderPage(pageNum + 1);
+                            });
                         });
-                } catch (error) {
-                    console.error('Gagal memproses PDF:', error);
-                    alert('Terjadi kesalahan saat memproses PDF.');
-                }
+                    }
+
+                    // Fungsi untuk memeriksa apakah canvas kosong
+                    function checkIfCanvasIsBlank(canvas) {
+                        const context = canvas.getContext('2d');
+                        const imageData = context.getImageData(
+                            0,
+                            0,
+                            canvas.width,
+                            canvas.height
+                        ).data;
+                        return !Array.from(imageData).some((channel) => channel !== 0);
+                    }
+
+                    // Mulai render dari halaman pertama
+                    renderPage(1);
+                }).catch(function(error) {
+                    console.error('Error loading PDF:', error);
+                    alert('Gagal memuat PDF');
+                });
             } else {
                 alert('PDF viewer tidak ditemukan.');
             }
         });
+
+
 
 
 
