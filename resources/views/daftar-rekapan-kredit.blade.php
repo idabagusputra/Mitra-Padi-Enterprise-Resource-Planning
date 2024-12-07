@@ -432,46 +432,51 @@
         document.getElementById('printPdf').addEventListener('click', function() {
             const pdfViewer = document.getElementById('pdfViewer');
             if (pdfViewer) {
-                try {
-                    // Ambil URL PDF dari iframe
-                    const pdfUrl = pdfViewer.src;
+                const pdfUrl = pdfViewer.src;
 
-                    // Buat iframe tersembunyi
-                    const hiddenIframe = document.createElement('iframe');
-                    hiddenIframe.style.display = 'none';
+                fetch(pdfUrl)
+                    .then(response => response.blob())
+                    .then(blob => {
+                        const blobUrl = URL.createObjectURL(blob);
 
-                    // Mengambil PDF dan mencetak langsung tanpa masalah CORS
-                    fetch(pdfUrl)
-                        .then(response => response.blob())
-                        .then(blob => {
-                            const blobUrl = URL.createObjectURL(blob);
+                        // Deteksi apakah perangkat adalah iOS atau Android
+                        const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+                        const isAndroid = /Android/i.test(navigator.userAgent);
+
+                        if (isIOS || isAndroid) {
+                            // Untuk iOS dan Android, buka file di tab baru
+                            const newTab = window.open(blobUrl, '_blank');
+                            if (!newTab) {
+                                alert('Harap izinkan popup untuk mencetak PDF.');
+                            }
+                        } else {
+                            // Untuk browser desktop
+                            const hiddenIframe = document.createElement('iframe');
+                            hiddenIframe.style.display = 'none';
                             hiddenIframe.src = blobUrl;
 
-                            // Tunggu iframe dimuat
                             hiddenIframe.onload = () => {
-                                // Gunakan window.print() setelah iframe dimuat
                                 hiddenIframe.contentWindow.print();
-
-                                // // Hapus iframe setelah selesai
-                                // setTimeout(() => {
-                                //     document.body.removeChild(hiddenIframe);
-                                // }, 5000);
                             };
 
                             document.body.appendChild(hiddenIframe);
-                        })
-                        .catch(error => {
-                            console.error('Gagal memproses PDF:', error);
-                            alert('Terjadi kesalahan saat memproses PDF.');
-                        });
-                } catch (error) {
-                    console.error('Gagal memproses PDF:', error);
-                    alert('Terjadi kesalahan saat memproses PDF.');
-                }
+
+                            // Bersihkan iframe setelah selesai
+                            setTimeout(() => {
+                                document.body.removeChild(hiddenIframe);
+                                URL.revokeObjectURL(blobUrl);
+                            }, 5000);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Gagal memproses PDF:', error);
+                        alert('Terjadi kesalahan saat memproses PDF.');
+                    });
             } else {
                 alert('PDF viewer tidak ditemukan.');
             }
         });
+
 
 
 
