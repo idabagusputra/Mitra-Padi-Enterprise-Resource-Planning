@@ -322,7 +322,7 @@
                 <iframe id="pdfViewer" class="pdf-viewer" frameborder="0"></iframe>
             </div>
             <div class="modal-footer d-flex justify-content-between">
-
+                <iframe id="pdfViewer" style="display: none;" src="URL_PDF_ANDA"></iframe>
                 <button id="printPdf" class="btn btn-primary">Print</button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
@@ -331,6 +331,8 @@
 </div>
 
 <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.14.305/pdf.min.js"></script> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/printjs/1.6.0/print.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
 
@@ -426,19 +428,43 @@
 
         document.getElementById('printPdf').addEventListener('click', function() {
             const pdfViewer = document.getElementById('pdfViewer');
-            if (pdfViewer && pdfViewer.src) {
-                // Muat PDF langsung di halaman saat ini
-                window.location.href = pdfViewer.src;
+            if (pdfViewer) {
+                try {
+                    // Ambil URL PDF dari iframe
+                    const pdfUrl = pdfViewer.src;
 
-                // Setelah PDF selesai dimuat, beri fokus ke halaman ini
-                window.onload = function() {
-                    window.focus();
-                    window.print();
-                };
+                    // Buat iframe tersembunyi
+                    const hiddenIframe = document.createElement('iframe');
+                    hiddenIframe.style.display = 'none';
 
-                window.onafterprint = function() {
-                    window.location.reload(); // reload halaman saat ini setelah selesai mencetak
-                };
+                    // Mengambil PDF dan mencetak langsung tanpa masalah CORS
+                    fetch(pdfUrl)
+                        .then(response => response.blob())
+                        .then(blob => {
+                            const blobUrl = URL.createObjectURL(blob);
+                            hiddenIframe.src = blobUrl;
+
+                            // Tunggu iframe dimuat
+                            hiddenIframe.onload = () => {
+                                // Gunakan window.print() setelah iframe dimuat
+                                hiddenIframe.contentWindow.print();
+
+                                // // Hapus iframe setelah selesai
+                                // setTimeout(() => {
+                                //     document.body.removeChild(hiddenIframe);
+                                // }, 5000);
+                            };
+
+                            document.body.appendChild(hiddenIframe);
+                        })
+                        .catch(error => {
+                            console.error('Gagal memproses PDF:', error);
+                            alert('Terjadi kesalahan saat memproses PDF.');
+                        });
+                } catch (error) {
+                    console.error('Gagal memproses PDF:', error);
+                    alert('Terjadi kesalahan saat memproses PDF.');
+                }
             } else {
                 alert('PDF viewer tidak ditemukan.');
             }
