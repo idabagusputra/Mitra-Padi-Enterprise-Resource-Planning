@@ -43,17 +43,23 @@ class KreditReportController extends Controller
         $rekapan = DB::table('rekap_kredit')->where('id', $gilingId)->first();
 
         if ($rekapan && !empty($rekapan->s3_url)) {
-            // Gunakan URL R2 jika tersedia
+
+
             return response()->json([
                 'pdfPath' => $rekapan->s3_url
+            ], 200, [
+                'Access-Control-Allow-Origin' => '*', // Izinkan semua origin
+                'Access-Control-Allow-Methods' => 'GET, POST, OPTIONS',
+                'Access-Control-Allow-Headers' => 'Content-Type, Authorization'
             ]);
         }
 
         // Jika tidak ditemukan URL
         return response()->json([
             'pdfPath' => null
-        ], 404);
+        ], 404)->header('Access-Control-Allow-Origin', '*'); // Izinkan semua origin
     }
+
 
 
 
