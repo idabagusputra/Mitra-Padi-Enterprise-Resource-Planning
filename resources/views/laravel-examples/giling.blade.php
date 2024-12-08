@@ -382,7 +382,7 @@
                             <input class="form-control number-format konstanta-css" type="text"
                                 name="{{ $field }}"
                                 id="{{ $field }}"
-                                value="{{ number_format(old($field, $data['default']), 0, ',', '.') }}"
+                                value="{{ number_format(old($field, $data['default']), 0, '.', ',') }}"
                                 data-raw-value="{{ old($field, $data['default']) }}"
                                 inputmode="numeric"
                                 required>
