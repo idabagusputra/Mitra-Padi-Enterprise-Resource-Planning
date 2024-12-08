@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Models\Kredit; // Pastikan namespace sesuai
+
 
 class Debit extends Model
 {
@@ -63,7 +65,8 @@ class Debit extends Model
             $totalHutang += $kredit->jumlah;
 
             $creditDate = Carbon::parse($kredit->tanggal);
-            $debtDurationMonths = $creditDate->diffInMonths($paymentDate);
+            $debtDurationMonths = floor($creditDate->diffInMonths($paymentDate));
+
 
             Log::info("Kredit: {$kredit->jumlah}, Tanggal: {$kredit->tanggal}, Durasi Hutang: {$debtDurationMonths} bulan");
 
@@ -98,13 +101,22 @@ class Debit extends Model
                 return false;
             }
 
+
+            // $totalHutangYangHarusDibayar = $this->calculateTotalHutangDenganBunga();
+
+
             $remainingPayment = $this->jumlah;
+
+
+
+            $lunas = 0;
 
             foreach ($kredits as $kredit) {
                 // Hitung bunga untuk kredit ini
                 $creditDate = Carbon::parse($kredit->tanggal);
                 $paymentDate = $this->tanggal ? Carbon::parse($this->tanggal) : Carbon::now();
-                $debtDurationMonths = $creditDate->diffInMonths($paymentDate);
+                $debtDurationMonths = floor($creditDate->diffInMonths($paymentDate));
+
 
                 $monthlyInterest = $kredit->jumlah * ($this->bunga / 100);
                 $totalBungaForKredit = $monthlyInterest * $debtDurationMonths;
@@ -120,12 +132,16 @@ class Debit extends Model
                     // Tandai kredit sebagai lunas
                     $kredit->status = true;
                     $kredit->debit_id = $lastDebit->id;
-                    $kredit->keterangan .= " | Terbayar Penuh | Debit: Rp. " . number_format($remainingPayment);
+                    $kredit->keterangan .=
+                        " | Terbayar Penuh | Debit: Rp. " . number_format($this->jumlah, 2) . "| Sisa Debit: Rp. " . number_format($remainingPayment, 2);
                     $kredit->updated_at = $paymentDate;
                     $kredit->save();
 
                     Log::info("Kredit ID {$kredit->id} fully paid. Remaining payment: " . number_format($remainingPayment, 2));
 
+                    $lunas += $totalKreditDenganBunga;
+
+                    $totalLunas = $lunas;
                     // Lanjutkan ke kredit berikutnya
                     continue;
                 }
@@ -134,6 +150,8 @@ class Debit extends Model
                 if ($remainingPayment > 0) {
                     // Kurangi total hutang dengan pembayaran
                     $sisaHutang = $totalKreditDenganBunga - $remainingPayment;
+
+                    $totalLunas = $lunas + $totalKreditDenganBunga;
 
                     // Update kredit saat ini
                     $kredit->status = true;
@@ -149,10 +167,13 @@ class Debit extends Model
                         'petani_id' => $this->petani_id,
                         'tanggal' => $paymentDate,
                         'jumlah' => $sisaHutang,
-                        'keterangan' => 'Sisa Hutang dari Kredit Sebelumnya'
+                        'keterangan' => 'Sisa utang dari id: ' . $kredit->id,
+                        'updated_at' => $paymentDate
                     ]);
 
                     Log::info("Partial payment for Kredit ID {$kredit->id}. New Kredit created with ID {$newKredit->id}");
+
+
 
                     // Habiskan sisa pembayaran
                     $remainingPayment = 0;
@@ -160,9 +181,14 @@ class Debit extends Model
                 }
             }
 
+            $totalSisaHutangYangHarusDibayar = max(0, $totalLunas - $this->jumlah);
+
             // Update debit
-            $this->keterangan .= " | Proses Pembayaran Sebagian";
+            $this->keterangan .= " | Terbayar | Total Hutang: Rp " . number_format($totalLunas, 2) .
+                " | Sisa Hutang: Rp " . number_format($totalSisaHutangYangHarusDibayar, 2);
             $this->save();
+
+
 
             DB::commit();
             return true;
