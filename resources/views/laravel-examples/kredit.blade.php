@@ -445,7 +445,7 @@
                                                         </div>
                                                         <div class="form-group">
                                                             <label for="jumlah">Jumlah</label>
-                                                            <input type="text" class="form-control number-format" id="jumlah" name="jumlah" step="0.01" value="{{ number_format($kredit->jumlah, 0, '', '') }}" required>
+                                                            <input type="text" inputmode="numeric" class="form-control number-format" id="jumlah" name="jumlah" step="0.01" value="{{ number_format($kredit->jumlah, 0, '', '') }}" required>
                                                         </div>
                                                         <div class="form-group">
                                                             <label for="keterangan">Keterangan</label>
@@ -494,7 +494,7 @@
                                                         </div>
                                                         <div class="form-group">
                                                             <label for="jumlah">Jumlah</label>
-                                                            <input type="text" class="form-control number-format" id="jumlah" name="jumlah" step="0.01" required>
+                                                            <input type="text" inputmode="numeric" class="form-control number-format" id="jumlah" name="jumlah" step="0.01" required>
                                                         </div>
                                                         <div class="form-group">
                                                             <label for="keterangan">Keterangan</label>
