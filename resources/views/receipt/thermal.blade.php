@@ -241,7 +241,7 @@
             <tr class="calculation-row">
                 <td class="small-text">Beras Jual</td>
                 <td>:</td>
-                <td>{{ number_format($giling->calculateBerasBersih() - $giling->pinjam - $giling->pulang, $decimalPlacesBerasJual) }} Kg × Rp {{ number_format($giling->harga_jual) }}</td>
+                <td>{{ number_format($giling->calculateBerasBersih() - $giling->pulang, $decimalPlacesBerasJual) }} Kg × Rp {{ number_format($giling->harga_jual) }}</td>
                 <td>=</td>
                 <td class="bold">Rp {{ number_format($giling->calculateBerasJual()) }}</td>
 
