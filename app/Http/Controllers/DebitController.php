@@ -103,11 +103,11 @@ class DebitController extends Controller
                 // Dapatkan data Debit yang ingin dihapus
                 $debit = Debit::with('petani.kredits')->findOrFail($id);
 
-                // Reverse perubahan pada kredit
-                $this->reversePaymentChanges($debit);
-
                 // Soft delete pada Debit
                 $debit->delete();
+
+                // Reverse perubahan pada kredit
+                $this->reversePaymentChanges($debit);
 
                 return redirect()->route('debit.index')
                     ->with('success', 'Debit berhasil dihapus (soft delete) dan status kredit dikembalikan.');
@@ -369,6 +369,9 @@ class DebitController extends Controller
         // Jika Anda hanya ingin mengambil satu debit_id pertama (dari yang lebih lama)
         $oneDebitPreviousId = $debitPreviousIds->first();
 
+        // Dapatkan data Debit terakhir
+        $lastDebit = Debit::with('petani.kredits')->orderBy('id', 'desc')->first();
+
 
 
         Log::info('Jumlah kredit yang akan direset: ' . $relatedKredits->count());
@@ -378,8 +381,28 @@ class DebitController extends Controller
 
             // Jika status kredit adalah 0 (false) dan memiliki debit_id yang sama
             if ($kredit->status === false) {
-                Log::info('Soft delete Kredit ID: ' . $kredit->id);
-                $kredit->delete(); // Soft delete
+                if (is_null($kredit->p_debit_id) || $kredit->debit_id < $kredit->p_debit_id) {
+                    Log::info('Soft delete Kredit ID: ' . $kredit->id);
+                    $kredit->delete(); // Soft delete
+                } else {
+                    // Hapus informasi pembayaran dari keterangan
+                    $originalKeterangan = $this->removePaymentInfo($kredit->keterangan);
+
+                    $kreditTanggal = $kredit->tanggal ? Carbon::parse($kredit->tanggal) : null;
+
+                    $success = $kredit->update([
+                        'status' => false,
+                        'keterangan' => $originalKeterangan,
+                        'debit_id' => $lastDebit->id, // Hapus referensi ke debit
+                        'updated_at' => $kreditTanggal,
+                    ]);
+
+                    if ($success) {
+                        Log::info('Kredit berhasil direset:', $kredit->toArray());
+                    } else {
+                        Log::error('Gagal mereset Kredit ID: ' . $kredit->id);
+                    }
+                }
             }
             // Jika status kredit adalah 1 (true)
             else {
@@ -393,7 +416,7 @@ class DebitController extends Controller
                 $success = $kredit->update([
                     'status' => false,
                     'keterangan' => $originalKeterangan,
-                    'debit_id' => $oneDebitPreviousId, // Hapus referensi ke debit
+                    'debit_id' => $lastDebit->id, // Hapus referensi ke debit
                     'updated_at' => $kreditTanggal,
                 ]);
 

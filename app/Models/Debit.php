@@ -96,9 +96,27 @@ class Debit extends Model
                 ->orderBy('tanggal', 'asc')
                 ->get();
 
+            $kreditNulls = $this->petani->kredits()
+                ->where('status', false)
+                ->whereNull('p_debit_id') // Tambahkan kondisi untuk p_debit_id null
+                ->orderBy('tanggal', 'asc')
+                ->get();
+
+
             if ($kredits->isEmpty()) {
                 Log::warning("No outstanding credits found for Petani ID: {$this->petani_id}");
                 return false;
+            }
+
+
+
+            foreach ($kreditNulls as $kreditNull) {
+                // Mengambil data debits terakhir untuk petani yang bersangkutan
+                $lastDebit = Debit::orderBy('id', 'desc')->first();
+
+
+                $kreditNull->p_debit_id = $lastDebit->id;
+                $kreditNull->save();
             }
 
 
@@ -112,6 +130,12 @@ class Debit extends Model
             $lunas = 0;
 
             foreach ($kredits as $kredit) {
+
+
+                // Mengambil data debits terakhir untuk petani yang bersangkutan
+                $lastDebit = Debit::orderBy('id', 'desc')->first();
+
+
                 // Hitung bunga untuk kredit ini
                 $creditDate = Carbon::parse($kredit->tanggal);
                 $paymentDate = $this->tanggal ? Carbon::parse($this->tanggal) : Carbon::now();
@@ -122,8 +146,7 @@ class Debit extends Model
                 $totalBungaForKredit = $monthlyInterest * $debtDurationMonths;
                 $totalKreditDenganBunga = $kredit->jumlah + $totalBungaForKredit;
 
-                // Mengambil data debits terakhir untuk petani yang bersangkutan
-                $lastDebit = Debit::orderBy('created_at', 'desc')->first();
+
 
                 // Jika sisa pembayaran cukup untuk melunasi kredit ini
                 if ($remainingPayment >= $totalKreditDenganBunga) {
