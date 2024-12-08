@@ -87,63 +87,155 @@ class Debit extends Model
     {
         DB::beginTransaction();
         try {
-            // Assume that you have calculated totalHutangDenganBunga already
-            $totalHutangDenganBunga = $this->calculateTotalHutangDenganBunga();
-            $paymentDate = $this->tanggal ? Carbon::parse($this->tanggal) : Carbon::now();
-            $kredits = $this->petani->kredits()->where('status', false)->get();
+            // Urutkan kredit berdasarkan durasi/tanggal tertua
+            $kredits = $this->petani->kredits()
+                ->where('status', false)
+                ->orderBy('tanggal', 'asc')
+                ->get();
 
-            // Mengambil data debits terakhir untuk petani yang bersangkutan
-            $lastDebit = Debit::orderBy('created_at', 'desc')->first();
-
-            // Check if there are outstanding credits
-            if ($kredits->isNotEmpty()) {
-                // Get the first outstanding credit (if you are certain there is only one)
-                $kredit = $kredits->first();
-                $creditDate = Carbon::parse($kredit->tanggal);
-                $debtDurationMonths = $creditDate->diffInMonths($paymentDate);
-                if ($this->jumlah >= $totalHutangDenganBunga) {
-                    // Pay off the credit fully
-                    foreach ($kredits as $kredit) {
-                        $kredit->status = true;
-                        $kredit->keterangan = $kredit->keterangan . ' | Terbayar Penuh | Debit: Rp ' . number_format($totalHutangDenganBunga, 2);
-                        $kredit->save();
-                    }
-                    $this->keterangan .= " | Terbayar Penuh | Durasi: " . floor($debtDurationMonths) . " bulan";
-                } else {
-                    // Pay off partially
-                    $sisaHutang = $totalHutangDenganBunga - $this->jumlah;
-                    foreach ($kredits as $kredit) {
-                        $kredit->status = true;
-                        $kredit->keterangan = $kredit->keterangan . ' | Terbayar Sebagian | Debit: Rp ' . number_format($this->jumlah, 2) .
-                            ' | Sisa Hutang: Rp ' . number_format($sisaHutang, 2);
-                        $kredit->updated_at = $creditDate;
-                        $kredit->debit_id = $lastDebit->id;
-                        $kredit->save();
-                    }
-                    $this->keterangan .= ' | Terbayar Sebagian | Kredit: Rp ' . number_format($totalHutangDenganBunga, 2) .
-                        ' | Sisa Hutang: Rp ' . number_format($sisaHutang, 2);
-                    // Create a new Kredit entry for the remaining debt
-
-                    Kredit::create([
-                        'debit_id' => $lastDebit->id,
-                        'petani_id' => $this->petani_id,
-                        'tanggal' => $this->tanggal,
-                        'jumlah' => $sisaHutang,
-                        'keterangan' => 'Terbayar Sebagian | Rp ' . number_format($this->jumlah, 2) .
-                            ' (Debit) - Rp ' . number_format($totalHutangDenganBunga, 2) .
-                            ' (Kredit)',
-                    ]);
-                }
-            } else {
-                // Handle case where there are no outstanding credits
+            if ($kredits->isEmpty()) {
                 Log::warning("No outstanding credits found for Petani ID: {$this->petani_id}");
+                return false;
             }
+
+            $remainingPayment = $this->jumlah;
+
+            foreach ($kredits as $kredit) {
+                // Hitung bunga untuk kredit ini
+                $creditDate = Carbon::parse($kredit->tanggal);
+                $paymentDate = $this->tanggal ? Carbon::parse($this->tanggal) : Carbon::now();
+                $debtDurationMonths = $creditDate->diffInMonths($paymentDate);
+
+                $monthlyInterest = $kredit->jumlah * ($this->bunga / 100);
+                $totalBungaForKredit = $monthlyInterest * $debtDurationMonths;
+                $totalKreditDenganBunga = $kredit->jumlah + $totalBungaForKredit;
+
+                // Mengambil data debits terakhir untuk petani yang bersangkutan
+                $lastDebit = Debit::orderBy('created_at', 'desc')->first();
+
+                // Jika sisa pembayaran cukup untuk melunasi kredit ini
+                if ($remainingPayment >= $totalKreditDenganBunga) {
+                    $remainingPayment -= $totalKreditDenganBunga;
+
+                    // Tandai kredit sebagai lunas
+                    $kredit->status = true;
+                    $kredit->debit_id = $lastDebit->id;
+                    $kredit->keterangan .= " | Terbayar Penuh | Debit: Rp. " . number_format($remainingPayment);
+                    $kredit->updated_at = $paymentDate;
+                    $kredit->save();
+
+                    Log::info("Kredit ID {$kredit->id} fully paid. Remaining payment: " . number_format($remainingPayment, 2));
+
+                    // Lanjutkan ke kredit berikutnya
+                    continue;
+                }
+
+                // Jika sisa pembayaran tidak cukup melunasi kredit
+                if ($remainingPayment > 0) {
+                    // Kurangi total hutang dengan pembayaran
+                    $sisaHutang = $totalKreditDenganBunga - $remainingPayment;
+
+                    // Update kredit saat ini
+                    $kredit->status = true;
+                    $kredit->debit_id = $lastDebit->id;
+                    $kredit->keterangan .= " | Terbayar Sebagian | Dibayar: Rp " . number_format($remainingPayment, 2) .
+                        " | Sisa Hutang: Rp " . number_format($sisaHutang, 2);
+                    $kredit->updated_at = $paymentDate;
+                    $kredit->save();
+
+                    // Buat kredit baru untuk sisa hutang
+                    $newKredit = Kredit::create([
+                        'debit_id' => $this->id,
+                        'petani_id' => $this->petani_id,
+                        'tanggal' => $paymentDate,
+                        'jumlah' => $sisaHutang,
+                        'keterangan' => 'Sisa Hutang dari Kredit Sebelumnya'
+                    ]);
+
+                    Log::info("Partial payment for Kredit ID {$kredit->id}. New Kredit created with ID {$newKredit->id}");
+
+                    // Habiskan sisa pembayaran
+                    $remainingPayment = 0;
+                    break;
+                }
+            }
+
+            // Update debit
+            $this->keterangan .= " | Proses Pembayaran Sebagian";
             $this->save();
+
             DB::commit();
+            return true;
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error("Error processing payment: " . $e->getMessage());
+            Log::error("Error in dynamic payment processing: " . $e->getMessage());
             throw $e;
         }
     }
+
+    // public function processPayment()
+    // {
+    //     DB::beginTransaction();
+    //     try {
+    //         // Assume that you have calculated totalHutangDenganBunga already
+    //         $totalHutangDenganBunga = $this->calculateTotalHutangDenganBunga();
+    //         $paymentDate = $this->tanggal ? Carbon::parse($this->tanggal) : Carbon::now();
+    //         $kredits = $this->petani->kredits()->where('status', false)->get();
+
+    //         // Mengambil data debits terakhir untuk petani yang bersangkutan
+    //         $lastDebit = Debit::orderBy('created_at', 'desc')->first();
+
+    //         // Check if there are outstanding credits
+    //         if ($kredits->isNotEmpty()) {
+    //             // Get the first outstanding credit (if you are certain there is only one)
+    //             $kredit = $kredits->first();
+    //             $creditDate = Carbon::parse($kredit->tanggal);
+    //             $debtDurationMonths = $creditDate->diffInMonths($paymentDate);
+    //             if ($this->jumlah >= $totalHutangDenganBunga) {
+    //                 // Pay off the credit fully
+    //                 foreach ($kredits as $kredit) {
+    //                     $kredit->status = true;
+    //                     $kredit->keterangan = $kredit->keterangan . ' | Terbayar Penuh | Debit: Rp ' . number_format($totalHutangDenganBunga, 2);
+    //                     $kredit->save();
+    //                 }
+    //                 $this->keterangan .= " | Terbayar Penuh | Durasi: " . floor($debtDurationMonths) . " bulan";
+    //             } else {
+    //                 // Pay off partially
+    //                 $sisaHutang = $totalHutangDenganBunga - $this->jumlah;
+    //                 foreach ($kredits as $kredit) {
+    //                     $kredit->status = true;
+    //                     $kredit->keterangan = $kredit->keterangan . ' | Terbayar Sebagian | Debit: Rp ' . number_format($this->jumlah, 2) .
+    //                         ' | Sisa Hutang: Rp ' . number_format($sisaHutang, 2);
+    //                     $kredit->updated_at = $creditDate;
+    //                     $kredit->debit_id = $lastDebit->id;
+    //                     $kredit->save();
+    //                 }
+    //                 $this->keterangan .= ' | Terbayar Sebagian | Kredit: Rp ' . number_format($totalHutangDenganBunga, 2) .
+    //                     ' | Sisa Hutang: Rp ' . number_format($sisaHutang, 2);
+    //                 // Create a new Kredit entry for the remaining debt
+
+    //                 Kredit::create([
+    //                     'debit_id' => $lastDebit->id,
+    //                     'petani_id' => $this->petani_id,
+    //                     'tanggal' => $this->tanggal,
+    //                     'jumlah' => $sisaHutang,
+    //                     'keterangan' => 'Terbayar Sebagian | Rp ' . number_format($this->jumlah, 2) .
+    //                         ' (Debit) - Rp ' . number_format($totalHutangDenganBunga, 2) .
+    //                         ' (Kredit)',
+    //                 ]);
+    //             }
+    //         } else {
+    //             // Handle case where there are no outstanding credits
+    //             Log::warning("No outstanding credits found for Petani ID: {$this->petani_id}");
+    //         }
+    //         $this->save();
+    //         DB::commit();
+    //     } catch (\Exception $e) {
+    //         DB::rollBack();
+    //         Log::error("Error processing payment: " . $e->getMessage());
+    //         throw $e;
+    //     }
+    // }
+
+
 }
