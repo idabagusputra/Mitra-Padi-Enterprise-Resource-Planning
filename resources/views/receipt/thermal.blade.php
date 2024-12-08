@@ -174,6 +174,7 @@
             // Mendapatkan jumlah desimal untuk kedua nilai
             $decimalPlacesGilingKotor = getDecimalPlaces($giling->giling_kotor);
             $decimalPlacesBerasJual = getDecimalPlaces($giling->calculateBerasBersih() - $giling->pinjam - $giling->pulang);
+            $decimalPlacesBerasBersih = getDecimalPlaces($giling->calculateBerasBersih());
             $decimalPlacesKonga = getDecimalPlaces($giling->jumlah_konga);
             $decimalPlacesMenir = getDecimalPlaces($giling->jumlah_menir);
 
