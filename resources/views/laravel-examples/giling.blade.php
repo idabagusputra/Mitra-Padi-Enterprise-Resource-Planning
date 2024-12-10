@@ -650,6 +650,25 @@
             input.value = value;
         }
 
+
+        // Add print functionality
+        document.getElementById('printPdf').addEventListener('click', function() {
+            const pdfViewer = document.getElementById('pdfViewer');
+            const pdfUrl = pdfViewer.getAttribute('src');
+
+            // Bangun URL untuk ESC/POS
+            const escposUrl = `print://escpos.org/escpos/bt/print?srcTp=uri&srcObj=pdf&numCopies=1&src=${encodeURIComponent(pdfUrl)}`;
+
+            // Debug
+            console.log(JSON.stringify({
+                pdf_url: pdfUrl,
+                print_url: escposUrl
+            }, null, 2));
+
+            // Panggil URL cetak
+            window.location.href = escposUrl;
+        });
+
         function initializeNumberFormatting(inputs) {
             inputs.forEach(input => {
                 // Format saat halaman dimuat
@@ -744,11 +763,11 @@
         showPdfModal(latestGilingId);
         @endif
 
-        // Event listener for Print button
-        document.getElementById('printPdf').addEventListener('click', function() {
-            const pdfViewer = document.getElementById('pdfViewer').contentWindow;
-            pdfViewer.print();
-        });
+        // // Event listener for Print button
+        // document.getElementById('printPdf').addEventListener('click', function() {
+        //     const pdfViewer = document.getElementById('pdfViewer').contentWindow;
+        //     pdfViewer.print();
+        // });
     });
 </script>
 
