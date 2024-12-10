@@ -527,7 +527,7 @@
         }
 
         // Setup autocomplete for index search
-        setupAutocomplete('search-input', 'search-results', '/search-kredit', function(item) {
+        setupAutocomplete('search-input', 'search-results', '/search-debit', function(item) {
             document.querySelector('form').submit();
         });
 
@@ -542,8 +542,8 @@
             }
         });
 
-        // Handle form submission for editing kredit
-        document.querySelectorAll('form[id^="editKreditForm"]').forEach(form => {
+        // Handle form submission for editing debit
+        document.querySelectorAll('form[id^="editDebitForm"]').forEach(form => {
             form.addEventListener('submit', function(event) {
                 event.preventDefault();
                 const formData = new FormData(form);
@@ -559,28 +559,28 @@
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            console.log('Kredit updated successfully');
+                            console.log('Debit updated successfully');
                             location.reload();
                         } else {
-                            console.error('Error updating kredit:', data);
-                            alert('Error updating kredit: ' + (data.message || JSON.stringify(data)));
+                            console.error('Error updating debit:', data);
+                            alert('Error updating debit: ' + (data.message || JSON.stringify(data)));
                         }
                     })
                     .catch(error => {
                         console.error('Error:', error);
-                        alert('An error occurred while updating kredit: ' + error);
+                        alert('An error occurred while updating debit: ' + error);
                     });
             });
         });
 
-        // Handle kredit deletion
-        document.querySelectorAll('form[data-delete-kredit]').forEach(form => {
+        // Handle debit deletion
+        document.querySelectorAll('form[data-delete-debit]').forEach(form => {
             form.addEventListener('submit', function(event) {
                 event.preventDefault();
-                const kreditId = this.getAttribute('data-delete-kredit');
+                const debitId = this.getAttribute('data-delete-debit');
                 const deleteUrl = this.action;
 
-                if (confirm('Are you sure you want to delete this kredit?')) {
+                if (confirm('Are you sure you want to delete this debit?')) {
                     fetch(deleteUrl, {
                             method: 'POST',
                             headers: {
@@ -595,30 +595,77 @@
                         .then(response => response.json())
                         .then(data => {
                             if (data.success) {
-                                console.log('Kredit deleted successfully');
+                                console.log('Debit deleted successfully');
                                 location.reload();
                             } else {
-                                console.error('Error deleting kredit:', data);
-                                alert('Error deleting kredit: ' + (data.message || JSON.stringify(data)));
+                                console.error('Error deleting debit:', data);
+                                alert('Error deleting debit: ' + (data.message || JSON.stringify(data)));
                             }
                         })
                         .catch(error => {
                             console.error('Error:', error);
-                            alert('An error occurred while deleting kredit: ' + error);
+                            alert('An error occurred while deleting debit: ' + error);
                         });
                 }
             });
         });
 
-        // Handle form submission for adding new kredit
-        // Handle form submission for adding new kredit
-        const addKreditForm = document.querySelector('#addKreditModal form');
-        const addKreditModal = document.getElementById('addKreditModal');
 
-        if (addKreditForm && addKreditModal) {
+        const numberInputs = document.querySelectorAll('.number-format');
+
+        numberInputs.forEach(input => {
+            input.addEventListener('input', function(e) {
+                // Simpan posisi kursor
+                let cursorPosition = this.selectionStart;
+
+                // Hapus semua koma
+                let originalValue = this.value.replace(/,/g, '');
+
+                // Batasi panjang maksimal (opsional)
+                originalValue = originalValue.slice(0, 15);
+
+                // Validasi hanya angka
+                if (!/^\d*$/.test(originalValue)) {
+                    // Jika ada karakter tidak valid, kembalikan ke kondisi sebelumnya
+                    this.value = this.value.slice(0, cursorPosition - 1) +
+                        this.value.slice(cursorPosition);
+                    return;
+                }
+
+                // Format dengan pemisah ribuan
+                let formattedValue = originalValue.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+                // Set nilai yang diformat
+                this.value = formattedValue;
+
+                // Sesuaikan posisi kursor
+                let newCursorPosition = cursorPosition +
+                    (formattedValue.length - originalValue.length);
+
+                // Set ulang posisi kursor
+                this.setSelectionRange(newCursorPosition, newCursorPosition);
+            });
+
+            // Event listener untuk mendapatkan nilai asli
+            input.addEventListener('change', function(e) {
+                let rawValue = this.value.replace(/,/g, '');
+                this.setAttribute('data-raw-value', rawValue);
+            });
+
+            // Format nilai yang sudah ada pada saat dimuat
+            let initialValue = input.value.replace(/,/g, '');
+            input.value = initialValue.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        });
+
+        // Handle form submission for adding new debit
+        // Handle form submission for adding new debit
+        const addDebitForm = document.querySelector('#addDebitModal form');
+        const addDebitModal = document.getElementById('addDebitModal');
+
+        if (addDebitForm && addDebitModal) {
             let isSubmitting = false; // Flag untuk mencegah multiple submission
 
-            addKreditForm.addEventListener('submit', function(event) {
+            addDebitForm.addEventListener('submit', function(event) {
                 event.preventDefault();
 
                 // Cek jika sedang dalam proses submit
@@ -641,6 +688,17 @@
                 }
 
                 const formData = new FormData(this);
+
+
+                // Ambil nilai `jumlah` dari formData dan hapus semua koma
+                let jumlah = formData.get('jumlah');
+                if (jumlah) {
+                    jumlah = jumlah.replace(/,/g, ''); // Hapus semua koma
+                    formData.set('jumlah', jumlah); // Perbarui nilai di formData
+                }
+
+
+
                 // Ensure petani_id is added to formData
                 formData.set('petani_id', petaniIdInput.value);
                 console.log('Petani ID before send:', petaniIdInput.value);
@@ -655,12 +713,21 @@
                             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                         },
                     })
-                    .then(response => response.json())
+                    .then(response => {
+                        // Check if the response is OK (status in the range 200-299)
+                        if (!response.ok) {
+                            // Try to parse error response
+                            return response.json().then(errorData => {
+                                throw new Error(errorData.message || 'An error occurred');
+                            });
+                        }
+                        return response.json();
+                    })
                     .then(data => {
                         if (data.success) {
-                            console.log('New kredit added successfully');
+                            console.log('New debit added successfully');
                             // Reset form fields
-                            addKreditForm.reset();
+                            addDebitForm.reset();
                             // Clear petani search input and reset petani_id
                             const petaniSearchInput = document.getElementById('petani_search');
                             if (petaniSearchInput) {
@@ -670,26 +737,20 @@
                                 petaniIdInput.value = '';
                             }
                             // Close the modal
-                            const modal = bootstrap.Modal.getInstance(addKreditModal);
+                            const modal = bootstrap.Modal.getInstance(addDebitModal);
                             if (modal) {
                                 modal.hide();
                             }
                             // Reload the page
                             location.reload();
                         } else {
-                            console.error('Error adding new kredit:', data);
-                            alert('Error adding new kredit: ' + (data.message || JSON.stringify(data)));
-                            // Reset flag dan aktifkan tombol kembali jika error
-                            isSubmitting = false;
-                            if (submitButton) {
-                                submitButton.disabled = false;
-                            }
+                            throw new Error(data.message || 'Unknown error occurred');
                         }
                     })
                     .catch(error => {
                         console.error('Error:', error);
-                        alert('An error occurred while adding new kredit: ' + error);
-                        // Reset flag dan aktifkan tombol kembali jika error
+                        alert('An error occurred while adding new debit: ' + error.message);
+                        // Reset flag and re-enable submit button
                         isSubmitting = false;
                         if (submitButton) {
                             submitButton.disabled = false;
@@ -697,7 +758,7 @@
                     });
             });
         } else {
-            console.error('Add Kredit form not found');
+            console.error('Add Debit form not found');
         }
     });
 </script>

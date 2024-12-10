@@ -74,25 +74,41 @@ class DebitController extends Controller
 
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
-            'petani_id' => 'required|exists:petanis,id',
-            'tanggal' => 'required|date',
-            'jumlah' => 'required|numeric|min:0',
-            'bunga' => 'required|numeric|min:0|max:100',
-            'keterangan' => 'required|string',
-        ]);
-
-        DB::beginTransaction();
-
         try {
+            $validatedData = $request->validate([
+                'petani_id' => 'required|exists:petanis,id',
+                'tanggal' => 'required|date',
+                'jumlah' => 'required|numeric|min:0',
+                'bunga' => 'required|numeric|min:0|max:100',
+                'keterangan' => 'required|string',
+            ]);
+
+            DB::beginTransaction();
+
             $debit = Debit::create($validatedData);
             $debit->processPayment();
 
             DB::commit();
-            return redirect()->back()->with('success', 'Debit entry created successfully.');
+
+            // Return a proper JSON response
+            return response()->json([
+                'success' => true,
+                'message' => 'Debit entry created successfully.',
+                'data' => $debit
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'errors' => $e->errors()
+            ], 422);
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(['success' => false, 'message' => 'Error creating debit entry: ' . $e->getMessage()], 500);
+            return response()->json([
+                'success' => false,
+                'message' => 'Error creating debit entry: ' . $e->getMessage()
+            ], 500);
         }
     }
 
@@ -393,7 +409,7 @@ class DebitController extends Controller
                     $success = $kredit->update([
                         'status' => false,
                         'keterangan' => $originalKeterangan,
-                        'debit_id' => $lastDebit->id, // Hapus referensi ke debit
+                        'debit_id' => $lastDebit?->id, // Hapus referensi ke debit
                         'updated_at' => $kreditTanggal,
                     ]);
 
@@ -416,7 +432,7 @@ class DebitController extends Controller
                 $success = $kredit->update([
                     'status' => false,
                     'keterangan' => $originalKeterangan,
-                    'debit_id' => $lastDebit->id, // Hapus referensi ke debit
+                    'debit_id' => $lastDebit?->id, // Hapus referensi ke debit
                     'updated_at' => $kreditTanggal,
                 ]);
 
