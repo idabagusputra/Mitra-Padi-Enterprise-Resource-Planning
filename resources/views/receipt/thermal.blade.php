@@ -173,10 +173,11 @@
 
             // Mendapatkan jumlah desimal untuk kedua nilai
             $decimalPlacesGilingKotor = getDecimalPlaces($giling->giling_kotor);
-            $decimalPlacesBerasJual = getDecimalPlaces($giling->calculateBerasBersih() - $giling->pinjam - $giling->pulang);
+            $decimalPlacesBerasJual = getDecimalPlaces($giling->calculateBerasBersih() - $giling->pulang);
             $decimalPlacesBerasBersih = getDecimalPlaces($giling->calculateBerasBersih());
             $decimalPlacesKonga = getDecimalPlaces($giling->jumlah_konga);
             $decimalPlacesMenir = getDecimalPlaces($giling->jumlah_menir);
+            $decimalPlacesBuruhJemur = getDecimalPlaces($giling->jemur);
 
             @endphp
 
@@ -261,7 +262,7 @@
             <tr class="calculation-row">
                 <td class="small-text">Buruh Jemur</td>
                 <td>:</td>
-                <td>{{ number_format($giling->jemur) }} × Rp {{ number_format($giling->biaya_buruh_jemur) }}</td>
+                <td>{{ number_format($giling->jemur,  $decimalPlacesBuruhJemur) }} × Rp {{ number_format($giling->biaya_buruh_jemur) }}</td>
                 <td>=</td>
                 <td class="bold">Rp {{ number_format($giling->calculateBuruhJemur()) }}</td>
 
