@@ -72,12 +72,15 @@ class KreditController extends Controller
             $kreditDate = Carbon::parse($kredit->tanggal);
 
             // Cek apakah tanggal created_at dan updated_at sama (tanpa waktu)
-            if ($kredit->created_at->toDateString() === $kredit->updated_at->toDateString()) {
-                // Jika sama, hitung selisih bulan menggunakan now
-                $diffInMonthsUpdate = $kreditDate->diffInMonths($now);
+            // Pastikan $kredit->status dan $kreditDate adalah objek yang valid
+            if ($kredit->status === true) {
+                // Jika statusnya true, hitung selisih bulan menggunakan now
+                $now = Carbon::now(); // Dapatkan waktu sekarang
+                $diffInMonthsUpdate = $kreditDate->diffInMonths($kredit->updated_at); // Menghitung selisih bulan
+                // Lakukan sesuatu dengan $diffInMonthsUpdate jika diperlukan
             } else {
                 // Hitung selisih bulan menggunakan updated_at
-                $diffInMonthsUpdate = $kreditDate->diffInMonths($kredit->updated_at);
+                $diffInMonthsUpdate = $kreditDate->diffInMonths($now);
 
                 // Jika diffInMonthsUpdate bernilai negatif, set nilainya menjadi 0
                 if ($diffInMonthsUpdate < 0) {

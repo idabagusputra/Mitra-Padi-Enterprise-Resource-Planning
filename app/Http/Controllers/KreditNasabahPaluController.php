@@ -76,11 +76,11 @@ class KreditNasabahPaluController extends Controller
             if ($kredit->status === true) {
                 // Jika statusnya true, hitung selisih bulan menggunakan now
                 $now = Carbon::now(); // Dapatkan waktu sekarang
-                $diffInMonthsUpdate = $kreditDate->diffInMonths($now); // Menghitung selisih bulan
+                $diffInMonthsUpdate = $kreditDate->diffInMonths($kredit->updated_at); // Menghitung selisih bulan
                 // Lakukan sesuatu dengan $diffInMonthsUpdate jika diperlukan
             } else {
                 // Hitung selisih bulan menggunakan updated_at
-                $diffInMonthsUpdate = $kreditDate->diffInMonths($kredit->updated_at);
+                $diffInMonthsUpdate = $kreditDate->diffInMonths($now);
 
                 // Jika diffInMonthsUpdate bernilai negatif, set nilainya menjadi 0
                 if ($diffInMonthsUpdate < 0) {
