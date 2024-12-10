@@ -218,7 +218,16 @@ class KreditNasabahPaluController extends Controller
     public function store(Request $request)
     {
         try {
-            $validator = Validator::make($request->all(), [
+            // Ambil semua data dari request
+            $input = $request->all();
+
+            // Hapus koma dari nilai jumlah jika ada
+            if (isset($input['jumlah'])) {
+                $input['jumlah'] = str_replace(',', '', $input['jumlah']);
+            }
+
+            // Validasi data setelah penghapusan koma
+            $validator = Validator::make($input, [
                 'nama' => 'required|string',
                 'tanggal' => 'required|date_format:Y-m-d',
                 'keterangan' => 'required|string',
@@ -230,7 +239,7 @@ class KreditNasabahPaluController extends Controller
                 return response()->json(['success' => false, 'errors' => $validator->errors()], 422);
             }
 
-            // Ambil data validasi
+            // Ambil data yang sudah divalidasi
             $validatedData = $validator->validated();
 
             // Konversi tanggal ke format timestamp
@@ -242,22 +251,17 @@ class KreditNasabahPaluController extends Controller
             // Set timestamps secara manual
             $kredit->created_at = $timestamp;
 
-
             // Simpan model ke database
             $kredit->save();
 
-
             return redirect()->back()->with('success', 'Kredit berhasil dimasukan');
-            // return response()->json([
-            //     'success' => true,
-            //     'message' => 'Kredit berhasil ditambahkan',
-            //     'data' => $kredit,
-            // ]);
         } catch (\Exception $e) {
             Log::error('Error creating kredit: ' . $e->getMessage());
             return response()->json(['success' => false, 'message' => 'Terjadi kesalahan saat menambahkan kredit'], 500);
         }
     }
+
+
 
 
 
@@ -267,7 +271,16 @@ class KreditNasabahPaluController extends Controller
             // Temukan data kredit berdasarkan ID
             $kredit = KreditNasabahPalu::findOrFail($id);
 
-            $validator = Validator::make($request->all(), [
+            // Ambil semua data dari request
+            $input = $request->all();
+
+            // Hapus koma dari nilai jumlah jika ada
+            if (isset($input['jumlah'])) {
+                $input['jumlah'] = str_replace(',', '', $input['jumlah']);
+            }
+
+            // Validasi data setelah penghapusan koma
+            $validator = Validator::make($input, [
                 'nama' => 'required|string',
                 'tanggal' => 'required|date_format:Y-m-d',
                 'keterangan' => 'required|string',
@@ -279,7 +292,7 @@ class KreditNasabahPaluController extends Controller
                 return response()->json(['success' => false, 'errors' => $validator->errors()], 422);
             }
 
-            // Ambil data validasi
+            // Ambil data yang sudah divalidasi
             $validatedData = $validator->validated();
 
             // Konversi tanggal ke format timestamp
@@ -287,23 +300,19 @@ class KreditNasabahPaluController extends Controller
 
             // Perbarui data kredit
             $kredit->fill($validatedData);
-            // $kredit->updated_at = $timestamp;
-
+            // Atur `updated_at` secara manual jika diperlukan
+            $kredit->updated_at = $timestamp;
 
             // Simpan perubahan ke database
             $kredit->save();
 
             return redirect()->back()->with('success', 'Kredit berhasil diedit');
-            // return response()->json([
-            //     'success' => true,
-            //     'message' => 'Kredit berhasil diperbaharui',
-            //     'data' => $kredit,
-            // ]);
         } catch (\Exception $e) {
             Log::error('Error updating kredit: ' . $e->getMessage());
             return response()->json(['success' => false, 'message' => 'Terjadi kesalahan saat memperbarui kredit'], 500);
         }
     }
+
 
 
 

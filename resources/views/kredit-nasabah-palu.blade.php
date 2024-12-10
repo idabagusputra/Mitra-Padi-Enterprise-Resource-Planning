@@ -277,7 +277,7 @@
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="jumlah">Jumlah</label>
-                                                    <input type="number" class="form-control" id="jumlah" name="jumlah" step="0.01" value="{{ $kredit->jumlah }}" required>
+                                                    <input type="text" inputmode="numeric" class="form-control number-format" id="jumlah" name="jumlah" step="0.01" value="{{ number_format($kredit->jumlah, 0, '', '') }}" required>
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="keterangan">Keterangan</label>
@@ -322,7 +322,7 @@
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="jumlah">Jumlah</label>
-                                                    <input type="number" class="form-control" id="jumlah" name="jumlah" step="0.01" required>
+                                                    <input type="text" inputmode="numeric" class="form-control number-format" id="jumlah" name="jumlah" step="0.01" required>
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="keterangan">Keterangan</label>
@@ -575,6 +575,57 @@
             document.addEventListener('DOMContentLoaded', function() {
                 const petaniIdInput = document.getElementById('petani_id');
 
+
+                const numberInputs = document.querySelectorAll('.number-format');
+
+
+
+                numberInputs.forEach(input => {
+                    input.addEventListener('input', function(e) {
+                        // Simpan posisi kursor
+                        let cursorPosition = this.selectionStart;
+
+                        // Hapus semua koma
+                        let originalValue = this.value.replace(/,/g, '');
+
+                        // Batasi panjang maksimal (opsional)
+                        originalValue = originalValue.slice(0, 15);
+
+                        // Validasi hanya angka
+                        if (!/^\d*$/.test(originalValue)) {
+                            // Jika ada karakter tidak valid, kembalikan ke kondisi sebelumnya
+                            this.value = this.value.slice(0, cursorPosition - 1) +
+                                this.value.slice(cursorPosition);
+                            return;
+                        }
+
+                        // Format dengan pemisah ribuan
+                        let formattedValue = originalValue.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+                        // Set nilai yang diformat
+                        this.value = formattedValue;
+
+                        // Sesuaikan posisi kursor
+                        let newCursorPosition = cursorPosition +
+                            (formattedValue.length - originalValue.length);
+
+                        // Set ulang posisi kursor
+                        this.setSelectionRange(newCursorPosition, newCursorPosition);
+                    });
+
+                    // Event listener untuk mendapatkan nilai asli
+                    input.addEventListener('change', function(e) {
+                        let rawValue = this.value.replace(/,/g, '');
+                        this.setAttribute('data-raw-value', rawValue);
+                    });
+
+                    // Format nilai yang sudah ada pada saat dimuat
+                    let initialValue = input.value.replace(/,/g, '');
+                    input.value = initialValue.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                });
+
+
+
                 // Fungsi untuk setup autocomplete
                 // Fungsi untuk setup autocomplete
                 function setupAutocomplete(inputId, resultsId, url, onSelectCallback) {
@@ -678,6 +729,13 @@
                         event.preventDefault();
                         const formData = new FormData(form);
 
+                        // Ambil nilai `jumlah` dari formData dan hapus semua koma
+                        let jumlah = formData.get('jumlah');
+                        if (jumlah) {
+                            jumlah = jumlah.replace(/,/g, ''); // Hapus semua koma
+                            formData.set('jumlah', jumlah); // Perbarui nilai di formData
+                        }
+
                         fetch(form.action, {
                                 method: 'POST',
                                 body: formData,
@@ -771,6 +829,16 @@
                         }
 
                         const formData = new FormData(this);
+
+                        // Ambil nilai `jumlah` dari formData dan hapus semua koma
+                        let jumlah = formData.get('jumlah');
+                        console.log("Sebelum dihapus koma:", jumlah); // Debug
+                        if (jumlah) {
+                            jumlah = jumlah.replace(/,/g, ''); // Hapus semua koma
+                            formData.set('jumlah', jumlah); // Perbarui nilai di formData
+                            console.log("Setelah dihapus koma:", jumlah); // Debug
+                        }
+
                         // Ensure petani_id is added to formData
                         formData.set('petani_id', petaniIdInput.value);
                         console.log('Petani ID before send:', petaniIdInput.value);

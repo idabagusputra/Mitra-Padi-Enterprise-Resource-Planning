@@ -417,7 +417,7 @@
                     </div>
                     <div class="form-group">
                         <label for="jumlah">Jumlah</label>
-                        <input type="text" class="form-control number-format" id="jumlah" name="jumlah" inputmode="numeric" required>
+                        <input type="text" class="form-control number-format" inputmode="numeric" id="jumlah" name="jumlah" inputmode="numeric" required>
                     </div>
                     <div class="form-group">
                         <label for="bunga">Bunga (%)</label>
