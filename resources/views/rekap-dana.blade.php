@@ -59,7 +59,7 @@
                         <div class="form-group">
                             <label for="total_kredit" class="form-control-label">Total Kredit Petani</label>
                             <input class="form-control readonly-transparent" type="text"
-                                value="Rp. {{ number_format($totalKreditPetani, 2, ',', '.') }}"
+                                value="Rp. {{ number_format($totalKreditPetani, 2, '.', ',') }}"
                                 readonly>
                         </div>
                     </div>
@@ -67,7 +67,7 @@
                         <div class="form-group">
                             <label for="total_kredit" class="form-control-label">Total Kredit Nasabah Palu</label>
                             <input class="form-control readonly-transparent" type="text"
-                                value="Rp. {{ number_format($totalKreditNasabahPalu, 2, ',', '.') }}"
+                                value="Rp. {{ number_format($totalKreditNasabahPalu, 2, '.', ',') }}"
                                 readonly>
                         </div>
                     </div>
@@ -158,68 +158,88 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Number formatting script from the original blade (you can copy the exact script from the previous template)
+        // Format number inputs
         const numberInputs = document.querySelectorAll('.number-format');
 
         numberInputs.forEach(input => {
             // Format saat halaman dimuat
             formatNumber(input);
 
-            // Mencegah input selain angka
-            input.addEventListener('keypress', function(e) {
-                if (!/[\d]/.test(e.key) &&
-                    e.key !== 'Backspace' &&
-                    e.key !== 'Delete' &&
-                    e.key !== 'ArrowLeft' &&
-                    e.key !== 'ArrowRight' &&
-                    e.key !== 'Tab') {
-                    e.preventDefault();
-                }
-            });
-
-            // Mencegah paste konten selain angka
-            input.addEventListener('paste', function(e) {
-                e.preventDefault();
-                const pastedText = (e.clipboardData || window.clipboardData).getData('text');
-                if (/^\d+$/.test(pastedText)) {
-                    const value = this.value.replace(/\D/g, '');
-                    this.dataset.rawValue = value;
-                    formatNumber(this);
-                }
-            });
-
             // Format saat input berubah
             input.addEventListener('input', function(e) {
-                let value = this.value.replace(/\D/g, '');
+                let value = this.value; // Ambil seluruh input
                 this.dataset.rawValue = value;
-                formatNumber(this);
-            });
-
-            // Saat fokus, tampilkan nilai asli
-            input.addEventListener('focus', function(e) {
-                this.value = this.dataset.rawValue;
-                // Posisikan kursor di akhir
-                const length = this.value.length;
-                this.setSelectionRange(length, length);
-            });
-
-            // Saat blur, format ulang
-            input.addEventListener('blur', function(e) {
                 formatNumber(this);
             });
         });
 
         function formatNumber(input) {
-            let value = input.value.replace(/\D/g, '');
+            let value = input.value;
+
+            // Menyimpan nilai mentah tanpa format
             input.dataset.rawValue = value;
 
-            if (value !== '') {
-                value = parseInt(value);
-                input.value = value.toLocaleString('id-ID');
+            // Pisahkan bagian integer dan desimal
+            let [integer, decimal] = value.split('.');
+
+            // Hapus semua karakter yang tidak valid dari bagian integer (kecuali angka)
+            integer = integer.replace(/[^\d]/g, '');
+
+            // Format bagian integer dengan koma sebagai pemisah ribuan
+            if (integer) {
+                integer = integer.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
             }
+
+            // Gabungkan kembali bagian integer dan desimal jika ada
+            if (decimal !== undefined) {
+                value = integer + '.' + decimal;
+            } else {
+                value = integer;
+            }
+
+            // Mengatur nilai input field dengan format yang benar
+            input.value = value;
         }
 
         // Form submission handling to send raw values
         document.querySelector('form').addEventListener('submit', function(e) {
+            // List of fields to remove commas and convert to numeric
+            const fieldsToClean = [
+                'bri',
+                'bni',
+                'tunai',
+                'mama',
+                'stok_beras_jumlah',
+                'stok_beras_harga',
+                'stok_beras_total',
+                'ongkos_jemur_jumlah',
+                'ongkos_jemur_harga',
+                'ongkos_jemur_total',
+                'beras_terpinjam_jumlah',
+                'beras_terpinjam_harga',
+                'beras_terpinjam_total',
+                'pinjaman_bank',
+                'titipan_petani',
+                'utang_beras',
+                'utang_ke_operator'
+            ];
+
+            // Process each input before submission
+            fieldsToClean.forEach(fieldName => {
+                const input = document.querySelector(`[name="${fieldName}"]`);
+                if (input) {
+                    // Remove all commas
+                    let cleanValue = input.value.replace(/,/g, '');
+
+                    // Convert to a valid numeric value
+                    cleanValue = parseFloat(cleanValue) || '0';
+
+                    // Set the cleaned value back to the input as the raw value
+                    input.dataset.rawValue = cleanValue.toString();
+                }
+            });
+
+            // Set all number inputs to their raw values for submission
             numberInputs.forEach(input => {
                 input.value = input.dataset.rawValue;
             });
