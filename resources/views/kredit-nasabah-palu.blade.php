@@ -26,6 +26,7 @@
     .form-control,
     .btn {
         height: 40px;
+
     }
 
     body {
@@ -48,6 +49,8 @@
     .form-select {
         width: 100%;
     }
+
+
 
 
     /* Landscape Mode (Desktop/Tablet Horizontal) */
@@ -98,7 +101,7 @@
     /* Portrait Mode (Tablet/Mobile Vertical) */
     @media (max-width: 768px) and (orientation: portrait) {
         .card-header {
-            padding-bottom: 0 !important;
+            padding-bottom: 3 !important;
         }
 
         .d-flex.flex-column.flex-md-row {
@@ -128,6 +131,9 @@
 
         .btn {
             height: auto;
+            margin-bottom: 3 !important;
+
+            padding-bottom: 3 !important;
         }
 
         /* Adjust button styling for portrait mode */
@@ -209,6 +215,36 @@
                                     <!-- Bagian Label -->
                                     <h5 class="mb-3 mb-md-0">Manajemen Kredit Nasabah Palu</h5>
 
+                                    <!-- Bagian Dropdown -->
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <div style="width: 150px;">
+
+                                            <select name="sort" id="sort-order" class="form-select" onchange="this.form.submit()">
+                                                <option value="desc" {{ request('sort', 'desc') == 'desc' ? 'selected' : '' }}>Terbaru</option>
+                                                <option value="asc" {{ request('sort') == 'asc' ? 'selected' : '' }}>Terlama</option>
+                                            </select>
+
+                                        </div>
+
+                                        <div style="width: 150px;">
+
+                                            <select name="status" id="status-filter" class="form-select" onchange="this.form.submit()">
+                                                <option value="">Semua Status</option>
+                                                <option value="1" {{ request('status') == '1' ? 'selected' : '' }}>Lunas</option>
+                                                <option value="0" {{ request('status') == '0' ? 'selected' : '' }}>Belum Lunas</option>
+                                            </select>
+
+                                        </div>
+
+                                        <div style="width: 150px;">
+                                            <button class="btn w-100 bg-gradient-primary d-flex align-items-center justify-content-center" type="button" id="btn-id" data-bs-toggle="modal" style="width: 150px; margin: 0;" data-bs-target="#addKreditModal">
+                                                <i class="bi bi-plus-square me-2"></i>
+                                                <span>Kredit Baru</span>
+                                            </button>
+                                        </div>
+
+
+                                    </div>
 
 
 
@@ -239,10 +275,10 @@
                                     </form> -->
 
 
-                                    <button class="btn w-100 btn-baru bg-gradient-primary d-flex align-items-center justify-content-center mt-3" type="button" id="btn-id" data-bs-toggle="modal" data-bs-target="#addKreditModal">
+                                    <!-- <button class="btn w-100 btn-baru bg-gradient-primary d-flex align-items-center justify-content-center mt-3" type="button" id="btn-id" data-bs-toggle="modal" data-bs-target="#addKreditModal">
                                         <i class=" bi bi-plus-square me-2"></i>
                                         <span>Kredit Baru</span>
-                                    </button>
+                                    </button> -->
 
 
 
