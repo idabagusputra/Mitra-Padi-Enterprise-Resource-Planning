@@ -298,15 +298,15 @@
             });
 
             // // Event listener untuk tombol Print
-            // const printButton = document.getElementById('printPdf');
-            // if (printButton) {
-            //     printButton.addEventListener('click', function() {
-            //         const pdfViewer = document.getElementById('pdfViewer');
-            //         if (pdfViewer && pdfViewer.contentWindow) {
-            //             pdfViewer.contentWindow.print();
-            //         }
-            //     });
-            // }
+            const printButton = document.getElementById('printPdf');
+            if (printButton) {
+                printButton.addEventListener('click', function() {
+                    const pdfViewer = document.getElementById('pdfViewer');
+                    if (pdfViewer && pdfViewer.contentWindow) {
+                        pdfViewer.contentWindow.print();
+                    }
+                });
+            }
         }
 
         // Get the sidenav, icon, and backdrop elements

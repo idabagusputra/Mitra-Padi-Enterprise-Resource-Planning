@@ -570,28 +570,28 @@
                 pdfModal.show();
 
                 // Add print functionality
-                document.getElementById('printPdf').addEventListener('click', function() {
-                    const pdfViewer = document.getElementById('pdfViewer');
-                    const pdfUrl = pdfViewer.getAttribute('src');
-
-                    // Bangun URL untuk ESC/POS
-                    const escposUrl = `print://escpos.org/escpos/bt/print?srcTp=uri&srcObj=pdf&numCopies=1&src=${encodeURIComponent(pdfUrl)}`;
-
-                    // Debug
-                    console.log(JSON.stringify({
-                        pdf_url: pdfUrl,
-                        print_url: escposUrl
-                    }, null, 2));
-
-                    // Panggil URL cetak
-                    window.location.href = escposUrl;
-                });
-
-                // // Event listener for Print button
                 // document.getElementById('printPdf').addEventListener('click', function() {
-                //     const pdfViewer = document.getElementById('pdfViewer').contentWindow;
-                //     pdfViewer.print();
+                //     const pdfViewer = document.getElementById('pdfViewer');
+                //     const pdfUrl = pdfViewer.getAttribute('src');
+
+                //     // Bangun URL untuk ESC/POS
+                //     const escposUrl = `print://escpos.org/escpos/bt/print?srcTp=uri&srcObj=pdf&numCopies=1&src=${encodeURIComponent(pdfUrl)}`;
+
+                //     // Debug
+                //     console.log(JSON.stringify({
+                //         pdf_url: pdfUrl,
+                //         print_url: escposUrl
+                //     }, null, 2));
+
+                //     // Panggil URL cetak
+                //     window.location.href = escposUrl;
                 // });
+
+                // Event listener for Print button
+                document.getElementById('printPdf').addEventListener('click', function() {
+                    const pdfViewer = document.getElementById('pdfViewer').contentWindow;
+                    pdfViewer.print();
+                });
             });
         });
 
