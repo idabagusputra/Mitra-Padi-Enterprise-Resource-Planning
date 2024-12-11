@@ -356,12 +356,23 @@
                     const data = await response.json();
 
                     if (data.pdfPath) {
+
+                        // Ekstrak nama file dari path
+                        const fileName = data.pdfPath.split('/').pop();
+                        const cleanFileName = fileName.substring(0, fileName.lastIndexOf('_'));
+
+                        // Ekstrak ID dan tanggal
+                        const parts = cleanFileName.split('_');
+                        const id = parts[parts.length - 2];
+                        const date = parts[parts.length - 1];
+
+
                         // Set src viewer PDF
                         const pdfViewer = document.getElementById('pdfViewer');
                         pdfViewer.src = data.pdfPath;
 
-                        // Update modal title
-                        document.getElementById('pdfModalLabel').textContent = `Rekapan Dana #${gilingId}`;
+                        // Update modal title dengan format baru
+                        document.getElementById('pdfModalLabel').textContent = `Rekapan Kredit ${id} (${date})`;
 
                         // Tampilkan modal dengan opsi backdrop yang dimodifikasi
                         const pdfModal = new bootstrap.Modal(document.getElementById('pdfModal'), {
