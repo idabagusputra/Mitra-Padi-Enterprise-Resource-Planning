@@ -532,30 +532,30 @@
                 const gilingId = this.getAttribute('data-id');
                 const pdfPath = `/receipts/receipt-${gilingId}.pdf`;
 
-                // // Set src viewer PDF
-                // document.getElementById('pdfViewer').src = pdfPath;
+                // Set src viewer PDF
+                document.getElementById('pdfViewer').src = pdfPath;
 
 
-                fetch(pdfPath, {
-                        method: 'HEAD'
-                    })
-                    .then(response => {
-                        if (!response.ok && response.status === 404) {
-                            // Jika file tidak ada, jalankan fetch dari R2
-                            return fetch(`/api/pdf-url/${gilingId}`);
-                        }
-                        return Promise.resolve(response);
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data && data.pdf_url) {
-                            document.getElementById('pdfViewer').setAttribute('src', data.pdf_url);
-                        }
-                    })
-                    .catch(error => {
-                        console.error(error);
-                        // Handle error appropriately (optional)
-                    });
+                // fetch(pdfPath, {
+                //         method: 'HEAD'
+                //     })
+                //     .then(response => {
+                //         if (!response.ok && response.status === 404) {
+                //             // Jika file tidak ada, jalankan fetch dari R2
+                //             return fetch(`/api/pdf-url/${gilingId}`);
+                //         }
+                //         return Promise.resolve(response);
+                //     })
+                //     .then(response => response.json())
+                //     .then(data => {
+                //         if (data && data.pdf_url) {
+                //             document.getElementById('pdfViewer').setAttribute('src', data.pdf_url);
+                //         }
+                //     })
+                //     .catch(error => {
+                //         console.error(error);
+                //         // Handle error appropriately (optional)
+                //     });
 
 
                 // Update modal title
