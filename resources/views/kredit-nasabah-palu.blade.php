@@ -213,7 +213,7 @@
                                 <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
 
                                     <!-- Bagian Label -->
-                                    <h5 class="mb-3 mb-md-0">Manajemen Kredit Nasabah Palu</h5>
+                                    <h5 class="mb-3 mb-md-0">Kredit Nasabah Palu</h5>
 
                                     <!-- Bagian Dropdown -->
                                     <div class="d-flex flex-wrap gap-2">
