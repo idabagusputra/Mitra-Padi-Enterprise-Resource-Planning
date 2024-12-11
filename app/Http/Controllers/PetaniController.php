@@ -67,7 +67,7 @@ class PetaniController extends Controller
         $validator = Validator::make($request->all(), [
             'nama' => 'required|string|max:255',
             'alamat' => 'required|string',
-            'no_telepon' => 'required|string|max:20',
+            'no_telepon' => 'nullable|string|max:20',  // Menambahkan 'nullable' untuk mengizinkan nilai null
         ]);
 
         if ($validator->fails()) {
@@ -98,7 +98,7 @@ class PetaniController extends Controller
         $validator = Validator::make($request->all(), [
             'nama' => 'required|string|max:255',
             'alamat' => 'required|string',
-            'no_telepon' => 'required|string|max:20',
+            'no_telepon' => 'nullable|string|max:20',  // Menambahkan 'nullable' untuk mengizinkan nilai null
         ]);
 
         if ($validator->fails()) {

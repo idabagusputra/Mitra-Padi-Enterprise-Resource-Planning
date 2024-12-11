@@ -252,7 +252,7 @@
                                     <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">ID</th>
                                     <th class="text-uppercase text-primary font-weight-bolder ps-2" style="font-size: 0.85rem;">Nama</th>
                                     <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Alamat</th>
-                                    <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">No Telepon</th>
+                                    <!-- <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">No Telepon</th> -->
                                     <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Total Hutang</th>
                                     <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Action</th>
                                 </tr>
@@ -269,9 +269,9 @@
                                     <td class="text-center">
                                         <p class="text-xs font-weight-bold mb-0">{{ $petani->alamat }}</p>
                                     </td>
-                                    <td class="text-center">
+                                    <!-- <td class="text-center">
                                         <p class="text-xs font-weight-bold mb-0">{{ $petani->no_telepon }}</p>
-                                    </td>
+                                    </td> -->
                                     <td class="text-center">
                                         <p class="text-xs font-weight-bold mb-0">Rp {{ number_format($petani->total_hutang, 0, ',', '.') }},00</p>
                                     </td>
@@ -384,10 +384,10 @@
                         <label for="alamat">Alamat</label>
                         <input type="text" class="form-control" id="alamat" name="alamat" required>
                     </div>
-                    <div class="form-group">
+                    <!-- <div class="form-group">
                         <label for="no_telepon">No Telepon</label>
                         <input type="text" class="form-control" id="no_telepon" name="no_telepon" inputmode="numeric" required>
-                    </div>
+                    </div> -->
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
@@ -419,10 +419,10 @@
                         <label for="alamat">Alamat</label>
                         <input type="text" class="form-control" id="alamat" name="alamat" value="{{ $petani->alamat }}" required>
                     </div>
-                    <div class="form-group">
+                    <!-- <div class="form-group">
                         <label for="no_telepon">No Telepon</label>
                         <input type="text" class="form-control" id="no_telepon" name="no_telepon" value="{{ $petani->no_telepon }}" required>
-                    </div>
+                    </div> -->
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
