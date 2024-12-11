@@ -252,6 +252,8 @@ class DaftarGilingController extends Controller
 
 
 
+
+
     private function reverseKreditChanges(Giling $giling)
     {
         Log::info('Memulai proses reverse kredit untuk Giling ID: ' . $giling->id);
@@ -384,5 +386,16 @@ class DaftarGilingController extends Controller
 
         // Delete the Giling record
         $giling->delete();
+    }
+
+    public function getPdfUrl($gilingId)
+    {
+        $giling = DB::table('daftar_gilings')->where('id', $gilingId)->first();
+
+        if (!$giling || !$giling->s3_url) {
+            return response()->json(['error' => 'PDF URL not found'], 404);
+        }
+
+        return response()->json(['pdf_url' => $giling->s3_url], 200);
     }
 }

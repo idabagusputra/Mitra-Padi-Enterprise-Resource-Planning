@@ -532,8 +532,31 @@
                 const gilingId = this.getAttribute('data-id');
                 const pdfPath = `/receipts/receipt-${gilingId}.pdf`;
 
-                // Set src viewer PDF
-                document.getElementById('pdfViewer').src = pdfPath;
+                // // Set src viewer PDF
+                // document.getElementById('pdfViewer').src = pdfPath;
+
+
+                fetch(pdfPath, {
+                        method: 'HEAD'
+                    })
+                    .then(response => {
+                        if (!response.ok && response.status === 404) {
+                            // Jika file tidak ada, jalankan fetch dari R2
+                            return fetch(`/api/pdf-url/${gilingId}`);
+                        }
+                        return Promise.resolve(response);
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data && data.pdf_url) {
+                            document.getElementById('pdfViewer').setAttribute('src', data.pdf_url);
+                        }
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        // Handle error appropriately (optional)
+                    });
+
 
                 // Update modal title
                 document.getElementById('pdfModalLabel').textContent = `Receipt #${gilingId}`;
@@ -569,7 +592,42 @@
 
                 pdfModal.show();
 
-                // Add print functionality
+                document.getElementById('printPdf').addEventListener('click', async function() {
+                    const pdfViewer = document.getElementById('pdfViewer');
+
+                    try {
+                        // Ambil URL dari backend
+                        const response = await fetch(`/api/pdf-url/${gilingId}`);
+                        const data = await response.json();
+
+                        if (!response.ok) {
+                            throw new Error(data.error || 'Failed to fetch PDF URL');
+                        }
+
+                        const pdfUrl = data.pdf_url;
+
+                        // // Set URL ke iframe (opsional)
+                        // pdfViewer.setAttribute('src', pdfUrl);
+
+                        // Bangun URL untuk ESC/POS
+                        const escposUrl = `print://escpos.org/escpos/bt/print?srcTp=uri&srcObj=pdf&numCopies=1&src=${encodeURIComponent(pdfUrl)}`;
+
+                        // Debug
+                        console.log(JSON.stringify({
+                            pdf_url: pdfUrl,
+                            print_url: escposUrl
+                        }, null, 2));
+
+                        // Panggil URL cetak
+                        window.location.href = escposUrl;
+                    } catch (error) {
+                        console.error('Error:', error.message);
+                        alert('Gagal mengambil URL PDF untuk dicetak.');
+                    }
+                });
+
+
+                // // Add print functionality
                 // document.getElementById('printPdf').addEventListener('click', function() {
                 //     const pdfViewer = document.getElementById('pdfViewer');
                 //     const pdfUrl = pdfViewer.getAttribute('src');
@@ -587,11 +645,11 @@
                 //     window.location.href = escposUrl;
                 // });
 
-                // Event listener for Print button
-                document.getElementById('printPdf').addEventListener('click', function() {
-                    const pdfViewer = document.getElementById('pdfViewer').contentWindow;
-                    pdfViewer.print();
-                });
+                // // Event listener for Print button
+                // document.getElementById('printPdf').addEventListener('click', function() {
+                //     const pdfViewer = document.getElementById('pdfViewer').contentWindow;
+                //     pdfViewer.print();
+                // });
             });
         });
 

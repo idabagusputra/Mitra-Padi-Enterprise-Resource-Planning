@@ -132,6 +132,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/logout', [SessionsController::class, 'destroy']);
     Route::get('/user-profile', [InfoUserController::class, 'create']);
     Route::post('/user-profile', [InfoUserController::class, 'store']);
+
+
+    Route::get('/daftar-gilings/{id}/url', [DaftarGilingController::class, 'getS3Url']);
+    Route::get('/api/pdf-url/{gilingId}', [DaftarGilingController::class, 'getPdfUrl']);
 });
 
 Route::group(['middleware' => 'guest'], function () {
