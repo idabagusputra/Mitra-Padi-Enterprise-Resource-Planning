@@ -52,7 +52,7 @@
     }
 
     #search-results .dropdown-item:last-child {
-        border-bottom: none;
+        border-bottom: 1px;
     }
 
     #search-results .dropdown-item:hover {
