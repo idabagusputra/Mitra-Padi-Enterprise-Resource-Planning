@@ -371,7 +371,7 @@
                 </div>
 
 
-                <h6 class="mb-3 mt-4 text-primary">{{ __('Pengambilan') }}</h6>
+                <h6 class="mb-3 mt-2 text-primary">{{ __('Pengambilan') }}</h6>
                 <div id="pengambilans">
 
                 </div>
