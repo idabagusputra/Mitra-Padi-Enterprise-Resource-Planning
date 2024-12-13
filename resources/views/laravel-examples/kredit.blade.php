@@ -416,109 +416,114 @@
 
 
 
-                                    <!-- Edit Kredit Modal -->
-                                    @foreach($kredits as $kredit)
 
-                                    <div class="modal fade" id="editKreditModal{{ $kredit->id }}" tabindex="-1" role="dialog" aria-labelledby="editKreditModalLabel{{ $kredit->id }}" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="editKreditModalLabel{{ $kredit->id }}">Edit Kredit</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <form id="editKreditForm{{ $kredit->id }}" action="{{ route('kredit.update', $kredit->id) }}" method="POST">
-                                                    @csrf
-                                                    @method('PUT')
-                                                    <!-- ... (form fields) ... -->
-                                                    <div class="modal-body">
-                                                        <div class="form-group">
-                                                            <label for="petani_id">Petani</label>
-                                                            <select class="form-control" id="petani_id" name="petani_id" required>
-                                                                @foreach($petanis as $petani)
-                                                                <option value="{{ $petani->id }}" {{ $kredit->petani_id == $petani->id ? 'selected' : '' }}>{{ $petani->nama }}</option>
-                                                                @endforeach
-                                                            </select>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="tanggal">Tanggal</label>
-                                                            <input type="date" class="form-control" id="tanggal" name="tanggal" value="{{ date('Y-m-d', strtotime($kredit->tanggal)) }}" required>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="jumlah">Jumlah</label>
-                                                            <input type="text" inputmode="numeric" class="form-control number-format" id="jumlah" name="jumlah" step="0.01" value="{{ number_format($kredit->jumlah, 0, '', '') }}" required>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="keterangan">Keterangan</label>
-                                                            <textarea class="form-control" id="keterangan" name="keterangan" required>{{ $kredit->keterangan }}</textarea>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="status">Status</label>
-                                                            <select class="form-control" id="status" name="status" required>
-                                                                <option value="0" {{ $kredit->status == 0 ? 'selected' : '' }}>Belum Lunas</option>
-                                                                <option value="1" {{ $kredit->status == 1 ? 'selected' : '' }}>Lunas</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
-                                                        <button type="submit" class="btn bg-gradient-primary">Save changes</button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    @endforeach
-
-                                    <!-- Add Kredit Modal -->
-                                    <div class="modal fade" id="addKreditModal" tabindex="-1" role="dialog" aria-labelledby="addKreditModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="addKreditModalLabel">Add New Kredit</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <form action="{{ route('kredit.store') }}" method="POST">
-                                                    @csrf
-                                                    <div class="modal-body">
-                                                        <div class="form-group">
-                                                            <label for="petani_search">Petani</label>
-                                                            <div class="position-relative">
-                                                                <input type="text" class="form-control" id="petani_search" placeholder="Search for a petani..." autocomplete="off" required>
-                                                                <input type="hidden" id="petani_id" name="petani_id" required>
-                                                                <div id="petani_search_results" class="dropdown-menu w-100" style="display: none; position: absolute; max-height: 200px; overflow-y: auto; z-index: 1000;"></div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="tanggal">Tanggal</label>
-                                                            <input type="date" class="form-control" id="tanggal" name="tanggal" value="{{ date('Y-m-d') }}" required>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="jumlah">Jumlah</label>
-                                                            <input type="text" inputmode="numeric" class="form-control number-format" id="jumlah" name="jumlah" step="0.01" required>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="keterangan">Keterangan</label>
-                                                            <textarea class="form-control" id="keterangan" name="keterangan" required></textarea>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="status">Status</label>
-                                                            <select class="form-control" id="status" name="status" required>
-                                                                <option value="0">Belum Lunas</option>
-                                                                <option value="1">Lunas</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
-                                                        <button type="submit" class="btn bg-gradient-primary">Save changes</button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </table>
 
                             </div>
+
+                            <!-- Edit Kredit Modal -->
+                            @foreach($kredits as $kredit)
+
+                            <div class="modal fade" id="editKreditModal{{ $kredit->id }}" tabindex="-1" role="dialog" aria-labelledby="editKreditModalLabel{{ $kredit->id }}" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="editKreditModalLabel{{ $kredit->id }}">Edit Kredit</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <form id="editKreditForm{{ $kredit->id }}" action="{{ route('kredit.update', $kredit->id) }}" method="POST">
+                                            @csrf
+                                            @method('PUT')
+                                            <!-- ... (form fields) ... -->
+                                            <div class="modal-body">
+                                                <div class="form-group">
+                                                    <label for="petani_id">Petani</label>
+                                                    <select class="form-control" id="petani_id" name="petani_id" required>
+                                                        @foreach($petanis as $petani)
+                                                        <option value="{{ $petani->id }}" {{ $kredit->petani_id == $petani->id ? 'selected' : '' }}>{{ $petani->nama }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="tanggal">Tanggal</label>
+                                                    <input type="date" class="form-control" id="tanggal" name="tanggal" value="{{ date('Y-m-d', strtotime($kredit->tanggal)) }}" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="jumlah">Jumlah</label>
+                                                    <input type="text" inputmode="numeric" class="form-control number-format" id="jumlah" name="jumlah" step="0.01" value="{{ number_format($kredit->jumlah, 0, '', '') }}" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="keterangan">Keterangan</label>
+                                                    <textarea class="form-control" id="keterangan" name="keterangan" required>{{ $kredit->keterangan }}</textarea>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="status">Status</label>
+                                                    <select class="form-control" id="status" name="status" required>
+                                                        <option value="0" {{ $kredit->status == 0 ? 'selected' : '' }}>Belum Lunas</option>
+                                                        <option value="1" {{ $kredit->status == 1 ? 'selected' : '' }}>Lunas</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn bg-gradient-primary">Save changes</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            @endforeach
+
+                            <!-- Add Kredit Modal -->
+                            <div class="modal fade" id="addKreditModal" tabindex="-1" role="dialog" aria-labelledby="addKreditModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="addKreditModalLabel">Add New Kredit</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <form action="{{ route('kredit.store') }}" method="POST">
+                                            @csrf
+                                            <div class="modal-body">
+                                                <div class="form-group">
+                                                    <label for="petani_search">Petani</label>
+                                                    <div class="position-relative">
+                                                        <input type="text" class="form-control" id="petani_search" placeholder="Search for a petani..." autocomplete="off" required>
+                                                        <input type="hidden" id="petani_id" name="petani_id" required>
+                                                        <div id="petani_search_results" class="dropdown-menu w-100" style="display: none; position: absolute; max-height: 200px; overflow-y: auto; z-index: 1000;"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="tanggal">Tanggal</label>
+                                                    <input type="date" class="form-control" id="tanggal" name="tanggal" value="{{ date('Y-m-d') }}" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="jumlah">Jumlah</label>
+                                                    <input type="text" inputmode="numeric" class="form-control number-format" id="jumlah" name="jumlah" step="0.01" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="keterangan">Keterangan</label>
+                                                    <textarea class="form-control" id="keterangan" name="keterangan" required></textarea>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="status">Status</label>
+                                                    <select class="form-control" id="status" name="status" required>
+                                                        <option value="0">Belum Lunas</option>
+                                                        <option value="1">Lunas</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn bg-gradient-primary">Save changes</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
                             <!-- Pagination -->
                             <div class="d-flex pagination-css justify-content-between align-items-center ps-2 mt-3 mb-3 mx-3">
                                 <div>
