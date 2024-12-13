@@ -14,7 +14,7 @@
     }
 
     .input-group {
-        border-radius: 0.375rem;
+        border-radius: 0.25rem;
         overflow: hidden;
     }
 
@@ -25,7 +25,7 @@
 
     #petani_search {
         border-left: none;
-        border-radius: 0 0.375rem 0.375rem 0;
+        border-radius: 0 0.25rem 0.25rem 0;
     }
 
     #search-results {
@@ -36,7 +36,7 @@
         background-color: white;
         border: 1px solid #e9ecef;
         border-top: none;
-        border-radius: 0 0 0.375rem 0.375rem;
+        border-radius: 0 0 0.25rem 0.25rem;
         box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
         max-height: 200px;
         overflow-y: auto;
@@ -287,7 +287,7 @@
                             <div class="search-container" style="width: 100%;">
                                 <div class="form-group d-flex flex-row align-items-center" style="width: 100%;">
                                     <span class="btn btn-outline-primary input-group-text mb-0"
-                                        style="border-radius: 0.375rem 0 0 0.375rem;
+                                        style="border-radius: 0.25rem 0 0 0.25rem;
                    overflow: hidden;
                    border-right: none;
                    height: 40.3333px;
@@ -298,7 +298,7 @@
                                     <input type="text" id="petani_search" class="form-control"
                                         placeholder="Cari petani..."
                                         autocomplete="off"
-                                        style="border-radius: 0 0.375rem 0.375rem 0; height: 40.3333px; flex: 1 1 auto; width: 100%; min-width: 0;">
+                                        style="border-radius: 0 0.25rem 0.25rem 0; height: 40.3333px; flex: 1 1 auto; width: 100%; min-width: 0;">
                                     <input type="hidden" id="petani_id" name="petani_id">
                                 </div>
                                 <div id="search-results" style="display: none;"></div>
@@ -310,12 +310,12 @@
 
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label for="created_at" class="form-control-label">{{ __('Tanggal Gabah Masuk') }}</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="bi bi-calendar3"></i></span>
+                            <label for=" created_at" class="form-control-label">{{ __('Tanggal Gabah Masuk') }}</label>
+                            <div class="input-group" style="border-radius: 0.25rem 0 0 0.25rem;">
+                                <span class="input-group-text" style="border-radius: 0.25rem 0 0 0.25rem;"><i class="bi bi-calendar3"></i></span>
                                 <input type="date"
-                                    class="form-control @error('created_at') is-invalid @enderror"
-                                    id="created_at"
+                                    class="form-control @error('created_at') is-invalid @enderror" style=" border-top-right-radius: 0.25rem; border-bottom-right-radius: 0.25rem;"
+                                    id=" created_at"
                                     name="created_at"
                                     value="{{ now('Asia/Jakarta')->format('Y-m-d') }}"
                                     required>
