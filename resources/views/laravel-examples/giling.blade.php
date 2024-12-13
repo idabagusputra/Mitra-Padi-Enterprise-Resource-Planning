@@ -338,15 +338,15 @@
                 <div class="row">
                     @php
                     $fields = [
-                    'giling_kotor' => ['label' => 'Giling Kotor (kg)'],
-                    'pulang' => ['label' => 'Beras Pulang (kg)'],
-                    'pinjam' => ['label' => 'Pinjaman Beras (kg)'],
-                    'jemur' => ['label' => 'Jemur (kg)'],
-                    'jumlah_konga' => ['label' => 'Jumlah Konga'],
-                    'harga_konga' => ['label' => 'Harga Konga'],
-                    'harga_jual' => ['label' => 'Harga Beras Laku'],
-                    'jumlah_menir' => ['label' => 'Jumlah Menir'],
-                    'harga_menir' => ['label' => 'Harga Menir'],
+                    'giling_kotor' => ['label' => 'Giling Kotor (Kg)'],
+                    'pulang' => ['label' => 'Beras Pulang (Kg)'],
+                    'pinjam' => ['label' => 'Pinjaman Beras (Kg)'],
+                    'jemur' => ['label' => 'Jemur (Karung)'],
+                    'jumlah_konga' => ['label' => 'Jumlah Konga (Kg)'],
+                    'harga_konga' => ['label' => 'Harga Konga (Rp)'],
+                    'harga_jual' => ['label' => 'Harga Beras Laku (Rp)'],
+                    'jumlah_menir' => ['label' => 'Jumlah Menir (Kg)'],
+                    'harga_menir' => ['label' => 'Harga Menir (Rp)'],
                     ];
                     @endphp
                     @foreach($fields as $field => $data)
