@@ -284,19 +284,29 @@
                     <div class="col-md-8 "> <!-- Diubah dari col-md-6 menjadi col-md-12 -->
                         <div class="form-group">
                             <label for="petani_search" class="form-control-label">{{ __('Pilih Petani') }}</label>
-                            <div class="search-container ">
-                                <div class="input-group">
-
-                                    <span class="btn btn-outline-primary input-group-text mb-0" type="" aria-label="Cari">
+                            <div class="search-container" style="width: 100%;">
+                                <div class="form-group d-flex flex-row align-items-center" style="width: 100%;">
+                                    <span class="btn btn-outline-primary input-group-text mb-0"
+                                        style="border-radius: 0.375rem 0 0 0.375rem;
+                   overflow: hidden;
+                   border-right: none;
+                   height: 40.3333px;
+                   display: flex;
+                   align-items: center;">
                                         <i class="bi bi-search" aria-hidden="true"></i>
                                     </span>
-                                    <input type="text" id="petani_search" class="form-control" placeholder="Cari petani..." autocomplete="off">
+                                    <input type="text" id="petani_search" class="form-control"
+                                        placeholder="Cari petani..."
+                                        autocomplete="off"
+                                        style="border-radius: 0 0.375rem 0.375rem 0; height: 40.3333px; flex: 1 1 auto; width: 100%; min-width: 0;">
                                     <input type="hidden" id="petani_id" name="petani_id">
                                 </div>
                                 <div id="search-results" style="display: none;"></div>
                             </div>
+
                         </div>
                     </div>
+
 
                     <div class="col-md-4">
                         <div class="form-group">
