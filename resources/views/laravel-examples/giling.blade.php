@@ -387,7 +387,7 @@
                 <div class="row">
                     @php
                     $constants = [
-                    'biaya_giling' => ['label' => 'Biaya Giling', 'default' => 9],
+                    'biaya_giling' => ['label' => 'Biaya Giling (%)', 'default' => 9],
                     'biaya_buruh_giling' => ['label' => 'Biaya Buruh Giling', 'default' => 70],
                     'biaya_buruh_jemur' => ['label' => 'Biaya Buruh Jemur', 'default' => 7000],
                     'bunga' => ['label' => 'Bunga (%)', 'default' => 2],
