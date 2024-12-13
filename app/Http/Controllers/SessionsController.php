@@ -24,7 +24,7 @@ class SessionsController extends Controller
         // return redirect()->route('giling.index');
         // Cek jika sudah login, langsung arahkan ke halaman giling
         if (auth() && Auth::check()) {
-            return redirect()->route('giling.index');
+            return redirect()->route('kredit.index');
         }
 
         try {
@@ -42,7 +42,7 @@ class SessionsController extends Controller
                 session()->forget('_token');
                 session()->put('_token', csrf_token());
 
-                return redirect()->intended(route('giling.index'));
+                return redirect()->intended(route('kredit.index'));
             }
 
             return back()->withErrors(['email' => 'Email or password invalid.']);
