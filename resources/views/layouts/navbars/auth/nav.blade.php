@@ -121,7 +121,7 @@
                                 href="#"
                                 data-id="{{ $notification['id'] }}"
                                 data-bs-toggle="modal"
-                                data-bs-target="#pdfModalNav">
+                                data-bs-target="#pdfModal">
                                 <div class="d-flex py-1">
                                     <div class="avatar avatar-sm bg-gradient-secondary me-3 my-auto">
                                         <svg width="12px" height="12px" viewBox="0 0 43 36" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -219,7 +219,7 @@
 
 <!-- Modal PDF -->
 <!-- Modal PDF -->
-<div class="modal fade" id="pdfModalNav" tabindex="-1" aria-labelledby="pdfModalLabel" aria-hidden="true">
+<div class="modal fade" id="pdfModal" tabindex="-1" aria-labelledby="pdfModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -266,7 +266,7 @@
                 document.getElementById('pdfModalLabel').textContent = `Receipt #${gilingId}`;
 
                 // Tampilkan modal dengan opsi backdrop yang dimodifikasi
-                const pdfModal = new bootstrap.Modal(document.getElementById('pdfModalNav'), {
+                const pdfModal = new bootstrap.Modal(document.getElementById('pdfModal'), {
                     backdrop: 'static',
                     keyboard: false
                 });
@@ -285,7 +285,7 @@
         });
 
         // Event listener untuk tombol Close dan Print
-        const modal = document.getElementById('pdfModalNav');
+        const modal = document.getElementById('pdfModal');
         if (modal) {
             // Event saat modal ditutup
             modal.addEventListener('hidden.bs.modal', function() {
@@ -297,16 +297,16 @@
                 }
             });
 
-            // Event listener untuk tombol Print
-            const printButton = document.getElementById('printPdf');
-            if (printButton) {
-                printButton.addEventListener('click', function() {
-                    const pdfViewer = document.getElementById('pdfViewer');
-                    if (pdfViewer && pdfViewer.contentWindow) {
-                        pdfViewer.contentWindow.print();
-                    }
-                });
-            }
+            // // Event listener untuk tombol Print
+            // const printButton = document.getElementById('printPdf');
+            // if (printButton) {
+            //     printButton.addEventListener('click', function() {
+            //         const pdfViewer = document.getElementById('pdfViewer');
+            //         if (pdfViewer && pdfViewer.contentWindow) {
+            //             pdfViewer.contentWindow.print();
+            //         }
+            //     });
+            // }
         }
 
         // Get the sidenav, icon, and backdrop elements
