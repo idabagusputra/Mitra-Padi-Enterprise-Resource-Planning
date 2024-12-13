@@ -350,18 +350,26 @@
                     ];
                     @endphp
                     @foreach($fields as $field => $data)
+                    @php
+                    $label = $data['label'];
+                    $placeholder = str_contains($label, '(Kg)') ? 'Kilogram'
+                    : (str_contains($label, '(Karung)') ? 'Karung'
+                    : (str_contains($label, '(Rp)') ? 'Rupiah' : ''));
+                    @endphp
                     <div class="col-md-4 mb-3">
                         <div class="form-group">
-                            <label for="{{ $field }}" class="form-control-label">{{ __($data['label']) }}</label>
+                            <label for="{{ $field }}" class="form-control-label">{{ __($label) }}</label>
                             <input class="form-control number-format" type="text"
                                 name="{{ $field }}"
                                 id="{{ $field }}"
                                 inputmode="numeric"
+                                placeholder="{{ $placeholder }}"
                                 required>
                         </div>
                     </div>
                     @endforeach
                 </div>
+
 
                 <h6 class="mb-3 mt-4 text-primary">{{ __('Pengambilan') }}</h6>
                 <div id="pengambilans">
