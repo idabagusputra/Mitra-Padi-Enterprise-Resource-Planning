@@ -376,7 +376,7 @@
 
                 </div>
                 <div class="col-md-12 d-flex align-items-end mb-3">
-                    <button type="button" class="btn btn-css btn-primary add-pengambilan ">
+                    <button type="button" class="btn btn-css btn-primary bg-gradient-primary add-pengambilan ">
                         <i class="bi bi-plus-square me-2"></i>
                         <span>Tambah Pengambilan</span>
                     </button>
