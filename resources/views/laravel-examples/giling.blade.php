@@ -669,39 +669,39 @@
         }
 
 
-        // Add print functionality
-        document.getElementById('printPdf').addEventListener('click', function() {
-            const pdfViewer = document.getElementById('pdfViewer');
-            const pdfUrl = pdfViewer.getAttribute('src');
-            const fullPdfUrl = `https://mitrapadi.com/receipts/receipt-${gilingId}.pdf`;
+        // // Add print functionality
+        // document.getElementById('printPdf').addEventListener('click', function() {
+        //     const pdfViewer = document.getElementById('pdfViewer');
+        //     const pdfUrl = pdfViewer.getAttribute('src');
+        //     const fullPdfUrl = `https://mitrapadi.com/receipts/receipt-${gilingId}.pdf`;
 
-            // Bangun URL untuk ESC/POS
-            const escposUrl = `print://escpos.org/escpos/bt/print?srcTp=uri&srcObj=pdf&numCopies=1&src=${encodeURIComponent(fullPdfUrl)}`;
+        //     // Bangun URL untuk ESC/POS
+        //     const escposUrl = `print://escpos.org/escpos/bt/print?srcTp=uri&srcObj=pdf&numCopies=1&src=${encodeURIComponent(fullPdfUrl)}`;
 
-            // Debug
-            console.log(JSON.stringify({
-                pdf_url: fullPdfUrl,
-                print_url: escposUrl
-            }, null, 2));
+        //     // Debug
+        //     console.log(JSON.stringify({
+        //         pdf_url: fullPdfUrl,
+        //         print_url: escposUrl
+        //     }, null, 2));
 
-            // Panggil URL cetak
-            window.location.href = escposUrl;
-        });
+        //     // Panggil URL cetak
+        //     window.location.href = escposUrl;
+        // });
 
-        function initializeNumberFormatting(inputs) {
-            inputs.forEach(input => {
-                // Format saat halaman dimuat
-                formatNumber(input);
+        // function initializeNumberFormatting(inputs) {
+        //     inputs.forEach(input => {
+        //         // Format saat halaman dimuat
+        //         formatNumber(input);
 
-                // Format saat input berubah
-                input.addEventListener('input', function(e) {
-                    let value = this.value; // Ambil seluruh input
-                    this.dataset.rawValue = value;
-                    formatNumber(this);
-                });
-            });
+        //         // Format saat input berubah
+        //         input.addEventListener('input', function(e) {
+        //             let value = this.value; // Ambil seluruh input
+        //             this.dataset.rawValue = value;
+        //             formatNumber(this);
+        //         });
+        //     });
 
-        }
+        // }
 
         // Initialize existing number inputs when page loads
         document.addEventListener('DOMContentLoaded', function() {
@@ -782,11 +782,11 @@
         showPdfModal(latestGilingId);
         @endif
 
-        // // Event listener for Print button
-        // document.getElementById('printPdf').addEventListener('click', function() {
-        //     const pdfViewer = document.getElementById('pdfViewer').contentWindow;
-        //     pdfViewer.print();
-        // });
+        // Event listener for Print button
+        document.getElementById('printPdf').addEventListener('click', function() {
+            const pdfViewer = document.getElementById('pdfViewer').contentWindow;
+            pdfViewer.print();
+        });
     });
 </script>
 
