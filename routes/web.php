@@ -39,7 +39,6 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-
     // Petani routes
     Route::resource('petani', PetaniController::class);
     Route::get('/search-petani', [KreditController::class, 'search'])->name('search-petani');
