@@ -138,9 +138,19 @@ class DashboardController extends Controller
         }, $months);
 
 
+        // Ambil data dengan relasi 'petani' dan paginasi 13 entri per halaman
         $gilings = Giling::with(['petani'])
-            ->orderBy('id', 'desc') // Urutkan berdasarkan ID secara descending
-            ->paginate(13); // Paginate hasilnya, ambil 13 entri per halaman
+            ->orderBy('id', 'desc')
+            ->paginate(13);
+
+        // Kembalikan dalam format JSON
+        return response()->json([
+            'data' => $gilings->items(), // Menampilkan data yang diambil
+            'current_page' => $gilings->currentPage(), // Halaman saat ini
+            'last_page' => $gilings->lastPage(), // Halaman terakhir
+            'total' => $gilings->total(), // Jumlah total entri
+            'per_page' => $gilings->perPage() // Jumlah entri per halaman
+        ]);
 
         // Ambil data PembayaranKredit terkait dengan ID Giling terbaru
         $pembayaranKreditsLangsung = PembayaranKredit::with(['giling'])
