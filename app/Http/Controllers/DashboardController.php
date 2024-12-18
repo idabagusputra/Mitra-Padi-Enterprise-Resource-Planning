@@ -5,6 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\DaftarGiling;
 use App\Models\Petani;
 use App\Models\Kredit;
+use App\Models\Giling;
+use App\Models\Debit;
+use App\Models\RekapDana;
+use App\Models\RekapKredit;
+use App\Models\PembayaranKredit;
+
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -130,7 +137,128 @@ class DashboardController extends Controller
             return $monthDate->format('M Y');
         }, $months);
 
-        return view('dashboard', compact('totalKeseluruhanBulanIniOngkosGiling', 'pendapatanBerasTerjualTotal', 'pendapatanBerasTerjualTotalPerBulan', 'totalPetani', 'totalKreditBelumLunas', 'jumlahPetaniBelumLunas', 'totalBerasBersih', 'dataOngkosGiling', 'dataBerasBersih', 'dataPendapatanTerjual', 'monthLabels', 'totalBerasBersihBulanIni', 'totalKeseluruhanOngkosGiling'));
+
+        // Ambil hanya 5 data Giling terbaru dengan relasi yang relevan
+        $gilings = Giling::with(['petani.kredits'])
+            ->orderBy('id', 'desc') // Urutkan berdasarkan ID secara descending
+            ->take(10) // Batasi hanya 5 data
+            ->get();
+
+        // Ambil data PembayaranKredit terkait dengan ID Giling terbaru
+        $pembayaranKreditsLangsung = PembayaranKredit::with(['giling'])
+            ->whereIn('giling_id', $gilings->pluck('id')) // Ambil hanya PembayaranKredit yang memiliki relasi dengan giling ID dari giling terbaru
+            ->get();
+
+        $data = [];
+        $hutangYangDibayar = 0; // Variabel untuk menghitung total hutang yang sudah dibayar
+
+        // Proses data untuk tabel
+        foreach ($gilings as $giling) {
+            $petani = $giling->petani;
+
+            if ($petani && $petani->kredits->isNotEmpty()) {
+                $pembayaranKredits = $petani->kredits->filter(function ($kredit) use ($giling) {
+                    // Filter kredit berdasarkan 'pKredit_id' yang sama dengan ID giling
+                    return $kredit->pKredit_id == $giling->id;
+                });
+
+                $pembayaranKreditsTransaksi = $petani->kredits->filter(function ($kredit) use ($giling) {
+                    // Filter kredit berdasarkan 'pKredit_id' yang sama dengan ID giling
+                    return $kredit->pKredit_id == $giling->id && $kredit->status == true;
+                });
+
+                // Cek status dari pembayarankredits terkait
+                $status = $pembayaranKredits->every->status ? 'Lunas' : 'Belum Lunas';
+
+
+                // Ambil total hutang yang sudah dibayar terkait dengan giling_id
+                $hutangYangDibayar = $pembayaranKreditsLangsung->where('giling_id', $giling->id)->pluck('total_hutang')->sum();
+                // $hutangYangDibayar = $pembayaranKreditsLangsung->where('giling_id', $giling->id)->sum('jumlah');
+
+
+                // Hitung sisa utang yang belum lunas
+                $sisaUtang = $pembayaranKredits->where('status', false)->sum('jumlah');
+                if ($sisaUtang > 0) {
+                    $status = false;
+                } else {
+                    $status = true;
+                }
+
+                $sisaUtangFormatted = 'Rp ' . number_format($sisaUtang, 0, ',', '.');
+
+                // Formatkan sisa utang menjadi format Rupiah
+                $sisaUtang = 'Rp ' . number_format($sisaUtang, 0, ',', '.');
+
+                $data[] = [
+                    'id' => $petani->id,
+                    'petani' => $petani->nama,
+                    'transaksi' => $pembayaranKreditsTransaksi->count(), // Jumlah transaksi yang berkaitan
+                    'sisa_utang' => $sisaUtang,
+                    'status' => $status,
+                    'hutangYangDibayar' => 'Rp ' . number_format($hutangYangDibayar, 0, ',', '.'),
+                ];
+            }
+        }
+
+
+        $dataHistory = collect()
+            ->merge(Petani::latest()->get())
+            ->merge(Kredit::latest()->get())
+            ->merge(DaftarGiling::latest()->get())
+            ->merge(PembayaranKredit::latest()->get())
+            ->merge(RekapDana::latest()->get())
+            ->merge(RekapKredit::latest()->get())
+            ->merge(Debit::latest()->get())
+            ->sortByDesc('created_at')
+            ->take(50); // Batasi hanya 50 data
+
+        $histories = $dataHistory->map(function ($history) {
+            if ($history instanceof Petani && isset($history->nama) && isset($history->created_at)) {
+                return [
+                    'type' => 'Petani',
+                    'description' => 'Penambahan Petani Baru: ' . $history->nama,
+                    'date' => $history->created_at->format('d M H:i'),
+                ];
+            } elseif ($history instanceof Kredit && isset($history->jumlah, $history->petani, $history->created_at)) {
+                return [
+                    'type' => 'Kredit',
+                    'description' => 'Penambahan Kredit dengan jumlah Rp ' . number_format($history->jumlah, 0, ',', '.') . ' milik pentani: ' . $history->petani->nama,
+                    'date' => $history->created_at->format('d M H:i'),
+                ];
+            } elseif (
+                $history instanceof Debit && isset($history->jumlah, $history->petani, $history->created_at)
+            ) {
+                return [
+                    'type' => 'Debit',
+                    'description' => 'Penambahan Debit dengan jumlah Rp ' . number_format($history->jumlah, 0, ',', '.') . ' milik pentani: ' . $history->petani->nama,
+                    'date' => $history->created_at->format('d M H:i'),
+                ];
+            } elseif ($history instanceof RekapDana && isset($history->rekapan_dana, $history->created_at)) {
+                return [
+                    'type' => 'RekapDana',
+                    'description' => 'Pembuatan Rekapan Dana Rp ' . number_format($history->rekapan_dana, 0, ',', '.'),
+                    'date' => $history->created_at->format('d M H:i'),
+                ];
+            } elseif ($history instanceof RekapKredit && isset($history->rekapan_kredit, $history->created_at)) {
+                return [
+                    'type' => 'RekapKredit',
+                    'description' => 'Pembuatan Rekapan Kredit Rp ' . number_format($history->rekapan_kredit, 0, ',', '.'),
+                    'date' => $history->created_at->format('d M H:i'),
+                ];
+            } elseif ($history instanceof DaftarGiling && isset($history->dana_penerima, $history->petani, $history->created_at)) {
+                return [
+                    'type' => 'DaftarGiling',
+                    'description' => 'Pembuatan Nota Giling dengan Sisa Dana Rp ' . number_format($history->dana_penerima, 0, ',', '.') . ' milik pentani: ' . $history->petani->nama,
+                    'date' => $history->created_at->format('d M H:i'),
+                ];
+            }
+        })->filter()->toArray(); // Filter entri yang valid dan konversi ke array
+
+
+
+
+
+        return view('dashboard', compact('histories', 'data', 'totalKeseluruhanBulanIniOngkosGiling', 'pendapatanBerasTerjualTotal', 'pendapatanBerasTerjualTotalPerBulan', 'totalPetani', 'totalKreditBelumLunas', 'jumlahPetaniBelumLunas', 'totalBerasBersih', 'dataOngkosGiling', 'dataBerasBersih', 'dataPendapatanTerjual', 'monthLabels', 'totalBerasBersihBulanIni', 'totalKeseluruhanOngkosGiling'));
 
 
         // $currentYear = Carbon::now()->year;
