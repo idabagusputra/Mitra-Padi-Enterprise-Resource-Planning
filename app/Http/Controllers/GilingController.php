@@ -89,8 +89,8 @@ class GilingController extends Controller
                 'pengambilans' => 'nullable|array',
                 'pengambilans.*.keterangan' => 'required|string',
                 'pengambilans.*.keterangan_custom' => 'required_if:pengambilans.*.keterangan,custom',
-                'pengambilans.*.jumlah' => 'required|numeric',
-                'pengambilans.*.harga' => 'required|numeric',
+                'pengambilans.*.jumlah' => 'required|string',
+                'pengambilans.*.harga' => 'required|string',
             ]);
 
 
