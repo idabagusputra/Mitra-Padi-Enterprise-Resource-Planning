@@ -146,7 +146,6 @@ class DashboardController extends Controller
         // Ambil 12 data pertama
         $gilings = Giling::with(['petani.kredits'])
             ->orderBy('id', 'desc') // Urutkan berdasarkan ID secara descending
-            ->skip(1) // Lewati 1 data untuk mendapatkan 12 data berikutnya
             ->take(12)
             ->get();
 
