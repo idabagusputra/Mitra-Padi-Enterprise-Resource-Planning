@@ -243,7 +243,28 @@
             numberInputs.forEach(input => {
                 input.value = input.dataset.rawValue;
             });
+
+            if (this.getAttribute('data-submitting') === 'true') {
+                e.preventDefault();
+                return;
+            }
+
+            // Set flag bahwa form sedang disubmit
+            this.setAttribute('data-submitting', 'true');
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+
+            // Disable button dan tampilkan loading
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `
+        <div class="d-flex align-items-center">
+            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+            <span>Menyimpan...</span>
+        </div>
+    `;
         });
+
+
     });
 </script>
 
