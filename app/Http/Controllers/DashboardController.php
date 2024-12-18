@@ -189,14 +189,8 @@ class DashboardController extends Controller
                 ];
             }
         }
-        // Kembalikan dalam format JSON
-        $jsonData = [
-            'data' => array_values($data), // Menampilkan data yang diambil
-            'current_page' => $gilings->currentPage(), // Halaman saat ini
-            'last_page' => $gilings->lastPage(), // Halaman terakhir
-            'total' => $gilings->total(), // Jumlah total entri
-            'per_page' => $gilings->perPage() // Jumlah entri per halaman
-        ];
+        return response()->json($data);
+
 
         $dataHistory = collect()
             ->merge(Petani::withTrashed()->get()->map(function ($item) {
