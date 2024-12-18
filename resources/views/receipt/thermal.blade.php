@@ -157,29 +157,32 @@
             <div></div>
         </table>
 
+        @php
+        // Fungsi untuk menentukan jumlah desimal pada angka
+        function getDecimalPlaces($value) {
+        $value = (string)$value;
+        if (strpos($value, '.') !== false) {
+        return strlen(substr(strrchr($value, '.'), 1));
+        }
+        return 0; // Tidak ada desimal
+        }
+
+        // Mendapatkan jumlah desimal untuk kedua nilai
+        $decimalPlacesGilingKotor = getDecimalPlaces($giling->giling_kotor);
+        $decimalPlacesBerasJual = getDecimalPlaces($giling->calculateBerasBersih() - $giling->pulang);
+        $decimalPlacesBerasBersih = getDecimalPlaces($giling->calculateBerasBersih());
+        $decimalPlacesKonga = getDecimalPlaces($giling->jumlah_konga);
+        $decimalPlacesMenir = getDecimalPlaces($giling->jumlah_menir);
+        $decimalPlacesBuruhJemur = getDecimalPlaces($giling->jemur);
+        $decimalPlacesPJumlah = getDecimalPlaces($pengambilan->jumlah);
+        $decimalPlacesPHarga = getDecimalPlaces($pengambilan->harga);
+        $decimalPlacesPTHarga = getDecimalPlaces($pengambilan->jumlah * $pengambilan->harga);
+
+        @endphp
 
 
         <table>
 
-            @php
-            // Fungsi untuk menentukan jumlah desimal pada angka
-            function getDecimalPlaces($value) {
-            $value = (string)$value;
-            if (strpos($value, '.') !== false) {
-            return strlen(substr(strrchr($value, '.'), 1));
-            }
-            return 0; // Tidak ada desimal
-            }
-
-            // Mendapatkan jumlah desimal untuk kedua nilai
-            $decimalPlacesGilingKotor = getDecimalPlaces($giling->giling_kotor);
-            $decimalPlacesBerasJual = getDecimalPlaces($giling->calculateBerasBersih() - $giling->pulang);
-            $decimalPlacesBerasBersih = getDecimalPlaces($giling->calculateBerasBersih());
-            $decimalPlacesKonga = getDecimalPlaces($giling->jumlah_konga);
-            $decimalPlacesMenir = getDecimalPlaces($giling->jumlah_menir);
-            $decimalPlacesBuruhJemur = getDecimalPlaces($giling->jemur);
-
-            @endphp
 
 
 
@@ -306,9 +309,9 @@
             @foreach($giling->pengambilans as $index => $pengambilan)
             <tr class="calculation-row">
                 <td>{{ $index + 1 }}. {{ $pengambilan->keterangan }}</td>
-                <td>{{ number_format($pengambilan->jumlah) }}</td>
-                <td>Rp {{ number_format($pengambilan->harga) }}</td>
-                <td class="bold">Rp {{ number_format($pengambilan->jumlah * $pengambilan->harga) }}</td>
+                <td>{{ number_format($pengambilan->jumlah, $decimalPlacesPJumlah) }}</td>
+                <td>Rp {{ number_format($pengambilan->harga, $decimalPlacesPHarga) }}</td>
+                <td class="bold">Rp {{ number_format($pengambilan->jumlah * $pengambilan->harga, $decimalPlacesPTHarga) }}</td>
             </tr>
             @endforeach
             @else
