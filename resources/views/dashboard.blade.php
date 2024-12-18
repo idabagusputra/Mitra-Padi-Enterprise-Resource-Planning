@@ -37,6 +37,11 @@
             text-align: left;
             margin: 0;
         }
+
+        .col-lg-7.mt-0 {
+            padding-top: 24px !important;
+            /* Sesuaikan ukuran padding/margin yang diinginkan */
+        }
     }
 </style>
 
@@ -197,7 +202,7 @@
 <div class="row mt-md-4 mt-0">
 
 
-    <div class="col-lg-7 mb-4 mt-4">
+    <div class="col-lg-7 mb-4 mt-0">
         <div class="card z-index-2">
             <div class="card-header pb-0 mb-0">
                 <h6 class="ms-0 mt-2 mb-0">Grafik Laporan Hasil Giling (Kg)</h6>
