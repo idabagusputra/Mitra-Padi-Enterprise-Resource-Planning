@@ -138,11 +138,13 @@ class DashboardController extends Controller
         }, $months);
 
 
-        // Ambil data dengan relasi 'petani' dan paginasi 13 entri per halaman
+        // Ambil data dengan relasi 'petani', abaikan petani dengan id 187, dan paginasi 13 entri per halaman
         $gilings = Giling::with(['petani'])
+            ->whereDoesntHave('petani', function ($query) {
+                $query->where('id', 187);
+            })
             ->orderBy('id', 'desc')
             ->paginate(15);
-
 
         // Ambil data PembayaranKredit terkait dengan ID Giling terbaru
         $pembayaranKreditsLangsung = PembayaranKredit::with(['giling'])
