@@ -141,7 +141,7 @@ class DashboardController extends Controller
         // Ambil data dengan relasi 'petani' dan paginasi 13 entri per halaman
         $gilings = Giling::with(['petani'])
             ->orderBy('id', 'desc')
-            ->paginate(20);
+            ->paginate(15);
 
 
         // Ambil data PembayaranKredit terkait dengan ID Giling terbaru
