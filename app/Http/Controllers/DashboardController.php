@@ -196,6 +196,10 @@ class DashboardController extends Controller
         foreach ($gilings as $giling) {
             $petani = $giling->petani;
 
+            // Abaikan petani dengan ID 187
+            if ($petani && $petani->id === 187) {
+                continue; // Lewati iterasi ini jika petani memiliki ID 187
+            }
             // Hapus kondisi ketat pada kredits
             $pembayaranKredits = PembayaranKredit::where('giling_id', $giling->id)->get();
 
