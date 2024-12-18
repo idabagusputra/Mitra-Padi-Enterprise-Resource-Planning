@@ -180,7 +180,7 @@
 <div>
     <div>
         <div class="col-12">
-            <div class="card mb-4 mx-4">
+            <div class="card mb-4 ">
                 <div class="card-header pb-3 p-3 mx-2">
                     <form method="GET" action="{{ route('petani.index') }}">
                         <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
