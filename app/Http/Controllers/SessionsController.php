@@ -25,6 +25,7 @@ class SessionsController extends Controller
         // Cek jika sudah login, langsung arahkan ke halaman giling
         if (auth() && Auth::check()) {
             return redirect()->route('dashboard');
+            // return redirect()->route('kredit.index');
         }
 
         try {
@@ -42,6 +43,7 @@ class SessionsController extends Controller
                 session()->forget('_token');
                 session()->put('_token', csrf_token());
 
+                // return redirect()->intended(route('kredit.index'));
                 return redirect()->intended(route('dashboard'));
             }
 
