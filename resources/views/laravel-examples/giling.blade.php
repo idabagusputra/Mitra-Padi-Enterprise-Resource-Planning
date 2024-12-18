@@ -13,6 +13,11 @@
         position: relative;
     }
 
+    .form-control-label {
+        padding-left: 0;
+        margin-left: 0;
+    }
+
     .input-group {
         border-radius: 0.25rem;
         overflow: hidden;
@@ -242,13 +247,15 @@
 <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script> -->
 
 
+
+
 @section('content')
-<div class="container-fluid">
-    <div class="card">
-        <div class="card-header pb-0 px-3">
+<div class="container-fluid mx-0 px-0">
+    <div class="card mx-0 px-3">
+        <div class="card-header pb-0 px-2">
             <h6 class="mb-0 text-primary">{{ __('Kalkulasi Penggilingan Beras') }}</h6>
         </div>
-        <div class="card-body pt-4 p-3">
+        <div class="card-body pt-4 mx-2 px-0">
             @if ($errors->any())
             <div class="mt-3 alert alert-primary alert-dismissible fade show" role="alert">
                 <span class="alert-text text-white">{{ $errors->first() }}</span>
