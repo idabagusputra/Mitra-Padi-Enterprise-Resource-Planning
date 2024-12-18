@@ -426,7 +426,7 @@
             <div class="card-body p-3">
                 <div class="timeline timeline-one-side">
 
-                    @foreach($histories as $history)
+                    <!-- @foreach($histories as $history)
                     <div class="timeline-block">
                         <span class="timeline-step">
                             @if(isset($history['type']))
@@ -462,7 +462,64 @@
                             @endif
                         </div>
                     </div>
+                    @endforeach -->
+
+
+                    @foreach($histories as $history)
+                    <div class="timeline-block">
+                        <span class="timeline-step">
+                            @if(isset($history['type']))
+                            @switch($history['type'])
+                            @case('Petani')
+                            <i class="bi bi-person-fill-add text-info text-gradient"></i>
+                            @break
+                            @case('Kredit')
+                            <i class="bi bi-currency-dollar text-danger text-gradient"></i>
+                            @break
+                            @case('Debit')
+                            <i class="bi bi-currency-dollar text-success text-gradient"></i>
+                            @break
+                            @case('RekapDana')
+                            <i class="bi bi-file-earmark-check-fill text-warning text-gradient"></i>
+                            @break
+                            @case('RekapKredit')
+                            <i class="bi bi-file-earmark-check-fill text-warning text-gradient"></i>
+                            @break
+                            @case('DaftarGiling')
+                            <i class="bi bi-cart-plus-fill text-success text-gradient"></i>
+                            @break
+                            @case('PembayaranKredit')
+                            <i class="ni ni-credit-card text-warning text-gradient"></i>
+                            @break
+                            @endswitch
+                            @endif
+                        </span>
+                        <div class="timeline-content">
+                            @if(isset($history['description']) && isset($history['date']))
+                            @php
+                            $descriptionParts = explode('petani: ', $history['description'], 2);
+                            $beforePetani = $descriptionParts[0];
+                            $remainingText = isset($descriptionParts[1]) ? $descriptionParts[1] : '';
+                            $firstWord = explode(' ', $beforePetani, 2)[0]; // Ambil kata pertama dari sebelum 'petani:'
+                            $nameParts = explode(': ', $remainingText, 2);
+                            $farmerName = isset($nameParts[0]) ? $nameParts[0] : '';
+                            $remainingDetails = isset($nameParts[1]) ? $nameParts[1] : '';
+                            @endphp
+                            <h6 class="text-dark text-sm font-weight-bold mb-0">
+                                <strong>{{ $firstWord }}</strong> {{ $beforePetani }} petani: <strong>{{ $farmerName }}</strong> <span style="font-weight: normal;">{{ $remainingDetails }}</span>
+                            </h6>
+                            <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">{{ $history['date'] }}</p>
+                            @endif
+                        </div>
+
+
+
+
+
+                    </div>
                     @endforeach
+
+
 
                 </div>
             </div>
