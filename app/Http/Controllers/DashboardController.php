@@ -325,7 +325,7 @@ class DashboardController extends Controller
                 return [
                     'type' => 'Petani',
                     'description' => $actionText . ' Petani: ' . $history->nama . $additionalInfo,
-                    'date' => $history->created_at->format('d M Y H:i:s'),
+                    'date' => $history->created_at->format('d F Y H:i:s'),
                 ];
             } elseif ($history instanceof Kredit && isset($history->jumlah, $history->petani, $history->created_at)) {
                 $actionText = match ($history->actionType) {
@@ -345,7 +345,7 @@ class DashboardController extends Controller
                 return [
                     'type' => 'Kredit',
                     'description' => $actionText . ' Kredit dengan jumlah Rp ' . number_format($history->jumlah, 0, ',', '.') . ' milik petani: ' . $history->petani->nama . $additionalInfo,
-                    'date' => $history->created_at->format('d M Y H:i:s'),
+                    'date' => $history->created_at->format('d F Y H:i:s'),
                 ];
             } elseif (
                 $history instanceof Debit && isset($history->jumlah, $history->petani, $history->created_at)
@@ -367,7 +367,7 @@ class DashboardController extends Controller
                 return [
                     'type' => 'Debit',
                     'description' => $actionText . ' Debit dengan jumlah Rp ' . number_format($history->jumlah, 0, ',', '.') . ' milik petani: ' . $history->petani->nama . $additionalInfo,
-                    'date' => $history->created_at->format('d M Y H:i:s'),
+                    'date' => $history->created_at->format('d F Y H:i:s'),
                 ];
             } elseif ($history instanceof RekapDana && isset($history->rekapan_dana, $history->created_at)) {
                 $actionText = match ($history->actionType) {
@@ -387,7 +387,7 @@ class DashboardController extends Controller
                 return [
                     'type' => 'RekapDana',
                     'description' => $actionText . ' Rekapan Dana Rp ' . number_format($history->rekapan_dana, 0, ',', '.') . $additionalInfo,
-                    'date' => $history->created_at->format('d M Y H:i:s'),
+                    'date' => $history->created_at->format('d F Y H:i:s'),
                 ];
             } elseif ($history instanceof RekapKredit && isset($history->rekapan_kredit, $history->created_at)) {
                 $actionText = match ($history->actionType) {
@@ -407,7 +407,7 @@ class DashboardController extends Controller
                 return [
                     'type' => 'RekapKredit',
                     'description' => $actionText . ' Rekapan Kredit Rp ' . number_format($history->rekapan_kredit, 0, ',', '.') . $additionalInfo,
-                    'date' => $history->created_at->format('d M Y H:i:s'),
+                    'date' => $history->created_at->format('d F Y H:i:s'),
                 ];
             } elseif ($history instanceof DaftarGiling && isset($history->dana_penerima, $history->petani, $history->created_at)) {
                 $actionText = match ($history->actionType) {
@@ -427,7 +427,7 @@ class DashboardController extends Controller
                 return [
                     'type' => 'DaftarGiling',
                     'description' => $actionText . ' Nota Giling dengan Sisa Dana Rp ' . number_format($history->dana_penerima, 0, ',', '.') . ' milik petani: ' . $history->petani->nama . $additionalInfo,
-                    'date' => $history->created_at->format('d M Y H:i:s'),
+                    'date' => $history->created_at->format('d F Y H:i:s'),
                 ];
             }
         })->filter()->toArray();
