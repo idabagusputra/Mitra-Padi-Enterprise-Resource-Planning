@@ -309,7 +309,8 @@
                 <th>Total</th>
             </tr>
             @if($giling->pengambilans->isNotEmpty())
-            @php
+            @foreach($giling->pengambilans as $index => $pengambilan)
+
             function getDecimalPlacesP($value) {
             if (is_numeric($value)) {
             return strpos($value, '.') !== false ? strlen(substr(strrchr($value, '.'), 1)) : 0;
@@ -320,8 +321,7 @@
             $decimalPlacesPJumlah = getDecimalPlacesP($pengambilan->jumlah);
             $decimalPlacesPHarga = getDecimalPlacesP($pengambilan->harga);
             $decimalPlacesPTHarga = getDecimalPlacesP($pengambilan->jumlah * $pengambilan->harga);
-            @endphp
-            @foreach($giling->pengambilans as $index => $pengambilan)
+
 
             <tr class="calculation-row">
                 <td>{{ $index + 1 }}. {{ $pengambilan->keterangan }}</td>
