@@ -126,6 +126,11 @@
         min-width: 200px;
     }
 
+    .form-control-label {
+        padding-left: 0;
+        margin-left: 0;
+    }
+
     .form-group:last-child {
         margin-right: 0;
     }
@@ -233,6 +238,8 @@
 
         }
 
+
+
     }
 </style>
 
@@ -243,12 +250,12 @@
 
 
 @section('content')
-<div class="container-fluid">
-    <div class="card">
-        <div class="card-header pb-0 px-3">
+<div class="container-fluid mx-0 px-0">
+    <div class="card mx-0 px-3">
+        <div class="card-header pb-0 px-2">
             <h6 class="mb-0 text-primary">{{ __('Kalkulasi Penggilingan Beras') }}</h6>
         </div>
-        <div class="card-body pt-4 p-3">
+        <div class="card-body pt-4 mx-2 px-0">
             @if ($errors->any())
             <div class="mt-3 alert alert-primary alert-dismissible fade show" role="alert">
                 <span class="alert-text text-white">{{ $errors->first() }}</span>
@@ -688,20 +695,20 @@
         //     window.location.href = escposUrl;
         // });
 
-        // function initializeNumberFormatting(inputs) {
-        //     inputs.forEach(input => {
-        //         // Format saat halaman dimuat
-        //         formatNumber(input);
+        function initializeNumberFormatting(inputs) {
+            inputs.forEach(input => {
+                // Format saat halaman dimuat
+                formatNumber(input);
 
-        //         // Format saat input berubah
-        //         input.addEventListener('input', function(e) {
-        //             let value = this.value; // Ambil seluruh input
-        //             this.dataset.rawValue = value;
-        //             formatNumber(this);
-        //         });
-        //     });
+                // Format saat input berubah
+                input.addEventListener('input', function(e) {
+                    let value = this.value; // Ambil seluruh input
+                    this.dataset.rawValue = value;
+                    formatNumber(this);
+                });
+            });
 
-        // }
+        }
 
         // Initialize existing number inputs when page loads
         document.addEventListener('DOMContentLoaded', function() {
