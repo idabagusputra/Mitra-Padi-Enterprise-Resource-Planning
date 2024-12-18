@@ -119,13 +119,20 @@ class GilingController extends Controller
             $giling = Giling::create($validatedData);
             // Create Pengambilan entries if provided
             // Handle pengambilans
-            if (!empty($validatedData['pengambilans']) && is_array($validatedData['pengambilans'])) {
+            if (
+                !empty($validatedData['pengambilans']) && is_array($validatedData['pengambilans'])
+            ) {
                 foreach ($validatedData['pengambilans'] as $pengambilanData) {
+                    // Remove commas from 'jumlah' and 'harga' if they exist
+                    $pengambilanData['jumlah'] = str_replace(',', '', $pengambilanData['jumlah']);
+                    $pengambilanData['harga'] = str_replace(',', '', $pengambilanData['harga']);
+
                     if (!empty($pengambilanData['keterangan']) || !empty($pengambilanData['jumlah']) || !empty($pengambilanData['harga'])) {
                         $giling->pengambilans()->create($pengambilanData);
                     }
                 }
             }
+
 
 
 
