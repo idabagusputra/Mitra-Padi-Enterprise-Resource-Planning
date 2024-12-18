@@ -141,7 +141,7 @@ class DashboardController extends Controller
         // Ambil data dengan relasi 'petani' dan paginasi 13 entri per halaman
         $gilings = Giling::with(['petani'])
             ->orderBy('id', 'desc')
-            ->paginate(13);
+            ->paginate(20);
 
 
         // Ambil data PembayaranKredit terkait dengan ID Giling terbaru
@@ -199,18 +199,26 @@ class DashboardController extends Controller
 
             $hutangYangDibayar = $pembayaranKredits->sum('total_hutang');
 
-            // Gunakan query langsung untuk menghitung sisa utang
-            $sisaUtang = PembayaranKredit::where('giling_id', $giling->id)
-                ->sum('total_hutang');
+            $pembayaranKreditsFalse = $petani->kredits;
+
+            $pembayaranKreditsTransaksi = $petani->kredits->filter(function ($kredit) use ($giling) {
+                return $kredit->pKredit_id == $giling->id && $kredit->status == true;
+            });
+
+            // Ambil total hutang yang sudah dibayar terkait dengan giling_id
+            $hutangYangDibayar = $pembayaranKreditsLangsung->where('giling_id', $giling->id)->pluck('total_hutang')->sum();
+
+            // Hitung sisa utang yang belum lunas
+            $sisaUtang = $pembayaranKreditsFalse->where('status', false)->sum('jumlah');
 
             $status = $sisaUtang > 0 ? false : true;
             $sisaUtangFormatted = 'Rp ' . number_format($sisaUtang, 0, ',', '.');
 
             $data[] = [
-                'giling_id' => $giling->id,
-                'petani_id' => $petani->id,
+                'giling_id' => $giling->id, // Tambahkan ID giling
+                'petani_id' => $petani->id, // Tambahkan ID petani
                 'petani' => $petani->nama,
-                'transaksi' => $pembayaranKredits->where('status', true)->count(),
+                'transaksi' => $pembayaranKreditsTransaksi->count(),
                 'sisa_utang' => $sisaUtangFormatted,
                 'status' => $status,
                 'hutangYangDibayar' => 'Rp ' . number_format($hutangYangDibayar, 0, ',', '.'),
