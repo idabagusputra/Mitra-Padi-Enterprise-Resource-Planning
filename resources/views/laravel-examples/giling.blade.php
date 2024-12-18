@@ -639,6 +639,10 @@
     `;
             pengambilansContainer.insertAdjacentHTML('beforeend', newPengambilan);
 
+            // Initialize number formatting for new inputs
+            const newItem = pengambilansContainer.lastElementChild;
+            addDeleteButtonListener(newItem.querySelector('.delete-pengambilan'));
+            // Format number inputs
             const numberInputs = document.querySelectorAll('.number-format');
 
             numberInputs.forEach(input => {
@@ -652,10 +656,6 @@
                     formatNumber(this);
                 });
             });
-
-            // Initialize number formatting for new inputs
-            const newItem = pengambilansContainer.lastElementChild;
-            initializeNumberFormatting(newItem.querySelectorAll('.number-format'));
 
             function formatNumber(input) {
                 let value = input.value;
@@ -685,12 +685,7 @@
                 input.value = value;
             }
 
-
-            addDeleteButtonListener(newItem.querySelector('.delete-pengambilan'));
-
             updateDeleteButtons();
-
-
         }
 
         function formatNumber(input) {
