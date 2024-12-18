@@ -42,6 +42,21 @@
             padding-top: 24px !important;
             /* Sesuaikan ukuran padding/margin yang diinginkan */
         }
+
+        .row {
+            padding-top: 0 !important;
+            margin-top: 0 !important;
+            /* Sesuaikan ukuran padding/margin yang diinginkan untuk horizontal */
+        }
+    }
+
+    /* Landscape Mode (Desktop/Tablet Horizontal) */
+    @media (max-width: 1920px) and (orientation: landscape) {
+        .horizontal {
+            padding-top: 0 !important;
+            margin-top: 0 !important;
+            /* Sesuaikan ukuran padding/margin yang diinginkan untuk horizontal */
+        }
     }
 </style>
 
@@ -199,7 +214,7 @@
 
 
 
-<div class="row mt-md-4 mt-0">
+<div class="row mt-4 horizontal">
 
 
     <div class="col-lg-7 mb-4 mt-0">
