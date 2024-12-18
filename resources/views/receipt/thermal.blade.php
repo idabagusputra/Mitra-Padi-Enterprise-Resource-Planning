@@ -308,20 +308,29 @@
                 <th>Harga</th>
                 <th>Total</th>
             </tr>
-            @if($giling->pengambilans->isNotEmpty())
+
             @php
+            if (!function_exists('getDecimalPlacesP')) {
             function getDecimalPlacesP($value) {
             if (is_numeric($value)) {
             return strpos($value, '.') !== false ? strlen(substr(strrchr($value, '.'), 1)) : 0;
             }
             return 0; // Tidak ada desimal
             }
-
-            $decimalPlacesPJumlah = getDecimalPlacesP($giling->pengambilans->jumlah);
-            $decimalPlacesPHarga = getDecimalPlacesP($giling->pengambilans->harga);
-            $decimalPlacesPTHarga = getDecimalPlacesP($giling->pengambilans->jumlah * $giling->pengambilans->harga);
+            }
             @endphp
+
+            @if($giling->pengambilans->isNotEmpty())
+
+
+
             @foreach($giling->pengambilans as $index => $pengambilan)
+
+            @php
+            $decimalPlacesPJumlah = getDecimalPlacesP($pengambilan->jumlah);
+            $decimalPlacesPHarga = getDecimalPlacesP($pengambilan->harga);
+            $decimalPlacesPTHarga = getDecimalPlacesP($pengambilan->jumlah * $pengambilan->harga);
+            @endphp
 
             <tr class="calculation-row">
                 <td>{{ $index + 1 }}. {{ $pengambilan->keterangan }}</td>
