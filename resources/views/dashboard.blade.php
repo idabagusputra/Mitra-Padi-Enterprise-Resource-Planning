@@ -394,7 +394,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($data as $item)
+                            @forelse($data as $item)
                             <tr>
 
                                 <td class="ps-4">{{ $item['petani'] }}</td>
@@ -407,7 +407,7 @@
                                     </span>
                                 </td>
                             </tr>
-                            @endforeach
+                            @endforelse
                         </tbody>
                     </table>
 
