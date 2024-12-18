@@ -157,26 +157,6 @@
             <div></div>
         </table>
 
-        @php
-        // Fungsi untuk menentukan jumlah desimal pada angka
-        function getDecimalPlaces($value) {
-        $value = (string)$value;
-        if (strpos($value, '.') !== false) {
-        return strlen(substr(strrchr($value, '.'), 1));
-        }
-        return 0; // Tidak ada desimal
-        }
-
-        // Mendapatkan jumlah desimal untuk kedua nilai
-        $decimalPlacesGilingKotor = getDecimalPlaces($giling->giling_kotor);
-        $decimalPlacesBerasJual = getDecimalPlaces($giling->calculateBerasBersih() - $giling->pulang);
-        $decimalPlacesBerasBersih = getDecimalPlaces($giling->calculateBerasBersih());
-        $decimalPlacesKonga = getDecimalPlaces($giling->jumlah_konga);
-        $decimalPlacesMenir = getDecimalPlaces($giling->jumlah_menir);
-        $decimalPlacesBuruhJemur = getDecimalPlaces($giling->jemur);
-        $decimalPlacesPJumlah = getDecimalPlaces($pengambilan->jumlah);
-        $decimalPlacesPHarga = getDecimalPlaces($pengambilan->harga);
-        $decimalPlacesPTHarga = getDecimalPlaces($pengambilan->jumlah * $pengambilan->harga);
 
         @endphp
 
@@ -184,6 +164,26 @@
         <table>
 
 
+            @php
+            // Fungsi untuk menentukan jumlah desimal pada angka
+            function getDecimalPlaces($value) {
+            $value = (string)$value;
+            if (strpos($value, '.') !== false) {
+            return strlen(substr(strrchr($value, '.'), 1));
+            }
+            return 0; // Tidak ada desimal
+            }
+
+            // Mendapatkan jumlah desimal untuk kedua nilai
+            $decimalPlacesGilingKotor = getDecimalPlaces($giling->giling_kotor);
+            $decimalPlacesBerasJual = getDecimalPlaces($giling->calculateBerasBersih() - $giling->pulang);
+            $decimalPlacesBerasBersih = getDecimalPlaces($giling->calculateBerasBersih());
+            $decimalPlacesKonga = getDecimalPlaces($giling->jumlah_konga);
+            $decimalPlacesMenir = getDecimalPlaces($giling->jumlah_menir);
+            $decimalPlacesBuruhJemur = getDecimalPlaces($giling->jemur);
+            $decimalPlacesPJumlah = getDecimalPlaces($pengambilan->jumlah);
+            $decimalPlacesPHarga = getDecimalPlaces($pengambilan->harga);
+            $decimalPlacesPTHarga = getDecimalPlaces($pengambilan->jumlah * $pengambilan->harga);
 
 
             <tr class="bold-border-top">
@@ -299,6 +299,25 @@
         </table>
 
         <table>
+
+            @php
+            // Fungsi untuk menentukan jumlah desimal pada angka
+            function getDecimalPlaces($value) {
+            $value = (string)$value;
+            if (strpos($value, '.') !== false) {
+            return strlen(substr(strrchr($value, '.'), 1));
+            }
+            return 0; // Tidak ada desimal
+            }
+
+            // Mendapatkan jumlah desimal untuk kedua nilai
+
+            $decimalPlacesPJumlah = getDecimalPlaces($giling->pengambilans->jumlah);
+            $decimalPlacesPHarga = getDecimalPlaces($giling->pengambilans->harga);
+            $decimalPlacesPTHarga = getDecimalPlaces($giling->pengambilans->jumlah * $giling->pengambilans->harga);
+
+
+
             <tr class="bold-border-top">
                 <th>Ambil</th>
                 <th>Jumlah</th>
