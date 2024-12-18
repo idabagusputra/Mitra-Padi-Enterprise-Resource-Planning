@@ -160,6 +160,7 @@
 
         @endphp
 
+
         @php
         // Fungsi untuk menentukan jumlah desimal pada angka
         function getDecimalPlaces($value) {
@@ -182,9 +183,7 @@
         $decimalPlacesPHarga = getDecimalPlaces($giling->pengambilans->harga);
         $decimalPlacesPTHarga = getDecimalPlaces($giling->pengambilans->jumlah * $giling->pengambilans->harga);
 
-
         <table>
-
 
 
 
@@ -302,9 +301,6 @@
         </table>
 
         <table>
-
-
-
             <tr class="bold-border-top">
                 <th>Ambil</th>
                 <th>Jumlah</th>
