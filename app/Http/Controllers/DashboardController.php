@@ -158,6 +158,8 @@ class DashboardController extends Controller
         // Proses data untuk tabel
         foreach ($gilings as $giling) {
             $petani = $giling->petani;
+
+            // Pastikan ada petani dan kredit
             if ($petani && $petani->kredits->isNotEmpty()) {
                 $pembayaranKredits = $petani->kredits->filter(function ($kredit) use ($giling) {
                     return $kredit->pKredit_id == $giling->id;
@@ -169,7 +171,7 @@ class DashboardController extends Controller
                     return $kredit->pKredit_id == $giling->id && $kredit->status == true;
                 });
 
-                // Cek status dari pembayarankredits terkait
+                // Ambil total hutang yang sudah dibayar terkait dengan giling_id
                 $hutangYangDibayar = $pembayaranKreditsLangsung->where('giling_id', $giling->id)->pluck('total_hutang')->sum();
 
                 // Hitung sisa utang yang belum lunas
@@ -178,9 +180,11 @@ class DashboardController extends Controller
                 $status = $sisaUtang > 0 ? false : true;
                 $sisaUtangFormatted = 'Rp ' . number_format($sisaUtang, 0, ',', '.');
 
+                // Tambahkan setiap data giling ke array, terlepas dari kesamaan nama
                 $data[] = [
-                    'id' => $petani->id, // Tetap menggunakan ID petani
-                    'petani' => $petani->nama, // Tampilkan nama petani
+                    'giling_id' => $giling->id, // Tambahkan ID giling
+                    'petani_id' => $petani->id, // Tambahkan ID petani
+                    'petani' => $petani->nama,
                     'transaksi' => $pembayaranKreditsTransaksi->count(),
                     'sisa_utang' => $sisaUtangFormatted,
                     'status' => $status,
