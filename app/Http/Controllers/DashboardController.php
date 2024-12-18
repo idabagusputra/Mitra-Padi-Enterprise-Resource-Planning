@@ -324,7 +324,7 @@ class DashboardController extends Controller
 
                 return [
                     'type' => 'Petani',
-                    'description' => $actionText . ' Petani: ' . $history->nama . $additionalInfo,
+                    'description' => $actionText . ' petani: ' . $history->nama . $additionalInfo,
                     'date' => $history->created_at->format('d F Y H:i:s'),
                 ];
             } elseif ($history instanceof Kredit && isset($history->jumlah, $history->petani, $history->created_at)) {
