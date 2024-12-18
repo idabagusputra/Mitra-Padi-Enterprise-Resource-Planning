@@ -234,7 +234,7 @@ class DashboardController extends Controller
 
 
         $dataHistory = collect()
-            ->merge(Petani::withTrashed()->get()->map(function ($item) {
+            ->merge(Petani::withTrashed()->where('id', '!=', 187)->get()->map(function ($item) {
                 $changedAttributes = collect($item->getDirty())->keys();
 
                 if ($item->trashed()) {
