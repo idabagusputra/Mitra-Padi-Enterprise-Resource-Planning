@@ -310,25 +310,18 @@
             </tr>
             @if($giling->pengambilans->isNotEmpty())
             @foreach($giling->pengambilans as $index => $pengambilan)
-
-
             @php
-            // Fungsi untuk menentukan jumlah desimal pada angka
             function getDecimalPlaces($value) {
-            $value = (string)$value;
-            if (strpos($value, '.') !== false) {
-            return strlen(substr(strrchr($value, '.'), 1));
+            if (is_numeric($value)) {
+            return strpos($value, '.') !== false ? strlen(substr(strrchr($value, '.'), 1)) : 0;
             }
             return 0; // Tidak ada desimal
             }
 
-            // Mendapatkan jumlah desimal untuk kedua nilai
             $decimalPlacesPJumlah = getDecimalPlaces($pengambilan->jumlah);
             $decimalPlacesPHarga = getDecimalPlaces($pengambilan->harga);
             $decimalPlacesPTHarga = getDecimalPlaces($pengambilan->jumlah * $pengambilan->harga);
-
             @endphp
-
 
             <tr class="calculation-row">
                 <td>{{ $index + 1 }}. {{ $pengambilan->keterangan }}</td>
