@@ -264,7 +264,7 @@ class DashboardController extends Controller
                 }
                 return $item;
             }))
-            ->merge(DaftarGiling::withTrashed()->where('petani_id', '!=', 187)->get()->map(function ($item) {
+            ->merge(DaftarGiling::withTrashed()->get()->map(function ($item) {
                 $changedAttributes = collect($item->getDirty())->keys();
 
                 if ($item->trashed()) {
