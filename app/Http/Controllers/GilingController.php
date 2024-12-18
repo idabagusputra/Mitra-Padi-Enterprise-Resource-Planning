@@ -95,18 +95,18 @@ class GilingController extends Controller
 
 
 
-            // if ($validator->fails()) {
-            //     // Mengambil semua input yang diterima
-            //     $inputData = $request->all();
+            if ($validator->fails()) {
+                // Mengambil semua input yang diterima
+                $inputData = $request->all();
 
-            //     // Mengembalikan respons JSON dengan error validasi dan nilai input
-            //     return response()->json([
-            //         'status' => 'error',
-            //         'message' => 'Validation failed',
-            //         'errors' => $validator->errors(),
-            //         'input' => $inputData, // Menyertakan data input yang diterima
-            //     ], 422); // 422 adalah status kode untuk Unprocessable Entity (kesalahan validasi)
-            // }
+                // Mengembalikan respons JSON dengan error validasi dan nilai input
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Validation failed',
+                    'errors' => $validator->errors(),
+                    'input' => $inputData, // Menyertakan data input yang diterima
+                ], 422); // 422 adalah status kode untuk Unprocessable Entity (kesalahan validasi)
+            }
 
             if ($validator->fails()) {
                 return redirect()->back()->withErrors($validator)->withInput();
