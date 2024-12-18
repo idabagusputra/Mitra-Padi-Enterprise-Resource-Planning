@@ -138,11 +138,9 @@ class DashboardController extends Controller
         }, $months);
 
 
-        // Ambil hanya 5 data Giling terbaru dengan relasi yang relevan
         $gilings = Giling::with(['petani.kredits'])
             ->orderBy('id', 'desc') // Urutkan berdasarkan ID secara descending
-            ->take(13) // Batasi hanya 5 data
-            ->get();
+            ->paginate(10); // Paginate hasilnya, ambil 13 entri per halaman
 
         // Ambil data PembayaranKredit terkait dengan ID Giling terbaru
         $pembayaranKreditsLangsung = PembayaranKredit::with(['giling'])
