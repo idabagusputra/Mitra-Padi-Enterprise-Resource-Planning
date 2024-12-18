@@ -13,6 +13,12 @@
         position: relative;
     }
 
+
+    .form-control-label {
+        padding-left: 0;
+        margin-left: 0;
+    }
+
     .form-control-label {
         padding-left: 0;
         margin-left: 0;
@@ -695,20 +701,20 @@
         //     window.location.href = escposUrl;
         // });
 
-        // function initializeNumberFormatting(inputs) {
-        //     inputs.forEach(input => {
-        //         // Format saat halaman dimuat
-        //         formatNumber(input);
+        function initializeNumberFormatting(inputs) {
+            inputs.forEach(input => {
+                // Format saat halaman dimuat
+                formatNumber(input);
 
-        //         // Format saat input berubah
-        //         input.addEventListener('input', function(e) {
-        //             let value = this.value; // Ambil seluruh input
-        //             this.dataset.rawValue = value;
-        //             formatNumber(this);
-        //         });
-        //     });
+                // Format saat input berubah
+                input.addEventListener('input', function(e) {
+                    let value = this.value; // Ambil seluruh input
+                    this.dataset.rawValue = value;
+                    formatNumber(this);
+                });
+            });
 
-        // }
+        }
 
         // Initialize existing number inputs when page loads
         document.addEventListener('DOMContentLoaded', function() {
