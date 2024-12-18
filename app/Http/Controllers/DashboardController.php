@@ -204,57 +204,233 @@ class DashboardController extends Controller
 
 
         $dataHistory = collect()
-            ->merge(Petani::latest()->get())
-            ->merge(Kredit::latest()->get())
-            ->merge(DaftarGiling::latest()->get())
-            ->merge(PembayaranKredit::latest()->get())
-            ->merge(RekapDana::latest()->get())
-            ->merge(RekapKredit::latest()->get())
-            ->merge(Debit::latest()->get())
-            ->sortByDesc('created_at')
-            ->take(50); // Batasi hanya 50 data
+            ->merge(Petani::withTrashed()->get()->map(function ($item) {
+                $changedAttributes = collect($item->getDirty())->keys();
+
+                if ($item->trashed()) {
+                    $item->actionType = 'delete';
+                } elseif (!empty($changedAttributes->toArray()) && $item->wasChanged()) {
+                    $item->actionType = 'update';
+                    $item->changedFields = $changedAttributes->toArray();
+                } elseif ($item->wasRecentlyCreated) {
+                    $item->actionType = 'create';
+                } else {
+                    $item->actionType = 'create'; // Default fallback
+                }
+                return $item;
+            }))
+            ->merge(Kredit::withTrashed()->get()->map(function ($item) {
+                $changedAttributes = collect($item->getDirty())->keys();
+
+                if ($item->trashed()) {
+                    $item->actionType = 'delete';
+                } elseif (!empty($changedAttributes->toArray()) && $item->wasChanged()) {
+                    $item->actionType = 'update';
+                    $item->changedFields = $changedAttributes->toArray();
+                } elseif ($item->wasRecentlyCreated) {
+                    $item->actionType = 'create';
+                } else {
+                    $item->actionType = 'create'; // Default fallback
+                }
+                return $item;
+            }))
+            ->merge(DaftarGiling::withTrashed()->get()->map(function ($item) {
+                $changedAttributes = collect($item->getDirty())->keys();
+
+                if ($item->trashed()) {
+                    $item->actionType = 'delete';
+                } elseif (!empty($changedAttributes->toArray()) && $item->wasChanged()) {
+                    $item->actionType = 'update';
+                    $item->changedFields = $changedAttributes->toArray();
+                } elseif ($item->wasRecentlyCreated) {
+                    $item->actionType = 'create';
+                } else {
+                    $item->actionType = 'create'; // Default fallback
+                }
+                return $item;
+            }))
+            // ->merge(PembayaranKredit::withTrashed()->get()->map(function ($item) {
+            //     $changedAttributes = collect($item->getDirty())->keys();
+
+            //     if (!empty($changedAttributes->toArray()) && $item->wasChanged()) {
+            //         $item->actionType = 'update';
+            //         $item->changedFields = $changedAttributes->toArray();
+            //     } elseif ($item->wasRecentlyCreated) {
+            //         $item->actionType = 'create';
+            //     } else {
+            //         $item->actionType = 'create'; // Default fallback
+            //     }
+            //     return $item;
+            // }))
+            ->merge(RekapDana::withTrashed()->get()->map(function ($item) {
+                $changedAttributes = collect($item->getDirty())->keys();
+
+                if (!empty($changedAttributes->toArray()) && $item->wasChanged()) {
+                    $item->actionType = 'update';
+                    $item->changedFields = $changedAttributes->toArray();
+                } elseif ($item->wasRecentlyCreated) {
+                    $item->actionType = 'create';
+                } else {
+                    $item->actionType = 'create'; // Default fallback
+                }
+                return $item;
+            }))
+            ->merge(RekapKredit::withTrashed()->get()->map(function ($item) {
+                $changedAttributes = collect($item->getDirty())->keys();
+
+                if (!empty($changedAttributes->toArray()) && $item->wasChanged()) {
+                    $item->actionType = 'update';
+                    $item->changedFields = $changedAttributes->toArray();
+                } elseif ($item->wasRecentlyCreated) {
+                    $item->actionType = 'create';
+                } else {
+                    $item->actionType = 'create'; // Default fallback
+                }
+                return $item;
+            }))
+            ->merge(Debit::withTrashed()->get()->map(function ($item) {
+                $changedAttributes = collect($item->getDirty())->keys();
+
+                if ($item->trashed()) {
+                    $item->actionType = 'delete';
+                } elseif (!empty($changedAttributes->toArray()) && $item->wasChanged()) {
+                    $item->actionType = 'update';
+                    $item->changedFields = $changedAttributes->toArray();
+                } elseif ($item->wasRecentlyCreated) {
+                    $item->actionType = 'create';
+                } else {
+                    $item->actionType = 'create'; // Default fallback
+                }
+                return $item;
+            }))
+            ->sortByDesc('updated_at')
+            ->take(50);
 
         $histories = $dataHistory->map(function ($history) {
             if ($history instanceof Petani && isset($history->nama) && isset($history->created_at)) {
+                $actionText = match ($history->actionType) {
+                    'create' => 'Penambahan',
+                    'update' => 'Perbaruan',
+                    'delete' => 'Penghapusan',
+                    default => 'Aktivitas'
+                };
+
+                $additionalInfo = $history->actionType === 'update'
+                    ? ' (Perubahan pada: ' . implode(
+                        ', ',
+                        $history->changedFields
+                    ) . ')'
+                    : '';
+
                 return [
                     'type' => 'Petani',
-                    'description' => 'Penambahan Petani Baru: ' . $history->nama,
+                    'description' => $actionText . ' Petani: ' . $history->nama . $additionalInfo,
                     'date' => $history->created_at->format('d M Y H:i:s'),
                 ];
             } elseif ($history instanceof Kredit && isset($history->jumlah, $history->petani, $history->created_at)) {
+                $actionText = match ($history->actionType) {
+                    'create' => 'Penambahan',
+                    'update' => 'Perbaruan',
+                    'delete' => 'Penghapusan',
+                    default => 'Aktivitas'
+                };
+
+                $additionalInfo = $history->actionType === 'update'
+                    ? ' (Perubahan pada: ' . implode(
+                        ', ',
+                        $history->changedFields
+                    ) . ')'
+                    : '';
+
                 return [
                     'type' => 'Kredit',
-                    'description' => 'Penambahan Kredit dengan jumlah Rp ' . number_format($history->jumlah, 0, ',', '.') . ' milik pentani: ' . $history->petani->nama,
+                    'description' => $actionText . ' Kredit dengan jumlah Rp ' . number_format($history->jumlah, 0, ',', '.') . ' milik petani: ' . $history->petani->nama . $additionalInfo,
                     'date' => $history->created_at->format('d M Y H:i:s'),
                 ];
             } elseif (
                 $history instanceof Debit && isset($history->jumlah, $history->petani, $history->created_at)
             ) {
+                $actionText = match ($history->actionType) {
+                    'create' => 'Penambahan',
+                    'update' => 'Perbaruan',
+                    'delete' => 'Penghapusan',
+                    default => 'Aktivitas'
+                };
+
+                $additionalInfo = $history->actionType === 'update'
+                    ? ' (Perubahan pada: ' . implode(
+                        ', ',
+                        $history->changedFields
+                    ) . ')'
+                    : '';
+
                 return [
                     'type' => 'Debit',
-                    'description' => 'Penambahan Debit dengan jumlah Rp ' . number_format($history->jumlah, 0, ',', '.') . ' milik pentani: ' . $history->petani->nama,
+                    'description' => $actionText . ' Debit dengan jumlah Rp ' . number_format($history->jumlah, 0, ',', '.') . ' milik petani: ' . $history->petani->nama . $additionalInfo,
                     'date' => $history->created_at->format('d M Y H:i:s'),
                 ];
             } elseif ($history instanceof RekapDana && isset($history->rekapan_dana, $history->created_at)) {
+                $actionText = match ($history->actionType) {
+                    'create' => 'Pembuatan',
+                    'update' => 'Pembaruan',
+                    'delete' => 'Penghapusan',
+                    default => 'Aktivitas'
+                };
+
+                $additionalInfo = $history->actionType === 'update'
+                    ? ' (Perubahan pada: ' . implode(
+                        ', ',
+                        $history->changedFields
+                    ) . ')'
+                    : '';
+
                 return [
                     'type' => 'RekapDana',
-                    'description' => 'Pembuatan Rekapan Dana Rp ' . number_format($history->rekapan_dana, 0, ',', '.'),
+                    'description' => $actionText . ' Rekapan Dana Rp ' . number_format($history->rekapan_dana, 0, ',', '.') . $additionalInfo,
                     'date' => $history->created_at->format('d M Y H:i:s'),
                 ];
             } elseif ($history instanceof RekapKredit && isset($history->rekapan_kredit, $history->created_at)) {
+                $actionText = match ($history->actionType) {
+                    'create' => 'Pembuatan',
+                    'update' => 'Pembaruan',
+                    'delete' => 'Penghapusan',
+                    default => 'Aktivitas'
+                };
+
+                $additionalInfo = $history->actionType === 'update'
+                    ? ' (Perubahan pada: ' . implode(
+                        ', ',
+                        $history->changedFields
+                    ) . ')'
+                    : '';
+
                 return [
                     'type' => 'RekapKredit',
-                    'description' => 'Pembuatan Rekapan Kredit Rp ' . number_format($history->rekapan_kredit, 0, ',', '.'),
+                    'description' => $actionText . ' Rekapan Kredit Rp ' . number_format($history->rekapan_kredit, 0, ',', '.') . $additionalInfo,
                     'date' => $history->created_at->format('d M Y H:i:s'),
                 ];
             } elseif ($history instanceof DaftarGiling && isset($history->dana_penerima, $history->petani, $history->created_at)) {
+                $actionText = match ($history->actionType) {
+                    'create' => 'Pembuatan',
+                    'update' => 'Pembaruan',
+                    'delete' => 'Penghapusan',
+                    default => 'Aktivitas'
+                };
+
+                $additionalInfo = $history->actionType === 'update'
+                    ? ' (Perubahan pada: ' . implode(
+                        ', ',
+                        $history->changedFields
+                    ) . ')'
+                    : '';
+
                 return [
                     'type' => 'DaftarGiling',
-                    'description' => 'Pembuatan Nota Giling dengan Sisa Dana Rp ' . number_format($history->dana_penerima, 0, ',', '.') . ' milik pentani: ' . $history->petani->nama,
+                    'description' => $actionText . ' Nota Giling dengan Sisa Dana Rp ' . number_format($history->dana_penerima, 0, ',', '.') . ' milik petani: ' . $history->petani->nama . $additionalInfo,
                     'date' => $history->created_at->format('d M Y H:i:s'),
                 ];
             }
-        })->filter()->toArray(); // Filter entri yang valid dan konversi ke array
+        })->filter()->toArray();
 
 
 
