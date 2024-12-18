@@ -506,11 +506,14 @@
                             $remainingDetails = isset($nameParts[1]) ? $nameParts[1] : '';
                             @endphp
                             <h6 class="text-dark text-sm font-weight-bold mb-0">
-                                <strong>{{ $firstWord }}</strong> {{ $beforePetani }} petani: <strong>{{ $farmerName }}</strong> <span style="font-weight: normal;">{{ $remainingDetails }}</span>
+                                <strong>{{ $firstWord }}</strong>
+                                {{ str_replace($firstWord, '', $beforePetani) }} petani: <strong>{{ $farmerName }}</strong>
+                                <span style="font-weight: normal;">{{ $remainingDetails }}</span>
                             </h6>
                             <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">{{ $history['date'] }}</p>
                             @endif
                         </div>
+
 
 
 
