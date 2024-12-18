@@ -639,12 +639,58 @@
     `;
             pengambilansContainer.insertAdjacentHTML('beforeend', newPengambilan);
 
+            const numberInputs = document.querySelectorAll('.number-format');
+
+            numberInputs.forEach(input => {
+                // Format saat halaman dimuat
+                formatNumber(input);
+
+                // Format saat input berubah
+                input.addEventListener('input', function(e) {
+                    let value = this.value; // Ambil seluruh input
+                    this.dataset.rawValue = value;
+                    formatNumber(this);
+                });
+            });
+
             // Initialize number formatting for new inputs
             const newItem = pengambilansContainer.lastElementChild;
             initializeNumberFormatting(newItem.querySelectorAll('.number-format'));
+
+            function formatNumber(input) {
+                let value = input.value;
+
+                // Menyimpan nilai mentah tanpa format
+                input.dataset.rawValue = value;
+
+                // Pisahkan bagian integer dan desimal
+                let [integer, decimal] = value.split('.');
+
+                // Hapus semua karakter yang tidak valid dari bagian integer (kecuali angka)
+                integer = integer.replace(/[^\d]/g, '');
+
+                // Format bagian integer dengan koma sebagai pemisah ribuan
+                if (integer) {
+                    integer = integer.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                }
+
+                // Gabungkan kembali bagian integer dan desimal jika ada
+                if (decimal !== undefined) {
+                    value = integer + '.' + decimal;
+                } else {
+                    value = integer;
+                }
+
+                // Mengatur nilai input field dengan format yang benar
+                input.value = value;
+            }
+
+
             addDeleteButtonListener(newItem.querySelector('.delete-pengambilan'));
 
             updateDeleteButtons();
+
+
         }
 
         function formatNumber(input) {
@@ -730,18 +776,13 @@
                 let allEmpty = true;
                 pengambilans.forEach((item, index) => {
                     const keterangan = item.querySelector(`[name^="pengambilans["][name$="[keterangan]"]`).value;
-                    const jumlahInput = item.querySelector(`[name^="pengambilans["][name$="[jumlah]"]`);
-                    const hargaInput = item.querySelector(`[name^="pengambilans["][name$="[harga]"]`);
+                    let jumlahInput = item.querySelector(`[name^="pengambilans["][name$="[jumlah]"]`).value.replace(/,/g, ''); // Remove commas and convert to integer
+                    let hargaInput = item.querySelector(`[name^="pengambilans["][name$="[harga]"]`).value.replace(/,/g, ''); // Remove commas and convert to integer
 
-                    // Convert raw values to integers before submission
-                    if (jumlahInput.dataset.rawValue) {
-                        jumlahInput.value = parseInt(jumlahInput.dataset.rawValue, 10);
-                    }
-                    if (hargaInput.dataset.rawValue) {
-                        hargaInput.value = parseInt(hargaInput.dataset.rawValue, 10);
-                    }
+                    jumlahInput = parseInt(jumlahInput, 10); // Convert jumlahInput to integer
+                    hargaInput = parseInt(hargaInput, 10); // Convert hargaInput to integer
 
-                    if (keterangan !== '' || jumlahInput.value !== '' || hargaInput.value !== '') {
+                    if (keterangan !== '' || jumlahInput !== '' || hargaInput !== '') {
                         allEmpty = false;
                     }
                 });
