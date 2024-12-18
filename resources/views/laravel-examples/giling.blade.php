@@ -697,8 +697,6 @@
 
         function initializeNumberFormatting(inputs) {
             inputs.forEach(input => {
-                // Format saat halaman dimuat
-                formatNumber(input);
 
                 // Format saat input berubah
                 input.addEventListener('input', function(e) {
