@@ -162,6 +162,8 @@ class DashboardController extends Controller
                     return $kredit->pKredit_id == $giling->id;
                 });
 
+                $pembayaranKreditsFalse = $petani->kredits;
+
                 $pembayaranKreditsTransaksi = $petani->kredits->filter(function ($kredit) use ($giling) {
                     // Filter kredit berdasarkan 'pKredit_id' yang sama dengan ID giling
                     return $kredit->pKredit_id == $giling->id && $kredit->status == true;
@@ -177,7 +179,7 @@ class DashboardController extends Controller
 
 
                 // Hitung sisa utang yang belum lunas
-                $sisaUtang = $pembayaranKredits->where('status', false)->sum('jumlah');
+                $sisaUtang = $pembayaranKreditsFalse->where('status', false)->sum('jumlah');
                 if ($sisaUtang > 0) {
                     $status = false;
                 } else {
