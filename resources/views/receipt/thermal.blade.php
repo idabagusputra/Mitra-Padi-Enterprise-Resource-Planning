@@ -183,9 +183,7 @@
             $decimalPlacesMenir = getDecimalPlaces($giling->jumlah_menir);
             $decimalPlacesBuruhJemur = getDecimalPlaces($giling->jemur);
 
-            $decimalPlacesPJumlah = getDecimalPlaces($giling->pengambilans->jumlah);
-            $decimalPlacesPHarga = getDecimalPlaces($giling->pengambilans->harga);
-            $decimalPlacesPTHarga = getDecimalPlaces($giling->pengambilans->jumlah * $giling->pengambilans->harga);
+
 
             @endphp
 
