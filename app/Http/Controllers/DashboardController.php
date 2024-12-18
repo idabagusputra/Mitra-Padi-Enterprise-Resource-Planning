@@ -152,9 +152,6 @@ class DashboardController extends Controller
         $data = [];
         $hutangYangDibayar = 0; // Variabel untuk menghitung total hutang yang sudah dibayar
 
-        $data = [];
-        $hutangYangDibayar = 0;
-
         // Proses data untuk tabel
         foreach ($gilings as $giling) {
             $petani = $giling->petani;
@@ -174,23 +171,25 @@ class DashboardController extends Controller
                 // Ambil total hutang yang sudah dibayar terkait dengan giling_id
                 $hutangYangDibayar = $pembayaranKreditsLangsung->where('giling_id', $giling->id)->pluck('total_hutang')->sum();
 
-                // Hitung sisa utang yang belum lunas
-                $sisaUtang = $pembayaranKreditsFalse->where('status', false)->sum('jumlah');
+                // Pastikan ada petani
+                if ($petani) {
+                    // Hitung sisa utang (misalnya dari model Kredit)
+                    $sisaUtang = 0; // Sesuaikan dengan cara Anda menghitung sisa utang
+                    $sisaUtangFormatted = 'Rp ' . number_format($sisaUtang, 0, ',', '.');
 
-                $status = $sisaUtang > 0 ? false : true;
-                $sisaUtangFormatted = 'Rp ' . number_format($sisaUtang, 0, ',', '.');
+                    // Hitung hutang yang dibayar (jika ada)
+                    $hutangYangDibayar = 0; // Sesuaikan dengan cara Anda menghitung hutang yang dibayar
 
-                // Tambahkan setiap data giling ke array, terlepas dari kesamaan nama
-                $data[] = [
-                    'giling_id' => $giling->id, // Tambahkan ID giling
-                    'petani_id' => $petani->id, // Tambahkan ID petani
-                    'petani' => $petani->nama,
-                    'transaksi' => $pembayaranKreditsTransaksi->count(),
-                    'sisa_utang' => $sisaUtangFormatted,
-                    'status' => $status,
-                    'hutangYangDibayar' => 'Rp ' . number_format($hutangYangDibayar, 0, ',', '.'),
-                ];
-            }
+                    $data[] = [
+                        'giling_id' => $giling->id,
+                        'petani_id' => $petani->id,
+                        'petani' => $petani->nama,
+                        'transaksi' => 0, // Sesuaikan dengan cara menghitung transaksi
+                        'sisa_utang' => $sisaUtangFormatted,
+                        'status' => true, // Sesuaikan dengan logika status
+                        'hutangYangDibayar' => 'Rp ' . number_format($hutangYangDibayar, 0, ',', '.'),
+                    ];
+                }
         }
 
 

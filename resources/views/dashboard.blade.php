@@ -394,25 +394,17 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($data as $index => $item)
+                            @forelse($data as $item)
                             <tr>
-                                <td class="ps-4">
-                                    {{ $item['petani'] }}
-                                    <small class="text-muted d-block">#{{ $item['giling_id'] }}</small>
-                                </td>
-                                <td>{{ $item['transaksi'] }}</td>
+
+                                <td class="ps-4">{{ $item['petani'] }}</td>
+                                <td> {{ $item['transaksi'] }}</td>
                                 <td>{{ $item['hutangYangDibayar'] }}</td>
                                 <td class="text-center">{{ $item['sisa_utang'] }}</td>
                                 <td class="text-center">
                                     <span class="badge badge-sm bg-gradient-{{ $item['status'] ? 'success' : 'warning' }}">
                                         {{ $item['status'] ? 'Lunas' : 'Belum Lunas' }}
                                     </span>
-                                </td>
-                            </tr>
-                            @empty
-                            <tr>
-                                <td colspan="5" class="text-center py-4">
-                                    <div class="text-muted">Tidak ada data yang tersedia</div>
                                 </td>
                             </tr>
                             @endforelse
