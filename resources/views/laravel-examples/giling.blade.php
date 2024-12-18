@@ -13,11 +13,6 @@
         position: relative;
     }
 
-    .form-control-label {
-        padding-left: 0;
-        margin-left: 0;
-    }
-
     .input-group {
         border-radius: 0.25rem;
         overflow: hidden;
@@ -247,15 +242,13 @@
 <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script> -->
 
 
-
-
 @section('content')
-<div class="container-fluid mx-0 px-0">
-    <div class="card mx-0 px-3">
-        <div class="card-header pb-0 px-2">
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-header pb-0 px-3">
             <h6 class="mb-0 text-primary">{{ __('Kalkulasi Penggilingan Beras') }}</h6>
         </div>
-        <div class="card-body pt-4 mx-2 px-0">
+        <div class="card-body pt-4 p-3">
             @if ($errors->any())
             <div class="mt-3 alert alert-primary alert-dismissible fade show" role="alert">
                 <span class="alert-text text-white">{{ $errors->first() }}</span>
@@ -378,7 +371,7 @@
                 </div>
 
 
-                <h6 class="mb-3 mt-2 text-primary">{{ __('Pengambilan') }}</h6>
+                <h6 class="mb-3 mt-4 text-primary">{{ __('Pengambilan') }}</h6>
                 <div id="pengambilans">
 
                 </div>
@@ -676,39 +669,39 @@
         }
 
 
-        // // Add print functionality
-        // document.getElementById('printPdf').addEventListener('click', function() {
-        //     const pdfViewer = document.getElementById('pdfViewer');
-        //     const pdfUrl = pdfViewer.getAttribute('src');
-        //     const fullPdfUrl = `https://mitrapadi.com/receipts/receipt-${gilingId}.pdf`;
+        // Add print functionality
+        document.getElementById('printPdf').addEventListener('click', function() {
+            const pdfViewer = document.getElementById('pdfViewer');
+            const pdfUrl = pdfViewer.getAttribute('src');
+            const fullPdfUrl = `https://mitrapadi.com/receipts/receipt-${gilingId}.pdf`;
 
-        //     // Bangun URL untuk ESC/POS
-        //     const escposUrl = `print://escpos.org/escpos/bt/print?srcTp=uri&srcObj=pdf&numCopies=1&src=${encodeURIComponent(fullPdfUrl)}`;
+            // Bangun URL untuk ESC/POS
+            const escposUrl = `print://escpos.org/escpos/bt/print?srcTp=uri&srcObj=pdf&numCopies=1&src=${encodeURIComponent(fullPdfUrl)}`;
 
-        //     // Debug
-        //     console.log(JSON.stringify({
-        //         pdf_url: fullPdfUrl,
-        //         print_url: escposUrl
-        //     }, null, 2));
+            // Debug
+            console.log(JSON.stringify({
+                pdf_url: fullPdfUrl,
+                print_url: escposUrl
+            }, null, 2));
 
-        //     // Panggil URL cetak
-        //     window.location.href = escposUrl;
-        // });
+            // Panggil URL cetak
+            window.location.href = escposUrl;
+        });
 
-        // function initializeNumberFormatting(inputs) {
-        //     inputs.forEach(input => {
-        //         // Format saat halaman dimuat
-        //         formatNumber(input);
+        function initializeNumberFormatting(inputs) {
+            inputs.forEach(input => {
+                // Format saat halaman dimuat
+                formatNumber(input);
 
-        //         // Format saat input berubah
-        //         input.addEventListener('input', function(e) {
-        //             let value = this.value; // Ambil seluruh input
-        //             this.dataset.rawValue = value;
-        //             formatNumber(this);
-        //         });
-        //     });
+                // Format saat input berubah
+                input.addEventListener('input', function(e) {
+                    let value = this.value; // Ambil seluruh input
+                    this.dataset.rawValue = value;
+                    formatNumber(this);
+                });
+            });
 
-        // }
+        }
 
         // Initialize existing number inputs when page loads
         document.addEventListener('DOMContentLoaded', function() {
@@ -789,11 +782,11 @@
         showPdfModal(latestGilingId);
         @endif
 
-        // Event listener for Print button
-        document.getElementById('printPdf').addEventListener('click', function() {
-            const pdfViewer = document.getElementById('pdfViewer').contentWindow;
-            pdfViewer.print();
-        });
+        // // Event listener for Print button
+        // document.getElementById('printPdf').addEventListener('click', function() {
+        //     const pdfViewer = document.getElementById('pdfViewer').contentWindow;
+        //     pdfViewer.print();
+        // });
     });
 </script>
 
