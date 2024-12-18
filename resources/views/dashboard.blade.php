@@ -48,6 +48,11 @@
             margin-top: 0 !important;
             /* Sesuaikan ukuran padding/margin yang diinginkan untuk horizontal */
         }
+
+        .col-lg-5.mb-lg-0 {
+            margin-bottom: 24px !important;
+            /* Sesuaikan ukuran padding/margin yang diinginkan */
+        }
     }
 
     /* Landscape Mode (Desktop/Tablet Horizontal) */
