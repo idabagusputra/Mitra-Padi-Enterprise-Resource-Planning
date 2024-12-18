@@ -466,7 +466,7 @@
 
 
                     @foreach($histories as $history)
-                    <div class="timeline-block">
+                    <div class="timeline-block mb-3">
                         <span class="timeline-step">
                             @if(isset($history['type']))
                             @switch($history['type'])
