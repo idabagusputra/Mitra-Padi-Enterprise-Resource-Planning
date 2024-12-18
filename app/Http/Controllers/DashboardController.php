@@ -217,13 +217,13 @@ class DashboardController extends Controller
                 return [
                     'type' => 'Petani',
                     'description' => 'Penambahan Petani Baru: ' . $history->nama,
-                    'date' => $history->created_at->format('d M H:i'),
+                    'date' => $history->created_at->format('d M Y H:i:s'),
                 ];
             } elseif ($history instanceof Kredit && isset($history->jumlah, $history->petani, $history->created_at)) {
                 return [
                     'type' => 'Kredit',
                     'description' => 'Penambahan Kredit dengan jumlah Rp ' . number_format($history->jumlah, 0, ',', '.') . ' milik pentani: ' . $history->petani->nama,
-                    'date' => $history->created_at->format('d M H:i'),
+                    'date' => $history->created_at->format('d M Y H:i:s'),
                 ];
             } elseif (
                 $history instanceof Debit && isset($history->jumlah, $history->petani, $history->created_at)
@@ -231,25 +231,25 @@ class DashboardController extends Controller
                 return [
                     'type' => 'Debit',
                     'description' => 'Penambahan Debit dengan jumlah Rp ' . number_format($history->jumlah, 0, ',', '.') . ' milik pentani: ' . $history->petani->nama,
-                    'date' => $history->created_at->format('d M H:i'),
+                    'date' => $history->created_at->format('d M Y H:i:s'),
                 ];
             } elseif ($history instanceof RekapDana && isset($history->rekapan_dana, $history->created_at)) {
                 return [
                     'type' => 'RekapDana',
                     'description' => 'Pembuatan Rekapan Dana Rp ' . number_format($history->rekapan_dana, 0, ',', '.'),
-                    'date' => $history->created_at->format('d M H:i'),
+                    'date' => $history->created_at->format('d M Y H:i:s'),
                 ];
             } elseif ($history instanceof RekapKredit && isset($history->rekapan_kredit, $history->created_at)) {
                 return [
                     'type' => 'RekapKredit',
                     'description' => 'Pembuatan Rekapan Kredit Rp ' . number_format($history->rekapan_kredit, 0, ',', '.'),
-                    'date' => $history->created_at->format('d M H:i'),
+                    'date' => $history->created_at->format('d M Y H:i:s'),
                 ];
             } elseif ($history instanceof DaftarGiling && isset($history->dana_penerima, $history->petani, $history->created_at)) {
                 return [
                     'type' => 'DaftarGiling',
                     'description' => 'Pembuatan Nota Giling dengan Sisa Dana Rp ' . number_format($history->dana_penerima, 0, ',', '.') . ' milik pentani: ' . $history->petani->nama,
-                    'date' => $history->created_at->format('d M H:i'),
+                    'date' => $history->created_at->format('d M Y H:i:s'),
                 ];
             }
         })->filter()->toArray(); // Filter entri yang valid dan konversi ke array
