@@ -196,10 +196,10 @@
 <div class="row mt-md-4 mt-0">
 
 
-    <div class="col-lg-7 mb-4">
+    <div class="col-lg-7 mb-4 mt-4">
         <div class="card z-index-2">
             <div class="card-header pb-0 mb-0">
-                <h6 class="ms-0 mt-2 mb-0">Garfik Laporan Hasil Giling (Kg)</h6>
+                <h6 class="ms-0 mt-2 mb-0">Grafik Laporan Hasil Giling (Kg)</h6>
                 <p class="ms-0 text-sm mb-0 pb-1"> <span class="font-weight-bolder">Per Bulan</span> </p>
                 <!-- <p class="text-sm">
                     <i class="fa fa-arrow-up text-success"></i>
@@ -218,7 +218,7 @@
     <div class="col-lg-5 mb-lg-0">
         <div class="card z-index-2">
             <div class="card-body p-3">
-                <h6 class="ms-0 mt-2 mb-0">Garfik Laporan Pendapatan (Rp)</h6>
+                <h6 class="ms-0 mt-2 mb-0">Grafik Laporan Pendapatan (Rp)</h6>
                 <p class="text-sm ms-0"> <span class="font-weight-bolder">Per Bulan</span> </p>
                 <div class="bg-gradient-dark border-radius-lg py-3 pe-1 mb-3">
                     <div class="chart">
