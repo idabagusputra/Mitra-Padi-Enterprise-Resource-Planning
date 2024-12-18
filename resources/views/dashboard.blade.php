@@ -387,7 +387,7 @@
                             <tr>
 
                                 <th class="text-uppercase text-primary font-weight-bolder ps-4" style="font-size: 0.85rem;">Petani</th>
-                                <th class="text-uppercase text-primary font-weight-bolder ps-2" style="font-size: 0.85rem;">Transaksi</th>
+                                <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Transaksi</th>
                                 <th class="text-uppercase text-primary font-weight-bolder ps-2" style="font-size: 0.85rem;">Jumlah Utang</th>
                                 <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Sisa Utang</th>
                                 <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Status</th>
@@ -398,7 +398,7 @@
                             <tr>
 
                                 <td class="ps-4">{{ $item['petani'] }}</td>
-                                <td> {{ $item['transaksi'] }}</td>
+                                <td class="text-center"> {{ $item['transaksi'] }}</td>
                                 <td>{{ $item['hutangYangDibayar'] }}</td>
                                 <td class="text-center">{{ $item['sisa_utang'] }}</td>
                                 <td class="text-center">
