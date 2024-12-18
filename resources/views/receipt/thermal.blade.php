@@ -311,16 +311,16 @@
             @if($giling->pengambilans->isNotEmpty())
             @foreach($giling->pengambilans as $index => $pengambilan)
             @php
-            function getDecimalPlaces($value) {
+            function getDecimalPlacesP($value) {
             if (is_numeric($value)) {
             return strpos($value, '.') !== false ? strlen(substr(strrchr($value, '.'), 1)) : 0;
             }
             return 0; // Tidak ada desimal
             }
 
-            $decimalPlacesPJumlah = getDecimalPlaces($pengambilan->jumlah);
-            $decimalPlacesPHarga = getDecimalPlaces($pengambilan->harga);
-            $decimalPlacesPTHarga = getDecimalPlaces($pengambilan->jumlah * $pengambilan->harga);
+            $decimalPlacesPJumlah = getDecimalPlacesP($pengambilan->jumlah);
+            $decimalPlacesPHarga = getDecimalPlacesP($pengambilan->harga);
+            $decimalPlacesPTHarga = getDecimalPlacesP($pengambilan->jumlah * $pengambilan->harga);
             @endphp
 
             <tr class="calculation-row">
