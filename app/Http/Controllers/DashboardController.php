@@ -143,18 +143,9 @@ class DashboardController extends Controller
             ->orderBy('id', 'desc')
             ->paginate(13);
 
-        // // Kembalikan dalam format JSON
-        // return response()->json([
-        //     'data' => $gilings->items(), // Menampilkan data yang diambil
-        //     'current_page' => $gilings->currentPage(), // Halaman saat ini
-        //     'last_page' => $gilings->lastPage(), // Halaman terakhir
-        //     'total' => $gilings->total(), // Jumlah total entri
-        //     'per_page' => $gilings->perPage() // Jumlah entri per halaman
-        // ]);
-
         // Ambil data PembayaranKredit terkait dengan ID Giling terbaru
         $pembayaranKreditsLangsung = PembayaranKredit::with(['giling'])
-            ->whereIn('giling_id', $gilings->pluck('id')) // Ambil hanya PembayaranKredit yang memiliki relasi dengan giling ID dari giling terbaru
+            ->whereIn('giling_id', $gilings->pluck('id'))
             ->get();
 
         $data = [];
@@ -164,51 +155,48 @@ class DashboardController extends Controller
         foreach ($gilings as $giling) {
             $petani = $giling->petani;
 
-            if ($petani && $petani->kredits->isNotEmpty()) {
+            if (
+                $petani && $petani->kredits->isNotEmpty()
+            ) {
+                // Filter pembayaran kredits untuk transaksi terkait giling
                 $pembayaranKredits = $petani->kredits->filter(function ($kredit) use ($giling) {
-                    // Filter kredit berdasarkan 'pKredit_id' yang sama dengan ID giling
                     return $kredit->pKredit_id == $giling->id;
                 });
 
                 $pembayaranKreditsFalse = $petani->kredits;
 
+                // Filter kredit untuk transaksi yang sudah lunas
                 $pembayaranKreditsTransaksi = $petani->kredits->filter(function ($kredit) use ($giling) {
-                    // Filter kredit berdasarkan 'pKredit_id' yang sama dengan ID giling
                     return $kredit->pKredit_id == $giling->id && $kredit->status == true;
                 });
 
                 // Cek status dari pembayarankredits terkait
                 $status = $pembayaranKredits->every->status ? 'Lunas' : 'Belum Lunas';
 
-
                 // Ambil total hutang yang sudah dibayar terkait dengan giling_id
-                $hutangYangDibayar = $pembayaranKreditsLangsung->where('giling_id', $giling->id)->pluck('total_hutang')->sum();
-                // $hutangYangDibayar = $pembayaranKreditsLangsung->where('giling_id', $giling->id)->sum('jumlah');
-
+                $hutangYangDibayar = $pembayaranKreditsLangsung->where('giling_id', $giling->id)->sum('total_hutang');
 
                 // Hitung sisa utang yang belum lunas
                 $sisaUtang = $pembayaranKreditsFalse->where('status', false)->sum('jumlah');
-                if ($sisaUtang > 0) {
-                    $status = false;
-                } else {
-                    $status = true;
-                }
-
-                $sisaUtangFormatted = 'Rp ' . number_format($sisaUtang, 0, ',', '.');
+                $status = $sisaUtang > 0 ? false : true;
 
                 // Formatkan sisa utang menjadi format Rupiah
-                $sisaUtang = 'Rp ' . number_format($sisaUtang, 0, ',', '.');
+                $sisaUtangFormatted = 'Rp ' . number_format($sisaUtang, 0, ',', '.');
 
-                $data[] = [
-                    'id' => $petani->id,
-                    'petani' => $petani->nama,
-                    'transaksi' => $pembayaranKreditsTransaksi->count(), // Jumlah transaksi yang berkaitan
-                    'sisa_utang' => $sisaUtang,
-                    'status' => $status,
-                    'hutangYangDibayar' => 'Rp ' . number_format($hutangYangDibayar, 0, ',', '.'),
-                ];
+                // Tambahkan entri ke dalam data hanya jika petani tidak sudah ada
+                if (!isset($data[$petani->id])) {
+                    $data[$petani->id] = [
+                        'id' => $petani->id,
+                        'petani' => $petani->nama,
+                        'transaksi' => $pembayaranKreditsTransaksi->count(), // Jumlah transaksi yang berkaitan
+                        'sisa_utang' => $sisaUtangFormatted,
+                        'status' => $status,
+                        'hutangYangDibayar' => 'Rp ' . number_format($hutangYangDibayar, 0, ',', '.'),
+                    ];
+                }
             }
         }
+
 
 
         $dataHistory = collect()
