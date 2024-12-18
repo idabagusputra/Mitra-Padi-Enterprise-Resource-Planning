@@ -6,21 +6,23 @@
     @media (max-width: 576px) {
         .container .row {
             display: flex;
-            flex-direction: column;
+            flex-wrap: wrap;
+            /* Izinkan wrapping pada baris */
+            gap: 1rem;
+            /* Ruang antar kolom */
             align-items: flex-start;
         }
 
         .container .col-3 {
-            width: 100%;
+            flex: 1 1 calc(50% - 1rem);
+            /* Setengah lebar dan kurangi margin untuk ruang antar kolom */
             padding: 0;
             margin-bottom: 0;
             border-radius: 0.5rem;
             background-color: #fff;
-
         }
 
         .container .d-flex {
-
             display: flex;
             align-items: center;
         }
@@ -32,7 +34,6 @@
 
         .container p.text-xs,
         .container h4 {
-
             text-align: left;
             margin: 0;
         }
@@ -245,7 +246,7 @@
                                 <div class="icon icon-shape bi bi-building-fill-down icon-xxs shadow border-radius-sm bg-gradient-info text-center me-2 d-flex align-items-center justify-content-center" style="color: white; font-size: 10px;">
 
                                 </div>
-                                <p class="text-xs mt-1 mb-0 font-weight-bold">Ongkos-G Bulan Ini</p>
+                                <p class="text-xs mt-1 mb-0 font-weight-bold">Ongkos-G Bln Ini</p>
                             </div>
                             <h4 class="font-weight-bolder text-lg">{{ number_format($totalKeseluruhanBulanIniOngkosGiling, 2) }} Kg</h4>
                             <!-- <div class="progress w-75">
@@ -273,7 +274,7 @@
                                 <div class="icon icon-shape bi bi-cash-coin icon-xxs shadow border-radius-sm bg-gradient-danger text-center me-2 d-flex align-items-center justify-content-center" style="color: white; font-size: 10px;">
 
                                 </div>
-                                <p class="text-xs mt-1 mb-0 font-weight-bold">Total-P Bulan Ini</p>
+                                <p class="text-xs mt-1 mb-0 font-weight-bold">Total-P Bln Ini</p>
                             </div>
                             <h4 class="font-weight-bolder text-lg">Rp {{ number_format($pendapatanBerasTerjualTotalPerBulan, 2) }}</h4>
 
