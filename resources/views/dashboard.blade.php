@@ -385,7 +385,7 @@
                     <table class="table align-items-center mb-0">
                         <thead>
                             <tr>
-                                <!-- <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">ID</th> -->
+
                                 <th class="text-uppercase text-primary font-weight-bolder ps-4" style="font-size: 0.85rem;">Petani</th>
                                 <th class="text-uppercase text-primary font-weight-bolder ps-2" style="font-size: 0.85rem;">Transaksi</th>
                                 <th class="text-uppercase text-primary font-weight-bolder ps-2" style="font-size: 0.85rem;">Jumlah Utang</th>
@@ -396,7 +396,7 @@
                         <tbody>
                             @foreach ($data as $item)
                             <tr>
-                                <!-- <td class="text-center">{{ $item['id'] }}</td> -->
+
                                 <td class="ps-4">{{ $item['petani'] }}</td>
                                 <td> {{ $item['transaksi'] }}</td>
                                 <td>{{ $item['hutangYangDibayar'] }}</td>
