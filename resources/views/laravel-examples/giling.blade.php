@@ -779,6 +779,17 @@
                     let jumlahInput = item.querySelector(`[name^="pengambilans["][name$="[jumlah]"]`).value.replace(/,/g, ''); // Remove commas and convert to integer
                     let hargaInput = item.querySelector(`[name^="pengambilans["][name$="[harga]"]`).value.replace(/,/g, ''); // Remove commas and convert to integer
 
+                    // Check if jumlahInput and hargaInput are valid numbers after conversion
+                    if (!jumlahInput || isNaN(jumlahInput) || jumlahInput.trim() === '') {
+                        alert('Jumlah must be an integer.');
+                        return;
+                    }
+
+                    if (!hargaInput || isNaN(hargaInput) || hargaInput.trim() === '') {
+                        alert('Harga must be an integer.');
+                        return;
+                    }
+
                     jumlahInput = parseInt(jumlahInput, 10); // Convert jumlahInput to integer
                     hargaInput = parseInt(hargaInput, 10); // Convert hargaInput to integer
 
@@ -786,7 +797,6 @@
                         allEmpty = false;
                     }
                 });
-
                 if (allEmpty) {
                     pengambilans.forEach(item => item.remove());
                     const pengambilansInput = document.createElement('input');
