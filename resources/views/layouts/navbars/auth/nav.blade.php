@@ -72,7 +72,7 @@
                 </li> -->
 
 
-                <li class="ps-3 nav-item dropdown pe-3 d-flex align-items-center">
+                <li class="ps-3 nav-item dropdown d-flex align-items-center">
                     <a href="javascript:;" class="nav-link text-body p-0" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-bell cursor-pointer"></i>
                     </a>
@@ -192,7 +192,7 @@
         </ul>
         </li>
 
-        <li class="pe-0 nav-item ps-2 d-xl-none d-flex align-items-center">
+        <li class="pe-0 nav-item ps-5 d-xl-none d-flex align-items-center">
             <a href="javascript:;" class="nav-link text-body p-0" id="iconNavbarSidenav">
                 <div class="sidenav-toggler-inner">
                     <i class="sidenav-toggler-line"></i>

@@ -13,11 +13,6 @@
         position: relative;
     }
 
-    .form-control-label {
-        padding-left: 0;
-        margin-left: 0;
-    }
-
     .input-group {
         border-radius: 0.25rem;
         overflow: hidden;
@@ -140,6 +135,11 @@
         margin-bottom: 5px;
     }
 
+    .form-control-label {
+        padding-left: 0;
+        margin-left: 0;
+    }
+
     input[type="text"],
     input[type="number"],
     select {
@@ -245,8 +245,6 @@
 <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css"> -->
 <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script> -->
 <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script> -->
-
-
 
 
 @section('content')
@@ -695,20 +693,20 @@
         //     window.location.href = escposUrl;
         // });
 
-        // function initializeNumberFormatting(inputs) {
-        //     inputs.forEach(input => {
-        //         // Format saat halaman dimuat
-        //         formatNumber(input);
+        function initializeNumberFormatting(inputs) {
+            inputs.forEach(input => {
+                // Format saat halaman dimuat
+                formatNumber(input);
 
-        //         // Format saat input berubah
-        //         input.addEventListener('input', function(e) {
-        //             let value = this.value; // Ambil seluruh input
-        //             this.dataset.rawValue = value;
-        //             formatNumber(this);
-        //         });
-        //     });
+                // Format saat input berubah
+                input.addEventListener('input', function(e) {
+                    let value = this.value; // Ambil seluruh input
+                    this.dataset.rawValue = value;
+                    formatNumber(this);
+                });
+            });
 
-        // }
+        }
 
         // Initialize existing number inputs when page loads
         document.addEventListener('DOMContentLoaded', function() {
