@@ -1,8 +1,37 @@
+<style>
+    .brand-hover::before {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background-color: #4CAF50;
+        transition: width 0.3s ease;
+    }
+
+    .brand-hover:hover::before {
+        width: 100%;
+    }
+
+    .text-gradient {
+        background: linear-gradient(to right, #4CAF50, #2196F3);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        transition: all 0.3s ease;
+    }
+
+    .brand-hover:hover .text-gradient {
+        background: linear-gradient(to right, #2196F3, #4CAF50);
+    }
+</style>
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg position-absolute top-0 z-index-3 my-3 {{ (Request::is('static-sign-up') ? 'w-100 shadow-none  navbar-transparent mt-4' : 'blur blur-rounded shadow py-2 start-0 end-0 mx4') }}">
-    <div class="container-fluid {{ (Request::is('static-sign-up') ? 'container' : 'container-fluid') }}">
-        <a class="navbar-brand font-weight-bolder ms-lg-0 ms-3 {{ (Request::is('static-sign-up') ? 'text-white' : '') }}" href="{{ url('dashboard') }}">
-            Penggilingan Padi Putra Manuaba
+<nav class="navbar mx-4 navbar-expand-lg position-absolute top-0 z-index-3 my-3 {{ (Request::is('static-sign-up') ? 'w-100 shadow-none  navbar-transparent mt-4' : 'blur blur-rounded shadow py-2 start-0 end-0 mx4') }}">
+    <div class="container-fluid justify-content-center {{ (Request::is('static-sign-up') ? 'container' : 'container-fluid') }}">
+        <a class="navbar-brand font-weight-bold text-center text-sm-start mx-0 px-2 ps-2 position-relative brand-hover ms-lg-0 {{ (Request::is('static-sign-up') ? 'text-white' : '') }}" href="{{ url('dashboard') }}">
+            <span class="d-block text-nowrap text-center text-sm-start" style="letter-spacing: 0.5px; transition: all 0.3s ease;">
+                <b>Penggilingan Padi Putra Manuaba</b>
+            </span>
         </a>
         <!--<button class="navbar-toggler shadow-none ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navigation" aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">-->
         <!--    <span class="navbar-toggler-icon mt-2">-->

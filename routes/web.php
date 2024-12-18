@@ -18,13 +18,15 @@ use App\Http\Controllers\KreditReportController;
 use App\Http\Controllers\KreditTrashController;
 use App\Http\Controllers\RekapDanaController;
 use App\Http\Controllers\KreditNasabahPaluController;
+use App\Http\Controllers\DashboardController;
 use App\Models\RekapDana;
 use Illuminate\Support\Facades\Route;
+use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 Route::group(['middleware' => 'auth'], function () {
     // Dashboard and other static pages
     Route::get('/', [HomeController::class, 'home']);
-    Route::view('dashboard', 'dashboard')->name('dashboard');
+    // Route::view('dashboard', 'dashboard')->name('dashboard');
     Route::view('billing', 'billing')->name('billing');
     Route::view('profile', 'profile')->name('profile');
     Route::view('rtl', 'rtl')->name('rtl');
@@ -33,6 +35,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::view('virtual-reality', 'virtual-reality')->name('virtual-reality');
     Route::view('static-sign-in', 'static-sign-in')->name('sign-in');
     Route::view('static-sign-up', 'static-sign-up')->name('sign-up');
+
+
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
 
     // Petani routes
     Route::resource('petani', PetaniController::class);

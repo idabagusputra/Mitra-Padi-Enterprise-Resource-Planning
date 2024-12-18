@@ -51,6 +51,7 @@ class PetaniController extends Controller
             }
         }
 
+
         // Fetch paginated results
         $petanis = $query->paginate(20); // Adjust pagination as needed
 
