@@ -28,6 +28,12 @@
         height: 40px;
     }
 
+    .spinner-border-sm {
+        width: 1rem;
+        height: 1rem;
+        border-width: 0.2em;
+    }
+
     body {
         overflow-x: hidden;
     }
@@ -250,14 +256,14 @@
                                     </div>
 
                                     <form method="GET" action="{{ route('laporan.kredit') }}">
-
-
-                                        <a href="{{ route('laporan.kredit') }}" class="btn btn-cetak bg-gradient-primary d-flex align-items-center justify-content-center mt-3 me-2" id="btn-id" style="width: 233px;">
+                                        <button class="btn btn-cetak bg-gradient-primary d-flex align-items-center justify-content-center mt-3 me-2"
+                                            id="btn-id-cetak"
+                                            style="width: 233px;">
                                             <i class="bi bi-printer me-2"></i>
                                             <span>CETAK</span>
-                                        </a>
-
+                                        </button>
                                     </form>
+
 
 
                                     <button class="btn btn-baru bg-gradient-primary d-flex align-items-center justify-content-center mt-3" type="button" id="btn-id" data-bs-toggle="modal" data-bs-target="#addKreditModal" style="width: 233px;">
@@ -921,7 +927,24 @@
                 }
 
 
+                const cetakButton = document.getElementById('btn-id-cetak');
+                const actionUrl = "{{ route('laporan.kredit') }}"; // URL untuk diarahkan
 
+                cetakButton.addEventListener('click', function() {
+                    // Disable tombol untuk mencegah multiple click
+                    cetakButton.disabled = true;
+
+                    // Tambahkan spinner dan teks "Menyimpan..."
+                    cetakButton.innerHTML = `
+                <div class="d-flex align-items-center">
+                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    <span>Mencetak...</span>
+                </div>
+            `;
+
+                    // Redirect ke URL
+                    window.location.href = actionUrl;
+                });
 
 
             });
