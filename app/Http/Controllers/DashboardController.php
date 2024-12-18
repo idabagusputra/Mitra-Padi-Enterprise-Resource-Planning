@@ -140,7 +140,13 @@ class DashboardController extends Controller
 
         $gilings = Giling::with(['petani.kredits'])
             ->orderBy('id', 'desc') // Urutkan berdasarkan ID secara descending
-            ->paginate(10); // Paginate hasilnya, ambil 13 entri per halaman
+            ->take(12) // Ambil 12 data pertama
+            ->get(); // Ambil data
+        $latestGiling = Giling::with(['petani.kredits'])
+            ->orderBy('id', 'desc') // Ambil data terbaru
+            ->first(); // Ambil hanya satu data terbaru
+
+        $gilings->prepend($latestGiling); // Tambahkan data terbaru di atas array yang sudah ada
 
         // Ambil data PembayaranKredit terkait dengan ID Giling terbaru
         $pembayaranKreditsLangsung = PembayaranKredit::with(['giling'])
