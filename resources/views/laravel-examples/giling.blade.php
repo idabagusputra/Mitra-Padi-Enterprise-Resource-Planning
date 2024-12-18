@@ -13,17 +13,6 @@
         position: relative;
     }
 
-
-    .form-control-label {
-        padding-left: 0;
-        margin-left: 0;
-    }
-
-    .form-control-label {
-        padding-left: 0;
-        margin-left: 0;
-    }
-
     .input-group {
         border-radius: 0.25rem;
         overflow: hidden;
@@ -32,6 +21,11 @@
     .input-group-text {
         border-right: none;
         background-color: #fff;
+    }
+
+    .form-control-label {
+        padding-left: 0;
+        margin-left: 0;
     }
 
     #petani_search {
@@ -251,8 +245,6 @@
 <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css"> -->
 <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script> -->
 <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script> -->
-
-
 
 
 @section('content')
