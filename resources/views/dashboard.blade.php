@@ -507,9 +507,14 @@
                             @endphp
                             <h6 class="text-dark text-sm font-weight-bold mb-0">
                                 <strong>{{ $firstWord }}</strong>
+                                @if($farmerName)
                                 {{ str_replace($firstWord, '', $beforePetani) }} petani: <strong>{{ $farmerName }}</strong>
                                 <span style="font-weight: normal;">{{ $remainingDetails }}</span>
+                                @else
+                                {{ str_replace($firstWord, '', $beforePetani) }}<strong>{{ $farmerName }}</strong>
+                                @endif
                             </h6>
+
                             <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">{{ $history['date'] }}</p>
                             @endif
                         </div>
