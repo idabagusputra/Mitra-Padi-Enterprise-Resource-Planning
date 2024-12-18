@@ -264,21 +264,26 @@ class DashboardController extends Controller
                 }
                 return $item;
             }))
-            ->merge(DaftarGiling::withTrashed()->get()->map(function ($item) {
-                $changedAttributes = collect($item->getDirty())->keys();
+            ->merge(DaftarGiling::withTrashed()
+                ->whereHas('giling', function ($query) {
+                    $query->where('petani_id', '!=', 187); // Abaikan entri dengan petani_id = 187
+                })
+                ->get()
+                ->map(function ($item) {
+                    $changedAttributes = collect($item->getDirty())->keys();
 
-                if ($item->trashed()) {
-                    $item->actionType = 'delete';
-                } elseif (!empty($changedAttributes->toArray()) && $item->wasChanged()) {
-                    $item->actionType = 'update';
-                    $item->changedFields = $changedAttributes->toArray();
-                } elseif ($item->wasRecentlyCreated) {
-                    $item->actionType = 'create';
-                } else {
-                    $item->actionType = 'create'; // Default fallback
-                }
-                return $item;
-            }))
+                    if ($item->trashed()) {
+                        $item->actionType = 'delete';
+                    } elseif (!empty($changedAttributes->toArray()) && $item->wasChanged()) {
+                        $item->actionType = 'update';
+                        $item->changedFields = $changedAttributes->toArray();
+                    } elseif ($item->wasRecentlyCreated) {
+                        $item->actionType = 'create';
+                    } else {
+                        $item->actionType = 'create'; // Default fallback
+                    }
+                    return $item;
+                }))
             // ->merge(PembayaranKredit::withTrashed()->get()->map(function ($item) {
             //     $changedAttributes = collect($item->getDirty())->keys();
 
