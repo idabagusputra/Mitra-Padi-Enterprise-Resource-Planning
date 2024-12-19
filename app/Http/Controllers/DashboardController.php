@@ -78,11 +78,11 @@ class DashboardController extends Controller
 
         // Get the last 12 months starting from August 2023
         $months = [];
-        $currentDate = Carbon::create(2024, 10, 1);
+        $currentDate = Carbon::create(2024, 4, 1);
         $endDate = Carbon::now();
 
         // Collect the last 12 months
-        while (count($months) < 6) {
+        while (count($months) < 12) {
             $months[] = $currentDate->copy();
             $currentDate->addMonth();
         }
@@ -132,10 +132,94 @@ class DashboardController extends Controller
                 });
         }
 
+
+
+
+        // Reinitialize arrays for data
+        $dataTotalHutang = [];
+        $dataTotalHutangPlusBunga = [];
+        $dataPendapatanDariBunga = [];
+
+        // Process each month
+        foreach ($months as $monthDate) {
+            $month = $monthDate->month;
+            $year = $monthDate->year;
+
+            // Calculate Total Hutang for the specific month and year
+            $totalHutang = Kredit::where(function ($query) use ($month, $year) {
+                $query->whereMonth('created_at', $month)
+                    ->whereYear('created_at', $year);
+            })->where('status', true)->sum('jumlah');
+            $dataTotalHutang[] = $totalHutang;
+
+
+
+
+            // Calculate Total Hutang Plus Bunga for the specific month and year
+            $aktifGilingIds = DaftarGiling::whereNull('deleted_at')->pluck('giling_id')->toArray();
+
+            $totalHutangPlusBunga = PembayaranKredit::whereIn('giling_id', $aktifGilingIds)
+                ->whereMonth('created_at', $month)
+                ->whereYear('created_at', $year)
+                ->sum('total_hutang');
+
+            $dataTotalHutangPlusBunga[] = $totalHutangPlusBunga;
+
+
+
+            // Menghitung Pendapatan Dari Bunga
+            $pendapatanDariBunga = $totalHutangPlusBunga - $totalHutang;
+
+            if ($pendapatanDariBunga < 0) {
+                $pendapatanDariBunga = 0; // Set nilainya menjadi 0 jika negatif
+            }
+
+            $dataPendapatanDariBunga[] = $pendapatanDariBunga;
+
+            $positivePendapatanDariBunga = array_filter($dataPendapatanDariBunga, function ($value) {
+                return $value >= 0; // Hanya ambil nilai yang >= 0 (positif)
+            });
+
+            $sumPendapatanDariBunga = array_sum($positivePendapatanDariBunga);
+
+            $sumTotalHutang = array_sum($dataTotalHutang);
+        }
+
+        // Calculate for the current month
+        $totalHutangPerbulan = Kredit::where(function ($query) use ($currentMonth, $currentYear) {
+            $query->whereMonth('created_at', $currentMonth)
+                ->whereYear('created_at', $currentYear);
+        })->where('status', true)->sum('jumlah');
+
+
+        // Calculate Total Hutang Plus Bunga for the specific month and year
+        $aktifGilingIds = DaftarGiling::whereNull('deleted_at')->pluck('giling_id')->toArray();
+
+        $totalHutangPlusBungaPerbulan = PembayaranKredit::whereIn('giling_id', $aktifGilingIds)
+            ->whereMonth('created_at', $currentMonth)
+            ->whereYear('created_at', $currentYear)
+            ->sum('total_hutang');
+
+
+
+
+
+
+        // Calculate Pendapatan Dari Bunga for the current month
+        $pendapatanDariBungaTotalPerbulan = $totalHutangPlusBungaPerbulan - $totalHutangPerbulan;
+
+
+
+
         // Create month labels for frontend use
         $monthLabels = array_map(function ($monthDate) {
             return $monthDate->format('M Y');
         }, $months);
+
+
+
+
+
 
 
         // Ambil data dengan relasi 'petani', abaikan petani dengan id 187, dan paginasi 13 entri per halaman
@@ -153,6 +237,7 @@ class DashboardController extends Controller
 
         $data = [];
         $hutangYangDibayar = 0; // Variabel untuk menghitung total hutang yang sudah dibayar
+
 
         // // Proses data untuk tabel
         // foreach ($gilings as $giling) {
@@ -471,7 +556,7 @@ class DashboardController extends Controller
 
 
 
-        return view('dashboard', compact('histories', 'data', 'totalKeseluruhanBulanIniOngkosGiling', 'pendapatanBerasTerjualTotal', 'pendapatanBerasTerjualTotalPerBulan', 'totalPetani', 'totalKreditBelumLunas', 'jumlahPetaniBelumLunas', 'totalBerasBersih', 'dataOngkosGiling', 'dataBerasBersih', 'dataPendapatanTerjual', 'monthLabels', 'totalBerasBersihBulanIni', 'totalKeseluruhanOngkosGiling'));
+        return view('dashboard', compact('totalHutangPerbulan', 'sumPendapatanDariBunga', 'sumTotalHutang', 'pendapatanDariBungaTotalPerbulan', 'dataTotalHutang', 'dataTotalHutangPlusBunga', 'dataPendapatanDariBunga', 'histories', 'data', 'totalKeseluruhanBulanIniOngkosGiling', 'pendapatanBerasTerjualTotal', 'pendapatanBerasTerjualTotalPerBulan', 'totalPetani', 'totalKreditBelumLunas', 'jumlahPetaniBelumLunas', 'totalBerasBersih', 'dataOngkosGiling', 'dataBerasBersih', 'dataPendapatanTerjual', 'monthLabels', 'totalBerasBersihBulanIni', 'totalKeseluruhanOngkosGiling'));
 
 
         // $currentYear = Carbon::now()->year;

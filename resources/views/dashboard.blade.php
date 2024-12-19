@@ -321,10 +321,12 @@
     </div>
 
 
+
+
     <div class="col-lg-6 mb-lg-0 mobile">
         <div class="card z-index-2">
             <div class="card-body p-3">
-                <h6 class="ms-0 mt-2 mb-0">Grafik Laporan Pendapatan (Rp)</h6>
+                <h6 class="ms-0 mt-2 mb-0">Grafik Laporan Pendapatan Giling (Rp)</h6>
                 <p class="text-sm ms-0"> <span class="font-weight-bolder">Per Bulan</span> </p>
                 <div class="bg-gradient-dark border-radius-lg py-3 pe-1 mb-3">
                     <div class="chart">
@@ -382,6 +384,112 @@
                                 <p class="text-xs mt-1 mb-0 font-weight-bold">Total-P Bln Ini</p>
                             </div>
                             <h4 class="font-weight-bolder text-lg">Rp {{ number_format($pendapatanBerasTerjualTotalPerBulan, 2) }}</h4>
+
+                            <!-- <div class="progress w-75">
+                                <div class="progress-bar bg-dark w-50" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div> -->
+                        </div>
+
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+
+<div class="row mt-4 horizontal">
+
+    <div class=" col-lg-6 mt-0 mobile2">
+        <div class="card z-index-2">
+            <div class="card-header pb-0 mb-0">
+                <h6 class="ms-0 mt-2 mb-0">Grafik Laporan Utang (Rp)</h6>
+                <p class="ms-0 text-sm mb-0 pb-1"> <span class="font-weight-bolder">Per Bulan</span> </p>
+                <!-- <p class="text-sm">
+                    <i class="fa fa-arrow-up text-success"></i>
+                    <span class="font-weight-bold">4% more</span> in 2021
+                </p> -->
+            </div>
+            <div class="card-body p-3  pt-0">
+                <div class="chart">
+                    <canvas id="chart-line-kredit" class="chart-canvas" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-lg-6 mb-lg-0 mobile">
+        <div class="card z-index-2">
+            <div class="card-body p-3">
+                <h6 class="ms-0 mt-2 mb-0">Grafik Laporan Pendapatan Hutang (Rp)</h6>
+                <p class="text-sm ms-0"> <span class="font-weight-bolder">Per Bulan</span> </p>
+                <div class="bg-gradient-dark border-radius-lg py-3 pe-1 mb-3">
+                    <div class="chart">
+                        <canvas id="chart-bars-kredit" class="chart-canvas" height="116"></canvas>
+                    </div>
+                </div>
+
+                <div class="container border-radius-lg justify-content-center">
+
+                    <div class="row justify-content-between px-7">
+
+
+
+                        <!-- <div class="col-3 py-3 ps-0 mobile">
+                            <div class="d-flex mb-2">
+                                <div class="icon icon-shape bi bi-building-fill-check icon-xxs shadow border-radius-sm bg-gradient-primary text-center me-2 d-flex align-items-center justify-content-center" style="color: white; font-size: 10px;">
+
+
+                                </div>
+                                <p class="text-xs mt-1 mb-0 font-weight-bold">Total U Terbayar</p>
+                            </div>
+                            <h4 class="font-weight-bolder text-lg">Rp {{ number_format($sumTotalHutang, 2) }}</h4>
+
+                        </div>
+
+
+
+                        <div class="col-3 py-3 ps-0 mobile">
+                            <div class="d-flex mb-2">
+                                <div class="icon icon-shape bi bi-building-fill-down icon-xxs shadow border-radius-sm bg-gradient-info text-center me-2 d-flex align-items-center justify-content-center" style="color: white; font-size: 10px;">
+
+                                </div>
+                                <p class="text-xs mt-1 mb-0 font-weight-bold">Total B Terbayar</p>
+                            </div>
+                            <h4 class="font-weight-bolder text-lg">Rp {{ number_format($sumPendapatanDariBunga, 2) }}</h4>
+
+                        </div> -->
+
+
+                        <div class="col-4 py-3 ps-0 mobile">
+                            <div class="d-flex mb-2">
+                                <div class="icon icon-shape bi bi-currency-dollar icon-xxs shadow border-radius-sm bg-gradient-warning text-center me-2 d-flex align-items-center justify-content-center" style="color: white; font-size: 10px;">
+
+                                </div>
+                                <p class="text-xs mt-1 mb-0 font-weight-bold">Total Utang Terbayar</p>
+                            </div>
+                            <h4 class="font-weight-bolder text-lg">Rp {{ number_format($sumTotalHutang, 2) }}</h4>
+                            <!-- <h4 class="font-weight-bolder text-lg">Rp {{ number_format($totalHutangPerbulan, 2) }}</h4> -->
+                            <!-- <div class="progress w-75">
+                                <div class="progress-bar bg-dark w-30" role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div> -->
+                        </div>
+
+
+                        <div class="col-4 py-3 ps-0 mobile">
+                            <div class="d-flex mb-2">
+                                <div class="icon icon-shape bi bi-cash-coin icon-xxs shadow border-radius-sm bg-gradient-danger text-center me-2 d-flex align-items-center justify-content-center" style="color: white; font-size: 10px;">
+
+                                </div>
+                                <p class="text-xs mt-1 mb-0 font-weight-bold">Total Bunga Terbayar</p>
+                            </div>
+                            <h4 class="font-weight-bolder text-lg">Rp {{ number_format($sumPendapatanDariBunga, 2) }}</h4>
+                            <!-- <h4 class="font-weight-bolder text-lg">Rp {{ number_format($pendapatanDariBungaTotalPerbulan, 2) }}</h4> -->
 
                             <!-- <div class="progress w-75">
                                 <div class="progress-bar bg-dark w-50" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
@@ -595,6 +703,11 @@
         var dataOngkosGiling = <?php echo json_encode($dataOngkosGiling); ?>;
         var monthLabels = <?php echo json_encode($monthLabels); ?>;
 
+        var dataTotalHutang = <?php echo json_encode($dataTotalHutang); ?>;
+        var dataPendapatanDariBunga = <?php echo json_encode($dataPendapatanDariBunga); ?>;
+        var dataTotalHutangPlusBunga = <?php echo json_encode($dataTotalHutangPlusBunga); ?>;
+
+
 
 
 
@@ -612,6 +725,73 @@
                     borderSkipped: false,
                     backgroundColor: "#fff",
                     data: dataPendapatanTerjual,
+                    maxBarThickness: 6
+                }, ],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false,
+                    }
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index',
+                },
+                scales: {
+                    y: {
+                        grid: {
+                            drawBorder: false,
+                            display: false,
+                            drawOnChartArea: false,
+                            drawTicks: false,
+                        },
+                        ticks: {
+                            suggestedMin: 0,
+                            suggestedMax: 500,
+                            beginAtZero: true,
+                            padding: 15,
+                            font: {
+                                size: 14,
+                                family: "Open Sans",
+                                style: 'normal',
+                                lineHeight: 2
+                            },
+                            color: "#fff"
+                        },
+                    },
+                    x: {
+                        grid: {
+                            drawBorder: false,
+                            display: false,
+                            drawOnChartArea: false,
+                            drawTicks: false
+                        },
+                        ticks: {
+                            display: false
+                        },
+                    },
+                },
+            },
+        });
+
+
+        var ctx4 = document.getElementById("chart-bars-kredit").getContext("2d");
+
+        new Chart(ctx4, {
+            type: "bar",
+            data: {
+                labels: monthLabels,
+                datasets: [{
+                    label: "Hasil Pendapatan Bunga (Rp)",
+                    tension: 0.4,
+                    borderWidth: 0,
+                    borderRadius: 4,
+                    borderSkipped: false,
+                    backgroundColor: "#fff",
+                    data: dataPendapatanDariBunga,
                     maxBarThickness: 6
                 }, ],
             },
@@ -781,6 +961,133 @@
                 },
             },
         });
+
+
+
+
+
+        var ctx3 = document.getElementById("chart-line-kredit").getContext("2d");
+
+        var gradientStroke1 = ctx3.createLinearGradient(0, 230, 0, 50);
+
+        gradientStroke1.addColorStop(1, 'rgba(203,12,159,0.2)');
+        gradientStroke1.addColorStop(0.2, 'rgba(72,72,176,0.0)');
+        gradientStroke1.addColorStop(0, 'rgba(203,12,159,0)'); //purple colors
+
+        var gradientStroke2 = ctx3.createLinearGradient(0, 230, 0, 50);
+
+        gradientStroke2.addColorStop(1, 'rgba(20,23,39,0.2)');
+        gradientStroke2.addColorStop(0.2, 'rgba(72,72,176,0.0)');
+        gradientStroke2.addColorStop(0, 'rgba(20,23,39,0)'); //purple colors
+
+        var gradientStroke3 = ctx3.createLinearGradient(0, 230, 0, 50);
+
+        gradientStroke3.addColorStop(1, 'rgba(20,23,39,0.2)');
+        gradientStroke3.addColorStop(0.2, 'rgba(72,72,176,0.0)');
+        gradientStroke3.addColorStop(0, 'rgba(20,23,39,0)'); //purple colors
+
+        new Chart(ctx3, {
+            type: "line",
+            data: {
+                labels: monthLabels, // Menambahkan label bulan mulai dari Oktober hingga Januari
+                datasets: [{
+                        label: "Total Utang Petani (Rp)",
+                        tension: 0.4,
+                        borderWidth: 0,
+                        pointRadius: 0,
+                        borderColor: "#cb0c9f",
+                        borderWidth: 3,
+                        backgroundColor: gradientStroke1,
+                        fill: true,
+                        data: dataTotalHutang,
+                        maxBarThickness: 6
+
+                    },
+                    {
+                        label: "Total Utang + Bunga Petani (Rp)",
+                        tension: 0.4,
+                        borderWidth: 0,
+                        pointRadius: 0,
+                        borderColor: "#3A416F",
+                        borderWidth: 3,
+                        backgroundColor: gradientStroke2,
+                        fill: true,
+                        data: dataTotalHutangPlusBunga,
+                        maxBarThickness: 6
+                    },
+                    {
+                        label: "Total Pendapatan dari Bunga (Rp)",
+                        tension: 0.4,
+                        borderWidth: 0,
+                        pointRadius: 0,
+                        borderColor: "#ff9a8f",
+                        borderWidth: 3,
+                        backgroundColor: gradientStroke3,
+                        fill: true,
+                        data: dataPendapatanDariBunga,
+                        maxBarThickness: 6
+                    },
+
+                ],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false,
+                    }
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index',
+                },
+                scales: {
+                    y: {
+                        grid: {
+                            drawBorder: false,
+                            display: true,
+                            drawOnChartArea: true,
+                            drawTicks: false,
+                            borderDash: [5, 5]
+                        },
+                        ticks: {
+                            display: true,
+                            padding: 10,
+                            color: '#b2b9bf',
+                            font: {
+                                size: 11,
+                                family: "Open Sans",
+                                style: 'normal',
+                                lineHeight: 2
+                            },
+                        }
+                    },
+                    x: {
+                        grid: {
+                            drawBorder: false,
+                            display: false,
+                            drawOnChartArea: false,
+                            drawTicks: false,
+                            borderDash: [5, 5]
+                        },
+                        ticks: {
+                            display: true,
+                            color: '#b2b9bf',
+                            padding: 20,
+                            font: {
+                                size: 11,
+                                family: "Open Sans",
+                                style: 'normal',
+                                lineHeight: 2
+                            },
+                        }
+                    },
+                },
+            },
+        });
+
+
     }
 </script>
 @endpush
