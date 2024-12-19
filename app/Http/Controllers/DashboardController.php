@@ -10,7 +10,6 @@ use App\Models\Debit;
 use App\Models\RekapDana;
 use App\Models\RekapKredit;
 use App\Models\PembayaranKredit;
-use Illuminate\Support\Facades\Log;
 
 
 use Illuminate\Http\Request;
@@ -240,7 +239,7 @@ class DashboardController extends Controller
 
                 if ($item->trashed()) {
                     $item->actionType = 'delete';
-                } elseif (!empty($changedAttributes->toArray()) && $item->wasChanged()) {
+                } elseif ($item->updated_at > $item->created_at) {
                     $item->actionType = 'update';
                     $item->changedFields = $changedAttributes->toArray();
                 } elseif ($item->wasRecentlyCreated) {
@@ -251,37 +250,17 @@ class DashboardController extends Controller
                 return $item;
             }))
             ->merge(Kredit::withTrashed()->where('petani_id', '!=', 187)->get()->map(function ($item) {
-                $dirty = $item->getDirty();
-                $original = $item->getOriginal();
-
-                // Debug log
-                Log::info('Checking changes for Kredit ID: ' . $item->id);
-                Log::info('Dirty attributes:', $dirty);
-                Log::info('Original attributes:', $original);
+                $changedAttributes = collect($item->getDirty())->keys();
 
                 if ($item->trashed()) {
                     $item->actionType = 'delete';
-                    $item->changedFields = [];
                 } elseif ($item->updated_at > $item->created_at) {
                     $item->actionType = 'update';
-
-                    // Cek perubahan dengan membandingkan nilai
-                    $changes = [];
-                    if (isset($dirty['jumlah']) && isset($original['jumlah']) && $dirty['jumlah'] !== $original['jumlah']) {
-                        $changes[] = 'jumlah';
-                    }
-                    if (isset($dirty['status']) && isset($original['status']) && $dirty['status'] !== $original['status']) {
-                        $changes[] = 'status';
-                    }
-
-                    $item->changedFields = $changes;
-                    Log::info('Detected changes:', $changes);
+                    $item->changedFields = $changedAttributes->toArray();
                 } elseif ($item->wasRecentlyCreated) {
                     $item->actionType = 'create';
-                    $item->changedFields = [];
                 } else {
-                    $item->actionType = 'create';
-                    $item->changedFields = [];
+                    $item->actionType = 'create'; // Default fallback
                 }
                 return $item;
             }))
@@ -380,7 +359,7 @@ class DashboardController extends Controller
 
                 return [
                     'type' => 'Petani',
-                    'description' => $actionText . ' petani: ' . $history->nama . $additionalInfo,
+                    'description' => $actionText . ' petani: ' . $history->nama,
                     'date' => $history->created_at->format('d F Y H:i:s'),
                 ];
             } elseif ($history instanceof Kredit && isset($history->jumlah, $history->petani, $history->created_at)) {
@@ -391,28 +370,16 @@ class DashboardController extends Controller
                     default => 'Aktivitas'
                 };
 
-                // Bagian kedua - Tampilkan informasi perubahan dengan logging
-                $additionalInfo = '';
-                if ($history->actionType === 'update') {
-                    Log::info('Processing history item:', [
-                        'actionType' => $history->actionType,
-                        'changedFields' => $history->changedFields ?? []
-                    ]);
-
-                    if (!empty($history->changedFields)) {
-                        $changes = array_map(function ($field) {
-                            return $field === 'jumlah' ? 'jumlah pinjaman' : 'status pinjaman';
-                        }, $history->changedFields);
-
-                        $additionalInfo = ' (Perubahan pada: ' . implode(', ', $changes) . ')';
-                    }
-
-                    Log::info('Generated additionalInfo:', ['info' => $additionalInfo]);
-                }
+                $additionalInfo = $history->actionType === 'update'
+                    ? ' (Perubahan pada: ' . implode(
+                        ', ',
+                        $history->changedFields
+                    ) . ')'
+                    : '';
 
                 return [
                     'type' => 'Kredit',
-                    'description' => $actionText . ' Kredit dengan jumlah Rp ' . number_format($history->jumlah, 0, ',', '.') . ' milik petani: ' . $history->petani->nama . $additionalInfo,
+                    'description' => $actionText . ' Kredit dengan jumlah Rp ' . number_format($history->jumlah, 0, ',', '.') . ' milik petani: ' . $history->petani->nama,
                     'date' => $history->created_at->format('d F Y H:i:s'),
                 ];
             } elseif (
