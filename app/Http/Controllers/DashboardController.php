@@ -145,25 +145,33 @@ class DashboardController extends Controller
             $month = $monthDate->month;
             $year = $monthDate->year;
 
-            // Calculate Total Hutang for the specific month and year
             $totalHutang = Kredit::where(function ($query) use ($month, $year) {
-                $query->whereMonth('created_at', $month)
-                    ->whereYear('created_at', $year);
-            })->where('status', true)->sum('jumlah');
+                $query->whereMonth('updated_at', $month)
+                    ->whereYear('updated_at', $year);
+            })
+                ->where('status', true)
+                ->whereNotIn('petani_id', [187]) // Mengabaikan petani_id dengan nilai 187
+                ->whereNull('deleted_at') // Hanya menghitung yang belum dihapus
+                ->sum('jumlah');
+
             $dataTotalHutang[] = $totalHutang;
 
 
 
 
-            // Calculate Total Hutang Plus Bunga for the specific month and year
-            $aktifGilingIds = DaftarGiling::whereNull('deleted_at')->pluck('giling_id')->toArray();
+
+
+
+            // Ambil semua giling_id tanpa memperhatikan status deleted_at
+            $aktifGilingIds = DaftarGiling::pluck('giling_id')->toArray();
 
             $totalHutangPlusBunga = PembayaranKredit::whereIn('giling_id', $aktifGilingIds)
                 ->whereMonth('created_at', $month)
                 ->whereYear('created_at', $year)
                 ->sum('total_hutang');
 
-            $dataTotalHutangPlusBunga[] = $totalHutangPlusBunga;
+            // Pastikan nilai yang dihitung tidak null
+            $dataTotalHutangPlusBunga[] = $totalHutangPlusBunga ?? 0;
 
 
 
