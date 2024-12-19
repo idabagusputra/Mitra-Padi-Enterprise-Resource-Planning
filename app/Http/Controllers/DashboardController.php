@@ -256,11 +256,7 @@ class DashboardController extends Controller
                     $item->actionType = 'delete';
                 } elseif ($item->updated_at > $item->created_at) {
                     $item->actionType = 'update';
-                    // Simpan kolom yang berubah
-                    $item->changedFields = array_intersect(
-                        array_keys($item->getDirty()),
-                        ['jumlah', 'status'] // Hanya cek perubahan pada kolom ini
-                    );
+                    $item->changedFields = $changedAttributes->toArray();
                 } elseif ($item->wasRecentlyCreated) {
                     $item->actionType = 'create';
                 } else {
@@ -355,16 +351,10 @@ class DashboardController extends Controller
                 };
 
                 $additionalInfo = $history->actionType === 'update'
-                    ? ' (Perubahan pada: ' . collect($history->changedFields)->map(function ($field) {
-                        switch ($field) {
-                            case 'jumlah':
-                                return 'Jumlah Kredit)';
-                            case 'status':
-                                return 'Status Kredit)';
-                            default:
-                                return $field;
-                        }
-                    })->implode(', ') . ')'
+                    ? '' . implode(
+                        ', ',
+                        $history->changedFields
+                    ) . ''
                     : '';
 
                 return [
