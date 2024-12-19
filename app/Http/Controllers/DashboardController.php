@@ -256,7 +256,11 @@ class DashboardController extends Controller
                     $item->actionType = 'delete';
                 } elseif ($item->updated_at > $item->created_at) {
                     $item->actionType = 'update';
-                    $item->changedFields = $changedAttributes->toArray();
+                    // Simpan kolom yang berubah
+                    $item->changedFields = array_intersect(
+                        array_keys($item->getDirty()),
+                        ['jumlah', 'status'] // Hanya cek perubahan pada kolom ini
+                    );
                 } elseif ($item->wasRecentlyCreated) {
                     $item->actionType = 'create';
                 } else {
@@ -351,10 +355,10 @@ class DashboardController extends Controller
                 };
 
                 $additionalInfo = $history->actionType === 'update'
-                    ? '' . implode(
+                    ? ' (Perubahan pada: ' . implode(
                         ', ',
                         $history->changedFields
-                    ) . ''
+                    ) . ')'
                     : '';
 
                 return [
@@ -370,12 +374,23 @@ class DashboardController extends Controller
                     default => 'Aktivitas'
                 };
 
-                $additionalInfo = $history->actionType === 'update'
-                    ? ' (Perubahan pada: ' . implode(
-                        ', ',
-                        $history->changedFields
-                    ) . ')'
-                    : '';
+                $additionalInfo = '';
+                if ($history->actionType === 'update' && !empty($history->changedFields)) {
+                    $changes = collect($history->changedFields)->map(function ($field) {
+                        switch ($field) {
+                            case 'jumlah':
+                                return 'Jumlah Kredit';
+                            case 'status':
+                                return 'Status Kredit';
+                            default:
+                                return $field;
+                        }
+                    })->toArray();
+
+                    if (!empty($changes)) {
+                        $additionalInfo = ' (Perubahan pada: ' . implode(', ', $changes) . ')';
+                    }
+                }
 
                 return [
                     'type' => 'Kredit',
