@@ -260,7 +260,7 @@ class DashboardController extends Controller
                 } elseif ($item->wasRecentlyCreated) {
                     $item->actionType = 'create';
                 } else {
-                    $item->actionType = 'create'; // Default fallback
+                    $item->actionType = 'update'; // Default fallback
                 }
                 return $item;
             }))
