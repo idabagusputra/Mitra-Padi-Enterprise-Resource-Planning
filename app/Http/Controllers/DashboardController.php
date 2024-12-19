@@ -162,16 +162,18 @@ class DashboardController extends Controller
 
 
 
-            // Ambil semua giling_id tanpa memperhatikan status deleted_at
-            $aktifGilingIds = DaftarGiling::pluck('giling_id')->toArray();
+            $gilings = DB::table('daftar_gilings')
+                ->whereNull('deleted_at') // Hanya pilih record yang tidak memiliki soft delete
+                ->pluck('id')->toArray(); // Ambil kolom 'id' sebagai array
 
-            $totalHutangPlusBunga = PembayaranKredit::whereIn('giling_id', $aktifGilingIds)
+            $totalHutangPlusBunga = PembayaranKredit::whereIn('giling_id', $gilings)
                 ->whereMonth('created_at', $month)
                 ->whereYear('created_at', $year)
                 ->sum('total_hutang');
 
             // Pastikan nilai yang dihitung tidak null
             $dataTotalHutangPlusBunga[] = $totalHutangPlusBunga ?? 0;
+
 
 
 
@@ -200,10 +202,11 @@ class DashboardController extends Controller
         })->where('status', true)->sum('jumlah');
 
 
-        // Calculate Total Hutang Plus Bunga for the specific month and year
-        $aktifGilingIds = DaftarGiling::whereNull('deleted_at')->pluck('giling_id')->toArray();
+        $gilings = DB::table('daftar_gilings')
+            ->whereNull('deleted_at') // Hanya pilih record yang tidak memiliki soft delete
+            ->pluck('id')->toArray(); // Ambil kolom 'id' sebagai array
 
-        $totalHutangPlusBungaPerbulan = PembayaranKredit::whereIn('giling_id', $aktifGilingIds)
+        $totalHutangPlusBungaPerbulan = PembayaranKredit::whereIn('giling_id', $gilings)
             ->whereMonth('created_at', $currentMonth)
             ->whereYear('created_at', $currentYear)
             ->sum('total_hutang');

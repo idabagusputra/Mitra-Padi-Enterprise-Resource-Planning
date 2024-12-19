@@ -135,7 +135,7 @@ class KreditController extends Controller
             ];
         }, SORT_REGULAR, $sortOrder === 'desc');
 
-        $kreditsBelumLunas = $calculatedKredits->where('status', 0);
+        $kreditsBelumLunas = $calculatedKredits->where('status', 1);
 
         // Calculate summary data
         $jumlahPetaniBelumLunas = $kreditsBelumLunas->pluck('petani_id')->unique()->count();
