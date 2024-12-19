@@ -351,10 +351,16 @@ class DashboardController extends Controller
                 };
 
                 $additionalInfo = $history->actionType === 'update'
-                    ? ' (Perubahan pada: ' . implode(
-                        ', ',
-                        $history->changedFields
-                    ) . ')'
+                    ? ' (Perubahan pada: ' . collect($history->changedFields)->map(function ($field) {
+                        switch ($field) {
+                            case 'jumlah':
+                                return 'Jumlah Kredit)';
+                            case 'status':
+                                return 'Status Kredit)';
+                            default:
+                                return $field;
+                        }
+                    })->implode(', ') . ')'
                     : '';
 
                 return [
