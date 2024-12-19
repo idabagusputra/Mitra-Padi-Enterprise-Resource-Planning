@@ -59,7 +59,7 @@
         .row {
             padding-top: 0 !important;
             margin-top: 0 !important;
-            margin-bottom: 0px !important;
+            margin-bottom: 24px !important;
             /* Sesuaikan ukuran padding/margin yang diinginkan untuk horizontal */
         }
 
@@ -82,7 +82,7 @@
         } */
 
         .mobile2 {
-            margin-top: 24px !important;
+            margin-top: 0 !important;
         }
 
         .mobile {
@@ -92,7 +92,7 @@
     }
 
     /* Landscape Mode (Desktop/Tablet Horizontal) */
-    @media (max-width: 1920px) and (orientation: landscape) {
+    @media (min-width: 768px) and (max-width: 1280px) and (orientation: landscape) {
         .horizontal {
             padding-top: 0 !important;
             margin-top: 0 !important;
@@ -115,16 +115,17 @@
         .row {
             padding-top: 0 !important;
             margin-top: 0 !important;
-            margin-bottom: 0px !important;
+            margin-bottom: 0 !important;
+
             /* Sesuaikan ukuran padding/margin yang diinginkan untuk horizontal */
         }
 
         .mobile2 {
             margin-bottom: 24px !important;
+            margin-top: 0 !important;
         }
 
         .mobile {
-
             margin-bottom: 24px !important;
         }
     }
@@ -327,7 +328,7 @@
                 <p class="text-sm ms-0"> <span class="font-weight-bolder">Per Bulan</span> </p>
                 <div class="bg-gradient-dark border-radius-lg py-3 pe-1 mb-3">
                     <div class="chart">
-                        <canvas id="chart-bars" class="chart-canvas" height="115"></canvas>
+                        <canvas id="chart-bars" class="chart-canvas" height="116"></canvas>
                     </div>
                 </div>
                 <div class="container border-radius-lg justify-content-between">
