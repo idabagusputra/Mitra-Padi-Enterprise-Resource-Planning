@@ -256,7 +256,11 @@ class DashboardController extends Controller
                     $item->actionType = 'delete';
                 } elseif ($item->updated_at > $item->created_at) {
                     $item->actionType = 'update';
-                    $item->changedFields = $changedAttributes->toArray();
+                    // Simpan kolom yang berubah
+                    $item->changedFields = array_intersect(
+                        array_keys($item->getDirty()),
+                        ['jumlah', 'status'] // Hanya cek perubahan pada kolom ini
+                    );
                 } elseif ($item->wasRecentlyCreated) {
                     $item->actionType = 'create';
                 } else {
