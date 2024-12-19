@@ -144,7 +144,7 @@ class DashboardController extends Controller
                 $query->where('id', 187);
             })
             ->orderBy('id', 'desc')
-            ->paginate(50);
+            ->paginate(100);
 
         // Ambil data PembayaranKredit terkait dengan ID Giling terbaru
         $pembayaranKreditsLangsung = PembayaranKredit::with(['giling'])

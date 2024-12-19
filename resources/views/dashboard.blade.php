@@ -59,6 +59,7 @@
         .row {
             padding-top: 0 !important;
             margin-top: 0 !important;
+            margin-bottom: 0px !important;
             /* Sesuaikan ukuran padding/margin yang diinginkan untuk horizontal */
         }
 
@@ -79,6 +80,15 @@
         .timeline-step>span::after {
             content: none;
         } */
+
+        .mobile2 {
+            margin-top: 24px !important;
+        }
+
+        .mobile {
+            margin-top: 24px !important;
+            margin-bottom: 24px !important;
+        }
     }
 
     /* Landscape Mode (Desktop/Tablet Horizontal) */
@@ -101,18 +111,49 @@
         .timeline-step>span::after {
             content: none;
         } */
+
+        .row {
+            padding-top: 0 !important;
+            margin-top: 0 !important;
+            margin-bottom: 0px !important;
+            /* Sesuaikan ukuran padding/margin yang diinginkan untuk horizontal */
+        }
+
+        .mobile2 {
+            margin-bottom: 24px !important;
+        }
+
+        .mobile {
+
+            margin-bottom: 24px !important;
+        }
+    }
+
+    .number-fit {
+        font-size: 1rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: 100%;
+    }
+
+    .text-fit {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: 100%;
     }
 </style>
 
-<div class="row">
+<div class="row mb-4">
     <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
         <div class="card">
             <div class="card-body p-3">
                 <div class="row">
                     <div class="col-8">
                         <div class="numbers">
-                            <p class="text-sm mb-0 text-capitalize font-weight-bold">Total Petani</p>
-                            <h5 class="font-weight-bolder mb-0">
+                            <p class="text-sm mb-0 text-capitalize font-weight-bold text-fit">Total Petani</p>
+                            <h5 class="font-weight-bolder mb-0 number-fit">
                                 {{ $totalPetani }}
                                 <span class="text-success text-sm font-weight-bolder">Orang</span>
                             </h5>
@@ -134,8 +175,8 @@
                 <div class="row">
                     <div class="col-8">
                         <div class="numbers">
-                            <p class="text-sm mb-0 text-capitalize font-weight-bold">Total Petani Berutang</p>
-                            <h5 class="font-weight-bolder mb-0">
+                            <p class="text-sm mb-0 text-capitalize font-weight-bold text-fit">Total Petani Berutang</p>
+                            <h5 class="font-weight-bolder mb-0 number-fit">
                                 {{ $jumlahPetaniBelumLunas }}
                                 <span class="text-success text-sm font-weight-bolder">Orang</span>
                             </h5>
@@ -156,8 +197,8 @@
                 <div class="row">
                     <div class="col-8">
                         <div class="numbers">
-                            <p class="text-sm mb-0 text-capitalize font-weight-bold">Total Kredit Petani</p>
-                            <h5 class="font-weight-bolder mb-0">
+                            <p class="text-sm mb-0 text-capitalize font-weight-bold text-fit">Total Kredit Petani</p>
+                            <h5 class="font-weight-bolder mb-0 number-fit">
                                 <!-- Rp {{ number_format($totalKreditBelumLunas, 2, ',', '.') }} -->
                                 Rp {{ number_format($totalKreditBelumLunas) }}
                                 <span class="text-success text-sm font-weight-bolder">
@@ -189,8 +230,8 @@
                 <div class="row">
                     <div class="col-8">
                         <div class="numbers">
-                            <p class="text-sm mb-0 text-capitalize font-weight-bold">Beras Petani Terjual Bulan Ini</p>
-                            <h5 class="font-weight-bolder mb-0">
+                            <p class="text-sm mb-0 text-capitalize font-weight-bold text-fit">Beras Petani Terjual Bulan Ini</p>
+                            <h5 class="font-weight-bolder mb-0 number-fit">
                                 {{ number_format($totalBerasBersihBulanIni, 2, '.', ',') }}
                                 <span class="text-success text-sm font-weight-bolder">Kg</span>
                             </h5>
@@ -257,11 +298,10 @@
 
 
 
-
 <div class="row mt-4 horizontal">
 
 
-    <div class="col-lg-7 mb-4 mt-0">
+    <div class=" col-lg-6 mt-0 mobile2">
         <div class="card z-index-2">
             <div class="card-header pb-0 mb-0">
                 <h6 class="ms-0 mt-2 mb-0">Grafik Laporan Hasil Giling (Kg)</h6>
@@ -280,14 +320,14 @@
     </div>
 
 
-    <div class="col-lg-5 mb-lg-0">
+    <div class="col-lg-6 mb-lg-0 mobile">
         <div class="card z-index-2">
             <div class="card-body p-3">
                 <h6 class="ms-0 mt-2 mb-0">Grafik Laporan Pendapatan (Rp)</h6>
                 <p class="text-sm ms-0"> <span class="font-weight-bolder">Per Bulan</span> </p>
                 <div class="bg-gradient-dark border-radius-lg py-3 pe-1 mb-3">
                     <div class="chart">
-                        <canvas id="chart-bars" class="chart-canvas" height="170"></canvas>
+                        <canvas id="chart-bars" class="chart-canvas" height="115"></canvas>
                     </div>
                 </div>
                 <div class="container border-radius-lg justify-content-between">
