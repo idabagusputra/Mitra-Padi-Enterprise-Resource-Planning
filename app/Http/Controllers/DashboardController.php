@@ -250,16 +250,31 @@ class DashboardController extends Controller
                 return $item;
             }))
             ->merge(Kredit::withTrashed()->where('petani_id', '!=', 187)->get()->map(function ($item) {
+                $dirty = $item->getDirty();
+                $original = $item->getOriginal();
+
+                // Debug log
+                Log::info('Checking changes for Kredit ID: ' . $item->id);
+                Log::info('Dirty attributes:', $dirty);
+                Log::info('Original attributes:', $original);
+
                 if ($item->trashed()) {
                     $item->actionType = 'delete';
                     $item->changedFields = [];
                 } elseif ($item->updated_at > $item->created_at) {
                     $item->actionType = 'update';
-                    // Simpan kolom yang berubah
-                    $item->changedFields = array_intersect(
-                        array_keys($item->getDirty()),
-                        ['jumlah', 'status'] // Hanya cek perubahan pada kolom ini
-                    );
+
+                    // Cek perubahan dengan membandingkan nilai
+                    $changes = [];
+                    if (isset($dirty['jumlah']) && isset($original['jumlah']) && $dirty['jumlah'] !== $original['jumlah']) {
+                        $changes[] = 'jumlah';
+                    }
+                    if (isset($dirty['status']) && isset($original['status']) && $dirty['status'] !== $original['status']) {
+                        $changes[] = 'status';
+                    }
+
+                    $item->changedFields = $changes;
+                    Log::info('Detected changes:', $changes);
                 } elseif ($item->wasRecentlyCreated) {
                     $item->actionType = 'create';
                     $item->changedFields = [];
@@ -375,22 +390,23 @@ class DashboardController extends Controller
                     default => 'Aktivitas'
                 };
 
+                // Bagian kedua - Tampilkan informasi perubahan dengan logging
                 $additionalInfo = '';
-                if ($history->actionType === 'update' && !empty($history->changedFields)) {
-                    $changes = collect($history->changedFields)->map(function ($field) {
-                        switch ($field) {
-                            case 'jumlah':
-                                return 'Jumlah Kredit';
-                            case 'status':
-                                return 'Status Kredit';
-                            default:
-                                return $field;
-                        }
-                    })->toArray();
+                if ($history->actionType === 'update') {
+                    Log::info('Processing history item:', [
+                        'actionType' => $history->actionType,
+                        'changedFields' => $history->changedFields ?? []
+                    ]);
 
-                    if (!empty($changes)) {
+                    if (!empty($history->changedFields)) {
+                        $changes = array_map(function ($field) {
+                            return $field === 'jumlah' ? 'jumlah pinjaman' : 'status pinjaman';
+                        }, $history->changedFields);
+
                         $additionalInfo = ' (Perubahan pada: ' . implode(', ', $changes) . ')';
                     }
+
+                    Log::info('Generated additionalInfo:', ['info' => $additionalInfo]);
                 }
 
                 return [
