@@ -250,10 +250,9 @@ class DashboardController extends Controller
                 return $item;
             }))
             ->merge(Kredit::withTrashed()->where('petani_id', '!=', 187)->get()->map(function ($item) {
-                $changedAttributes = collect($item->getDirty())->keys();
-
                 if ($item->trashed()) {
                     $item->actionType = 'delete';
+                    $item->changedFields = [];
                 } elseif ($item->updated_at > $item->created_at) {
                     $item->actionType = 'update';
                     // Simpan kolom yang berubah
@@ -263,8 +262,10 @@ class DashboardController extends Controller
                     );
                 } elseif ($item->wasRecentlyCreated) {
                     $item->actionType = 'create';
+                    $item->changedFields = [];
                 } else {
-                    $item->actionType = 'create'; // Default fallback
+                    $item->actionType = 'create';
+                    $item->changedFields = [];
                 }
                 return $item;
             }))
