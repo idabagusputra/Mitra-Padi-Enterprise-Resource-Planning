@@ -254,13 +254,13 @@ class DashboardController extends Controller
 
                 if ($item->trashed()) {
                     $item->actionType = 'delete';
-                } elseif (!empty($changedAttributes->toArray()) && $item->wasChanged()) {
+                } elseif ($item->updated_at > $item->created_at) {
                     $item->actionType = 'update';
                     $item->changedFields = $changedAttributes->toArray();
                 } elseif ($item->wasRecentlyCreated) {
                     $item->actionType = 'create';
                 } else {
-                    $item->actionType = 'update'; // Default fallback
+                    $item->actionType = 'create'; // Default fallback
                 }
                 return $item;
             }))
