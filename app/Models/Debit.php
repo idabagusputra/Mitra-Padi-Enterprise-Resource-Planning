@@ -169,25 +169,13 @@ class Debit extends Model
 
                     $totalLunas = $lunas;
                     // Lanjutkan ke kredit berikutnya
+
+
                     continue;
                 }
 
-                // Pertama cek jika pembayaran minus/kurang
-                if ($remainingPayment < 0) {
-                    // Buat kredit baru untuk sisa hutang
-                    KreditDirektur::create([
-                        'debit_id' => $this->id,
-                        'nama' => $kredit->nama,
-                        'tanggal' => $paymentDate,
-                        'jumlah' => abs($remainingPayment),
-                        'keterangan' => 'Sisa Debit dari kredit id: ' . $kredit->id .  " Debit: Rp. " . number_format($this->jumlah, 2) . " - Total Utang: Rp. " . number_format($totalKreditDenganBunga, 2),
-                        'updated_at' => $paymentDate
-                    ]);
-                }
-                // Kemudian cek jika masih ada sisa pembayaran
-
                 // Jika sisa pembayaran tidak cukup melunasi kredit
-                else if ($remainingPayment > 0) {
+                if ($remainingPayment > 0) {
                     // Kurangi total hutang dengan pembayaran
                     $sisaHutang = $totalKreditDenganBunga - $remainingPayment;
 
@@ -222,11 +210,34 @@ class Debit extends Model
             }
 
             $totalSisaHutangYangHarusDibayar = max(0, $totalLunas - $this->jumlah);
+            $totalSisaHutangYangHarusDibayarABS = $totalLunas - $this->jumlah;
 
             // Update debit
             $this->keterangan .= " | Terbayar | Total Hutang: Rp " . number_format($totalLunas, 2) .
                 " | Sisa Hutang: Rp " . number_format($totalSisaHutangYangHarusDibayar, 2);
             $this->save();
+
+            if ($totalSisaHutangYangHarusDibayarABS < 0) {
+                try {
+                    $result = DB::table('kredit_direkturs')->insert([
+                        'debit_id' => $this->id,
+                        'nama' => $kredit->petani->nama,
+                        'tanggal' => $paymentDate,
+                        'jumlah' => abs($totalSisaHutangYangHarusDibayarABS),
+                        'keterangan' => 'Sisa Debit dari id: ' . $this->id .
+                            " | Tanggal: " . $this->tanggal->format('Y-m-d') .
+                            " | Debit: Rp. " . number_format($this->jumlah, 2) .
+                            " | Total Utang: Rp. " . number_format($totalLunas, 2),
+                        'status' => false,
+                        'created_at' => $paymentDate,
+                        'updated_at' => $paymentDate,
+                    ]);
+
+                    Log::info("Hasil insert ke kredit_direkturs: " . ($result ? "BERHASIL" : "GAGAL"));
+                } catch (\Exception $e) {
+                    Log::error("ERROR saat insert ke kredit_direkturs: " . $e->getMessage());
+                }
+            }
 
 
 

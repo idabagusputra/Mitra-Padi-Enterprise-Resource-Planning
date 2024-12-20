@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Debit;
 use App\Models\Kredit;
+use App\Models\KreditDirektur;
 use App\Models\Petani;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -365,6 +366,8 @@ class DebitController extends Controller
         // Ambil semua kredit yang terkait dengan debit ini
         $relatedKredits = Kredit::where('debit_id', $debit->id)->get();
 
+        $relatedKreditDirekturs = KreditDirektur::where('debit_id', $debit->id)->get();
+
         $petaniId = $debit->petani_id;
 
         // Ambil semua kredit yang terkait dengan petani_id dan memenuhi kondisi
@@ -442,6 +445,10 @@ class DebitController extends Controller
                     Log::error('Gagal mereset Kredit ID: ' . $kredit->id);
                 }
             }
+        }
+
+        foreach ($relatedKreditDirekturs as $kredit) {
+            $kredit->delete(); // Soft delete
         }
 
         Log::info('Proses reverse pembayaran selesai untuk Debit ID: ' . $debit->id);

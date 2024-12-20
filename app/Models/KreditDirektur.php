@@ -12,27 +12,12 @@ class KreditDirektur extends Model
 
 
     protected $table = 'kredit_direkturs';
-
-
     protected $fillable = [
-        'nama',
         'debit_id',
+        'nama',
         'tanggal',
-        'keterangan',
         'jumlah',
+        'keterangan',
         'status',
     ];
-
-
-    protected $casts = [
-        'tanggal' => 'date',
-        'jumlah' => 'decimal:2',
-        'status' => 'boolean',
-    ];
-
-
-    public function debit()
-    {
-        return $this->belongsTo(Debit::class, 'debit_id');
-    }
 }

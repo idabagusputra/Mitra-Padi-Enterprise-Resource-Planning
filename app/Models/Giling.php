@@ -14,6 +14,7 @@ class Giling extends Model
 
     protected $fillable = [
         'created_at',
+        'updated_at',
         'petani_id',
         'giling_kotor',
         'biaya_giling',

@@ -15,6 +15,7 @@ use App\Http\Controllers\DaftarGilingController; // Tambahkan ini
 use App\Http\Controllers\DaftarGilingTrashController; // Tambahkan ini
 use App\Http\Controllers\KreditPembayaranKreditController; // Tambahkan ini
 use App\Http\Controllers\KreditReportController;
+use App\Http\Controllers\KreditDirekturController;
 use App\Http\Controllers\KreditTrashController;
 use App\Http\Controllers\RekapDanaController;
 use App\Http\Controllers\KreditNasabahPaluController;
@@ -37,7 +38,14 @@ Route::group(['middleware' => 'auth'], function () {
     Route::view('static-sign-up', 'static-sign-up')->name('sign-up');
 
 
+    Route::resource('kredit-direktur', KreditDirekturController::class);
+    Route::get('/search-kredit', [KreditDirekturController::class, 'search'])->name('search.kredit');
+    Route::get('/api/kredit/autocomplete', [KreditDirekturController::class, 'autocomplete']);
+    Route::get('/search-nama', [KreditDirekturController::class, 'searchPetani'])->name('search.petani');
+
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+
 
     // Petani routes
     Route::resource('petani', PetaniController::class);
