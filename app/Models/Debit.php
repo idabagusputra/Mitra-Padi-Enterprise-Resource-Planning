@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Models\Kredit; // Pastikan namespace sesuai
+use App\Models\KreditDirektur; // Pastikan namespace sesuai
 
 
 class Debit extends Model
@@ -171,8 +172,22 @@ class Debit extends Model
                     continue;
                 }
 
+                // Pertama cek jika pembayaran minus/kurang
+                if ($remainingPayment < 0) {
+                    // Buat kredit baru untuk sisa hutang
+                    KreditDirektur::create([
+                        'debit_id' => $this->id,
+                        'nama' => $kredit->nama,
+                        'tanggal' => $paymentDate,
+                        'jumlah' => abs($remainingPayment),
+                        'keterangan' => 'Sisa Debit dari kredit id: ' . $kredit->id .  " Debit: Rp. " . number_format($this->jumlah, 2) . " - Total Utang: Rp. " . number_format($totalKreditDenganBunga, 2),
+                        'updated_at' => $paymentDate
+                    ]);
+                }
+                // Kemudian cek jika masih ada sisa pembayaran
+
                 // Jika sisa pembayaran tidak cukup melunasi kredit
-                if ($remainingPayment > 0) {
+                else if ($remainingPayment > 0) {
                     // Kurangi total hutang dengan pembayaran
                     $sisaHutang = $totalKreditDenganBunga - $remainingPayment;
 

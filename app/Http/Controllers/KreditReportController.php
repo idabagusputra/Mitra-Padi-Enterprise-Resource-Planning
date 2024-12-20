@@ -96,25 +96,56 @@ class KreditReportController extends Controller
             $kreditDate = Carbon::parse($kredit->tanggal);
 
             // Cek apakah tanggal created_at dan updated_at sama (tanpa waktu)
-            if ($kredit->created_at->toDateString() === $kredit->updated_at->toDateString()) {
-                // Jika sama, hitung selisih bulan menggunakan now
-                $diffInMonthsUpdate = $kreditDate->diffInMonths($now);
+            if ($kredit->status === true) {
+                // Jika statusnya true, hitung selisih bulan menggunakan now
+                $now = Carbon::now(); // Dapatkan waktu sekarang
+                $diffInMonthsUpdate = $kreditDate->diffInMonths($kredit->updated_at); // Menghitung selisih bulan
+                // Lakukan sesuatu dengan $diffInMonthsUpdate jika diperlukan
             } else {
                 // Hitung selisih bulan menggunakan updated_at
-                $diffInMonthsUpdate = $kreditDate->diffInMonths($kredit->updated_at);
+                $diffInMonthsUpdate = $kreditDate->diffInMonths($now);
 
                 // Jika diffInMonthsUpdate bernilai negatif, set nilainya menjadi 0
                 if ($diffInMonthsUpdate < 0) {
                     $diffInMonthsUpdate = 0;
                 }
             }
-            $selisihBulan = $kreditDate->diffInMonths($now);
+
+
+            // Ensure the difference is floored
+            $selisihBulan = floor($diffInMonthsUpdate);
+
+            // Calculate bunga menggunakan selisih bulan
             $bunga = $kredit->jumlah * 0.02 * $selisihBulan;
+
+            // Calculate hutang plus bunga
             $hutangPlusBunga = $kredit->jumlah + $bunga;
 
-            $kredit->setAttribute('hutang_plus_bunga', $hutangPlusBunga);
-            $kredit->setAttribute('lama_bulan', $selisihBulan);
-            $kredit->setAttribute('bunga', $bunga);
+
+            $diffInMonthsUpdate = $kreditDate->diffInMonths($kredit->update_at);
+
+            // Cek apakah tanggal created_at dan updated_at sama
+            if ($kredit->created_at->eq($kredit->updated_at)) {
+                $diffInMonthsUpdate = 0;
+            }
+
+            // Pastikan perbedaan bulan menjadi negatif dan dibulatkan ke bawah
+            $selisihBulanUpdate = floor($diffInMonthsUpdate);
+
+            // Hitung bunga menggunakan perbedaan bulan yang negatif
+            $bungaUpdate = $kredit->jumlah * 0.02 * $selisihBulanUpdate;
+
+            // Hitung hutang ditambah bunga
+            $hutangPlusBungaUpdate = $kredit->jumlah + $bungaUpdate;
+
+
+
+            $kredit->setAttribute('hutang_plus_bunga', ($hutangPlusBunga)); // Round down
+            $kredit->setAttribute('hutang_plus_bunga_update', ($hutangPlusBungaUpdate)); // Round down
+            $kredit->setAttribute('lama_bulan', $selisihBulan); // Use negative difference in months
+            $kredit->setAttribute('lama_bulan_update', $selisihBulanUpdate); // Use negative difference in months
+            $kredit->setAttribute('bunga', floor($bunga)); // Round down the bunga
+            $kredit->setAttribute('bunga_update', floor($bungaUpdate)); // Round down the bunga
 
             return $kredit;
         });
