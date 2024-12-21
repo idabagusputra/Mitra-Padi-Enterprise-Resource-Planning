@@ -15,11 +15,13 @@ use App\Http\Controllers\DaftarGilingController; // Tambahkan ini
 use App\Http\Controllers\DaftarGilingTrashController; // Tambahkan ini
 use App\Http\Controllers\KreditPembayaranKreditController; // Tambahkan ini
 use App\Http\Controllers\KreditReportController;
-use App\Http\Controllers\KreditDirekturController;
+use App\Http\Controllers\UtangKeOperatorController;
 use App\Http\Controllers\KreditTrashController;
 use App\Http\Controllers\RekapDanaController;
 use App\Http\Controllers\KreditNasabahPaluController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\KreditTitipanPetaniController;
+
 use App\Models\RekapDana;
 use Illuminate\Support\Facades\Route;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
@@ -38,10 +40,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::view('static-sign-up', 'static-sign-up')->name('sign-up');
 
 
-    Route::resource('kredit-direktur', KreditDirekturController::class);
-    Route::get('/search-kredit', [KreditDirekturController::class, 'search'])->name('search.kredit');
-    Route::get('/api/kredit/autocomplete', [KreditDirekturController::class, 'autocomplete']);
-    Route::get('/search-nama', [KreditDirekturController::class, 'searchPetani'])->name('search.petani');
+    Route::resource('utang-ke-operator', UtangKeOperatorController::class);
+    Route::get('/search-kredit', [UtangKeOperatorController::class, 'search'])->name('search.kredit');
+    Route::get('/api/kredit/autocomplete', [UtangKeOperatorController::class, 'autocomplete']);
+    Route::get('/search-nama', [UtangKeOperatorController::class, 'searchPetani'])->name('search.petani');
 
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -60,6 +62,17 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/search-petani', [KreditController::class, 'searchPetani'])->name('search.petani');
     Route::get('/laporan-kredit', [KreditReportController::class, 'generatePdf'])->name('laporan.kredit');
     Route::get('/kredit/cetak-laporan', [KreditController::class, 'downloadLaporanKredit'])->name('laporan.kredit.cetak');
+
+
+    // Kredit Tititpan Petani routes
+    Route::resource('dana-titipan-petani', KreditTitipanPetaniController::class);
+    Route::get('/search-kredit', [KreditTitipanPetaniController::class, 'search'])->name('search.kredit');
+    Route::get('/api/kredit/autocomplete', [KreditTitipanPetaniController::class, 'autocomplete']);
+    Route::get('/search-petani', [KreditTitipanPetaniController::class, 'searchPetani'])->name('search.petani');
+    Route::get('/laporan-kredit', [KreditTitipanPetaniController::class, 'generatePdf'])->name('laporan.kredit');
+    Route::get('/kredit/cetak-laporan', [KreditTitipanPetaniController::class, 'downloadLaporanKredit'])->name('laporan.kredit.cetak');
+
+
 
     // Kredit Nasabah Palu routes
     Route::resource('kredit-nasabah-palu', KreditNasabahPaluController::class);

@@ -64,7 +64,8 @@
                         <div class="form-group">
                             <label for="total_kredit" class="form-control-label">Total Kredit Petani</label>
                             <input class="form-control readonly-transparent" type="text"
-                                value="Rp. {{ number_format($totalKreditPetani, 2, '.', ',') }}"
+                                value="Rp {{ number_format($totalKreditPetani, 2, '.', ',') }}"
+                                inputmode="numeric"
                                 readonly>
                         </div>
                     </div>
@@ -72,7 +73,8 @@
                         <div class="form-group">
                             <label for="total_kredit" class="form-control-label">Total Kredit Nasabah Palu</label>
                             <input class="form-control readonly-transparent" type="text"
-                                value="Rp. {{ number_format($totalKreditNasabahPalu, 2, '.', ',') }}"
+                                value="Rp {{ number_format($totalKreditNasabahPalu, 2, '.', ',') }}"
+                                inputmode="numeric"
                                 readonly>
                         </div>
                     </div>
@@ -130,12 +132,31 @@
 
                 <h6 class="mb-3 mt-4 text-primary">{{ __('( - ) Pinjaman dan Utang') }}</h6>
                 <div class="row">
+                    <!-- Titipan Petani -->
+                    <div class="col-md-3 mb-3">
+                        <div class="form-group">
+                            <label for="total_kredit" class="form-control-label">Titipan Petani</label>
+                            <input class="form-control readonly-transparent" type="text"
+                                value="Rp {{ number_format($totalKreditTitipanPetani, 2, '.', ',') }}"
+                                inputmode="numeric"
+                                readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="form-group">
+                            <label for="total_kredit" class="form-control-label">Utang ke Operator</label>
+                            <input class="form-control readonly-transparent" type="text"
+                                value="Rp {{ number_format($totalUtangKeOperator, 2, '.', ',') }}"
+                                inputmode="numeric"
+                                readonly>
+                        </div>
+                    </div>
+
+                    <!-- Pinjaman Bank dan Utang Beras -->
                     @php
                     $kelompok3 = [
                     'pinjaman_bank' => ['label' => 'Pinjaman Bank'],
-                    'titipan_petani' => ['label' => 'Titipan Petani'],
                     'utang_beras' => ['label' => 'Utang Beras'],
-
                     ];
                     @endphp
                     @foreach($kelompok3 as $field => $data)
@@ -146,20 +167,15 @@
                                 name="{{ $field }}"
                                 id="{{ $field }}"
                                 inputmode="numeric"
+
                                 required>
                         </div>
                     </div>
                     @endforeach
 
-                    <div class="col-md-3 mb-3">
-                        <div class="form-group">
-                            <label for="total_kredit" class="form-control-label">Utang ke Operator</label>
-                            <input class="form-control readonly-transparent" type="text"
-                                value="Rp. {{ number_format($totalKreditDirektur, 2, '.', ',') }}"
-                                readonly>
-                        </div>
-                    </div>
                 </div>
+
+
 
                 <div class="d-flex justify-content-end mt-2">
                     <button type="submit" class="btn btn-css bg-gradient-primary btn-md submit-button">{{ 'Simpan Rekapan Dana' }}</button>

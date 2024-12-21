@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Debit;
 use App\Models\Kredit;
-use App\Models\KreditDirektur;
+use App\Models\UtangKeOperator;
 use App\Models\Petani;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -366,7 +366,7 @@ class DebitController extends Controller
         // Ambil semua kredit yang terkait dengan debit ini
         $relatedKredits = Kredit::where('debit_id', $debit->id)->get();
 
-        $relatedKreditDirekturs = KreditDirektur::where('debit_id', $debit->id)->get();
+        $relatedUtangKeOperators = UtangKeOperator::where('debit_id', $debit->id)->get();
 
         $petaniId = $debit->petani_id;
 
@@ -447,7 +447,7 @@ class DebitController extends Controller
             }
         }
 
-        foreach ($relatedKreditDirekturs as $kredit) {
+        foreach ($relatedUtangKeOperators as $kredit) {
             $kredit->delete(); // Soft delete
         }
 

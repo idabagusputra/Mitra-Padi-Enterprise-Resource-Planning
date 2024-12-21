@@ -9,7 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Models\Kredit; // Pastikan namespace sesuai
-use App\Models\KreditDirektur; // Pastikan namespace sesuai
+use App\Models\UtangKeOperator; // Pastikan namespace sesuai
 
 
 class Debit extends Model
@@ -219,12 +219,13 @@ class Debit extends Model
 
             if ($totalSisaHutangYangHarusDibayarABS < 0) {
                 try {
-                    $result = DB::table('kredit_direkturs')->insert([
+                    $result = DB::table('utang_ke_operators')->insert([
                         'debit_id' => $this->id,
+                        'petani_id' => $kredit->petani->id,
                         'nama' => $kredit->petani->nama,
                         'tanggal' => $paymentDate,
                         'jumlah' => abs($totalSisaHutangYangHarusDibayarABS),
-                        'keterangan' => 'Sisa Debit dari id: ' . $this->id .
+                        'keterangan' => 'Sisa Debit id: ' . $this->id .
                             " | Tanggal: " . $this->tanggal->format('Y-m-d') .
                             " | Debit: Rp. " . number_format($this->jumlah, 2) .
                             " | Total Utang: Rp. " . number_format($totalLunas, 2),
@@ -233,9 +234,9 @@ class Debit extends Model
                         'updated_at' => $paymentDate,
                     ]);
 
-                    Log::info("Hasil insert ke kredit_direkturs: " . ($result ? "BERHASIL" : "GAGAL"));
+                    Log::info("Hasil insert ke utang_ke_operators: " . ($result ? "BERHASIL" : "GAGAL"));
                 } catch (\Exception $e) {
-                    Log::error("ERROR saat insert ke kredit_direkturs: " . $e->getMessage());
+                    Log::error("ERROR saat insert ke utang_ke_operators: " . $e->getMessage());
                 }
             }
 

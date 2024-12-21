@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 
-use App\Models\KreditDirektur;
+use App\Models\UtangKeOperator;
 use App\Models\Petani;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -14,7 +14,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Http\Controllers\KreditReportController;
 
-class KreditDirekturController extends Controller
+class UtangKeOperatorController extends Controller
 {
     public function index(Request $request)
     {
@@ -23,48 +23,48 @@ class KreditDirekturController extends Controller
         $alamatFilter = $request->input('alamat');
         $sortOrder = $request->input('sort', 'desc');
 
-        $query = KreditDirektur::all();
+        $query = UtangKeOperator::with('petani');
 
-        // // Apply filters
-        // if ($search) {
-        //     $query->whereHas('petani', function ($q) use ($search) {
-        //         $q->where('nama', 'like', '%' . $search . '%');
-        //     });
-        // }
+        // Apply filters
+        if ($search) {
+            $query->whereHas('petani', function ($q) use ($search) {
+                $q->where('nama', 'like', '%' . $search . '%');
+            });
+        }
 
-        // // Handle filtering by alamat
-        // if ($request->has('alamat')) {
-        //     if ($alamatFilter === 'campur') {
-        //         $query->whereHas('petani', function ($q) {
-        //             $q->whereNotIn('alamat', [
-        //                 'Penebel',
-        //                 'Palesari',
-        //                 'Sangeh Sari',
-        //                 'Gigit Sari',
-        //                 'Wanaprasta',
-        //                 'Sibang',
-        //                 'Sausu',
-        //                 'Bali Indah',
-        //                 'Candra Buana',
-        //                 'Taman Sari',
-        //                 'Sukasada',
-        //                 'Purwo Sari',
-        //                 'Karyawan',
-        //             ]);
-        //         });
-        //     } elseif ($alamatFilter !== 'all') {
-        //         $query->whereHas('petani', function ($q) use ($alamatFilter) {
-        //             $q->where('alamat', $alamatFilter);
-        //         });
-        //     }
-        // }
+        // Handle filtering by alamat
+        if ($request->has('alamat')) {
+            if ($alamatFilter === 'campur') {
+                $query->whereHas('petani', function ($q) {
+                    $q->whereNotIn('alamat', [
+                        'Penebel',
+                        'Palesari',
+                        'Sangeh Sari',
+                        'Gigit Sari',
+                        'Wanaprasta',
+                        'Sibang',
+                        'Sausu',
+                        'Bali Indah',
+                        'Candra Buana',
+                        'Taman Sari',
+                        'Sukasada',
+                        'Purwo Sari',
+                        'Karyawan',
+                    ]);
+                });
+            } elseif ($alamatFilter !== 'all') {
+                $query->whereHas('petani', function ($q) use ($alamatFilter) {
+                    $q->where('alamat', $alamatFilter);
+                });
+            }
+        }
 
-        // if ($statusFilter !== null) {
-        //     $query->where('status', $statusFilter);
-        // }
+        if ($statusFilter !== null) {
+            $query->where('status', $statusFilter);
+        }
 
         // Get all matching kredits without pagination
-        $allKredits = $query;
+        $allKredits = $query->get();
 
         // Calculate additional values and prepare data
         $now = Carbon::now();
@@ -78,6 +78,10 @@ class KreditDirekturController extends Controller
                 $now = Carbon::now(); // Dapatkan waktu sekarang
                 $diffInMonthsUpdate = $kreditDate->diffInMonths($kredit->updated_at); // Menghitung selisih bulan
                 // Lakukan sesuatu dengan $diffInMonthsUpdate jika diperlukan
+                // Jika diffInMonthsUpdate bernilai negatif, set nilainya menjadi 0
+                if ($diffInMonthsUpdate < 0) {
+                    $diffInMonthsUpdate = 0;
+                }
             } else {
                 // Hitung selisih bulan menggunakan updated_at
                 $diffInMonthsUpdate = $kreditDate->diffInMonths($now);
@@ -135,18 +139,10 @@ class KreditDirekturController extends Controller
             ];
         }, SORT_REGULAR, $sortOrder === 'desc');
 
-        // Ambil data kredit dengan status belum lunas (status = 0)
         $kreditsBelumLunas = $calculatedKredits->where('status', 0);
 
-        // Hitung jumlah petani yang belum lunas, berdasarkan kolom 'nama' yang unik (case-insensitive)
-        $jumlahPetaniBelumLunas = $kreditsBelumLunas->pluck('nama')
-            ->map(function ($nama) {
-                return strtolower($nama); // Ubah semua nama menjadi huruf kecil
-            })
-            ->unique()
-            ->count();
-
-
+        // Calculate summary data
+        $jumlahPetaniBelumLunas = $kreditsBelumLunas->pluck('petani_id')->unique()->count();
         $totalKreditBelumLunas = $kreditsBelumLunas->sum('jumlah');
         $totalKreditPlusBungaBelumLunas = $kreditsBelumLunas->sum('hutang_plus_bunga');
 
@@ -166,15 +162,22 @@ class KreditDirekturController extends Controller
             ['path' => $request->url(), 'query' => $request->query()]
         );
 
+        // Retrieve all petanis for use in the view
+        $petanis = Petani::all();
 
-        return view('kredit-direktur', [
+        // Get unique alamat list for the filter dropdown
+        $alamatList = $petanis->pluck('alamat')->unique()->filter()->values();
+
+        return view('laravel-examples/utang-ke-operator', [
             'kredits' => $paginator,
+            'petanis' => $petanis,
             'search' => $search,
             'statusFilter' => $statusFilter,
             'sortOrder' => $sortOrder,
             'jumlahPetaniBelumLunas' => $jumlahPetaniBelumLunas,
             'totalKreditBelumLunas' => $totalKreditBelumLunas,
             'totalKreditPlusBungaBelumLunas' => $totalKreditPlusBungaBelumLunas,
+            'alamatList' => $alamatList
         ]);
     }
 
@@ -218,18 +221,8 @@ class KreditDirekturController extends Controller
     public function store(Request $request)
     {
         try {
-            // Ambil semua data dari request
-            $input = $request->all();
-
-            // Hapus koma dari nilai jumlah jika ada
-            if (isset($input['jumlah'])) {
-                $input['jumlah'] = str_replace(',', '', $input['jumlah']);
-            }
-
-            // Validasi data setelah penghapusan koma
-            $validator = Validator::make($input, [
-                'debit_id' => 'nullable|int',
-                'nama' => 'required|string',
+            $validator = Validator::make($request->all(), [
+                'petani_id' => 'required|exists:petanis,id',
                 'tanggal' => 'required|date_format:Y-m-d',
                 'keterangan' => 'required|string',
                 'jumlah' => 'required|numeric',
@@ -240,16 +233,27 @@ class KreditDirekturController extends Controller
                 return response()->json(['success' => false, 'errors' => $validator->errors()], 422);
             }
 
-            // Ambil data yang sudah divalidasi
+            // Ambil data validasi
             $validatedData = $validator->validated();
 
             // Konversi tanggal ke format timestamp
             $timestamp = Carbon::createFromFormat('Y-m-d', $validatedData['tanggal'])->toDateTimeString();
 
-            // Simpan data ke dalam database
-            KreditDirektur::create($validatedData);
+            // Buat instance baru dari model Kredit
+            $kredit = new UtangKeOperator($validatedData);
 
-            return redirect()->back()->with('success', 'Kredit berhasil dimasukan');
+            // Set timestamps secara manual
+            $kredit->created_at = $timestamp;
+            $kredit->updated_at = $timestamp;
+
+            // Simpan model ke database
+            $kredit->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Kredit berhasil ditambahkan',
+                'data' => $kredit,
+            ]);
         } catch (\Exception $e) {
             Log::error('Error creating kredit: ' . $e->getMessage());
             return response()->json(['success' => false, 'message' => 'Terjadi kesalahan saat menambahkan kredit'], 500);
@@ -258,25 +262,14 @@ class KreditDirekturController extends Controller
 
 
 
-
-
     public function update(Request $request, $id)
     {
         try {
             // Temukan data kredit berdasarkan ID
-            $kredit = KreditDirektur::findOrFail($id);
+            $kredit = UtangKeOperator::findOrFail($id);
 
-            // Ambil semua data dari request
-            $input = $request->all();
-
-            // Hapus koma dari nilai jumlah jika ada
-            if (isset($input['jumlah'])) {
-                $input['jumlah'] = str_replace(',', '', $input['jumlah']);
-            }
-
-            // Validasi data setelah penghapusan koma
-            $validator = Validator::make($input, [
-                'nama' => 'required|string',
+            $validator = Validator::make($request->all(), [
+                'petani_id' => 'required|exists:petanis,id',
                 'tanggal' => 'required|date_format:Y-m-d',
                 'keterangan' => 'required|string',
                 'jumlah' => 'required|numeric',
@@ -287,7 +280,7 @@ class KreditDirekturController extends Controller
                 return response()->json(['success' => false, 'errors' => $validator->errors()], 422);
             }
 
-            // Ambil data yang sudah divalidasi
+            // Ambil data validasi
             $validatedData = $validator->validated();
 
             // Konversi tanggal ke format timestamp
@@ -295,13 +288,17 @@ class KreditDirekturController extends Controller
 
             // Perbarui data kredit
             $kredit->fill($validatedData);
-            // Atur `updated_at` secara manual jika diperlukan
-            $kredit->updated_at = $timestamp;
+            // $kredit->updated_at = $timestamp;
+            $kredit->created_at = $timestamp;
 
             // Simpan perubahan ke database
             $kredit->save();
 
-            return redirect()->back()->with('success', 'Kredit berhasil diedit');
+            return response()->json([
+                'success' => true,
+                'message' => 'Kredit berhasil diperbaharui',
+                'data' => $kredit,
+            ]);
         } catch (\Exception $e) {
             Log::error('Error updating kredit: ' . $e->getMessage());
             return response()->json(['success' => false, 'message' => 'Terjadi kesalahan saat memperbarui kredit'], 500);
@@ -310,16 +307,15 @@ class KreditDirekturController extends Controller
 
 
 
-
     public function show($id)
     {
-        $kredit = KreditDirektur::with('petani')->findOrFail($id);
-        return view('kredit.show', compact('kredit'));
+        $kredit = UtangKeOperator::with('petani')->findOrFail($id);
+        return view('utang-ke-operator.show', compact('kredit'));
     }
 
     public function destroy($id)
     {
-        $kredit = KreditDirektur::findOrFail($id);
+        $kredit = UtangKeOperator::findOrFail($id);
         $kredit->delete();
         return redirect()->back()->with('success', 'Kredit berhasil dihapus');
     }
@@ -329,7 +325,7 @@ class KreditDirekturController extends Controller
     // public function search(Request $request)
     // {
     //     $query = $request->input('query');
-    //     $kredits = Kredit::with('petani')
+    //     $kredits = UtangKeOperator::with('petani')
     //         ->whereHas('petani', function ($q) use ($query) {
     //             $q->where('nama', 'like', "%{$query}%");
     //         })
