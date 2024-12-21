@@ -10,6 +10,14 @@ use App\Models\Debit;
 use App\Models\RekapDana;
 use App\Models\RekapKredit;
 use App\Models\PembayaranKredit;
+use App\Models\KreditNasabahPalu;
+use App\Models\KreditTitipanPetani;
+use App\Models\UtangKeOperator;
+use App\Models\RekapDanaTitipanPetani;
+use App\Models\RekapKreditNasabahPalu;
+use App\Models\RekapUtangKeOperator;
+
+
 
 
 use Illuminate\Http\Request;
@@ -360,6 +368,56 @@ class DashboardController extends Controller
                 }
                 return $item;
             }))
+
+            ->merge(KreditNasabahPalu::withTrashed()->get()->map(function ($item) {
+                $changedAttributes = collect($item->getDirty())->keys();
+
+                if ($item->trashed()) {
+                    $item->actionType = 'delete';
+                } elseif ($item->updated_at > $item->created_at) {
+                    $item->actionType = 'update';
+                    $item->changedFields = $changedAttributes->toArray();
+                } elseif ($item->wasRecentlyCreated) {
+                    $item->actionType = 'create';
+                } else {
+                    $item->actionType = 'create'; // Default fallback
+                }
+                return $item;
+            }))
+
+            ->merge(KreditTitipanPetani::withTrashed()->where('petani_id', '!=', 187)->get()->map(function ($item) {
+                $changedAttributes = collect($item->getDirty())->keys();
+
+                if ($item->trashed()) {
+                    $item->actionType = 'delete';
+                } elseif ($item->updated_at > $item->created_at) {
+                    $item->actionType = 'update';
+                    $item->changedFields = $changedAttributes->toArray();
+                } elseif ($item->wasRecentlyCreated) {
+                    $item->actionType = 'create';
+                } else {
+                    $item->actionType = 'create'; // Default fallback
+                }
+                return $item;
+            }))
+
+            ->merge(UtangKeOperator::withTrashed()->where('petani_id', '!=', 187)->get()->map(function ($item) {
+                $changedAttributes = collect($item->getDirty())->keys();
+
+                if ($item->trashed()) {
+                    $item->actionType = 'delete';
+                } elseif ($item->updated_at > $item->created_at) {
+                    $item->actionType = 'update';
+                    $item->changedFields = $changedAttributes->toArray();
+                } elseif ($item->wasRecentlyCreated) {
+                    $item->actionType = 'create';
+                } else {
+                    $item->actionType = 'create'; // Default fallback
+                }
+                return $item;
+            }))
+
+
             ->merge(DaftarGiling::withTrashed()
                 ->whereHas('giling', function ($query) {
                     $query->where('petani_id', '!=', 187); // Abaikan entri dengan petani_id = 187
@@ -419,6 +477,55 @@ class DashboardController extends Controller
                 }
                 return $item;
             }))
+
+            ->merge(RekapDanaTitipanPetani::withTrashed()->get()->map(function ($item) {
+                $changedAttributes = collect($item->getDirty())->keys();
+
+                if ($item->trashed()) {
+                    $item->actionType = 'delete';
+                } elseif ($item->updated_at > $item->created_at) {
+                    $item->actionType = 'update';
+                    $item->changedFields = $changedAttributes->toArray();
+                } elseif ($item->wasRecentlyCreated) {
+                    $item->actionType = 'create';
+                } else {
+                    $item->actionType = 'create'; // Default fallback
+                }
+                return $item;
+            }))
+
+            ->merge(RekapKreditNasabahPalu::withTrashed()->get()->map(function ($item) {
+                $changedAttributes = collect($item->getDirty())->keys();
+
+                if ($item->trashed()) {
+                    $item->actionType = 'delete';
+                } elseif ($item->updated_at > $item->created_at) {
+                    $item->actionType = 'update';
+                    $item->changedFields = $changedAttributes->toArray();
+                } elseif ($item->wasRecentlyCreated) {
+                    $item->actionType = 'create';
+                } else {
+                    $item->actionType = 'create'; // Default fallback
+                }
+                return $item;
+            }))
+
+            ->merge(RekapUtangKeOperator::withTrashed()->get()->map(function ($item) {
+                $changedAttributes = collect($item->getDirty())->keys();
+
+                if ($item->trashed()) {
+                    $item->actionType = 'delete';
+                } elseif ($item->updated_at > $item->created_at) {
+                    $item->actionType = 'update';
+                    $item->changedFields = $changedAttributes->toArray();
+                } elseif ($item->wasRecentlyCreated) {
+                    $item->actionType = 'create';
+                } else {
+                    $item->actionType = 'create'; // Default fallback
+                }
+                return $item;
+            }))
+
             ->merge(Debit::withTrashed()->get()->map(function ($item) {
                 $changedAttributes = collect($item->getDirty())->keys();
 
@@ -447,10 +554,10 @@ class DashboardController extends Controller
                 };
 
                 $additionalInfo = $history->actionType === 'update'
-                    ? ' (Perubahan pada: ' . implode(
+                    ? '' . implode(
                         ', ',
                         $history->changedFields
-                    ) . ')'
+                    ) . ''
                     : '';
 
                 return [
@@ -467,15 +574,75 @@ class DashboardController extends Controller
                 };
 
                 $additionalInfo = $history->actionType === 'update'
-                    ? ' (Perubahan pada: ' . implode(
+                    ? '' . implode(
                         ', ',
                         $history->changedFields
-                    ) . ')'
+                    ) . ''
                     : '';
 
                 return [
                     'type' => 'Kredit',
                     'description' => $actionText . ' Kredit dengan jumlah Rp ' . number_format($history->jumlah, 0, ',', '.') . ' milik petani: ' . $history->petani->nama,
+                    'date' => $history->updated_at->format('d F Y H:i:s'),
+                ];
+            } elseif ($history instanceof KreditNasabahPalu && isset($history->jumlah, $history->nama, $history->created_at)) {
+                $actionText = match ($history->actionType) {
+                    'create' => 'Penambahan',
+                    'update' => 'Perbaruan',
+                    'delete' => 'Penghapusan',
+                    default => 'Aktivitas'
+                };
+
+                $additionalInfo = $history->actionType === 'update'
+                    ? '' . implode(
+                        ', ',
+                        $history->changedFields
+                    ) . ''
+                    : '';
+
+                return [
+                    'type' => 'Kredit',
+                    'description' => $actionText . ' Kredit dengan jumlah Rp ' . number_format($history->jumlah, 0, ',', '.') . ' milik Nasabah Palu: ' . $history->nama,
+                    'date' => $history->updated_at->format('d F Y H:i:s'),
+                ];
+            } elseif ($history instanceof KreditTitipanPetani && isset($history->jumlah, $history->petani, $history->created_at)) {
+                $actionText = match ($history->actionType) {
+                    'create' => 'Penambahan',
+                    'update' => 'Perbaruan',
+                    'delete' => 'Penghapusan',
+                    default => 'Aktivitas'
+                };
+
+                $additionalInfo = $history->actionType === 'update'
+                    ? '' . implode(
+                        ', ',
+                        $history->changedFields
+                    ) . ''
+                    : '';
+
+                return [
+                    'type' => 'Kredit',
+                    'description' => $actionText . ' Kredit Titipan dengan jumlah Rp ' . number_format($history->jumlah, 0, ',', '.') . ' milik petani: ' . $history->petani->nama,
+                    'date' => $history->updated_at->format('d F Y H:i:s'),
+                ];
+            } elseif ($history instanceof UtangKeOperator && isset($history->jumlah, $history->petani, $history->created_at)) {
+                $actionText = match ($history->actionType) {
+                    'create' => 'Penambahan',
+                    'update' => 'Perbaruan',
+                    'delete' => 'Penghapusan',
+                    default => 'Aktivitas'
+                };
+
+                $additionalInfo = $history->actionType === 'update'
+                    ? '' . implode(
+                        ', ',
+                        $history->changedFields
+                    ) . ''
+                    : '';
+
+                return [
+                    'type' => 'Kredit',
+                    'description' => $actionText . ' Utang ke Operator dengan jumlah Rp ' . number_format($history->jumlah, 0, ',', '.') . ' milik petani: ' . $history->petani->nama,
                     'date' => $history->updated_at->format('d F Y H:i:s'),
                 ];
             } elseif (
@@ -489,10 +656,10 @@ class DashboardController extends Controller
                 };
 
                 $additionalInfo = $history->actionType === 'update'
-                    ? ' (Perubahan pada: ' . implode(
+                    ? '' . implode(
                         ', ',
                         $history->changedFields
-                    ) . ')'
+                    ) . ''
                     : '';
 
                 return [
@@ -503,16 +670,16 @@ class DashboardController extends Controller
             } elseif ($history instanceof RekapDana && isset($history->rekapan_dana, $history->created_at)) {
                 $actionText = match ($history->actionType) {
                     'create' => 'Pembuatan',
-                    'update' => 'Pembaruan',
+                    'update' => 'Pembuatan',
                     'delete' => 'Penghapusan',
                     default => 'Aktivitas'
                 };
 
                 $additionalInfo = $history->actionType === 'update'
-                    ? ' (Perubahan pada: ' . implode(
+                    ? '' . implode(
                         ', ',
                         $history->changedFields
-                    ) . ')'
+                    ) . ''
                     : '';
 
                 return [
@@ -520,19 +687,79 @@ class DashboardController extends Controller
                     'description' => $actionText . ' Rekapan Dana Rp ' . number_format($history->rekapan_dana, 0, ',', '.') . $additionalInfo,
                     'date' => $history->updated_at->format('d F Y H:i:s'),
                 ];
-            } elseif ($history instanceof RekapKredit && isset($history->rekapan_kredit, $history->created_at)) {
+            } elseif ($history instanceof RekapDanaTitipanPetani && isset($history->rekapan_dana_titipan_petani, $history->created_at)) {
                 $actionText = match ($history->actionType) {
                     'create' => 'Pembuatan',
-                    'update' => 'Pembaruan',
+                    'update' => 'Pembuatan',
                     'delete' => 'Penghapusan',
                     default => 'Aktivitas'
                 };
 
                 $additionalInfo = $history->actionType === 'update'
-                    ? ' (Perubahan pada: ' . implode(
+                    ? '' . implode(
                         ', ',
                         $history->changedFields
-                    ) . ')'
+                    ) . ''
+                    : '';
+
+                return [
+                    'type' => 'RekapDana',
+                    'description' => $actionText . ' Rekapan Dana Titipan Petani Rp ' . number_format($history->rekapan_dana_titipan_petani, 0, ',', '.') . $additionalInfo,
+                    'date' => $history->updated_at->format('d F Y H:i:s'),
+                ];
+            } elseif ($history instanceof RekapKreditNasabahPalu && isset($history->rekapan_kredit_nasabah_palu, $history->created_at)) {
+                $actionText = match ($history->actionType) {
+                    'create' => 'Pembuatan',
+                    'update' => 'Pembuatan',
+                    'delete' => 'Penghapusan',
+                    default => 'Aktivitas'
+                };
+
+                $additionalInfo = $history->actionType === 'update'
+                    ? '' . implode(
+                        ', ',
+                        $history->changedFields
+                    ) . ''
+                    : '';
+
+                return [
+                    'type' => 'RekapDana',
+                    'description' => $actionText . ' Rekapan Kredit Nasabah Palu Rp ' . number_format($history->rekapan_kredit_nasabah_palu, 0, ',', '.') . $additionalInfo,
+                    'date' => $history->updated_at->format('d F Y H:i:s'),
+                ];
+            } elseif ($history instanceof RekapUtangKeOperator && isset($history->rekapan_utang_ke_operator, $history->created_at)) {
+                $actionText = match ($history->actionType) {
+                    'create' => 'Pembuatan',
+                    'update' => 'Pembuatan',
+                    'delete' => 'Penghapusan',
+                    default => 'Aktivitas'
+                };
+
+                $additionalInfo = $history->actionType === 'update'
+                    ? '' . implode(
+                        ', ',
+                        $history->changedFields
+                    ) . ''
+                    : '';
+
+                return [
+                    'type' => 'RekapDana',
+                    'description' => $actionText . ' Rekapan Utang Ke Operator Rp ' . number_format($history->rekapan_utang_ke_operator, 0, ',', '.') . $additionalInfo,
+                    'date' => $history->updated_at->format('d F Y H:i:s'),
+                ];
+            } elseif ($history instanceof RekapKredit && isset($history->rekapan_kredit, $history->created_at)) {
+                $actionText = match ($history->actionType) {
+                    'create' => 'Pembuatan',
+                    'update' => 'Pembuatan',
+                    'delete' => 'Penghapusan',
+                    default => 'Aktivitas'
+                };
+
+                $additionalInfo = $history->actionType === 'update'
+                    ? '' . implode(
+                        ', ',
+                        $history->changedFields
+                    ) . ''
                     : '';
 
                 return [
@@ -549,10 +776,10 @@ class DashboardController extends Controller
                 };
 
                 $additionalInfo = $history->actionType === 'update'
-                    ? ' (Perubahan pada: ' . implode(
+                    ? '' . implode(
                         ', ',
                         $history->changedFields
-                    ) . ')'
+                    ) . ''
                     : '';
 
                 return [
