@@ -255,7 +255,7 @@
                                         </div>
                                     </div>
 
-                                    <form method="GET" action="{{ route('laporan.kredit') }}">
+                                    <form method="GET" action="{{ route('laporan.operator.cetak') }}">
                                         <button class="btn btn-cetak bg-gradient-primary d-flex align-items-center justify-content-center mt-3 me-2"
                                             id="btn-id-cetak"
                                             style="width: 233px;">
@@ -928,7 +928,7 @@
 
 
                 const cetakButton = document.getElementById('btn-id-cetak');
-                const actionUrl = "{{ route('laporan.kredit') }}"; // URL untuk diarahkan
+                const actionUrl = "{{ route('laporan.operator') }}"; // URL untuk diarahkan
 
                 cetakButton.addEventListener('click', function() {
                     // Disable tombol untuk mencegah multiple click

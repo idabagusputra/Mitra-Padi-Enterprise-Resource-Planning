@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Barryvdh\DomPDF\Facade\Pdf;
-use App\Http\Controllers\KreditReportController;
+use App\Http\Controllers\UtangKeOperatorReportController;
 
 class UtangKeOperatorController extends Controller
 {
@@ -186,7 +186,7 @@ class UtangKeOperatorController extends Controller
     public function downloadLaporanKredit(Request $request)
     {
         // Membuat instance KreditReportController
-        $kreditReportController = new KreditReportController();
+        $kreditReportController = new UtangKeOperatorReportController();
 
         // Memanggil fungsi generatePdf dari KreditReportController
         return $kreditReportController->generatePdf($request);
