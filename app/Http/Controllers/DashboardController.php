@@ -565,7 +565,7 @@ class DashboardController extends Controller
                     'description' => $actionText . ' petani: ' . $history->nama,
                     'date' => $history->updated_at->format('d F Y H:i:s'),
                 ];
-            } elseif ($history instanceof Kredit && isset($history->jumlah, $history->petani, $history->created_at)) {
+            } elseif ($history instanceof Kredit && isset($history->jumlah, $history->petani, $history->updated_at)) {
                 $actionText = match ($history->actionType) {
                     'create' => 'Penambahan',
                     'update' => 'Perbaruan',
@@ -601,7 +601,7 @@ class DashboardController extends Controller
                     : '';
 
                 return [
-                    'type' => 'Kredit',
+                    'type' => 'KreditNasabahPalu',
                     'description' => $actionText . ' Kredit dengan jumlah Rp ' . number_format($history->jumlah, 0, ',', '.') . ' milik Nasabah Palu: ' . $history->nama,
                     'date' => $history->updated_at->format('d F Y H:i:s'),
                 ];
@@ -621,8 +621,8 @@ class DashboardController extends Controller
                     : '';
 
                 return [
-                    'type' => 'Kredit',
-                    'description' => $actionText . ' Kredit Titipan dengan jumlah Rp ' . number_format($history->jumlah, 0, ',', '.') . ' milik petani: ' . $history->petani->nama,
+                    'type' => 'KreditPlus',
+                    'description' => $actionText . ' Dana Titipan dengan jumlah Rp ' . number_format($history->jumlah, 0, ',', '.') . ' milik petani: ' . $history->petani->nama,
                     'date' => $history->updated_at->format('d F Y H:i:s'),
                 ];
             } elseif ($history instanceof UtangKeOperator && isset($history->jumlah, $history->petani, $history->created_at)) {
@@ -641,7 +641,7 @@ class DashboardController extends Controller
                     : '';
 
                 return [
-                    'type' => 'Kredit',
+                    'type' => 'KreditPlus',
                     'description' => $actionText . ' Utang ke Operator dengan jumlah Rp ' . number_format($history->jumlah, 0, ',', '.') . ' milik petani: ' . $history->petani->nama,
                     'date' => $history->updated_at->format('d F Y H:i:s'),
                 ];

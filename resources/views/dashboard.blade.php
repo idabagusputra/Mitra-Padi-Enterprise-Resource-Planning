@@ -528,6 +528,9 @@
                             @case('Kredit')
                             <i class="bi bi-currency-dollar text-danger text-gradient"></i>
                             @break
+                            @case('KreditPlus')
+                            <i class="bi bi-currency-dollar text-info text-gradient"></i>
+                            @break
                             @case('Debit')
                             <i class="bi bi-currency-dollar text-success text-gradient"></i>
                             @break

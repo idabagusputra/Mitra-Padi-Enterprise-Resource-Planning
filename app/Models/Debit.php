@@ -222,7 +222,7 @@ class Debit extends Model
                     $result = DB::table('utang_ke_operators')->insert([
                         'debit_id' => $this->id,
                         'petani_id' => $kredit->petani->id,
-                        'nama' => $kredit->petani->nama,
+                        // 'nama' => $kredit->petani->nama,
                         'tanggal' => $paymentDate,
                         'jumlah' => abs($totalSisaHutangYangHarusDibayarABS),
                         'keterangan' => 'Sisa Debit id: ' . $this->id .
