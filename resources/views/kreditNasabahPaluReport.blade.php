@@ -47,7 +47,7 @@
     <div style="display: flex; justify-content: space-between; width: 100%; align-items: center; margin-bottom: 20px;">
         <h2 style="margin: 0; display: flex; justify-content: space-between; width: 100%;">
             <span>Laporan Kredit / Hutang Nasabah Palu </span>
-            <span style="text-align: right; padding-left: 182px;">{{ date('d F Y - H:i:s') }}</span>
+            <span style="float: right;">{{ date('d F Y - H:i:s') }}</span>
         </h2>
     </div>
 
@@ -57,7 +57,7 @@
     <div class="summary">
         <table>
             <tr>
-                <td style="text-align: left;">Jumlah Petani Belum Lunas <span style="float: right;">{{ $jumlahPetaniBelumLunas }} Orang</span></td>
+                <td style="text-align: left;">Jumlah Nasabah Palu Belum Lunas <span style="float: right;">{{ $jumlahPetaniBelumLunas }} Orang</span></td>
             </tr>
             <tr>
                 <td style="text-align: left;">Total Kredit Belum Lunas <span style="float: right;">Rp {{ number_format($totalKreditBelumLunas, 2, ',', '.') }}</span></td>
@@ -74,7 +74,7 @@
 
 
 
-    <div class="summary">
+    <!-- <div class="summary">
         <table>
 
             <tr>
@@ -90,7 +90,7 @@
                 <td style="text-align: left;">Total Kredit Dengan Bunga Lunas <span style="float: right;">Rp {{ number_format($totalKreditPlusBungaLunas, 2, ',', '.') }}</span></td>
             </tr>
         </table>
-    </div>
+    </div> -->
 
 
 
@@ -98,11 +98,11 @@
         <thead>
             <tr>
                 <th>ID</th>
-                <th>Petani</th>
-                <th>Alamat</th>
+                <th>Nasabah Palu</th>
+                <!-- <th>Alamat</th> -->
                 <th>Tanggal</th>
                 <th>Jumlah</th>
-                <th>Hutang + Bunga</th>
+                <!-- <th>Hutang + Bunga</th> -->
                 <th>Status</th>
             </tr>
         </thead>
@@ -112,15 +112,15 @@
             @foreach($kredits as $kredit)
             <tr>
                 <td style="text-align: center;">{{ $kredit->id }}</td>
-                <td style="text-align: left; padding-left: 8px;">{{ $kredit->petani->nama }}</td>
-                <td style="text-align: center;">{{ $kredit->petani->alamat }}</td>
+                <td style="text-align: left; padding-left: 8px;">{{ $kredit->nama }}</td>
+
                 <td style="text-align: center;">{{ $kredit->tanggal }}</td>
                 <td style="text-align: right; padding-right: 8px;">Rp {{ number_format($kredit->jumlah, 2, ',', '.') }}</td>
-                <td style="text-align: right; padding-right: 8px;">
+                <!-- <td style="text-align: right; padding-right: 8px;">
                     Rp {{ number_format($kredit->hutang_plus_bunga, 2, ',', '.') }}
                     <br>
                     <small>({{ number_format($kredit->lama_bulan) }} Bulan, Bunga: Rp {{ number_format($kredit->bunga, 2, ',', '.') }})</small>
-                </td>
+                </td> -->
                 <td style="text-align: center;">{{ $kredit->status ? 'Lunas' : 'Belum Lunas' }}</td>
             </tr>
             @endforeach

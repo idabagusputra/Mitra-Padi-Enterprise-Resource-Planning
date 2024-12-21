@@ -200,7 +200,7 @@
                                 <tr>
                                     <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">ID</th>
                                     <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Action</th>
-                                    <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">rekapan dana titipan petani</th>
+                                    <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">rekapan kredit nasabah palu</th>
                                     <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Tanggal Pembuatan</th>
 
                                 </tr>
@@ -225,7 +225,7 @@
                                             </button>
                                         </form> -->
                                     <td class="text-center">
-                                        <p class="text-xs font-weight-bold mb-0 ">Rp. {{ number_format($rekapanKredit->rekapan_dana_titipan_petani, 2, ',', '.') }}</p>
+                                        <p class="text-xs font-weight-bold mb-0 ">Rp. {{ number_format($rekapanKredit->rekapan_kredit_nasabah_palu, 2, ',', '.') }}</p>
                                     </td>
                                     </td>
                                     <td class="text-center">
@@ -372,7 +372,7 @@
                         pdfViewer.src = data.pdfPath;
 
                         // Update modal title dengan format baru
-                        document.getElementById('pdfModalLabel').textContent = `Rekapan Dana Titipan Petani ${id} (${date})`;
+                        document.getElementById('pdfModalLabel').textContent = `Rekapan Kredit Nasabah Palu ${id} (${date})`;
 
                         // Tampilkan modal dengan opsi backdrop yang dimodifikasi
                         const pdfModal = new bootstrap.Modal(document.getElementById('pdfModal'), {

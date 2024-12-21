@@ -17,6 +17,7 @@ use App\Http\Controllers\KreditPembayaranKreditController; // Tambahkan ini
 use App\Http\Controllers\KreditReportController;
 use App\Http\Controllers\UtangKeOperatorController;
 use App\Http\Controllers\UtangKeOperatorReportController;
+use App\Http\Controllers\KreditNasabahPaluReportController;
 use App\Http\Controllers\DanaTititpanPetaniReportController;
 use App\Http\Controllers\KreditTrashController;
 use App\Http\Controllers\RekapDanaController;
@@ -83,8 +84,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/search-kredit', [KreditNasabahPaluController::class, 'search'])->name('search.kredit');
     Route::get('/api/kredit/autocomplete', [KreditNasabahPaluController::class, 'autocomplete']);
     Route::get('/search-nama', [KreditNasabahPaluController::class, 'searchPetani'])->name('search.petani');
-    Route::get('/laporanNasabah-kredit', [KreditNasabahPaluController::class, 'generatePdf'])->name('laporanNasabah.kredit');
-    Route::get('/kreditNasabah/cetak-laporan', [KreditNasabahPaluController::class, 'downloadLaporanKredit'])->name('laporanNasabah.kredit.cetak');
+    Route::get('/laporanNasabah-kredit', [KreditNasabahPaluReportController::class, 'generatePdf'])->name('laporanNasabah.kredit');
+    Route::get('/kreditNasabah/cetak-laporan', [KreditNasabahPaluReportController::class, 'downloadLaporanKredit'])->name('laporanNasabah.kredit.cetak');
 
     // Kredit Trash routes
     Route::resource('kredit-ryclebin', KreditTrashController::class);
@@ -165,6 +166,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/DR-dana-titipan-petani', [DanaTititpanPetaniReportController::class, 'index'])->name('rekapKreditTitipanPetani.index');
     Route::post('/rekap-dana-titipan-petani/store', [DanaTititpanPetaniReportController::class, 'store'])->name('rekapKreditTitipanPetani.store');
 
+    Route::resource('DR-kredit-nasabah-palu', KreditNasabahPaluReportController::class);
+    Route::get('/DR-kredit-nasabah-palu', [KreditNasabahPaluReportController::class, 'index'])->name('rekapKreditNasabahPalu.index');
+    Route::post('/rekap-kredit-nasabah-palu/store', [KreditNasabahPaluReportController::class, 'store'])->name('rekapKreditNasabahPalu.store');
+
 
 
     // Di routes/web.php
@@ -173,6 +178,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/find-pdf-operator', [UtangKeOperatorReportController::class, 'findPdf']);
     Route::get('/find-pdf-titipan', [DanaTititpanPetaniReportController::class, 'findPdf']);
     Route::get('/find-pdf-dana', [RekapDanaController::class, 'findPdf']);
+    Route::get('/find-pdf-nasabah', [KreditNasabahPaluReportController::class, 'findPdf']);
 
 
     // User profile and authentication

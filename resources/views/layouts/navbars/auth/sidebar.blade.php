@@ -222,6 +222,15 @@
             </li>
 
             <li class="nav-item">
+                <a class="nav-link {{ (Request::is('DR-kredit-nasabah-palu') ? 'active' : '') }}" href="{{ url('DR-kredit-nasabah-palu') }}">
+                    <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i style="font-size: 1rem;" class="bi bi-list-check ps-2 pe-2 text-center text-dark {{ (Request::is('DR-kredit-nasabah-palu') ? 'text-white' : 'text-dark') }} " aria-hidden="true"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Daftar R K-Nasabah Palu</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
                 <a class="nav-link {{ (Request::is('DR-utang-ke-operator') ? 'active' : '') }}" href="{{ url('DR-utang-ke-operator') }}">
                     <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i style="font-size: 1rem;" class="bi bi-list-check ps-2 pe-2 text-center text-dark {{ (Request::is('DR-utang-ke-operator') ? 'text-white' : 'text-dark') }} " aria-hidden="true"></i>

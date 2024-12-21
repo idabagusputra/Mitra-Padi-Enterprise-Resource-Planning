@@ -236,12 +236,23 @@
 
                                         </div>
 
-                                        <div style="width: 150px;">
-                                            <button class="btn w-100 bg-gradient-primary d-flex align-items-center justify-content-center" type="button" id="btn-id" data-bs-toggle="modal" style="width: 150px; margin: 0;" data-bs-target="#addKreditModal">
+                                        <form method="GET" action="{{ route('laporanNasabah.kredit') }}">
+
+                                            <a href="{{ route('laporanNasabah.kredit') }}" class="btn btn-cetak bg-gradient-primary d-flex align-items-center justify-content-center" id="btn-id" style="width: 150px;">
+                                                <i class="bi bi-printer me-2"></i>
+                                                <span>CETAK</span>
+                                            </a>
+
+                                        </form>
+
+
+                                        <div class="" style=" width: 150px;">
+                                            <button class="btn w-100 bg-gradient-primary d-flex align-items-center justify-content-center " type="button" id="btn-id" data-bs-toggle="modal" style="width: 150px; margin: 0;" data-bs-target="#addKreditModal">
                                                 <i class="bi bi-plus-square me-2"></i>
                                                 <span>Kredit Baru</span>
                                             </button>
                                         </div>
+
 
 
                                     </div>
@@ -265,14 +276,7 @@
                                         </div>
                                     </div> -->
 
-                                    <!-- <form method="GET" action="{{ route('laporan.kredit') }}">
 
-                                        <a href="{{ route('laporan.kredit') }}" class="btn btn-cetak bg-gradient-primary d-flex align-items-center justify-content-center mt-3 me-2" id="btn-id" style="width: 233px;">
-                                            <i class="bi bi-printer me-2"></i>
-                                            <span>CETAK</span>
-                                        </a>
-
-                                    </form> -->
 
 
                                     <!-- <button class="btn w-100 btn-baru bg-gradient-primary d-flex align-items-center justify-content-center mt-3" type="button" id="btn-id" data-bs-toggle="modal" data-bs-target="#addKreditModal">

@@ -372,7 +372,7 @@
                         pdfViewer.src = data.pdfPath;
 
                         // Update modal title dengan format baru
-                        document.getElementById('pdfModalLabel').textContent = `Rekapan Kredit ${id} (${date})`;
+                        document.getElementById('pdfModalLabel').textContent = `Rekapan Kredit Petani ${id} (${date})`;
 
                         // Tampilkan modal dengan opsi backdrop yang dimodifikasi
                         const pdfModal = new bootstrap.Modal(document.getElementById('pdfModal'), {
