@@ -565,7 +565,7 @@ class DashboardController extends Controller
                     'description' => $actionText . ' petani: ' . $history->nama,
                     'date' => $history->updated_at->format('d F Y H:i:s'),
                 ];
-            } elseif ($history instanceof Kredit && isset($history->jumlah, $history->petani, $history->updated_at)) {
+            } elseif ($history instanceof Kredit && isset($history->jumlah, $history->petani, $history->created_at)) {
                 $actionText = match ($history->actionType) {
                     'create' => 'Penambahan',
                     'update' => 'Perbaruan',
