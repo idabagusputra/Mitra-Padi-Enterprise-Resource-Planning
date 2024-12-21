@@ -78,6 +78,10 @@ class KreditController extends Controller
                 $now = Carbon::now(); // Dapatkan waktu sekarang
                 $diffInMonthsUpdate = $kreditDate->diffInMonths($kredit->updated_at); // Menghitung selisih bulan
                 // Lakukan sesuatu dengan $diffInMonthsUpdate jika diperlukan
+                // Jika diffInMonthsUpdate bernilai negatif, set nilainya menjadi 0
+                if ($diffInMonthsUpdate < 0) {
+                    $diffInMonthsUpdate = 0;
+                }
             } else {
                 // Hitung selisih bulan menggunakan updated_at
                 $diffInMonthsUpdate = $kreditDate->diffInMonths($now);
