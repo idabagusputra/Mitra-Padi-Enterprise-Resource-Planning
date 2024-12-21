@@ -85,7 +85,7 @@ class KreditReportController extends Controller
 
 
 
-    public function generatePdf(Request $request)
+    public function generatePdf()
     {
         // Tetapkan langsung nilai 'desc' untuk sortOrder
         $sortOrder = 'desc';

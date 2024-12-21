@@ -17,6 +17,7 @@ use App\Http\Controllers\KreditPembayaranKreditController; // Tambahkan ini
 use App\Http\Controllers\KreditReportController;
 use App\Http\Controllers\UtangKeOperatorController;
 use App\Http\Controllers\UtangKeOperatorReportController;
+use App\Http\Controllers\DanaTititpanPetaniReportController;
 use App\Http\Controllers\KreditTrashController;
 use App\Http\Controllers\RekapDanaController;
 use App\Http\Controllers\KreditNasabahPaluController;
@@ -72,8 +73,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/search-kredit', [KreditTitipanPetaniController::class, 'search'])->name('search.kredit');
     Route::get('/api/kredit/autocomplete', [KreditTitipanPetaniController::class, 'autocomplete']);
     Route::get('/search-petani', [KreditTitipanPetaniController::class, 'searchPetani'])->name('search.petani');
-    Route::get('/laporan-kredit', [KreditTitipanPetaniController::class, 'generatePdf'])->name('laporan.kredit');
-    Route::get('/kredit/cetak-laporan', [KreditTitipanPetaniController::class, 'downloadLaporanKredit'])->name('laporan.kredit.cetak');
+    Route::get('/laporan-rekapan-dana-titipan-petani', [DanaTititpanPetaniReportController::class, 'generatePdf'])->name('laporan.titipan');
+    Route::get('/rekapan-rekapan-dana-titipan-petani/cetak-laporan', [DanaTititpanPetaniReportController::class, 'downloadLaporanKredit'])->name('laporan.titipan.cetak');
 
 
 
@@ -148,16 +149,21 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/daftar-rekapan-dana', [RekapDanaController::class, 'indexDaftar'])->name('rekapDana.index');
     Route::post('/rekap-dana/store', [RekapDanaController::class, 'store'])->name('rekapdana.store');
     // Di routes/web.php
-    Route::get('/find-pdf-dana', [RekapDanaController::class, 'findPdf']);
+
 
     Route::resource('daftar-rekapan-kredit', KreditReportController::class);
     Route::get('/daftar-rekapan-kredit', [KreditReportController::class, 'index'])->name('rekapKredit.index');
     Route::post('/rekap-kredit/store', [KreditReportController::class, 'store'])->name('rekapKredit.store');
 
 
-    Route::resource('daftar-rekapan-utang-ke-operator', UtangKeOperatorReportController::class);
-    Route::get('/daftar-rekapan-utang-ke-operator', [UtangKeOperatorReportController::class, 'index'])->name('rekapUtangKeOperator.index');
+    Route::resource('DR-utang-ke-operator', UtangKeOperatorReportController::class);
+    Route::get('/DR-utang-ke-operator', [UtangKeOperatorReportController::class, 'index'])->name('rekapUtangKeOperator.index');
     Route::post('/rekap-utang-ke-operator/store', [UtangKeOperatorReportController::class, 'store'])->name('rekapUtangKeOperator.store');
+
+
+    Route::resource('DR-dana-titipan-petani', DanaTititpanPetaniReportController::class);
+    Route::get('/DR-dana-titipan-petani', [DanaTititpanPetaniReportController::class, 'index'])->name('rekapKreditTitipanPetani.index');
+    Route::post('/rekap-dana-titipan-petani/store', [DanaTititpanPetaniReportController::class, 'store'])->name('rekapKreditTitipanPetani.store');
 
 
 
@@ -165,6 +171,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/find-pdf-kredit', [KreditReportController::class, 'findPdf']);
     Route::get('/find-pdf-nota-giling', [DaftarGilingController::class, 'findPdf']);
     Route::get('/find-pdf-operator', [UtangKeOperatorReportController::class, 'findPdf']);
+    Route::get('/find-pdf-titipan', [DanaTititpanPetaniReportController::class, 'findPdf']);
+    Route::get('/find-pdf-dana', [RekapDanaController::class, 'findPdf']);
+
 
     // User profile and authentication
     Route::get('/logout', [SessionsController::class, 'destroy']);

@@ -46,8 +46,8 @@
 <body>
     <div style="display: flex; justify-content: space-between; width: 100%; align-items: center; margin-bottom: 20px;">
         <h2 style="margin: 0; display: flex; justify-content: space-between; width: 100%;">
-            <span>Laporan Kredit / Hutang Petani </span>
-            <span style="float: right;">{{ date('d F Y - H:i:s') }}</span>
+            <span>Laporan Kredit / Hutang Nasabah Palu </span>
+            <span style="text-align: right; padding-left: 182px;">{{ date('d F Y - H:i:s') }}</span>
         </h2>
     </div>
 
@@ -62,12 +62,12 @@
             <tr>
                 <td style="text-align: left;">Total Kredit Belum Lunas <span style="float: right;">Rp {{ number_format($totalKreditBelumLunas, 2, ',', '.') }}</span></td>
             </tr>
-            <tr>
+            <!-- <tr>
                 <td style="text-align: left;">Total Bunga Kredit <span style="float: right;">Rp {{ number_format($totalKreditPlusBungaBelumLunas-$totalKreditBelumLunas, 2, ',', '.') }}</span></td>
             </tr>
             <tr>
                 <td style="text-align: left;">Total Kredit Dengan Bunga Belum Lunas <span style="float: right;">Rp {{ number_format($totalKreditPlusBungaBelumLunas, 2, ',', '.') }}</span></td>
-            </tr>
+            </tr> -->
 
         </table>
     </div>

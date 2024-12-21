@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kredit;
-use App\Models\RekapUtangKeOperator;
-use App\Models\UtangKeOperator;
+use App\Models\RekapDanaTitipanPetani;
+use App\Models\KreditTitipanPetani;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 use Carbon\Carbon;
@@ -21,19 +21,19 @@ use Aws\Exception\AwsException;
 
 
 
-class UtangKeOperatorReportController extends Controller
+class DanaTititpanPetaniReportController extends Controller
 {
 
     public function index()
     {
         // Ambil 1 data terbaru berdasarkan id terbesar
-        $rekapanKreditTerbaru = RekapUtangKeOperator::orderBy('id', 'desc')->first(); // Mengambil 1 data terbaru
+        $rekapanKreditTerbaru = RekapDanaTitipanPetani::orderBy('id', 'desc')->first(); // Mengambil 1 data terbaru
 
         // Menggunakan paginate() untuk mengambil 20 data per halaman
-        $rekapanKredits = RekapUtangKeOperator::orderBy('id', 'desc')->paginate(20);
+        $rekapanKredits = RekapDanaTitipanPetani::orderBy('id', 'desc')->paginate(20);
 
         // Mengirim data terbaru dan data lainnya ke view
-        return view('daftar-rekapan-utang-ke-operator', compact('rekapanKredits', 'rekapanKreditTerbaru'));
+        return view('daftar-rekapan-dana-titipan-petani', compact('rekapanKredits', 'rekapanKreditTerbaru'));
     }
 
     // public function findPdf(Request $request)
@@ -64,11 +64,11 @@ class UtangKeOperatorReportController extends Controller
     public function findPdf(Request $request)
     {
         $gilingId = $request->input('gilingId');
-        $folderPath = public_path('rekapan_utang_ke_operator');
+        $folderPath = public_path('rekapan_dana_titipan_petani');
         Log::info("Folder Path: " . $folderPath);
 
         // Cari file yang sesuai pola
-        $matchingFiles = glob("{$folderPath}/Rekapan_Utang_Ke_Operator_{$gilingId}_*.pdf");
+        $matchingFiles = glob("{$folderPath}/Rekapan_Dana_Titipan_Petani_{$gilingId}_*.pdf");
         Log::info("Matching Files: " . json_encode($matchingFiles));
 
         if (!empty($matchingFiles)) {
@@ -93,7 +93,7 @@ class UtangKeOperatorReportController extends Controller
         // Tetapkan langsung nilai 'desc' untuk sortOrder
         $sortOrder = 'desc';
 
-        $allKredits = UtangKeOperator::with('petani')->get();
+        $allKredits = KreditTitipanPetani::with('petani')->get();
         $now = Carbon::now();
         $calculatedKredits = $allKredits->map(function ($kredit) use ($now) {
             $kreditDate = Carbon::parse($kredit->tanggal);
@@ -187,7 +187,7 @@ class UtangKeOperatorReportController extends Controller
         $totalKreditPlusBungaLunas = $kreditsLunas->sum('hutang_plus_bunga');
 
         // Render HTML menggunakan Blade
-        $html = View::make('utangKeOperatorReport', [
+        $html = View::make('danaTitipanPetaniReport', [
             'groupedKredits' => $groupedByPetani, // Mengirimkan data yang sudah dikelompokkan
             'jumlahPetaniBelumLunas' => $jumlahPetaniBelumLunas,
             'totalKreditBelumLunas' => $totalKreditBelumLunas,
@@ -199,8 +199,8 @@ class UtangKeOperatorReportController extends Controller
         ])->render();
 
         // Buat data baru di database
-        $rekapKreditDB = RekapUtangKeOperator::create([
-            'rekapan_utang_ke_operator' => $totalKreditBelumLunas,
+        $rekapKreditDB = RekapDanaTitipanPetani::create([
+            'rekapan_dana_titipan_petani' => $totalKreditBelumLunas,
         ]);
 
         // Generate PDF dengan Dompdf
@@ -212,10 +212,10 @@ class UtangKeOperatorReportController extends Controller
         $dompdf->render();
 
         // Define the PDF file name using only the 'id' from the $rekapDana object
-        $pdfFileName = 'Rekapan_Utang_Ke_Operator_' . $rekapKreditDB->id . '_' . date('Y-m-d_H-i-s') . '.pdf';
+        $pdfFileName = 'Rekapan_Dana_Titipan_Petani_' . $rekapKreditDB->id . '_' . date('Y-m-d_H-i-s') . '.pdf';
 
 
-        $pdfPath = public_path('rekapan_utang_ke_operator');
+        $pdfPath = public_path('rekapan_dana_titipan_petani');
 
 
         // Ensure directory exists
@@ -246,7 +246,7 @@ class UtangKeOperatorReportController extends Controller
                 ]
             ]);
 
-            $r2FileName = 'Laporan_Utang_Ke_Operator/Rekapan_Utang_Ke_Operator_' . $rekapKreditDB->id . '_' . date('Y-m-d_H-i-s') . '.pdf';
+            $r2FileName = 'Laporan_Dana_Titipan_Petani/Rekapan_Dana_Titipan_Petani_' . $rekapKreditDB->id . '_' . date('Y-m-d_H-i-s') . '.pdf';
 
             $r2Upload = $r2Client->putObject([
                 'Bucket' => 'mitra-padi', // Nama bucket Anda
@@ -274,7 +274,7 @@ class UtangKeOperatorReportController extends Controller
 
             // Check folder existence (example folder ID)
             try {
-                $folderCheck = $driveService->files->get('1stzfcR6OSdpBT0yb13WHFFl4_jsO08la', [
+                $folderCheck = $driveService->files->get('130_zniBFi1q6Us_F1QWwG5ziHT0gDN_f', [
                     'fields' => 'id,name'
                 ]);
                 Log::info('Folder found: ' . $folderCheck->getName());
@@ -286,7 +286,7 @@ class UtangKeOperatorReportController extends Controller
             // Prepare file metadata
             $fileMetadata = new Drive\DriveFile([
                 'name' => $pdfFileName,
-                'parents' => ['1stzfcR6OSdpBT0yb13WHFFl4_jsO08la']
+                'parents' => ['130_zniBFi1q6Us_F1QWwG5ziHT0gDN_f']
             ]);
 
             // Upload file to Google Drive
@@ -297,7 +297,7 @@ class UtangKeOperatorReportController extends Controller
                 'fields' => 'id,webViewLink'
             ]);
 
-            return redirect()->route('rekapUtangKeOperator.index')
+            return redirect()->route('rekapKreditTitipanPetani.index')
                 ->with('success', 'Rekapan Kredit berhasil dibuat.')
                 ->with('newGilingId', $rekapKreditDB->id);
         } catch (\Exception $e) {

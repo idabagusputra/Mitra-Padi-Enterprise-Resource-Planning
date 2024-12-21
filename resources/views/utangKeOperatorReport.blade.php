@@ -47,7 +47,7 @@
     <div style="display: flex; justify-content: space-between; width: 100%; align-items: center; margin-bottom: 20px;">
         <h2 style="margin: 0; display: flex; justify-content: space-between; width: 100%;">
             <span>Laporan Utang Ke Operator </span>
-            <span style="text-align: right; padding-left: 182px;">{{ date('d F Y - H:i:s') }}</span>
+            <span style="float: right;">{{ date('d F Y - H:i:s') }}</span>
         </h2>
     </div>
 
@@ -102,7 +102,7 @@
                 <th>Alamat</th>
                 <th>Tanggal</th>
                 <th>Jumlah</th>
-                <th>Hutang + Bunga</th>
+                <!-- <th>Hutang + Bunga</th> -->
                 <th>Status</th>
             </tr>
         </thead>
@@ -116,11 +116,11 @@
                 <td style="text-align: center;">{{ $kredit->petani->alamat }}</td>
                 <td style="text-align: center;">{{ $kredit->tanggal }}</td>
                 <td style="text-align: right; padding-right: 8px;">Rp {{ number_format($kredit->jumlah, 2, ',', '.') }}</td>
-                <td style="text-align: right; padding-right: 8px;">
+                <!-- <td style="text-align: right; padding-right: 8px;">
                     Rp {{ number_format($kredit->hutang_plus_bunga, 2, ',', '.') }}
                     <br>
                     <small>({{ number_format($kredit->lama_bulan) }} Bulan, Bunga: Rp {{ number_format($kredit->bunga, 2, ',', '.') }})</small>
-                </td>
+                </td> -->
                 <td style="text-align: center;">{{ $kredit->status ? 'Lunas' : 'Belum Lunas' }}</td>
             </tr>
             @endforeach
