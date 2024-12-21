@@ -135,7 +135,7 @@
                     'pinjaman_bank' => ['label' => 'Pinjaman Bank'],
                     'titipan_petani' => ['label' => 'Titipan Petani'],
                     'utang_beras' => ['label' => 'Utang Beras'],
-                    'utang_ke_operator' => ['label' => 'Utang ke Operator']
+
                     ];
                     @endphp
                     @foreach($kelompok3 as $field => $data)
@@ -150,6 +150,15 @@
                         </div>
                     </div>
                     @endforeach
+
+                    <div class="col-md-3 mb-3">
+                        <div class="form-group">
+                            <label for="total_kredit" class="form-control-label">Utang ke Operator</label>
+                            <input class="form-control readonly-transparent" type="text"
+                                value="Rp. {{ number_format($totalKreditDirektur, 2, '.', ',') }}"
+                                readonly>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="d-flex justify-content-end mt-2">

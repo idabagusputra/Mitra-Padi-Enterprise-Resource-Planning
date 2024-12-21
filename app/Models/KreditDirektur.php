@@ -20,4 +20,13 @@ class KreditDirektur extends Model
         'keterangan',
         'status',
     ];
+
+    public static function calculateTotalKreditDirektur()
+    {
+        // Mengambil data kredit yang belum lunas (status = 0)
+        $kreditsBelumLunas = self::where('status', 0)->get(); // Mengambil kredit yang statusnya 0 (belum lunas)
+
+        // Menghitung total hutang_plus_bunga
+        return $kreditsBelumLunas->sum('jumlah');
+    }
 }

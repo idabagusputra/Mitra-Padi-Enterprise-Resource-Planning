@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Kredit;
 use App\Models\KreditNasabahPalu;
+use App\Models\KreditDirektur;
 use App\Models\RekapDana;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
@@ -29,8 +30,10 @@ class RekapDanaController extends Controller
         // Menghitung total_kredit_plus_bunga dengan memanggil method di model Kredit
         $totalKreditNasabahPalu = KreditNasabahPalu::calculateTotalKreditNasabahPalu();
 
+        $totalKreditDirektur = KreditDirektur::calculateTotalKreditDirektur();
+
         // Mengirim data ke view 'rekap-dana.blade.php'
-        return view('rekap-dana', compact('totalKreditPetani', 'totalKreditNasabahPalu'));
+        return view('rekap-dana', compact('totalKreditPetani', 'totalKreditNasabahPalu', 'totalKreditDirektur'));
     }
 
     public function findPdf(Request $request)
@@ -311,7 +314,7 @@ class RekapDanaController extends Controller
             'pinjaman_bank' => 'required|numeric',
             'titipan_petani' => 'required|numeric',
             'utang_beras' => 'required|numeric',
-            'utang_ke_operator' => 'required|numeric',
+            // 'utang_ke_operator' => 'required|numeric',
         ]);
 
         // Jika validasi gagal
@@ -329,6 +332,10 @@ class RekapDanaController extends Controller
         $totalKreditNasabahPalu = KreditNasabahPalu::calculateTotalKreditNasabahPalu();
 
 
+        $totalKreditDirektur = KreditDirektur::calculateTotalKreditDirektur();
+
+
+
         // Ambil data dari request
         $data = $request->all();
 
@@ -340,12 +347,13 @@ class RekapDanaController extends Controller
         // Menghitung nilai rekapan_dana = Kelompok 1 + Kelompok 2 (total) - Kelompok 3
         $kelompok1Total = $data['bri'] + $data['bni'] + $data['tunai'] + $data['mama'];
         $kelompok2Total = $stokBerasTotal + $ongkosJemurTotal + $berasTerpinjamTotal;
-        $kelompok3Total = $data['pinjaman_bank'] + $data['titipan_petani'] + $data['utang_beras'] + $data['utang_ke_operator'];
+        $kelompok3Total = $data['pinjaman_bank'] + $data['titipan_petani'] + $data['utang_beras'] + $totalKreditDirektur;
 
         $rekapanDana = $kelompok1Total + $kelompok2Total + $totalKreditNasabahPalu + $totalKreditPetani - $kelompok3Total;
 
         // Menambahkan nilai total_kredit dan rekapan_dana sebelum disimpan
         $data['total_kredit'] = $totalKreditPetani;
+        $data['utang_ke_operator'] = $totalKreditDirektur;
         $data['nasabah_palu'] = $totalKreditNasabahPalu;
         $data['stok_beras_total'] = $stokBerasTotal;
         $data['ongkos_jemur_total'] = $ongkosJemurTotal;
