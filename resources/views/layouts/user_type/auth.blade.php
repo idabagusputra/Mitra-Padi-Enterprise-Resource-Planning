@@ -76,17 +76,16 @@
         @include('layouts.footers.auth.footer')
     </div>
 </main>
-<!-- <script>
+<script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Cek apakah lebar layar lebih dari 1080px (desktop)
-        if (window.innerWidth > 1080) {
-            // Inisialisasi Perfect Scrollbar untuk sidebar
+        // Inisialisasi Perfect Scrollbar untuk sidebar
+        if (window.innerWidth > 1080) { // Sesuaikan dengan lebar layar yang Anda anggap untuk perangkat mobile
             const psSidebar = new PerfectScrollbar('.sidenav', {
                 suppressScrollX: true, // Menonaktifkan scroll horizontal
             });
         }
     });
-</script> -->
+</script>
 <script>
     const iconNavbarSidenav = document.getElementById("iconNavbarSidenav");
     const iconSidenav = document.getElementById("iconSidenav");
