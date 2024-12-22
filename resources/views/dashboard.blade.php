@@ -103,6 +103,7 @@
         .horizontal {
             padding-top: 0 !important;
             margin-top: 0 !important;
+            margin-bottom: 24px !important;
             /* Sesuaikan ukuran padding/margin yang diinginkan untuk horizontal */
         }
 
@@ -122,9 +123,13 @@
         .row {
             padding-top: 0 !important;
             margin-top: 0 !important;
-            margin-bottom: 0 !important;
+
 
             /* Sesuaikan ukuran padding/margin yang diinginkan untuk horizontal */
+        }
+
+        .row-- {
+            margin-bottom: 0 !important;
         }
 
         .mobile2 {
@@ -133,7 +138,7 @@
         }
 
         .mobile {
-            margin-bottom: 24px !important;
+            margin-bottom: 0 !important;
         }
     }
 
@@ -153,7 +158,7 @@
     }
 </style>
 
-<div class="row mb-4">
+<div class="row mb-4 row--">
     <!-- <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
         <div class="card">
             <div class="card-body p-3">
