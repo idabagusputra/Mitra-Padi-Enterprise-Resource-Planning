@@ -59,7 +59,7 @@
         .row {
             padding-top: 0 !important;
             margin-top: 0 !important;
-            margin-bottom: 24px !important;
+            margin-bottom: 0 !important;
             /* Sesuaikan ukuran padding/margin yang diinginkan untuk horizontal */
         }
 
@@ -83,11 +83,18 @@
 
         .mobile2 {
             margin-top: 0 !important;
+            padding-bottom: 24px !important;
         }
 
         .mobile {
+            /* margin-top: 24px !important;
+            margin-bottom: 24px !important; */
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+        }
+
+        .xxnx {
             margin-top: 24px !important;
-            margin-bottom: 24px !important;
         }
     }
 
@@ -218,7 +225,7 @@
                     </div>
                     <div class="col-4 text-end">
                         <div class="icon icon-shape bg-gradient-danger shadow text-center border-radius-md">
-                            <i class="bi bi-cash-coin text-lg opacity-10" aria-hidden="true"></i>
+                            <i class="bi bi-currency-dollar text-lg opacity-10" aria-hidden="true"></i>
                         </div>
                     </div>
                 </div>
@@ -251,7 +258,7 @@
                     </div>
                     <div class="col-4 text-end">
                         <div class="icon icon-shape bg-gradient-danger shadow text-center border-radius-md">
-                            <i class="bi bi-cash-coin text-lg opacity-10" aria-hidden="true"></i>
+                            <i class="bi bi-currency-dollar text-lg opacity-10" aria-hidden="true"></i>
                         </div>
                     </div>
                 </div>
@@ -264,7 +271,7 @@
                 <div class="row">
                     <div class="col-8">
                         <div class="numbers">
-                            <p class="text-sm mb-0 text-capitalize font-weight-bold text-fit">Total Dana Titipan Petani/p>
+                            <p class="text-sm mb-0 text-capitalize font-weight-bold text-fit">Total Dana Titipan Petani</p>
                             <h5 class="font-weight-bolder mb-0 number-fit">
                                 <!-- Rp {{ number_format($totalKreditBelumLunas, 2, ',', '.') }} -->
                                 Rp {{ number_format($totalkreditsTitipanPetaniBelumLunas) }}
@@ -511,7 +518,7 @@
 
 <div class="row my-4">
     <div class="col-lg-8 col-md-6 mb-md-0 mb-4">
-        <div class="card">
+        <div class="card xxnx">
             <div class="card-header pb-0">
                 <div class="row">
                     <div class="col-lg-6 col-12">
