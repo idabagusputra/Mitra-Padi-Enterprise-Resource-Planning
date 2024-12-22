@@ -43,7 +43,30 @@
 
 @else
 
+<head>
+    <style>
+        /* Media query untuk memastikan CSS hanya diterapkan pada layar yang lebih besar dari 1080px */
+        @media (min-width: 1080px) {
 
+            /* Menghilangkan scrollbar pada seluruh halaman */
+            html,
+            body {
+                overflow: hidden;
+                /* Menghilangkan scrollbar */
+                height: 100%;
+                /* Pastikan body dan html mengisi seluruh layar */
+            }
+
+            /* Menyediakan scroll hanya pada konten utama */
+            .main-content {
+                overflow: auto;
+                /* Aktifkan scroll pada konten utama */
+                height: 100vh;
+                /* Pastikan konten utama dapat scroll */
+            }
+        }
+    </style>
+</head>
 @include('layouts.navbars.auth.sidebar')
 
 <main class="main-content position-relative max-height-vh-100 h-100 mt-1 border-radius-lg {{ (Request::is('rtl') ? 'overflow-hidden' : '') }}">
@@ -56,9 +79,11 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Inisialisasi Perfect Scrollbar untuk sidebar
-        const psSidebar = new PerfectScrollbar('.sidenav', {
-            suppressScrollX: true, // Menonaktifkan scroll horizontal
-        });
+        if (window.innerWidth > 1080) { // Sesuaikan dengan lebar layar yang Anda anggap untuk perangkat mobile
+            const psSidebar = new PerfectScrollbar('.sidenav', {
+                suppressScrollX: true, // Menonaktifkan scroll horizontal
+            });
+        }
     });
 </script>
 <script>
@@ -104,14 +129,16 @@
         }
     });
 </script>
-<!-- <script>
+<script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Inisialisasi Perfect Scrollbar untuk konten utama
-        const psMainContent = new PerfectScrollbar('.main-content', {
-            suppressScrollX: true,
-        });
+        if (window.innerWidth > 1080) { // Sesuaikan dengan lebar layar yang Anda anggap untuk perangkat mobile
+            // Inisialisasi Perfect Scrollbar untuk konten utama
+            const psMainContent = new PerfectScrollbar('.main-content', {
+                suppressScrollX: true,
+            });
+        }
     });
-</script> -->
+</script>
 @endif
 
 @include('components.fixed-plugin')
