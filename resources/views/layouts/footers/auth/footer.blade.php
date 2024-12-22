@@ -1,7 +1,21 @@
-<footer class="footer pt-3  ">
-    <div class="container-fluid">
+<style>
+    .flex-item {
+
+        padding-right: 0 !important;
+    }
+
+    @media (max-width: 576px) {
+        .pad {
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+        }
+    }
+</style>
+
+<footer class="footer ">
+    <div class="pad">
         <div class="row align-items-center justify-content-lg-between">
-            <div class="col-lg-8 mb-lg-0 mb-4">
+            <div class="col-lg-9 mb-lg-0 mb-4 pad">
                 <div class="copyright text-center text-sm text-muted text-lg-start">
                     Mitra Padi © <script>
                         document.write(new Date().getFullYear())
@@ -13,29 +27,29 @@
                     for a better data management, credit tracking, and transaction workflows, improving accuracy, transparency, and efficiency.
                 </div>
             </div>
-            <div class="col-lg-4">
+            <div class="col-lg-3">
                 <ul class="nav nav-footer justify-content-center justify-content-lg-end">
                     <li class="nav-item">
                         <!-- <a href="https://www.creative-tim.com" class="nav-link text-muted" target="_blank">Creative Tim</a> -->
                         <a href="https://wa.me/6282260773867" target="_blank" class="text-secondary me-xl-4 me-4">
-                            <span class="text-lg fab fa-whatsapp" aria-hidden="true"></span>
+                            <span class="text-lg bi bi-whatsapp" aria-hidden="true"></span>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a href="https://www.instagram.com/ida.bagus.putra" target="_blank" class="text-secondary me-xl-4 me-4">
-                            <span class="text-lg fab fa-instagram" aria-hidden="true"></span>
+                            <span class="text-lg bi bi-instagram" aria-hidden="true"></span>
                         </a>
                         <!-- <a href="https://www.updivision.com" class="nav-link text-muted" target="_blank">UPDIVISION</a> -->
                     </li>
                     <li class="nav-item">
                         <a href="https://www.linkedin.com/in/ida-bagus-putu-putra-manuaba/" target="_blank" class="text-secondary me-xl-4 me-4">
-                            <span class="text-lg fab fa-linkedin" aria-hidden="true"></span>
+                            <span class="text-lg bi bi-linkedin" aria-hidden="true"></span>
                         </a>
                         <!-- <a href="https://www.creative-tim.com/presentation" class="nav-link text-muted" target="_blank">About Us</a> -->
                     </li>
                     <li class="nav-item">
-                        <a href="https://github.com/idabagusputra" target="_blank" class="text-secondary me-xl-4 ">
-                            <span class="text-lg fab fa-github" aria-hidden="true"></span>
+                        <a href="https://github.com/idabagusputra" target="_blank" class="text-secondary">
+                            <span class="text-lg bi bi-github" aria-hidden="true"></span>
                         </a>
                         <!-- <a href="https://creative-tim.com/blog" class="nav-link text-muted" target="_blank">Blog</a> -->
                     </li>
