@@ -147,7 +147,7 @@
 </style>
 
 <div class="row mb-4">
-    <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+    <!-- <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
         <div class="card">
             <div class="card-body p-3">
                 <div class="row">
@@ -169,8 +169,8 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+    </div> -->
+    <!-- <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
         <div class="card">
             <div class="card-body p-3">
                 <div class="row">
@@ -191,7 +191,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
     <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
         <div class="card">
             <div class="card-body p-3">
@@ -217,7 +217,7 @@
                         </div>
                     </div>
                     <div class="col-4 text-end">
-                        <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
+                        <div class="icon icon-shape bg-gradient-danger shadow text-center border-radius-md">
                             <i class="bi bi-cash-coin text-lg opacity-10" aria-hidden="true"></i>
                         </div>
                     </div>
@@ -225,7 +225,107 @@
             </div>
         </div>
     </div>
-    <div class="col-xl-3 col-sm-6">
+    <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+        <div class="card">
+            <div class="card-body p-3">
+                <div class="row">
+                    <div class="col-8">
+                        <div class="numbers">
+                            <p class="text-sm mb-0 text-capitalize font-weight-bold text-fit">Total Kredit Nasabah Palu</p>
+                            <h5 class="font-weight-bolder mb-0 number-fit">
+                                <!-- Rp {{ number_format($totalKreditBelumLunas, 2, ',', '.') }} -->
+                                Rp {{ number_format($totalkreditsNasabahPaluBelumLunas) }}
+                                <span class="text-success text-sm font-weight-bolder">
+                                    @if ($totalkreditsNasabahPaluBelumLunas >= 1_000_000_000)
+                                    Miliar
+                                    @elseif ($totalkreditsNasabahPaluBelumLunas >= 1_000_000)
+                                    Juta
+                                    @elseif ($totalkreditsNasabahPaluBelumLunas >= 1_000)
+                                    Ribu
+                                    @else
+                                    Tidak ada label khusus
+                                    @endif
+                                </span>
+                            </h5>
+                        </div>
+                    </div>
+                    <div class="col-4 text-end">
+                        <div class="icon icon-shape bg-gradient-danger shadow text-center border-radius-md">
+                            <i class="bi bi-cash-coin text-lg opacity-10" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+        <div class="card">
+            <div class="card-body p-3">
+                <div class="row">
+                    <div class="col-8">
+                        <div class="numbers">
+                            <p class="text-sm mb-0 text-capitalize font-weight-bold text-fit">Total Dana Titipan Petani/p>
+                            <h5 class="font-weight-bolder mb-0 number-fit">
+                                <!-- Rp {{ number_format($totalKreditBelumLunas, 2, ',', '.') }} -->
+                                Rp {{ number_format($totalkreditsTitipanPetaniBelumLunas) }}
+                                <span class="text-success text-sm font-weight-bolder">
+                                    @if ($totalkreditsTitipanPetaniBelumLunas >= 1_000_000_000)
+                                    Miliar
+                                    @elseif ($totalkreditsTitipanPetaniBelumLunas >= 1_000_000)
+                                    Juta
+                                    @elseif ($totalkreditsTitipanPetaniBelumLunas >= 1_000)
+                                    Ribu
+                                    @else
+                                    Tidak ada label khusus
+                                    @endif
+                                </span>
+                            </h5>
+                        </div>
+                    </div>
+                    <div class="col-4 text-end">
+                        <div class="icon icon-shape bg-gradient-info shadow text-center border-radius-md">
+                            <i class="bi bi-cash-coin text-lg opacity-10" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+        <div class="card">
+            <div class="card-body p-3">
+                <div class="row">
+                    <div class="col-8">
+                        <div class="numbers">
+                            <p class="text-sm mb-0 text-capitalize font-weight-bold text-fit">Total Utang Ke Operator</p>
+                            <h5 class="font-weight-bolder mb-0 number-fit">
+                                <!-- Rp {{ number_format($totalKreditBelumLunas, 2, ',', '.') }} -->
+                                Rp {{ number_format($totalkreditsOperatorBelumLunas) }}
+                                <span class="text-success text-sm font-weight-bolder">
+                                    @if ($totalkreditsOperatorBelumLunas >= 1_000_000_000)
+                                    Miliar
+                                    @elseif ($totalkreditsOperatorBelumLunas >= 1_000_000)
+                                    Juta
+                                    @elseif ($totalkreditsOperatorBelumLunas >= 1_000)
+                                    Ribu
+                                    @else
+                                    Tidak ada label khusus
+                                    @endif
+                                </span>
+                            </h5>
+                        </div>
+                    </div>
+                    <div class="col-4 text-end">
+                        <div class="icon icon-shape bg-gradient-info shadow text-center border-radius-md">
+                            <i class="bi bi-cash-coin text-lg opacity-10" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- <div class="col-xl-3 col-sm-6">
         <div class="card">
             <div class="card-body p-3">
                 <div class="row">
@@ -246,7 +346,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 </div>
 
 

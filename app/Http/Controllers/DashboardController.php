@@ -36,11 +36,19 @@ class DashboardController extends Controller
 
         $kreditsBelumLunas = Kredit::with('petani')->where('status', false)->get();
 
+        $kreditsNasabahPaluBelumLunas = KreditNasabahPalu::where('status', false)->get();
 
-        $kreditsBelumLunas = Kredit::with('petani')->where('status', false)->get();
+        $kreditsOperatorBelumLunas = UtangKeOperator::with('petani')->where('status', false)->get();
+
+        $kreditsTitipanPetaniBelumLunas = KreditTitipanPetani::with('petani')->where('status', false)->get();
+
+
 
         // Hitung jumlah total kredit belum lunas
         $totalKreditBelumLunas = $kreditsBelumLunas->sum('jumlah');
+        $totalkreditsNasabahPaluBelumLunas = $kreditsNasabahPaluBelumLunas->sum('jumlah');
+        $totalkreditsOperatorBelumLunas = $kreditsOperatorBelumLunas->sum('jumlah');
+        $totalkreditsTitipanPetaniBelumLunas = $kreditsTitipanPetaniBelumLunas->sum('jumlah');
 
         // (Opsional) Hitung jumlah petani unik
         $jumlahPetaniBelumLunas = $kreditsBelumLunas->pluck('petani_id')->unique()->count();
@@ -797,7 +805,7 @@ class DashboardController extends Controller
 
 
 
-        return view('dashboard', compact('totalHutangPerbulan', 'sumPendapatanDariBunga', 'sumTotalHutang', 'pendapatanDariBungaTotalPerbulan', 'dataTotalHutang', 'dataTotalHutangPlusBunga', 'dataPendapatanDariBunga', 'histories', 'data', 'totalKeseluruhanBulanIniOngkosGiling', 'pendapatanBerasTerjualTotal', 'pendapatanBerasTerjualTotalPerBulan', 'totalPetani', 'totalKreditBelumLunas', 'jumlahPetaniBelumLunas', 'totalBerasBersih', 'dataOngkosGiling', 'dataBerasBersih', 'dataPendapatanTerjual', 'monthLabels', 'totalBerasBersihBulanIni', 'totalKeseluruhanOngkosGiling'));
+        return view('dashboard', compact('totalkreditsTitipanPetaniBelumLunas', 'totalkreditsOperatorBelumLunas', 'totalkreditsNasabahPaluBelumLunas', 'totalHutangPerbulan', 'sumPendapatanDariBunga', 'sumTotalHutang', 'pendapatanDariBungaTotalPerbulan', 'dataTotalHutang', 'dataTotalHutangPlusBunga', 'dataPendapatanDariBunga', 'histories', 'data', 'totalKeseluruhanBulanIniOngkosGiling', 'pendapatanBerasTerjualTotal', 'pendapatanBerasTerjualTotalPerBulan', 'totalPetani', 'totalKreditBelumLunas', 'jumlahPetaniBelumLunas', 'totalBerasBersih', 'dataOngkosGiling', 'dataBerasBersih', 'dataPendapatanTerjual', 'monthLabels', 'totalBerasBersihBulanIni', 'totalKeseluruhanOngkosGiling'));
 
 
         // $currentYear = Carbon::now()->year;
