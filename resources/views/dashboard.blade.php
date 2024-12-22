@@ -546,38 +546,35 @@
             </div>
             <div class="card-body px-0 pt-0 pb-2">
                 <div class="table-responsive">
-                    <div class="table-wrapper">
+                    <table class="table align-items-center mb-0">
+                        <thead>
+                            <tr>
 
-                        <table class="table align-items-center mb-0">
-                            <thead>
-                                <tr>
+                                <th class="text-uppercase text-primary font-weight-bolder ps-4" style="font-size: 0.85rem;">Petani</th>
+                                <th class="text-uppercase text-primary font-weight-bolder ps-2" style="font-size: 0.85rem;">Jumlah Utang</th>
+                                <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Sisa Utang</th>
+                                <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Transaksi</th>
+                                <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($data as $item)
+                            <tr>
 
-                                    <th class="text-uppercase text-primary font-weight-bolder ps-4" style="font-size: 0.85rem;">Petani</th>
-                                    <th class="text-uppercase text-primary font-weight-bolder ps-2" style="font-size: 0.85rem;">Jumlah Utang</th>
-                                    <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Sisa Utang</th>
-                                    <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Transaksi</th>
-                                    <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($data as $item)
-                                <tr>
+                                <td class="ps-4">{{ $item['petani'] }}</td>
+                                <td>{{ $item['hutangYangDibayar'] }}</td>
+                                <td class="text-center">{{ $item['sisa_utang'] }}</td>
+                                <td class="text-center"> {{ $item['transaksi'] }}</td>
+                                <td class="text-center">
+                                    <span class="badge badge-sm bg-gradient-{{ $item['status'] ? 'success' : 'warning' }}">
+                                        {{ $item['status'] ? 'Lunas' : 'Belum Lunas' }}
+                                    </span>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
 
-                                    <td class="ps-4">{{ $item['petani'] }}</td>
-                                    <td>{{ $item['hutangYangDibayar'] }}</td>
-                                    <td class="text-center">{{ $item['sisa_utang'] }}</td>
-                                    <td class="text-center"> {{ $item['transaksi'] }}</td>
-                                    <td class="text-center">
-                                        <span class="badge badge-sm bg-gradient-{{ $item['status'] ? 'success' : 'warning' }}">
-                                            {{ $item['status'] ? 'Lunas' : 'Belum Lunas' }}
-                                        </span>
-                                    </td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-
-                    </div>
                 </div>
             </div>
         </div>
