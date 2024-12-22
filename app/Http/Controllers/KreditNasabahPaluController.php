@@ -23,48 +23,46 @@ class KreditNasabahPaluController extends Controller
         $alamatFilter = $request->input('alamat');
         $sortOrder = $request->input('sort', 'desc');
 
-        $query = KreditNasabahPalu::all();
+        $query = KreditNasabahPalu::query(); // Memulai query builder
 
-        // // Apply filters
-        // if ($search) {
-        //     $query->whereHas('petani', function ($q) use ($search) {
-        //         $q->where('nama', 'like', '%' . $search . '%');
-        //     });
-        // }
+        // Apply filters
+        if ($search) {
+            $query->where('nama', 'like', '%' . $search . '%'); // Menambahkan filter
+        }
 
-        // // Handle filtering by alamat
-        // if ($request->has('alamat')) {
-        //     if ($alamatFilter === 'campur') {
-        //         $query->whereHas('petani', function ($q) {
-        //             $q->whereNotIn('alamat', [
-        //                 'Penebel',
-        //                 'Palesari',
-        //                 'Sangeh Sari',
-        //                 'Gigit Sari',
-        //                 'Wanaprasta',
-        //                 'Sibang',
-        //                 'Sausu',
-        //                 'Bali Indah',
-        //                 'Candra Buana',
-        //                 'Taman Sari',
-        //                 'Sukasada',
-        //                 'Purwo Sari',
-        //                 'Karyawan',
-        //             ]);
-        //         });
-        //     } elseif ($alamatFilter !== 'all') {
-        //         $query->whereHas('petani', function ($q) use ($alamatFilter) {
-        //             $q->where('alamat', $alamatFilter);
-        //         });
-        //     }
-        // }
+        // Handle filtering by alamat
+        if ($request->has('alamat')) {
+            if ($alamatFilter === 'campur') {
+                $query->whereHas('petani', function ($q) {
+                    $q->whereNotIn('alamat', [
+                        'Penebel',
+                        'Palesari',
+                        'Sangeh Sari',
+                        'Gigit Sari',
+                        'Wanaprasta',
+                        'Sibang',
+                        'Sausu',
+                        'Bali Indah',
+                        'Candra Buana',
+                        'Taman Sari',
+                        'Sukasada',
+                        'Purwo Sari',
+                        'Karyawan',
+                    ]);
+                });
+            } elseif ($alamatFilter !== 'all') {
+                $query->whereHas('petani', function ($q) use ($alamatFilter) {
+                    $q->where('alamat', $alamatFilter);
+                });
+            }
+        }
 
-        // if ($statusFilter !== null) {
-        //     $query->where('status', $statusFilter);
-        // }
+        if ($statusFilter !== null) {
+            $query->where('status', $statusFilter);
+        }
 
         // Get all matching kredits without pagination
-        $allKredits = $query;
+        $allKredits = $query->get();
 
         // Calculate additional values and prepare data
         $now = Carbon::now();
@@ -281,7 +279,6 @@ class KreditNasabahPaluController extends Controller
 
             // Validasi data setelah penghapusan koma
             $validator = Validator::make($input, [
-                'nama' => 'required|string',
                 'tanggal' => 'required|date_format:Y-m-d',
                 'keterangan' => 'required|string',
                 'jumlah' => 'required|numeric',

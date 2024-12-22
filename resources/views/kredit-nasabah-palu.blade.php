@@ -26,7 +26,12 @@
     .form-control,
     .btn {
         height: 40px;
+    }
 
+    .spinner-border-sm {
+        width: 1rem;
+        height: 1rem;
+        border-width: 0.2em;
     }
 
     body {
@@ -49,8 +54,6 @@
     .form-select {
         width: 100%;
     }
-
-
 
 
     /* Landscape Mode (Desktop/Tablet Horizontal) */
@@ -101,7 +104,7 @@
     /* Portrait Mode (Tablet/Mobile Vertical) */
     @media (max-width: 768px) and (orientation: portrait) {
         .card-header {
-            padding-bottom: 3 !important;
+            padding-bottom: 0 !important;
         }
 
         .d-flex.flex-column.flex-md-row {
@@ -131,9 +134,6 @@
 
         .btn {
             height: auto;
-            margin-bottom: 3 !important;
-
-            padding-bottom: 3 !important;
         }
 
         /* Adjust button styling for portrait mode */
@@ -187,18 +187,6 @@
             padding-bottom: 3 !important;
             margin: 0 !important;
         } */
-
-        @supports (not (-webkit-touch-callout: none)) {
-
-            /* CSS khusus iOS */
-            .modal {
-                z-index: 9999;
-            }
-
-            .modal-backdrop {
-                z-index: 9998;
-            }
-        }
     }
 </style>
 
@@ -236,27 +224,8 @@
 
                                         </div>
 
-                                        <form method="GET" action="{{ route('laporanNasabah.kredit') }}">
-
-                                            <a href="{{ route('laporanNasabah.kredit') }}" class="btn btn-cetak bg-gradient-primary d-flex align-items-center justify-content-center" id="btn-id" style="width: 150px;">
-                                                <i class="bi bi-printer me-2"></i>
-                                                <span>CETAK</span>
-                                            </a>
-
-                                        </form>
-
-
-                                        <div class="" style=" width: 150px;">
-                                            <button class="btn w-100 bg-gradient-primary d-flex align-items-center justify-content-center " type="button" id="btn-id" data-bs-toggle="modal" style="width: 150px; margin: 0;" data-bs-target="#addKreditModal">
-                                                <i class="bi bi-plus-square me-2"></i>
-                                                <span>Kredit Baru</span>
-                                            </button>
-                                        </div>
-
-
 
                                     </div>
-
 
 
                                 </div>
@@ -264,7 +233,7 @@
                                 <!-- Bagian Search dan Tombol -->
 
                                 <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center w-100">
-                                    <!-- <div class="me-2 w-100" style="position: relative;" id="btn-id">
+                                    <div class="me-2 w-100" style="position: relative;" id="btn-id">
                                         <div class="input-group">
                                             <input type="text" id="search-input" name="search" class="form-control" placeholder="Cari kredit/hutang..." aria-label="Cari daftar kredit" value="{{ request('search') }}" autocomplete="off">
                                             <button class="btn btn-outline-primary mb-0" type="submit" aria-label="Cari">
@@ -272,17 +241,25 @@
                                             </button>
                                         </div>
                                         <div id="search-results" class="dropdown-menu w-100" style="display: none; position: absolute; max-height: 200px; overflow-y: auto; z-index: 1000;">
-
+                                            <!-- Search results will be populated here -->
                                         </div>
-                                    </div> -->
+                                    </div>
+
+                                    <form method="GET" action="{{ route('laporanNasabah.kredit.cetak') }}">
+                                        <button class="btn btn-cetak bg-gradient-primary d-flex align-items-center justify-content-center mt-3 me-2"
+                                            id="btn-id-cetak"
+                                            style="width: 233px;">
+                                            <i class="bi bi-printer me-2"></i>
+                                            <span>CETAK</span>
+                                        </button>
+                                    </form>
 
 
 
-
-                                    <!-- <button class="btn w-100 btn-baru bg-gradient-primary d-flex align-items-center justify-content-center mt-3" type="button" id="btn-id" data-bs-toggle="modal" data-bs-target="#addKreditModal">
-                                        <i class=" bi bi-plus-square me-2"></i>
+                                    <button class="btn btn-baru bg-gradient-primary d-flex align-items-center justify-content-center mt-3" type="button" id="btn-id" data-bs-toggle="modal" data-bs-target="#addKreditModal" style="width: 233px;">
+                                        <i class="bi bi-plus-square me-2"></i>
                                         <span>Kredit Baru</span>
-                                    </button> -->
+                                    </button>
 
 
 
@@ -292,10 +269,156 @@
                             </form>
 
 
+                        </div>
+
+
+
+
+                        <div class="card-body px-0 pt-0 pb-2">
+
+
+                            <div class="mx-4 pb-0">
+                                <h6 class="margin-atas text-uppercase text-primary font-weight-bolder">Ringkasan Kredit NP Belum Lunas</h6>
+                            </div>
+                            <div class="card-body px-0 pt-0 pb-2">
+                                <div class="table-responsive p-0">
+                                    <table class="table align-items-center mb-0">
+                                        <tbody>
+                                            <tr>
+                                                <td class="text-start ps-4" style="border-top: none;">
+                                                    <p class="text-sm mb-0">Jumlah Nasabah Palu Belum Lunas</p>
+                                                </td>
+                                                <td class="text-end pe-4" style="border-top: none;">
+                                                    <p class="text-sm font-weight-bold mb-0">{{ $jumlahPetaniBelumLunas }} Orang</p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-start ps-4" style="border-top: none;">
+                                                    <p class="text-sm mb-0">Total Kredit Nasabah Palu Belum Lunas</p>
+                                                </td>
+                                                <td class="text-end pe-4" style="border-top: none;">
+                                                    <p class="text-sm font-weight-bold mb-0">Rp {{ number_format($totalKreditBelumLunas, 2, ',', '.') }}</p>
+                                                </td>
+                                            </tr>
+                                            <!-- <tr>
+                                                <td class="text-start ps-4" style="border-top: none;">
+                                                    <p class="text-sm mb-0">Total Bunga Kredit</p>
+                                                </td>
+                                                <td class="text-end pe-4" style="border-top: none;">
+                                                    <p class="text-sm font-weight-bold mb-0">Rp {{ number_format($totalKreditPlusBungaBelumLunas-$totalKreditBelumLunas, 2, ',', '.') }}</p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-start ps-4" style="border-top: none;">
+                                                    <p class="text-sm mb-0">Total Kredit Dengan Bunga Belum Lunas</p>
+                                                </td>
+                                                <td class="text-end pe-4" style="border-top: none;">
+                                                    <p class="text-sm font-weight-bold mb-0">Rp {{ number_format($totalKreditPlusBungaBelumLunas, 2, ',', '.') }}</p>
+                                                </td>
+                                            </tr> -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="table-responsive p-0">
+
+                                <table class="table align-items-center mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">ID</th>
+                                            <th class="text-uppercase text-primary font-weight-bolder ps-2" style="font-size: 0.85rem;">Nasabah Palu</th>
+                                            <!-- <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Alamat</th> -->
+                                            <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Tanggal</th>
+                                            <!-- <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Created_At</th> -->
+                                            <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Update</th>
+                                            <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Jumlah</th>
+                                            <!-- <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Utang + Bunga</th> -->
+                                            <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Status</th>
+                                            <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Keterangan</th>
+                                            <!-- <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Utang + Bunga Terbayar</th> -->
+                                            <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Action</th>
+                                        </tr>
+                                    </thead>
+
+
+
+                                    @foreach($kredits as $kredit)
+                                    <tbody>
+                                        <td class="text-center">
+                                            <p class="text-xs font-weight-bold mb-0">{{ $kredit->id }}</p>
+                                        </td>
+                                        <td>
+                                            <p class="text-xs font-weight-bold mb-0">{{ $kredit->nama }}</p>
+                                        </td>
+
+                                        <td class="text-center">
+                                            <p class="text-xs font-weight-bold mb-0">{{ $kredit->tanggal }}</p>
+                                        </td>
+                                        <!-- <td class="text-center">
+                                            <p class="text-xs font-weight-bold mb-0">{{ $kredit->created_at }}</p>
+                                        </td> -->
+                                        <td class="text-center">
+                                            <p class="text-xs font-weight-bold mb-0">{{ $kredit->updated_at->format('Y-m-d') }}</p>
+
+                                        </td>
+                                        <td class="text-center">
+                                            <p class="text-xs font-weight-bold mb-0">Rp {{ number_format($kredit->jumlah, 2, ',', '.') }}</p>
+                                        </td>
+                                        <!-- <td class="text-center">
+                                            <p class="text-xs font-weight-bold mb-0">
+                                                Rp {{ number_format($kredit->hutang_plus_bunga, 2, ',', '.') }} | {{ number_format($kredit->lama_bulan) }} Bulan
+                                            </p>
+                                            <small style="font-size: 0.7rem; color: #999;">
+                                                Bunga: Rp {{ number_format($kredit->bunga, 2, ',', '.') }}
+                                            </small>
+                                        </td> -->
+                                        <td class="text-center"><span class="badge badge-sm bg-gradient-{{ $kredit->status ? 'success' : 'warning' }}">{{ $kredit->status ? 'Lunas' : 'Belum Lunas' }}</span></td>
+                                        <td class="text-center">
+                                            <p class="text-xs font-weight-bold mb-0">{{ $kredit->keterangan }}</p>
+                                        </td>
+
+                                        <!-- <td class="text-center">
+                                            <p class="text-xs font-weight-bold mb-0">
+                                                Rp {{ number_format($kredit->hutang_plus_bunga_update, 2, ',', '.') }} | {{ number_format($kredit->lama_bulan_update) }} Bulan
+                                            </p>
+                                            <small style="font-size: 0.7rem; color: #999;">
+                                                Bunga: Rp {{ number_format($kredit->bunga_update, 2, ',', '.') }}
+                                            </small>
+                                        </td> -->
+
+                                        <td class="text-center">
+                                            <div class="d-flex justify-content-center align-items-center">
+                                                <a href="#" class="btn btn-link text-dark px-2 mb-0" data-bs-toggle="modal" data-bs-target="#editKreditModal{{ $kredit->id }}">
+                                                    <i class="bi bi-pencil-square text-dark me-2" aria-hidden="true"></i>
+                                                    Edit
+                                                </a>
+                                                <form action="{{ route('kredit-nasabah-palu.destroy', $kredit->id) }}" method="POST" class="d-inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-link text-danger px-2 mb-0" onclick="return confirm('Are you sure you want to delete this item?')">
+                                                        <i class="bi bi-trash3 text-danger me-2" aria-hidden="true"></i>
+                                                        Delete
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tbody>
+                                    @endforeach
+
+
+
+
+
+
+
+                                </table>
+
+                            </div>
+
                             <!-- Edit Kredit Modal -->
                             @foreach($kredits as $kredit)
 
-                            <div class="modal fade modal-top" id="editKreditModal{{ $kredit->id }}" tabindex="-1" role="dialog" aria-labelledby="editKreditModalLabel{{ $kredit->id }}" aria-hidden="true">
+                            <div class="modal fade" id="editKreditModal{{ $kredit->id }}" tabindex="-1" role="dialog" aria-labelledby="editKreditModalLabel{{ $kredit->id }}" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
@@ -308,8 +431,12 @@
                                             <!-- ... (form fields) ... -->
                                             <div class="modal-body">
                                                 <div class="form-group">
-                                                    <label for="tanggal">Nama</label>
-                                                    <input class="form-control" id="nama" name="nama" value="{{ $kredit->nama }}" required>
+                                                    <label for="petani_id">Petani</label>
+                                                    <select class="form-control" id="petani_id" name="petani_id" required>
+                                                        @foreach($kredits as $petani)
+                                                        <option value="{{ $petani->id }}" {{ $kredit->petani_id == $petani->id ? 'selected' : '' }}>{{ $petani->nama }}</option>
+                                                        @endforeach
+                                                    </select>
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="tanggal">Tanggal</label>
@@ -340,6 +467,8 @@
                                 </div>
                             </div>
                             @endforeach
+
+
 
                             <!-- Add Kredit Modal -->
                             <div class="modal fade modal-top" id="addKreditModal" tabindex="-1" role="dialog" aria-labelledby="addKreditModalLabel" aria-hidden="true">
@@ -390,557 +519,431 @@
 
 
 
-
-                        <div class="card-body px-0 pt-0 pb-2">
-
-
-                            <div class="mx-4 pb-0">
-                                <h6 class="margin-atas text-uppercase text-primary font-weight-bolder">Ringkasan Kredit Belum Lunas</h6>
+                        <!-- Pagination -->
+                        <div class="d-flex pagination-css justify-content-between align-items-center ps-2 mt-3 mb-3 mx-3">
+                            <div>
+                                Showing
+                                <strong>{{ $kredits->firstItem() }}</strong> to
+                                <strong>{{ $kredits->lastItem() }}</strong> of
+                                <strong>{{ $kredits->total() }}</strong> entries
                             </div>
-                            <div class="card-body px-0 pt-0 pb-2">
-                                <div class="table-responsive p-0">
-                                    <table class="table align-items-center mb-0">
-                                        <tbody>
-                                            <tr>
-                                                <td class="text-start ps-4" style="border-top: none;">
-                                                    <p class="text-sm mb-0">Jumlah Nasabah Palu Belum Lunas</p>
-                                                </td>
-                                                <td class="text-end pe-4" style="border-top: none;">
-                                                    <p class="text-sm font-weight-bold mb-0">{{ $jumlahPetaniBelumLunas }} Orang</p>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="text-start ps-4" style="border-top: none;">
-                                                    <p class="text-sm mb-0">Total Kredit Nasabah Palu Belum Lunas</p>
-                                                </td>
-                                                <td class="text-end pe-4" style="border-top: none;">
-                                                    <p class="text-sm font-weight-bold mb-0">Rp {{ number_format($totalKreditBelumLunas, 2, ',', '.') }}</p>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="text-start ps-4" style="border-top: none;">
-                                                    <p class="text-sm mb-0">Total Bunga Kredit</p>
-                                                </td>
-                                                <td class="text-end pe-4" style="border-top: none;">
-                                                    <p class="text-sm font-weight-bold mb-0">Rp {{ number_format($totalKreditPlusBungaBelumLunas-$totalKreditBelumLunas, 2, ',', '.') }}</p>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="text-start ps-4" style="border-top: none;">
-                                                    <p class="text-sm mb-0">Total Kredit Dengan Bunga Belum Lunas</p>
-                                                </td>
-                                                <td class="text-end pe-4" style="border-top: none;">
-                                                    <p class="text-sm font-weight-bold mb-0">Rp {{ number_format($totalKreditPlusBungaBelumLunas, 2, ',', '.') }}</p>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <div class="table-responsive p-0">
+                            <div>
+                                @if ($kredits->lastPage() > 1)
+                                <nav>
+                                    <ul class="pagination m-0">
+                                        {{-- Previous Button --}}
+                                        @if ($kredits->currentPage() > 1)
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ $kredits->previousPageUrl() }}" aria-label="Previous">
+                                                <span aria-hidden="true">&laquo;</span>
+                                            </a>
+                                        </li>
+                                        @endif
 
-                                <table class="table align-items-center mb-0">
-                                    <thead>
-                                        <tr>
-                                            <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">ID</th>
-                                            <th class="text-uppercase text-primary font-weight-bolder ps-2" style="font-size: 0.85rem;">Nama</th>
+                                        @php
+                                        $currentPage = $kredits->currentPage();
+                                        $lastPage = $kredits->lastPage();
+                                        @endphp
 
-                                            <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Tanggal</th>
-                                            <!-- <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Created_At</th> -->
-                                            <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Update</th>
-                                            <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Jumlah</th>
-                                            <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Utang + Bunga</th>
-                                            <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Status</th>
-                                            <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Keterangan</th>
-                                            <!-- <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Utang + Bunga Terbayar</th> -->
-                                            <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Action</th>
-                                        </tr>
-                                    </thead>
+                                        {{-- Always show first page --}}
+                                        <li class="page-item {{ $currentPage == 1 ? 'active' : '' }}">
+                                            <a class="page-link" href="{{ $kredits->url(1) }}">1</a>
+                                        </li>
 
+                                        {{-- Middle pages logic --}}
+                                        @php
+                                        $start = max(2, $currentPage - 1);
+                                        $end = min($lastPage - 1, $currentPage + 1);
+                                        @endphp
 
+                                        @for ($i = $start; $i <= $end; $i++)
+                                            <li class="page-item {{ $currentPage == $i ? 'active' : '' }}">
+                                            <a class="page-link" href="{{ $kredits->url($i) }}">{{ $i }}</a>
+                                            </li>
+                                            @endfor
 
-                                    @foreach($kredits as $kredit)
-                                    <tbody>
-                                        <td class="text-center">
-                                            <p class="text-xs font-weight-bold mb-0">{{ $kredit->id }}</p>
-                                        </td>
-                                        <td>
-                                            <p class="text-xs font-weight-bold mb-0">{{ $kredit->nama }}</p>
-                                        </td>
-
-                                        <td class="text-center">
-                                            <p class="text-xs font-weight-bold mb-0">{{ $kredit->tanggal }}</p>
-                                        </td>
-                                        <!-- <td class="text-center">
-                                            <p class="text-xs font-weight-bold mb-0">{{ $kredit->created_at }}</p>
-                                        </td> -->
-                                        <td class="text-center">
-                                            <p class="text-xs font-weight-bold mb-0">{{ $kredit->updated_at->format('Y-m-d') }}</p>
-
-                                        </td>
-                                        <td class="text-center">
-                                            <p class="text-xs font-weight-bold mb-0">Rp {{ number_format($kredit->jumlah, 2, ',', '.') }}</p>
-                                        </td>
-                                        <td class="text-center">
-                                            <p class="text-xs font-weight-bold mb-0">
-                                                Rp {{ number_format($kredit->hutang_plus_bunga, 2, ',', '.') }} | {{ number_format($kredit->lama_bulan) }} Bulan
-                                            </p>
-                                            <small style="font-size: 0.7rem; color: #999;">
-                                                Bunga: Rp {{ number_format($kredit->bunga, 2, ',', '.') }}
-                                            </small>
-                                        </td>
-                                        <td class="text-center"><span class="badge badge-sm bg-gradient-{{ $kredit->status ? 'success' : 'warning' }}">{{ $kredit->status ? 'Lunas' : 'Belum Lunas' }}</span></td>
-                                        <td class="text-center">
-                                            <p class="text-xs font-weight-bold mb-0">{{ $kredit->keterangan }}</p>
-                                        </td>
-
-                                        <!-- <td class="text-center">
-                                            <p class="text-xs font-weight-bold mb-0">
-                                                Rp {{ number_format($kredit->hutang_plus_bunga_update, 2, ',', '.') }} | {{ number_format($kredit->lama_bulan_update) }} Bulan
-                                            </p>
-                                            <small style="font-size: 0.7rem; color: #999;">
-                                                Bunga: Rp {{ number_format($kredit->bunga_update, 2, ',', '.') }}
-                                            </small>
-                                        </td> -->
-
-                                        <td class="text-center">
-                                            <div class="d-flex justify-content-center align-items-center">
-                                                <a href="#" class="btn btn-link text-dark px-2 mb-0" data-bs-toggle="modal" data-bs-target="#editKreditModal{{ $kredit->id }}">
-                                                    <i class="bi bi-pencil-square text-dark me-2" aria-hidden="true"></i>
-                                                    Edit
-                                                </a>
-                                                <form action="{{ route('kredit-nasabah-palu.destroy', $kredit->id) }}" method="POST" class="d-inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-link text-danger px-2 mb-0" onclick="return confirm('Are you sure you want to delete this item?')">
-                                                        <i class="bi bi-trash3 text-danger me-2" aria-hidden="true"></i>
-                                                        Delete
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        </td>
-                                    </tbody>
-                                    @endforeach
-
-
-                                </table>
-
-
-
-
-
-
-
-                            </div>
-                            <!-- Pagination -->
-                            <div class="d-flex pagination-css justify-content-between align-items-center ps-2 mt-3 mb-3 mx-3">
-                                <div>
-                                    Showing
-                                    <strong>{{ $kredits->firstItem() }}</strong> to
-                                    <strong>{{ $kredits->lastItem() }}</strong> of
-                                    <strong>{{ $kredits->total() }}</strong> entries
-                                </div>
-                                <div>
-                                    @if ($kredits->lastPage() > 1)
-                                    <nav>
-                                        <ul class="pagination m-0">
-                                            {{-- Previous Button --}}
-                                            @if ($kredits->currentPage() > 1)
-                                            <li class="page-item">
-                                                <a class="page-link" href="{{ $kredits->previousPageUrl() }}" aria-label="Previous">
-                                                    <span aria-hidden="true">&laquo;</span>
-                                                </a>
+                                            {{-- Always show last page --}}
+                                            @if ($lastPage > 1)
+                                            <li class="page-item {{ $currentPage == $lastPage ? 'active' : '' }}">
+                                                <a class="page-link" href="{{ $kredits->url($lastPage) }}">{{ $lastPage }}</a>
                                             </li>
                                             @endif
 
-                                            @php
-                                            $currentPage = $kredits->currentPage();
-                                            $lastPage = $kredits->lastPage();
-                                            @endphp
-
-                                            {{-- Always show first page --}}
-                                            <li class="page-item {{ $currentPage == 1 ? 'active' : '' }}">
-                                                <a class="page-link" href="{{ $kredits->url(1) }}">1</a>
-                                            </li>
-
-                                            {{-- Middle pages logic --}}
-                                            @php
-                                            $start = max(2, $currentPage - 1);
-                                            $end = min($lastPage - 1, $currentPage + 1);
-                                            @endphp
-
-                                            @for ($i = $start; $i <= $end; $i++)
-                                                <li class="page-item {{ $currentPage == $i ? 'active' : '' }}">
-                                                <a class="page-link" href="{{ $kredits->url($i) }}">{{ $i }}</a>
-                                                </li>
-                                                @endfor
-
-                                                {{-- Always show last page --}}
-                                                @if ($lastPage > 1)
-                                                <li class="page-item {{ $currentPage == $lastPage ? 'active' : '' }}">
-                                                    <a class="page-link" href="{{ $kredits->url($lastPage) }}">{{ $lastPage }}</a>
+                                            {{-- Next Button --}}
+                                            @if ($currentPage < $lastPage)
+                                                <li class="page-item">
+                                                <a class="page-link" href="{{ $kredits->nextPageUrl() }}" aria-label="Next">
+                                                    <span aria-hidden="true">&raquo;</span>
+                                                </a>
                                                 </li>
                                                 @endif
-
-                                                {{-- Next Button --}}
-                                                @if ($currentPage < $lastPage)
-                                                    <li class="page-item">
-                                                    <a class="page-link" href="{{ $kredits->nextPageUrl() }}" aria-label="Next">
-                                                        <span aria-hidden="true">&raquo;</span>
-                                                    </a>
-                                                    </li>
-                                                    @endif
-                                        </ul>
-                                    </nav>
-                                    @endif
-                                </div>
+                                    </ul>
+                                </nav>
+                                @endif
                             </div>
                         </div>
                     </div>
-
-
                 </div>
-
-
             </div>
         </div>
+    </div>
 
 
 
 
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const petaniIdInput = document.getElementById('petani_id');
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const petaniIdInput = document.getElementById('petani_id');
+            const numberInputs = document.querySelectorAll('.number-format');
 
+            numberInputs.forEach(input => {
+                input.addEventListener('input', function(e) {
+                    // Simpan posisi kursor
+                    let cursorPosition = this.selectionStart;
 
-                const numberInputs = document.querySelectorAll('.number-format');
+                    // Hapus semua koma
+                    let originalValue = this.value.replace(/,/g, '');
 
+                    // Batasi panjang maksimal (opsional)
+                    originalValue = originalValue.slice(0, 15);
 
+                    // Validasi hanya angka
+                    if (!/^\d*$/.test(originalValue)) {
+                        // Jika ada karakter tidak valid, kembalikan ke kondisi sebelumnya
+                        this.value = this.value.slice(0, cursorPosition - 1) +
+                            this.value.slice(cursorPosition);
+                        return;
+                    }
 
-                numberInputs.forEach(input => {
-                    input.addEventListener('input', function(e) {
-                        // Simpan posisi kursor
-                        let cursorPosition = this.selectionStart;
+                    // Format dengan pemisah ribuan
+                    let formattedValue = originalValue.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
-                        // Hapus semua koma
-                        let originalValue = this.value.replace(/,/g, '');
+                    // Set nilai yang diformat
+                    this.value = formattedValue;
 
-                        // Batasi panjang maksimal (opsional)
-                        originalValue = originalValue.slice(0, 15);
+                    // Sesuaikan posisi kursor
+                    let newCursorPosition = cursorPosition +
+                        (formattedValue.length - originalValue.length);
 
-                        // Validasi hanya angka
-                        if (!/^\d*$/.test(originalValue)) {
-                            // Jika ada karakter tidak valid, kembalikan ke kondisi sebelumnya
-                            this.value = this.value.slice(0, cursorPosition - 1) +
-                                this.value.slice(cursorPosition);
-                            return;
-                        }
-
-                        // Format dengan pemisah ribuan
-                        let formattedValue = originalValue.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-
-                        // Set nilai yang diformat
-                        this.value = formattedValue;
-
-                        // Sesuaikan posisi kursor
-                        let newCursorPosition = cursorPosition +
-                            (formattedValue.length - originalValue.length);
-
-                        // Set ulang posisi kursor
-                        this.setSelectionRange(newCursorPosition, newCursorPosition);
-                    });
-
-                    // Event listener untuk mendapatkan nilai asli
-                    input.addEventListener('change', function(e) {
-                        let rawValue = this.value.replace(/,/g, '');
-                        this.setAttribute('data-raw-value', rawValue);
-                    });
-
-                    // Format nilai yang sudah ada pada saat dimuat
-                    let initialValue = input.value.replace(/,/g, '');
-                    input.value = initialValue.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                    // Set ulang posisi kursor
+                    this.setSelectionRange(newCursorPosition, newCursorPosition);
                 });
 
+                // Event listener untuk mendapatkan nilai asli
+                input.addEventListener('change', function(e) {
+                    let rawValue = this.value.replace(/,/g, '');
+                    this.setAttribute('data-raw-value', rawValue);
+                });
+
+                // Format nilai yang sudah ada pada saat dimuat
+                let initialValue = input.value.replace(/,/g, '');
+                input.value = initialValue.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            });
+
+            const cetakButton = document.getElementById('btn-id-cetak');
+            const actionUrl = "{{ route('laporanNasabah.kredit') }}"; // URL untuk diarahkan
+
+            cetakButton.addEventListener('click', function() {
+                // Disable tombol untuk mencegah multiple click
+                cetakButton.disabled = true;
+
+                // Tambahkan spinner dan teks "Menyimpan..."
+                cetakButton.innerHTML = `
+                <div class="d-flex align-items-center">
+                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    <span>Mencetak...</span>
+                </div>
+            `;
+
+                // Redirect ke URL
+                window.location.href = actionUrl;
+            });
 
 
-                // Fungsi untuk setup autocomplete
-                // Fungsi untuk setup autocomplete
-                function setupAutocomplete(inputId, resultsId, url, onSelectCallback) {
-                    const input = document.getElementById(inputId);
-                    const results = document.getElementById(resultsId);
 
-                    // Tambahkan styling untuk dropdown
-                    results.style.cssText = `
-        max-height: 300px;
-        overflow-y: auto;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        box-shadow: 0 2px 4px #cc0c9c;
-    `;
+            //         // Fungsi untuk setup autocomplete
+            //         // Fungsi untuk setup autocomplete
+            //         function setupAutocomplete(inputId, resultsId, url, onSelectCallback) {
+            //             const input = document.getElementById(inputId);
+            //             const results = document.getElementById(resultsId);
 
-                    input.addEventListener('input', function() {
-                        const searchTerm = this.value.trim();
-                        if (searchTerm.length > 0) {
-                            fetch(`${url}?term=${searchTerm}`)
-                                .then(response => response.json())
-                                .then(data => {
-                                    results.innerHTML = '';
-                                    results.style.display = 'block';
+            //             // Tambahkan styling untuk dropdown
+            //             results.style.cssText = `
+            //     max-height: 300px;
+            //     overflow-y: auto;
+            //     border: 1px solid #ddd;
+            //     border-radius: 4px;
+            //     box-shadow: 0 2px 4px #cc0c9c;
+            // `;
 
-                                    data.forEach(item => {
-                                        const div = document.createElement('div');
-                                        div.classList.add('dropdown-item');
+            //             input.addEventListener('input', function() {
+            //                 const searchTerm = this.value.trim();
+            //                 if (searchTerm.length > 0) {
+            //                     fetch(`${url}?term=${searchTerm}`)
+            //                         .then(response => response.json())
+            //                         .then(data => {
+            //                             results.innerHTML = '';
+            //                             results.style.display = 'block';
 
-                                        // Buat container untuk nama dan alamat
-                                        const nameSpan = document.createElement('span');
-                                        nameSpan.style.fontWeight = 'bold';
-                                        nameSpan.style.color = '#cc0c9c'; // Menambahkan warna ungu (#890f82)
-                                        nameSpan.textContent = item.nama;
+            //                             data.forEach(item => {
+            //                                 const div = document.createElement('div');
+            //                                 div.classList.add('dropdown-item');
 
-                                        const addressSpan = document.createElement('span');
-                                        addressSpan.style.color = '#666';
-                                        addressSpan.style.fontSize = '0.9em';
-                                        addressSpan.textContent = ` - ${item.alamat}`;
+            //                                 // Buat container untuk nama dan alamat
+            //                                 const nameSpan = document.createElement('span');
+            //                                 nameSpan.style.fontWeight = 'bold';
+            //                                 nameSpan.style.color = '#cc0c9c'; // Menambahkan warna ungu (#890f82)
+            //                                 nameSpan.textContent = item.nama;
 
-                                        // Gabungkan nama dan alamat
-                                        div.appendChild(nameSpan);
-                                        div.appendChild(addressSpan);
+            //                                 const addressSpan = document.createElement('span');
+            //                                 addressSpan.style.color = '#666';
+            //                                 addressSpan.style.fontSize = '0.9em';
+            //                                 addressSpan.textContent = ` - ${item.alamat}`;
 
-                                        // Styling untuk item dropdown
-                                        div.style.cssText = `
-                            padding: 8px 12px;
-                            cursor: pointer;
-                            border-bottom: 1px solid #eee;
-                        `;
+            //                                 // Gabungkan nama dan alamat
+            //                                 div.appendChild(nameSpan);
+            //                                 div.appendChild(addressSpan);
 
-                                        // Hover effect
-                                        div.addEventListener('mouseover', () => {
-                                            div.style.backgroundColor = '#f5f5f5';
-                                        });
-                                        div.addEventListener('mouseout', () => {
-                                            div.style.backgroundColor = 'white';
-                                        });
+            //                                 // Styling untuk item dropdown
+            //                                 div.style.cssText = `
+            //                         padding: 8px 12px;
+            //                         cursor: pointer;
+            //                         border-bottom: 1px solid #eee;
+            //                     `;
 
-                                        div.addEventListener('click', function() {
-                                            // Update input dengan nama saja
-                                            input.value = item.nama;
-                                            results.style.display = 'none';
-                                            if (onSelectCallback) onSelectCallback(item);
-                                        });
+            //                                 // Hover effect
+            //                                 div.addEventListener('mouseover', () => {
+            //                                     div.style.backgroundColor = '#f5f5f5';
+            //                                 });
+            //                                 div.addEventListener('mouseout', () => {
+            //                                     div.style.backgroundColor = 'white';
+            //                                 });
 
-                                        results.appendChild(div);
-                                    });
-                                });
-                        } else {
-                            results.style.display = 'none';
-                        }
-                    });
+            //                                 div.addEventListener('click', function() {
+            //                                     // Update input dengan nama saja
+            //                                     input.value = item.nama;
+            //                                     results.style.display = 'none';
+            //                                     if (onSelectCallback) onSelectCallback(item);
+            //                                 });
 
-                    // Close dropdown when clicking outside
-                    document.addEventListener('click', function(e) {
-                        if (e.target !== input && e.target !== results) {
-                            results.style.display = 'none';
-                        }
-                    });
+            //                                 results.appendChild(div);
+            //                             });
+            //                         });
+            //                 } else {
+            //                     results.style.display = 'none';
+            //                 }
+            //             });
+
+            //             // Close dropdown when clicking outside
+            //             document.addEventListener('click', function(e) {
+            //                 if (e.target !== input && e.target !== results) {
+            //                     results.style.display = 'none';
+            //                 }
+            //             });
+            //         }
+
+            // Setup autocomplete for index search
+            setupAutocomplete('search-input', 'search-results', '/search-kredit', function(item) {
+                document.querySelector('form').submit();
+            });
+
+            // Setup autocomplete for modal petani search
+            setupAutocomplete('petani_search', 'petani_search_results', '/search-petani', function(petani) {
+                if (petaniIdInput) {
+                    petaniIdInput.value = petani.nama; // Isi dengan nama, bukan ID
+                    input.value = petani.nama; // Update input hanya untuk menampilkan nama
+                    console.log('Petani selected:', petani.nama);
+                } else {
+                    console.error('petaniIdInput not found');
                 }
+            });
 
-                // Setup autocomplete for index search
-                setupAutocomplete('search-input', 'search-results', '/search-kredit', function(item) {
-                    document.querySelector('form').submit();
+
+            // Handle form submission for editing kredit
+            document.querySelectorAll('form[id^="editKreditForm"]').forEach(form => {
+                form.addEventListener('submit', function(event) {
+                    event.preventDefault();
+                    const formData = new FormData(form);
+
+                    // Ambil nilai `jumlah` dari formData dan hapus semua koma
+                    let jumlah = formData.get('jumlah');
+                    if (jumlah) {
+                        jumlah = jumlah.replace(/,/g, ''); // Hapus semua koma
+                        formData.set('jumlah', jumlah); // Perbarui nilai di formData
+                    }
+
+                    fetch(form.action, {
+                            method: 'POST',
+                            body: formData,
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                            },
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                console.log('Kredit updated successfully');
+                                location.reload();
+                            } else {
+                                console.error('Error updating kredit:', data);
+                                alert('Error updating kredit: ' + (data.message || JSON.stringify(data)));
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('An error occurred while updating kredit: ' + error);
+                        });
                 });
+            });
 
-                // Setup autocomplete for modal petani search
-                setupAutocomplete('petani_search', 'petani_search_results', '/search-petani', function(petani) {
-                    if (petaniIdInput) {
-                        petaniIdInput.value = petani.id;
-                        input.value = `${petani.nama} - ${petani.alamat}`; // Update input to show both name and address
-                        console.log('Petani selected:', petani.nama, 'Alamat:', petani.alamat, 'ID:', petani.id);
-                    } else {
-                        console.error('petaniIdInput not found');
+
+
+            // Handle kredit deletion
+            document.querySelectorAll('form[data-delete-kredit]').forEach(form => {
+                form.addEventListener('submit', function(event) {
+                    event.preventDefault();
+                    const kreditId = this.getAttribute('data-delete-kredit');
+                    const deleteUrl = this.action;
+
+                    if (confirm('Are you sure you want to delete this kredit?')) {
+                        fetch(deleteUrl, {
+                                method: 'POST',
+                                headers: {
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                                    'Content-Type': 'application/json',
+                                    'Accept': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                    _method: 'DELETE'
+                                })
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    console.log('Kredit deleted successfully');
+                                    location.reload();
+                                } else {
+                                    console.error('Error deleting kredit:', data);
+                                    alert('Error deleting kredit: ' + (data.message || JSON.stringify(data)));
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                alert('An error occurred while deleting kredit: ' + error);
+                            });
                     }
                 });
+            });
 
-                // Handle form submission for editing kredit
-                document.querySelectorAll('form[id^="editKreditForm"]').forEach(form => {
-                    form.addEventListener('submit', function(event) {
-                        event.preventDefault();
-                        const formData = new FormData(form);
+            // Handle form submission for adding new kredit
+            // Handle form submission for adding new kredit
+            const addKreditForm = document.querySelector('#addKreditModal form');
+            const addKreditModal = document.getElementById('addKreditModal');
 
-                        // Ambil nilai `jumlah` dari formData dan hapus semua koma
-                        let jumlah = formData.get('jumlah');
-                        if (jumlah) {
-                            jumlah = jumlah.replace(/,/g, ''); // Hapus semua koma
-                            formData.set('jumlah', jumlah); // Perbarui nilai di formData
-                        }
+            if (addKreditForm && addKreditModal) {
+                let isSubmitting = false; // Flag untuk mencegah multiple submission
 
-                        fetch(form.action, {
-                                method: 'POST',
-                                body: formData,
-                                headers: {
-                                    'X-Requested-With': 'XMLHttpRequest',
-                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                                },
-                            })
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.success) {
-                                    console.log('Kredit updated successfully');
-                                    location.reload();
-                                } else {
-                                    console.error('Error updating kredit:', data);
-                                    alert('Error updating kredit: ' + (data.message || JSON.stringify(data)));
+                addKreditForm.addEventListener('submit', function(event) {
+                    event.preventDefault();
+
+                    // Cek jika sedang dalam proses submit
+                    if (isSubmitting) {
+                        return;
+                    }
+
+                    if (!petaniIdInput || !petaniIdInput.value) {
+                        alert('Silakan pilih petani sebelum menyimpan.');
+                        return;
+                    }
+
+                    // Ambil tombol submit
+                    const submitButton = this.querySelector('button[type="submit"]');
+
+                    // Set flag dan nonaktifkan tombol
+                    isSubmitting = true;
+                    if (submitButton) {
+                        submitButton.disabled = true;
+                    }
+
+                    const formData = new FormData(this);
+
+
+                    // Ensure petani_id is added to formData
+                    formData.set('petani_id', petaniIdInput.value);
+                    console.log('Petani ID before send:', petaniIdInput.value);
+                    console.log('Form data before send:', Object.fromEntries(formData));
+
+                    // Ambil nilai `jumlah` dari formData dan hapus semua koma
+                    let jumlah = formData.get('jumlah');
+                    if (jumlah) {
+                        jumlah = jumlah.replace(/,/g, ''); // Hapus semua koma
+                        formData.set('jumlah', jumlah); // Perbarui nilai di formData
+                    }
+
+                    fetch(this.action, {
+                            method: 'POST',
+                            body: formData,
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'Accept': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                            },
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                console.log('New kredit added successfully');
+                                // Reset form fields
+                                addKreditForm.reset();
+                                // Clear petani search input and reset petani_id
+                                const petaniSearchInput = document.getElementById('petani_search');
+                                if (petaniSearchInput) {
+                                    petaniSearchInput.value = '';
                                 }
-                            })
-                            .catch(error => {
-                                console.error('Error:', error);
-                                alert('An error occurred while updating kredit: ' + error);
-                            });
-                    });
-                });
-
-                // Handle kredit deletion
-                document.querySelectorAll('form[data-delete-kredit]').forEach(form => {
-                    form.addEventListener('submit', function(event) {
-                        event.preventDefault();
-                        const kreditId = this.getAttribute('data-delete-kredit');
-                        const deleteUrl = this.action;
-
-                        if (confirm('Are you sure you want to delete this kredit?')) {
-                            fetch(deleteUrl, {
-                                    method: 'POST',
-                                    headers: {
-                                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                                        'Content-Type': 'application/json',
-                                        'Accept': 'application/json',
-                                    },
-                                    body: JSON.stringify({
-                                        _method: 'DELETE'
-                                    })
-                                })
-                                .then(response => response.json())
-                                .then(data => {
-                                    if (data.success) {
-                                        console.log('Kredit deleted successfully');
-                                        location.reload();
-                                    } else {
-                                        console.error('Error deleting kredit:', data);
-                                        alert('Error deleting kredit: ' + (data.message || JSON.stringify(data)));
-                                    }
-                                })
-                                .catch(error => {
-                                    console.error('Error:', error);
-                                    alert('An error occurred while deleting kredit: ' + error);
-                                });
-                        }
-                    });
-                });
-
-                // Handle form submission for adding new kredit
-                // Handle form submission for adding new kredit
-                const addKreditForm = document.querySelector('#addKreditModal form');
-                const addKreditModal = document.getElementById('addKreditModal');
-
-                if (addKreditForm && addKreditModal) {
-                    let isSubmitting = false; // Flag untuk mencegah multiple submission
-
-                    addKreditForm.addEventListener('submit', function(event) {
-                        event.preventDefault();
-
-                        // Cek jika sedang dalam proses submit
-                        if (isSubmitting) {
-                            return;
-                        }
-
-                        if (!petaniIdInput || !petaniIdInput.value) {
-                            alert('Silakan pilih petani sebelum menyimpan.');
-                            return;
-                        }
-
-                        // Ambil tombol submit
-                        const submitButton = this.querySelector('button[type="submit"]');
-
-                        // Set flag dan nonaktifkan tombol
-                        isSubmitting = true;
-                        if (submitButton) {
-                            submitButton.disabled = true;
-                        }
-
-                        const formData = new FormData(this);
-
-                        // Ambil nilai `jumlah` dari formData dan hapus semua koma
-                        let jumlah = formData.get('jumlah');
-                        console.log("Sebelum dihapus koma:", jumlah); // Debug
-                        if (jumlah) {
-                            jumlah = jumlah.replace(/,/g, ''); // Hapus semua koma
-                            formData.set('jumlah', jumlah); // Perbarui nilai di formData
-                            console.log("Setelah dihapus koma:", jumlah); // Debug
-                        }
-
-                        // Ensure petani_id is added to formData
-                        formData.set('petani_id', petaniIdInput.value);
-                        console.log('Petani ID before send:', petaniIdInput.value);
-                        console.log('Form data before send:', Object.fromEntries(formData));
-
-                        fetch(this.action, {
-                                method: 'POST',
-                                body: formData,
-                                headers: {
-                                    'X-Requested-With': 'XMLHttpRequest',
-                                    'Accept': 'application/json',
-                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                                },
-                            })
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.success) {
-                                    console.log('New kredit added successfully');
-                                    // Reset form fields
-                                    addKreditForm.reset();
-                                    // Clear petani search input and reset petani_id
-                                    const petaniSearchInput = document.getElementById('petani_search');
-                                    if (petaniSearchInput) {
-                                        petaniSearchInput.value = '';
-                                    }
-                                    if (petaniIdInput) {
-                                        petaniIdInput.value = '';
-                                    }
-                                    // Close the modal
-                                    const modal = bootstrap.Modal.getInstance(addKreditModal);
-                                    if (modal) {
-                                        modal.hide();
-                                    }
-                                    // Reload the page
-                                    location.reload();
-                                } else {
-                                    console.error('Error adding new kredit:', data);
-                                    alert('Error adding new kredit: ' + (data.message || JSON.stringify(data)));
-                                    // Reset flag dan aktifkan tombol kembali jika error
-                                    isSubmitting = false;
-                                    if (submitButton) {
-                                        submitButton.disabled = false;
-                                    }
+                                if (petaniIdInput) {
+                                    petaniIdInput.value = '';
                                 }
-                            })
-                            .catch(error => {
-                                console.error('Error:', error);
-                                alert('An error occurred while adding new kredit: ' + error);
+                                // Close the modal
+                                const modal = bootstrap.Modal.getInstance(addKreditModal);
+                                if (modal) {
+                                    modal.hide();
+                                }
+                                // Reload the page
+                                location.reload();
+                            } else {
+                                console.error('Error adding new kredit:', data);
+                                alert('Error adding new kredit: ' + (data.message || JSON.stringify(data)));
                                 // Reset flag dan aktifkan tombol kembali jika error
                                 isSubmitting = false;
                                 if (submitButton) {
                                     submitButton.disabled = false;
                                 }
-                            });
-                    });
-                } else {
-                    console.error('Add Kredit form not found');
-                }
-            });
-        </script>
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('An error occurred while adding new kredit: ' + error);
+                            // Reset flag dan aktifkan tombol kembali jika error
+                            isSubmitting = false;
+                            if (submitButton) {
+                                submitButton.disabled = false;
+                            }
+                        });
+                });
+            } else {
+                console.error('Add Kredit form not found');
+            }
 
 
 
 
-        @endsection
+        });
+    </script>
+
+
+
+
+    @endsection

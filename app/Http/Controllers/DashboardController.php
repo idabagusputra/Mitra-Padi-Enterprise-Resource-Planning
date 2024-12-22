@@ -36,6 +36,9 @@ class DashboardController extends Controller
 
         $kreditsBelumLunas = Kredit::with('petani')->where('status', false)->get();
 
+
+        $kreditsBelumLunas = Kredit::with('petani')->where('status', false)->get();
+
         // Hitung jumlah total kredit belum lunas
         $totalKreditBelumLunas = $kreditsBelumLunas->sum('jumlah');
 
@@ -601,7 +604,7 @@ class DashboardController extends Controller
                     : '';
 
                 return [
-                    'type' => 'KreditNasabahPalu',
+                    'type' => 'Kredit',
                     'description' => $actionText . ' Kredit dengan jumlah Rp ' . number_format($history->jumlah, 0, ',', '.') . ' milik Nasabah Palu: ' . $history->nama,
                     'date' => $history->updated_at->format('d F Y H:i:s'),
                 ];
