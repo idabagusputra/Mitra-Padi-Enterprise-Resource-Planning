@@ -63,31 +63,6 @@
             height: 100vh;
             /* Pastikan konten utama dapat scroll */
         }
-
-        /* Pastikan tabel memiliki scroll jika melebihi tinggi atau lebar yang ditentukan */
-        .table-responsive {
-            max-height: 55vh !important;
-            /* Menggunakan 80% dari tinggi layar */
-            /* Atur tinggi maksimal tabel */
-            overflow: auto;
-            /* Aktifkan scroll saat konten melebihi batas */
-        }
-
-        /* Mengatur tabel agar tampil dengan scroll horizontal */
-        table {
-            width: 100%;
-            table-layout: auto;
-            /* Agar tabel tidak melar */
-        }
-    }
-
-    /* Pastikan tabel memiliki scroll jika melebihi tinggi atau lebar yang ditentukan */
-    .table-responsive {
-        max-height: 60vh;
-        /* Menggunakan 80% dari tinggi layar */
-        /* Atur tinggi maksimal tabel */
-        overflow: auto;
-        /* Aktifkan scroll saat konten melebihi batas */
     }
 </style>
 @include('layouts.navbars.auth.sidebar')
@@ -158,11 +133,6 @@
             // Inisialisasi Perfect Scrollbar untuk konten utama
             const psMainContent = new PerfectScrollbar('.main-content', {
                 suppressScrollX: false,
-            });
-
-            // Inisialisasi PerfectScrollbar untuk tabel dalam komponen main-content
-            const psTableWrapper = new PerfectScrollbar('.table-responsive', {
-                suppressScrollX: false, // Aktifkan scroll horizontal untuk tabel
             });
         }
     });
