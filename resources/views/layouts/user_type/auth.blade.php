@@ -42,7 +42,10 @@
 @include('layouts.footers.auth.footer')
 
 @else
+
+
 @include('layouts.navbars.auth.sidebar')
+
 <main class="main-content position-relative max-height-vh-100 h-100 mt-1 border-radius-lg {{ (Request::is('rtl') ? 'overflow-hidden' : '') }}">
     @include('layouts.navbars.auth.nav')
     <div class="container-fluid py-4">
@@ -50,6 +53,14 @@
         @include('layouts.footers.auth.footer')
     </div>
 </main>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Inisialisasi Perfect Scrollbar untuk sidebar
+        const psSidebar = new PerfectScrollbar('.sidenav', {
+            suppressScrollX: true, // Menonaktifkan scroll horizontal
+        });
+    });
+</script>
 <script>
     const iconNavbarSidenav = document.getElementById("iconNavbarSidenav");
     const iconSidenav = document.getElementById("iconSidenav");
@@ -82,12 +93,23 @@
         iconSidenav.addEventListener("click", toggleSidenav);
     }
 
-    // Close Sidebar if clicking outside
+    // Close Sidebar if clicking outside only when sidebar has bg-transparent class
     document.addEventListener('click', function(event) {
         if (!sidenav.contains(event.target) && !iconNavbarSidenav.contains(event.target)) {
             // If the click is outside the sidebar and the sidebar icon
-            toggleSidenav();
+            // Check if the sidebar has bg-transparent class
+            if (sidenav.classList.contains("bg-white")) {
+                toggleSidenav();
+            }
         }
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Inisialisasi Perfect Scrollbar untuk konten utama
+        const psMainContent = new PerfectScrollbar('.main-content', {
+            suppressScrollX: true,
+        });
     });
 </script>
 @endif
