@@ -104,14 +104,14 @@
         }
     });
 </script>
-<script>
+<!-- <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Inisialisasi Perfect Scrollbar untuk konten utama
         const psMainContent = new PerfectScrollbar('.main-content', {
             suppressScrollX: true,
         });
     });
-</script>
+</script> -->
 @endif
 
 @include('components.fixed-plugin')
