@@ -12,7 +12,7 @@
     }
 </style>
 
-<footer class="footer pt-3">
+<footer class="footer">
     <div class="pad">
         <div class="row align-items-center justify-content-lg-between">
             <div class="col-lg-9 mb-lg-0 mb-4 pad">
