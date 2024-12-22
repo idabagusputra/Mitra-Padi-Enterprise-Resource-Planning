@@ -209,7 +209,7 @@
                             <h5 class="font-weight-bolder mb-0 number-fit">
                                 <!-- Rp {{ number_format($totalKreditBelumLunas, 2, ',', '.') }} -->
                                 Rp {{ number_format($totalKreditBelumLunas) }}
-                                <span class="text-success text-sm font-weight-bolder">
+                                <span class="text-primary text-sm font-weight-bolder">
                                     @if ($totalKreditBelumLunas >= 1_000_000_000)
                                     Miliar
                                     @elseif ($totalKreditBelumLunas >= 1_000_000)
@@ -242,7 +242,7 @@
                             <h5 class="font-weight-bolder mb-0 number-fit">
                                 <!-- Rp {{ number_format($totalKreditBelumLunas, 2, ',', '.') }} -->
                                 Rp {{ number_format($totalkreditsNasabahPaluBelumLunas) }}
-                                <span class="text-success text-sm font-weight-bolder">
+                                <span class="text-primary text-sm font-weight-bolder">
                                     @if ($totalkreditsNasabahPaluBelumLunas >= 1_000_000_000)
                                     Miliar
                                     @elseif ($totalkreditsNasabahPaluBelumLunas >= 1_000_000)
@@ -275,7 +275,7 @@
                             <h5 class="font-weight-bolder mb-0 number-fit">
                                 <!-- Rp {{ number_format($totalKreditBelumLunas, 2, ',', '.') }} -->
                                 Rp {{ number_format($totalkreditsTitipanPetaniBelumLunas) }}
-                                <span class="text-success text-sm font-weight-bolder">
+                                <span class="text-primary text-sm font-weight-bolder">
                                     @if ($totalkreditsTitipanPetaniBelumLunas >= 1_000_000_000)
                                     Miliar
                                     @elseif ($totalkreditsTitipanPetaniBelumLunas >= 1_000_000)
@@ -308,7 +308,7 @@
                             <h5 class="font-weight-bolder mb-0 number-fit">
                                 <!-- Rp {{ number_format($totalKreditBelumLunas, 2, ',', '.') }} -->
                                 Rp {{ number_format($totalkreditsOperatorBelumLunas) }}
-                                <span class="text-success text-sm font-weight-bolder">
+                                <span class="text-primary text-sm font-weight-bolder">
                                     @if ($totalkreditsOperatorBelumLunas >= 1_000_000_000)
                                     Miliar
                                     @elseif ($totalkreditsOperatorBelumLunas >= 1_000_000)
