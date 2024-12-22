@@ -43,30 +43,53 @@
 
 @else
 
-<head>
-    <style>
-        /* Media query untuk memastikan CSS hanya diterapkan pada layar yang lebih besar dari 1080px */
-        @media (min-width: 1080px) {
+<style>
+    /* Media query untuk memastikan CSS hanya diterapkan pada layar yang lebih besar dari 1080px */
+    @media (min-width: 1080px) {
 
-            /* Menghilangkan scrollbar pada seluruh halaman */
-            html,
-            body {
-                overflow: hidden;
-                /* Menghilangkan scrollbar */
-                height: 100%;
-                /* Pastikan body dan html mengisi seluruh layar */
-            }
-
-            /* Menyediakan scroll hanya pada konten utama */
-            .main-content {
-                overflow: auto;
-                /* Aktifkan scroll pada konten utama */
-                height: 100vh;
-                /* Pastikan konten utama dapat scroll */
-            }
+        /* Menghilangkan scrollbar pada seluruh halaman */
+        html,
+        body {
+            overflow: hidden;
+            /* Menghilangkan scrollbar */
+            height: 100%;
+            /* Pastikan body dan html mengisi seluruh layar */
         }
-    </style>
-</head>
+
+        /* Menyediakan scroll hanya pada konten utama */
+        .main-content {
+            overflow: auto;
+            /* Aktifkan scroll pada konten utama */
+            height: 100vh;
+            /* Pastikan konten utama dapat scroll */
+        }
+
+        /* Pastikan tabel memiliki scroll jika melebihi tinggi atau lebar yang ditentukan */
+        .table-responsive {
+            max-height: 55vh !important;
+            /* Menggunakan 80% dari tinggi layar */
+            /* Atur tinggi maksimal tabel */
+            overflow: auto;
+            /* Aktifkan scroll saat konten melebihi batas */
+        }
+
+        /* Mengatur tabel agar tampil dengan scroll horizontal */
+        table {
+            width: 100%;
+            table-layout: auto;
+            /* Agar tabel tidak melar */
+        }
+    }
+
+    /* Pastikan tabel memiliki scroll jika melebihi tinggi atau lebar yang ditentukan */
+    .table-responsive {
+        max-height: 60vh;
+        /* Menggunakan 80% dari tinggi layar */
+        /* Atur tinggi maksimal tabel */
+        overflow: auto;
+        /* Aktifkan scroll saat konten melebihi batas */
+    }
+</style>
 @include('layouts.navbars.auth.sidebar')
 
 <main class="main-content position-relative max-height-vh-100 h-100 mt-1 border-radius-lg {{ (Request::is('rtl') ? 'overflow-hidden' : '') }}">
@@ -81,7 +104,7 @@
         // Inisialisasi Perfect Scrollbar untuk sidebar
         if (window.innerWidth > 1080) { // Sesuaikan dengan lebar layar yang Anda anggap untuk perangkat mobile
             const psSidebar = new PerfectScrollbar('.sidenav', {
-                suppressScrollX: true, // Menonaktifkan scroll horizontal
+                suppressScrollX: false, // Menonaktifkan scroll horizontal
             });
         }
     });
@@ -134,7 +157,12 @@
         if (window.innerWidth > 1080) { // Sesuaikan dengan lebar layar yang Anda anggap untuk perangkat mobile
             // Inisialisasi Perfect Scrollbar untuk konten utama
             const psMainContent = new PerfectScrollbar('.main-content', {
-                suppressScrollX: true,
+                suppressScrollX: false,
+            });
+
+            // Inisialisasi PerfectScrollbar untuk tabel dalam komponen main-content
+            const psTableWrapper = new PerfectScrollbar('.table-responsive', {
+                suppressScrollX: false, // Aktifkan scroll horizontal untuk tabel
             });
         }
     });
