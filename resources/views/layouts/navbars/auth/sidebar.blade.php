@@ -1,5 +1,6 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-
+<!-- Line Awesome CDN -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/line-awesome@1.3.0/dist/line-awesome/css/line-awesome.min.css">
 
 <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3 " id="sidenav-main">
     <div class="sidenav-header">
@@ -21,7 +22,7 @@
             <li class="nav-item">
                 <a class="nav-link {{ (Request::is('dashboard') ? 'active' : '') }}" href="{{ url('dashboard') }}">
                     <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i style="font-size: 1rem;" class="bi bi-house-fill ps-2 pe-2 text-center {{ (Request::is('dashboard') ? 'text-white' : 'text-dark') }}" aria-hidden="true"></i>
+                        <i style="font-size: 1rem;" class="bi bi-house-gear ps-2 pe-2 text-center {{ (Request::is('dashboard') ? 'text-white' : 'text-dark') }}" aria-hidden="true"></i>
                     </div>
                     <span class="nav-link-text ms-1">Dashboard</span>
                 </a>
@@ -51,7 +52,7 @@
             <li class="nav-item">
                 <a class="nav-link {{ (Request::is('petani') ? 'active' : '') }}" href="{{ url('petani') }}">
                     <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i style="font-size: 1rem;" class="bi bi-person-lines-fill text-center text-dark {{ (Request::is('petani') ? 'text-white' : 'text-dark') }} " aria-hidden="false"></i>
+                        <i style="font-size: 1rem;" class="bi bi-people text-center text-dark {{ (Request::is('petani') ? 'text-white' : 'text-dark') }} " aria-hidden="false"></i>
                     </div>
                     <span class="nav-link-text ms-1">Petani</span>
                 </a>
@@ -132,7 +133,7 @@
             <li class="nav-item">
                 <a class="nav-link {{ (Request::is('utang-ke-operator') ? 'active' : '') }}" href="{{ url('utang-ke-operator') }}">
                     <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i style="font-size: 1rem;" class="bi bi-currency-dollar ps-2 pe-2 text-center text-dark {{ (Request::is('utang-ke-operator') ? 'text-white' : 'text-dark') }} " aria-hidden="true"></i>
+                        <i style="font-size: 1rem;" class="bi bi-coin ps-2 pe-2 text-center text-dark {{ (Request::is('utang-ke-operator') ? 'text-white' : 'text-dark') }} " aria-hidden="true"></i>
                     </div>
                     <span class="nav-link-text ms-1">Utang ke Operator</span>
                 </a>
@@ -141,7 +142,7 @@
             <li class="nav-item">
                 <a class="nav-link {{ (Request::is('dana-titipan-petani') ? 'active' : '') }}" href="{{ url('dana-titipan-petani') }}">
                     <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i style="font-size: 1rem;" class="bi bi-currency-dollar ps-2 pe-2 text-center text-dark {{ (Request::is('dana-titipan-petani') ? 'text-white' : 'text-dark') }} " aria-hidden="true"></i>
+                        <i style="font-size: 1rem;" class="bi bi-coin ps-2 pe-2 text-center text-dark {{ (Request::is('dana-titipan-petani') ? 'text-white' : 'text-dark') }} " aria-hidden="true"></i>
                     </div>
                     <span class="nav-link-text ms-1">Dana Titipan Petani</span>
                 </a>
@@ -208,16 +209,26 @@
             <li class="nav-item">
                 <a class="nav-link {{ (Request::is('daftar-giling') ? 'active' : '') }}" href="{{ url('daftar-giling') }}">
                     <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i style="font-size: 1rem;" class="bi bi-list-check ps-2 pe-2 text-center text-dark {{ (Request::is('daftar-giling') ? 'text-white' : 'text-dark') }} " aria-hidden="true"></i>
+                        <i style="font-size: 1rem;" class="bi bi-card-list ps-2 pe-2 text-center text-dark {{ (Request::is('daftar-giling') ? 'text-white' : 'text-dark') }} " aria-hidden="true"></i>
                     </div>
                     <span class="nav-link-text ms-1">Daftar Nota Giling</span>
                 </a>
             </li>
 
             <li class="nav-item">
+                <a class="nav-link {{ (Request::is('daftar-rekapan-dana') ? 'active' : '') }}" href="{{ url('daftar-rekapan-dana') }}">
+                    <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i style="font-size: 1rem;" class="bi bi-card-list ps-2 pe-2 text-center text-dark {{ (Request::is('daftar-rekapan-dana') ? 'text-white' : 'text-dark') }} " aria-hidden="true"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Daftar Rekapan Dana</span>
+                </a>
+            </li>
+
+
+            <li class="nav-item">
                 <a class="nav-link {{ (Request::is('daftar-rekapan-kredit') ? 'active' : '') }}" href="{{ url('daftar-rekapan-kredit') }}">
                     <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i style="font-size: 1rem;" class="bi bi-list-check ps-2 pe-2 text-center text-dark {{ (Request::is('daftar-rekapan-kredit') ? 'text-white' : 'text-dark') }} " aria-hidden="true"></i>
+                        <i style="font-size: 1rem;" class="bi bi-list-ol ps-2 pe-2 text-center text-dark {{ (Request::is('daftar-rekapan-kredit') ? 'text-white' : 'text-dark') }} " aria-hidden="true"></i>
                     </div>
                     <span class="nav-link-text ms-1">Daftar Rekapan Kredit</span>
                 </a>
@@ -226,7 +237,7 @@
             <li class="nav-item">
                 <a class="nav-link {{ (Request::is('DR-kredit-nasabah-palu') ? 'active' : '') }}" href="{{ url('DR-kredit-nasabah-palu') }}">
                     <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i style="font-size: 1rem;" class="bi bi-list-check ps-2 pe-2 text-center text-dark {{ (Request::is('DR-kredit-nasabah-palu') ? 'text-white' : 'text-dark') }} " aria-hidden="true"></i>
+                        <i style="font-size: 1rem;" class="bi bi-list-ol ps-2 pe-2 text-center text-dark {{ (Request::is('DR-kredit-nasabah-palu') ? 'text-white' : 'text-dark') }} " aria-hidden="true"></i>
                     </div>
                     <span class="nav-link-text ms-1">Daftar R K-Nasabah Palu</span>
                 </a>
@@ -235,7 +246,7 @@
             <li class="nav-item">
                 <a class="nav-link {{ (Request::is('DR-utang-ke-operator') ? 'active' : '') }}" href="{{ url('DR-utang-ke-operator') }}">
                     <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i style="font-size: 1rem;" class="bi bi-list-check ps-2 pe-2 text-center text-dark {{ (Request::is('DR-utang-ke-operator') ? 'text-white' : 'text-dark') }} " aria-hidden="true"></i>
+                        <i style="font-size: 1rem;" class="bi bi-list-ol ps-2 pe-2 text-center text-dark {{ (Request::is('DR-utang-ke-operator') ? 'text-white' : 'text-dark') }} " aria-hidden="true"></i>
                     </div>
                     <span class="nav-link-text ms-1">Daftar R Utang K-Operator</span>
                 </a>
@@ -244,20 +255,13 @@
             <li class="nav-item">
                 <a class="nav-link {{ (Request::is('DR-dana-titipan-petani') ? 'active' : '') }}" href="{{ url('DR-dana-titipan-petani') }}">
                     <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i style="font-size: 1rem;" class="bi bi-list-check ps-2 pe-2 text-center text-dark {{ (Request::is('DR-dana-titipan-petani') ? 'text-white' : 'text-dark') }} " aria-hidden="true"></i>
+                        <i style="font-size: 1rem;" class="bi bi-list-ol ps-2 pe-2 text-center text-dark {{ (Request::is('DR-dana-titipan-petani') ? 'text-white' : 'text-dark') }} " aria-hidden="true"></i>
                     </div>
                     <span class="nav-link-text ms-1">Daftar R Dana T-Petani</span>
                 </a>
             </li>
 
-            <li class="nav-item">
-                <a class="nav-link {{ (Request::is('daftar-rekapan-dana') ? 'active' : '') }}" href="{{ url('daftar-rekapan-dana') }}">
-                    <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i style="font-size: 1rem;" class="bi bi-list-check ps-2 pe-2 text-center text-dark {{ (Request::is('daftar-rekapan-dana') ? 'text-white' : 'text-dark') }} " aria-hidden="true"></i>
-                    </div>
-                    <span class="nav-link-text ms-1">Daftar Rekapan Dana</span>
-                </a>
-            </li>
+
 
 
 
