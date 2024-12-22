@@ -3,7 +3,7 @@
 
 <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3 " id="sidenav-main">
     <div class="sidenav-header">
-        <i class="bi bi-x-circle p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
+        <!-- <i class="bi bi-x-circle p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i> -->
         <!-- <a class="align-items-center d-flex m-0 navbar-brand text-wrap" href="{{ route('dashboard') }}"> -->
         <a class="align-items-center d-flex m-0 navbar-brand text-wrap" href="#">
             <img src="../assets/img/logo-ct.png" class="navbar-brand-img h-100" alt="...">
