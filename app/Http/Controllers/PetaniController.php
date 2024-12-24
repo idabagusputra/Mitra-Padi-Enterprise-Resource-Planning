@@ -68,17 +68,23 @@ class PetaniController extends Controller
         $validator = Validator::make($request->all(), [
             'nama' => 'required|string|max:255',
             'alamat' => 'required|string',
-            'no_telepon' => 'nullable|string|max:20',  // Menambahkan 'nullable' untuk mengizinkan nilai null
+            'no_telepon' => 'nullable|string|max:20', // Menambahkan 'nullable' untuk mengizinkan nilai null
         ]);
 
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        Petani::create($validator->validated());
+        // Transformasi nama dan alamat untuk menjadikan huruf awal setiap kata kapital
+        $validatedData = $validator->validated();
+        $validatedData['nama'] = ucwords(strtolower($validatedData['nama']));
+        $validatedData['alamat'] = ucwords(strtolower($validatedData['alamat']));
+
+        Petani::create($validatedData);
 
         return redirect()->back()->with('success', 'Petani berhasil ditambahkan.');
     }
+
 
     public function show($id)
     {
