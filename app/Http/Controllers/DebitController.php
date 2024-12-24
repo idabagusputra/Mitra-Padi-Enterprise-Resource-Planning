@@ -86,6 +86,9 @@ class DebitController extends Controller
 
             DB::beginTransaction();
 
+            // Transformasi keterangan untuk menjadikan huruf awal setiap kata kapital
+            $validatedData['keterangan'] = ucwords(strtolower($validatedData['keterangan']));
+
             $debit = Debit::create($validatedData);
             $debit->processPayment();
 
