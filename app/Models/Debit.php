@@ -159,7 +159,7 @@ class Debit extends Model
                     $kredit->status = true;
                     $kredit->debit_id = $lastDebit->id;
                     $kredit->keterangan .=
-                        " | Terbayar Penuh | Debit: Rp. " . number_format($this->jumlah, 2) . "| Sisa Debit: Rp. " . number_format($remainingPayment, 2);
+                        " | Terbayar Debit (Penuh) | " . $this->keterangan . " | Debit: Rp. " . number_format($this->jumlah, 2) . "| Sisa Debit: Rp. " . number_format($remainingPayment, 2);
                     $kredit->updated_at = $paymentDate;
                     $kredit->save();
 
@@ -184,7 +184,7 @@ class Debit extends Model
                     // Update kredit saat ini
                     $kredit->status = true;
                     $kredit->debit_id = $lastDebit->id;
-                    $kredit->keterangan .= " | Terbayar Sebagian | Dibayar: Rp " . number_format($remainingPayment, 2) .
+                    $kredit->keterangan .= " | Terbayar Debit (Sebagian) | " . $this->keterangan . " | Dibayar: Rp " . number_format($remainingPayment, 2) .
                         " | Sisa Hutang: Rp " . number_format($sisaHutang, 2);
                     $kredit->updated_at = $paymentDate;
                     $kredit->save();
