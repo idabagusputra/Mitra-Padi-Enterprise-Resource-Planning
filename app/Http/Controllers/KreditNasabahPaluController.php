@@ -240,6 +240,9 @@ class KreditNasabahPaluController extends Controller
             // Ambil data yang sudah divalidasi
             $validatedData = $validator->validated();
 
+            // Transformasi keterangan untuk menjadikan huruf awal setiap kata kapital
+            $validatedData['keterangan'] = ucwords(strtolower($validatedData['keterangan']));
+
             // Konversi tanggal ke format timestamp
             $timestamp = Carbon::createFromFormat('Y-m-d', $validatedData['tanggal'])->toDateTimeString();
 

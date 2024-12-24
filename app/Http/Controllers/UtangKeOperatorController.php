@@ -236,6 +236,9 @@ class UtangKeOperatorController extends Controller
             // Ambil data validasi
             $validatedData = $validator->validated();
 
+            // Transformasi keterangan untuk menjadikan huruf awal setiap kata kapital
+            $validatedData['keterangan'] = ucwords(strtolower($validatedData['keterangan']));
+
             // Konversi tanggal ke format timestamp
             $timestamp = Carbon::createFromFormat('Y-m-d', $validatedData['tanggal'])->toDateTimeString();
 
