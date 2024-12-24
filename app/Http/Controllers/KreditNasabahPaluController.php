@@ -241,6 +241,7 @@ class KreditNasabahPaluController extends Controller
             $validatedData = $validator->validated();
 
             // Transformasi keterangan untuk menjadikan huruf awal setiap kata kapital
+            $validatedData['nama'] = ucwords(strtolower($validatedData['nama']));
             $validatedData['keterangan'] = ucwords(strtolower($validatedData['keterangan']));
 
             // Konversi tanggal ke format timestamp
