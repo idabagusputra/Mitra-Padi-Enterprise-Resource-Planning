@@ -97,7 +97,7 @@ class DashboardController extends Controller
 
         // Get the last 12 months starting from August 2023
         $months = [];
-        $currentDate = Carbon::create(2024, 4, 1);
+        $currentDate = Carbon::create(2024, 10, 1);
         $endDate = Carbon::now();
 
         // Collect the last 12 months
