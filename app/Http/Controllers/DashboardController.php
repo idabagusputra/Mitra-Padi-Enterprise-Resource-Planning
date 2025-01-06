@@ -265,6 +265,10 @@ class DashboardController extends Controller
             ->whereIn('giling_id', $gilings->pluck('id')) // Ambil hanya PembayaranKredit yang memiliki relasi dengan giling ID dari giling terbaru
             ->get();
 
+        $daftarGilings = DaftarGiling::with(['giling'])
+            ->whereIn('giling_id', $gilings->pluck('id')) // Ambil hanya PembayaranKredit yang memiliki relasi dengan giling ID dari giling terbaru
+            ->get();
+
         $data = [];
         $hutangYangDibayar = 0; // Variabel untuk menghitung total hutang yang sudah dibayar
 
@@ -329,9 +333,9 @@ class DashboardController extends Controller
             // Ambil total hutang yang sudah dibayar terkait dengan giling_id
             $hutangYangDibayar = $pembayaranKreditsLangsung->where('giling_id', $giling->id)->pluck('total_hutang')->sum();
 
-            $sisaUtang = $pembayaranKreditsLangsung->where('giling_id', $giling->id)->sum(function ($item) {
-                if ($item->total_hutang > $item->dana_terbayar) {
-                    return $item->total_hutang - $item->dana_terbayar;
+            $sisaUtang = $daftarGilings->where('giling_id', $giling->id)->sum(function ($item) {
+                if ($item->dana_penerima < 0) {
+                    return abs($item->dana_penerima);
                 } else {
                     return 0;
                 }
