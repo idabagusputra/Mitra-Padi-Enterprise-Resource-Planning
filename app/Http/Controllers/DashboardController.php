@@ -329,8 +329,16 @@ class DashboardController extends Controller
             // Ambil total hutang yang sudah dibayar terkait dengan giling_id
             $hutangYangDibayar = $pembayaranKreditsLangsung->where('giling_id', $giling->id)->pluck('total_hutang')->sum();
 
+            $sisaUtang = $pembayaranKreditsLangsung->where('giling_id', $giling->id)->sum(function ($item) {
+                if ($item->total_hutang > $item->dana_terbayar) {
+                    return $item->total_hutang - $item->dana_terbayar;
+                } else {
+                    return 0;
+                }
+            });
+
             // Hitung sisa utang yang belum lunas
-            $sisaUtang = $pembayaranKreditsFalse->where('status', false)->sum('jumlah');
+            // $sisaUtang = $pembayaranKreditsFalse->where('status', false)->sum('jumlah');
 
             $status = $sisaUtang > 0 ? false : true;
             $sisaUtangFormatted = 'Rp ' . number_format($sisaUtang, 0, ',', '.');
