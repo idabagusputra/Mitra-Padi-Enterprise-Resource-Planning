@@ -227,15 +227,6 @@
 
             </tr>
             <tr class="calculation-row">
-                <td class="small-text">Pulang</td>
-                <td>:</td>
-                <td>{{ number_format($giling->pulang) }} Kg</td>
-                <td></td>
-                <td></td>
-
-
-            </tr>
-            <tr class="calculation-row">
                 <td class="small-text">Beras Bersih</td>
                 <td>:</td>
                 <td>{{ number_format($giling->calculateBerasBersih(), $decimalPlacesBerasBersih) }} Kg</td>
@@ -245,6 +236,17 @@
 
 
             </tr>
+
+            <tr class="calculation-row">
+                <td class="small-text">Pulang</td>
+                <td>:</td>
+                <td>{{ number_format($giling->pulang) }} Kg</td>
+                <td></td>
+                <td></td>
+
+
+            </tr>
+
             <tr class="calculation-row">
                 <td class="small-text">Beras Jual</td>
                 <td>:</td>
