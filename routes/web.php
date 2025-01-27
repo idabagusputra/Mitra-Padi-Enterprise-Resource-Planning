@@ -146,6 +146,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::patch('/daftar-giling-ryclebin/restore/{id}', [DaftarGilingTrashController::class, 'restore'])->name('daftar-giling-ryclebin.restore');
 
 
+
+
     Route::resource('rekap-dana', RekapDanaController::class);
     Route::get('/daftar-rekapan-dana', [RekapDanaController::class, 'indexDaftar'])->name('rekapDana.index');
     Route::post('/rekap-dana/store', [RekapDanaController::class, 'store'])->name('rekapdana.store');
