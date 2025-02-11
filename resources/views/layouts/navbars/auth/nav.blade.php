@@ -343,34 +343,40 @@
         // Event listener untuk tombol Share
         const shareButton = document.getElementById("sharePdf");
         if (shareButton) {
-            shareButton.addEventListener("click", async function () {
-                try {
-                    // Show loading state
-                    shareButton.disabled = true;
-                    shareButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Converting...';
+            shareButton.addEventListener('click', async function () {
+            try {
+                shareButton.disabled = true;
+                shareButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Converting...';
 
-                    const pdfViewer = document.getElementById("pdfViewer");
-                    const pdfUrl = pdfViewer.src;
+                const pdfViewer = document.getElementById('pdfViewer');
+                const pdfUrl = pdfViewer.src;
 
-                    // Convert PDF to JPG
-                    const jpgBlob = await convertPdfToJpg(pdfUrl);
+                // Konversi PDF ke JPG
+                const jpgBlob = await convertPdfToJpg(pdfUrl);
+                const file = new File([jpgBlob], "receipt.jpg", { type: "image/jpeg" });
 
-                    // Get receipt number from modal title
-                    const receiptNumber = document.getElementById("pdfModalLabel").textContent.split("#")[1];
-                    const fileName = `receipt-${receiptNumber}.jpg`;
-
-                    // Download the JPG
-                    downloadBlob(jpgBlob, fileName);
-
-                } catch (error) {
-                    console.error("Error in share process:", error);
-                    alert("Failed to convert PDF to JPG. Please try again.");
-                } finally {
-                    // Reset button state
-                    shareButton.disabled = false;
-                    shareButton.innerHTML = '<i class="fas fa-share-alt me-1"></i> Share';
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    // 📲 Jika perangkat mendukung Web Share API
+                    await navigator.share({
+                        title: "Receipt",
+                        text: "Berikut adalah struk pembayarannya.",
+                        files: [file]
+                    });
+                } else {
+                    // ❌ Jika tidak didukung, fallback ke download manual
+                    const jpgUrl = URL.createObjectURL(jpgBlob);
+                    downloadDataUrl(jpgUrl, "receipt.jpg");
                 }
-            });
+
+            } catch (error) {
+                console.error("Error in share process:", error);
+                alert("Gagal membagikan gambar. Silakan coba lagi.");
+            } finally {
+                shareButton.disabled = false;
+                shareButton.innerHTML = '<i class="fas fa-share-alt me-1"></i> Share';
+            }
+        });
+
         }
 
 
