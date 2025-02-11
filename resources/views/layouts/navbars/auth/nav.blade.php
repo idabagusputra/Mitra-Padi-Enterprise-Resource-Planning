@@ -340,32 +340,33 @@
             URL.revokeObjectURL(url);
         }
 
+        // Event listener untuk tombol Share
         const shareButton = document.getElementById("sharePdf");
         if (shareButton) {
             shareButton.addEventListener("click", async function () {
                 try {
+                    // Show loading state
                     shareButton.disabled = true;
                     shareButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Converting...';
 
                     const pdfViewer = document.getElementById("pdfViewer");
                     const pdfUrl = pdfViewer.src;
 
-                    // 🔄 Konversi PDF ke JPG
+                    // Convert PDF to JPG
                     const jpgBlob = await convertPdfToJpg(pdfUrl);
-                    const file = new File([jpgBlob], "receipt.jpg", { type: "image/jpeg" });
 
-                    if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                        // 📲 Langsung kirim gambar ke WhatsApp
-                        await navigator.share({ files: [file] });
-                    } else {
-                        // ⚡ Upload gambar ke URL jika Web Share API tidak didukung
-                        const uploadedImageUrl = await uploadImageToServer(jpgBlob);
-                        window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(uploadedImageUrl)}`, "_blank");
-                    }
+                    // Get receipt number from modal title
+                    const receiptNumber = document.getElementById("pdfModalLabel").textContent.split("#")[1];
+                    const fileName = `receipt-${receiptNumber}.jpg`;
+
+                    // Download the JPG
+                    downloadBlob(jpgBlob, fileName);
+
                 } catch (error) {
                     console.error("Error in share process:", error);
-                    alert("Gagal membagikan gambar. Silakan coba lagi.");
+                    alert("Failed to convert PDF to JPG. Please try again.");
                 } finally {
+                    // Reset button state
                     shareButton.disabled = false;
                     shareButton.innerHTML = '<i class="fas fa-share-alt me-1"></i> Share';
                 }
