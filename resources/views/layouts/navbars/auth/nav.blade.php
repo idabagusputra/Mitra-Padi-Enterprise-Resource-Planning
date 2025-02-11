@@ -340,43 +340,36 @@
             URL.revokeObjectURL(url);
         }
 
-        // Event listener untuk tombol Share
         const shareButton = document.getElementById("sharePdf");
         if (shareButton) {
-            shareButton.addEventListener('click', async function () {
-            try {
-                shareButton.disabled = true;
-                shareButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Converting...';
+            shareButton.addEventListener("click", async function () {
+                try {
+                    shareButton.disabled = true;
+                    shareButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Converting...';
 
-                const pdfViewer = document.getElementById('pdfViewer');
-                const pdfUrl = pdfViewer.src;
+                    const pdfViewer = document.getElementById("pdfViewer");
+                    const pdfUrl = pdfViewer.src;
 
-                // Konversi PDF ke JPG
-                const jpgBlob = await convertPdfToJpg(pdfUrl);
-                const file = new File([jpgBlob], "receipt.jpg", { type: "image/jpeg" });
+                    // 🔄 Konversi PDF ke JPG
+                    const jpgBlob = await convertPdfToJpg(pdfUrl);
+                    const file = new File([jpgBlob], "receipt.jpg", { type: "image/jpeg" });
 
-                if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                    // 📲 Jika perangkat mendukung Web Share API
-                    await navigator.share({
-                        title: "Receipt",
-                        text: "Berikut adalah struk pembayarannya.",
-                        files: [file]
-                    });
-                } else {
-                    // ❌ Jika tidak didukung, fallback ke download manual
-                    const jpgUrl = URL.createObjectURL(jpgBlob);
-                    downloadDataUrl(jpgUrl, "receipt.jpg");
+                    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                        // 📲 Langsung kirim gambar ke WhatsApp
+                        await navigator.share({ files: [file] });
+                    } else {
+                        // ⚡ Upload gambar ke URL jika Web Share API tidak didukung
+                        const uploadedImageUrl = await uploadImageToServer(jpgBlob);
+                        window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(uploadedImageUrl)}`, "_blank");
+                    }
+                } catch (error) {
+                    console.error("Error in share process:", error);
+                    alert("Gagal membagikan gambar. Silakan coba lagi.");
+                } finally {
+                    shareButton.disabled = false;
+                    shareButton.innerHTML = '<i class="fas fa-share-alt me-1"></i> Share';
                 }
-
-            } catch (error) {
-                console.error("Error in share process:", error);
-                alert("Gagal membagikan gambar. Silakan coba lagi.");
-            } finally {
-                shareButton.disabled = false;
-                shareButton.innerHTML = '<i class="fas fa-share-alt me-1"></i> Share';
-            }
-        });
-
+            });
         }
 
 
