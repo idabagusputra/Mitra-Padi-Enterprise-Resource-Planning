@@ -225,7 +225,12 @@
                 <iframe id="pdfViewer" class="pdf-viewer" frameborder="0"></iframe>
             </div>
             <div class="modal-footer d-flex justify-content-between">
-                <button id="printPdf" class="btn btn-primary">Print</button>
+                <div>
+                    <button id="printPdf" class="btn btn-primary me-2">Print</button>
+                    <button id="sharePdf" class="btn btn-success">
+                        <i class="fas fa-share-alt me-1"></i> Share
+                    </button>
+                </div>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
@@ -233,7 +238,11 @@
 </div>
 
 <!-- Tambahkan Script -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
+    // Initialize PDF.js worker
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
     document.addEventListener('DOMContentLoaded', function() {
         // Event listener untuk notifikasi
         const notificationLinks = document.querySelectorAll('.view-pdf-btn-nav');
@@ -278,6 +287,92 @@
                 }
             });
         });
+
+        // Function to convert PDF to JPG without using canvas element
+        async function convertPdfToJpg(pdfUrl) {
+            try {
+                // Load PDF
+                const loadingTask = pdfjsLib.getDocument(pdfUrl);
+                const pdf = await loadingTask.promise;
+
+                // Get first page
+                const page = await pdf.getPage(1);
+
+                // Set scale for better resolution
+                const scale = 4;
+                const viewport = page.getViewport({ scale });
+
+                // Create an off-screen canvas
+                const canvas = document.createElement("canvas");
+                const context = canvas.getContext("2d");
+                canvas.width = viewport.width;
+                canvas.height = viewport.height;
+
+                // Render PDF page to the canvas
+                const renderContext = {
+                    canvasContext: context,
+                    viewport: viewport
+                };
+                await page.render(renderContext).promise;
+
+                // Convert canvas to Blob (JPG)
+                return new Promise((resolve) => {
+                    canvas.toBlob((blob) => {
+                        resolve(blob);
+                    }, "image/jpeg", 0.95);
+                });
+
+            } catch (error) {
+                console.error("Error converting PDF to JPG:", error);
+                throw error;
+            }
+        }
+
+        // Function to download the file
+        function downloadBlob(blob, fileName) {
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = fileName;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        // Event listener untuk tombol Share
+        const shareButton = document.getElementById("sharePdf");
+        if (shareButton) {
+            shareButton.addEventListener("click", async function () {
+                try {
+                    // Show loading state
+                    shareButton.disabled = true;
+                    shareButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Converting...';
+
+                    const pdfViewer = document.getElementById("pdfViewer");
+                    const pdfUrl = pdfViewer.src;
+
+                    // Convert PDF to JPG
+                    const jpgBlob = await convertPdfToJpg(pdfUrl);
+
+                    // Get receipt number from modal title
+                    const receiptNumber = document.getElementById("pdfModalLabel").textContent.split("#")[1];
+                    const fileName = `receipt-${receiptNumber}.jpg`;
+
+                    // Download the JPG
+                    downloadBlob(jpgBlob, fileName);
+
+                } catch (error) {
+                    console.error("Error in share process:", error);
+                    alert("Failed to convert PDF to JPG. Please try again.");
+                } finally {
+                    // Reset button state
+                    shareButton.disabled = false;
+                    shareButton.innerHTML = '<i class="fas fa-share-alt me-1"></i> Share';
+                }
+            });
+        }
+
 
         // Event listener untuk tombol Close dan Print
         const modal = document.getElementById('pdfModal');
