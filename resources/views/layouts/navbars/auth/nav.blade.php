@@ -228,7 +228,7 @@
                 <div>
                     <button id="printPdf" class="btn btn-primary me-2">Print</button>
                     <button id="sharePdf" class="btn btn-success">
-                        <i class="fas fa-share-alt me-1"></i> Share
+                        <i class="bi bi-download me-1"></i> Save
                     </button>
                 </div>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
