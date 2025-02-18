@@ -226,12 +226,16 @@
             </div>
             <div class="modal-footer d-flex justify-content-between">
                 <div>
-                    <button id="printPdf" class="btn btn-primary me-2">Print</button>
+                    <button id="printPdf" class="btn btn-primary me-2">
+                        <i class="bi bi-printer-fill me-1"></i> print
+                    </button>
                     <button id="sharePdf" class="btn btn-info">
-                        <i class="bi bi-download me-1"></i> Save
+                        <i class="bi bi-floppy2-fill me-1"></i> Save
                     </button>
                 </div>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-square-fill me-1"></i> close
+                </button>
             </div>
 
         </div>
