@@ -227,7 +227,7 @@
             <div class="modal-footer d-flex justify-content-between">
                 <div>
                     <button id="printPdf" class="btn btn-primary me-2">Print</button>
-                    <button id="sharePdf" class="btn btn-success">
+                    <button id="sharePdf" class="btn btn-info">
                         <i class="bi bi-download me-1"></i> Save
                     </button>
                 </div>
