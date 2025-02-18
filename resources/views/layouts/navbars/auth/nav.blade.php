@@ -230,7 +230,7 @@
                         <i class="bi bi-printer-fill me-1"></i> print
                     </button>
                     <button id="sharePdf" class="btn btn-info">
-                        <i class="bi bi-floppy2-fill me-1"></i> Save
+                        <i class="bi bi-floppy-fill me-1"></i> Save
                     </button>
                 </div>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
