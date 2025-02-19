@@ -234,7 +234,7 @@
                     </button>
                 </div>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="bi bi-x-square-fill me-1"></i> close
+                    <i class="bi bi-x-square me-1"></i> close
                 </button>
             </div>
 
