@@ -256,7 +256,7 @@
                                     </div>
 
                                     <form method="GET" action="{{ route('laporan.kredit') }}">
-                                        <button class="btn btn-cetak bg-gradient-info d-flex align-items-center justify-content-center mt-3 me-2"
+                                        <button class="btn btn-cetak bg-gradient-primary d-flex align-items-center justify-content-center mt-3 me-2"
                                             id="btn-id-cetak"
                                             style="width: 233px;">
                                             <i class="bi bi-printer me-2"></i>
