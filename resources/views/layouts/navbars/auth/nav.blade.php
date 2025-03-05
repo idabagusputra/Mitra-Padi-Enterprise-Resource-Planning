@@ -350,82 +350,66 @@
 
         // Add this inside the existing DOMContentLoaded event listener
 
-        // Event listener untuk tombol WhatsApp Share
-        const whatsappShareButton = document.getElementById("whatsappSharePdf");
-
-        if (whatsappShareButton) {
-            whatsappShareButton.addEventListener("click", async function () {
-                try {
-                    // Show loading state
-                    whatsappShareButton.disabled = true;
-                    whatsappShareButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Preparing...';
-
-                    const pdfViewer = document.getElementById("pdfViewer");
-                    const pdfUrl = pdfViewer.src;
-
-                    // Convert PDF to JPG
-                    const jpgBlob = await convertPdfToJpg(pdfUrl);
-
-                    // Get receipt number from modal title
-                    const receiptNumber = document.getElementById("pdfModalLabel").textContent.split("#")[1];
-                    const fileName = `receipt-${receiptNumber}.jpg`;
-
-                    // Create a File object from the Blob
-                    const jpgFile = new File([jpgBlob], fileName, { type: "image/jpeg" });
-
-                    // Upload ke AnonFiles
-                    const fileUrl = await uploadToAnonFiles(jpgFile);
-
-                    // Kirim ke WhatsApp
-                    shareViaWhatsApp(fileUrl, receiptNumber);
-
-                } catch (error) {
-                    console.error("Error in WhatsApp share process:", error);
-                    alert("Failed to prepare receipt for sharing. Please try again.");
-                } finally {
-                    // Reset button state
-                    whatsappShareButton.disabled = false;
-                    whatsappShareButton.innerHTML = '<i class="bi bi-whatsapp me-1"></i> WhatsApp';
-                }
-            });
-        }
-
-            async function uploadToAnonFiles(imageFile) {
-            const formData = new FormData();
-            formData.append("image", imageFile);
-
-            // Ambil token CSRF dari meta tag
-            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+       // Function to handle WhatsApp sharing
+        async function handleWhatsAppShare() {
+            const whatsappShareButton = document.getElementById("whatsappSharePdf");
+            if (!whatsappShareButton) return;
 
             try {
-                const response = await fetch("/upload-to-anonfiles", {
-                    method: "POST",
-                    body: formData,
-                    headers: {
-                        "X-CSRF-TOKEN": csrfToken, // Kirim CSRF token
-                    },
-                });
+                // Show loading state
+                whatsappShareButton.disabled = true;
+                whatsappShareButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Preparing...';
 
-                const result = await response.json();
-                if (result.file_url) {
-                    return result.file_url;
-                } else {
-                    throw new Error("Upload gagal.");
+                const pdfViewer = document.getElementById("pdfViewer");
+                const pdfUrl = pdfViewer.src;
+
+                // Convert PDF to JPG
+                const jpgBlob = await convertPdfToJpg(pdfUrl);
+
+                // Get receipt number from modal title
+                const receiptNumber = document.getElementById("pdfModalLabel").textContent.split("#")[1];
+                const fileName = `receipt-${receiptNumber}.jpg`;
+
+                // Download JPG locally first
+                await downloadBlob(jpgBlob, fileName);
+
+                // Create a File object
+                const jpgFile = new File([jpgBlob], fileName, { type: "image/jpeg" });
+
+                // Check if Web Share API is supported
+                if (navigator.canShare && navigator.canShare({ files: [jpgFile] })) {
+                    try {
+                        await navigator.share({
+                            title: `Receipt #${receiptNumber}`,
+                            files: [jpgFile]
+                        });
+                        return;
+                    } catch (error) {
+                        console.error("Error sharing:", error);
+                    }
                 }
+
+                // Fallback for WhatsApp Web & Mobile
+                fallbackWhatsAppShare(fileName, receiptNumber);
+
             } catch (error) {
-                console.error("Error uploading to server:", error);
-                throw error;
+                console.error("Error in WhatsApp share process:", error);
+                alert("Failed to prepare receipt for sharing. Please try again.");
+            } finally {
+                // Reset button state
+                whatsappShareButton.disabled = false;
+                whatsappShareButton.innerHTML = '<i class="bi bi-whatsapp me-1"></i> WhatsApp';
             }
         }
 
+        // Fallback WhatsApp sharing method
+        function fallbackWhatsAppShare(fileName, receiptNumber) {
+            alert(`Receipt downloaded: ${fileName}. Now manually attach it in WhatsApp.`);
 
-
-            // Fungsi share via WhatsApp
-            function shareViaWhatsApp(fileUrl, receiptNumber) {
-                const whatsappUrl = `https://wa.me/?text=Receipt%20%23${receiptNumber}%0A${encodeURIComponent(fileUrl)}`;
-                window.open(whatsappUrl, '_blank');
-            }
-
+            // Open WhatsApp manually with a prefilled message
+            const whatsappUrl = `https://wa.me/?text=Receipt%20%23${receiptNumber}`;
+            window.open(whatsappUrl, '_blank');
+        }
 
         // Event listener untuk tombol Share
         const shareButton = document.getElementById("sharePdf");
