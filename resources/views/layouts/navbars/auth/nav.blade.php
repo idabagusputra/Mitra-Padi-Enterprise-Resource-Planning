@@ -390,28 +390,28 @@
             });
         }
 
-            // Fungsi upload ke AnonFiles
             async function uploadToAnonFiles(imageFile) {
-                const formData = new FormData();
-                formData.append("file", imageFile);
+            const formData = new FormData();
+            formData.append("image", imageFile);
 
-                try {
-                    const response = await fetch("https://api.anonfile.la/upload", {
-                        method: "POST",
-                        body: formData
-                    });
+            try {
+                const response = await fetch("/upload-to-anonfiles", {
+                    method: "POST",
+                    body: formData
+                });
 
-                    const result = await response.json();
-                    if (result.status) {
-                        return result.data.file.url.full; // Link langsung ke file
-                    } else {
-                        throw new Error("Upload ke AnonFiles gagal.");
-                    }
-                } catch (error) {
-                    console.error("Error uploading to AnonFiles:", error);
-                    throw error;
+                const result = await response.json();
+                if (result.file_url) {
+                    return result.file_url; // Link langsung ke file
+                } else {
+                    throw new Error("Upload gagal.");
                 }
+            } catch (error) {
+                console.error("Error uploading to server:", error);
+                throw error;
             }
+        }
+
 
             // Fungsi share via WhatsApp
             function shareViaWhatsApp(fileUrl, receiptNumber) {

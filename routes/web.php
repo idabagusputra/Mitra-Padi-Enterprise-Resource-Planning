@@ -25,6 +25,8 @@ use App\Http\Controllers\KreditNasabahPaluController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KreditTitipanPetaniController;
 use App\Http\Controllers\JPGR2Controller;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Http\Request;
 
 use App\Models\RekapDana;
 use Illuminate\Support\Facades\Route;
@@ -44,7 +46,27 @@ Route::group(['middleware' => 'auth'], function () {
     Route::view('static-sign-up', 'static-sign-up')->name('sign-up');
 
 
+    Route::post('/upload-to-anonfiles', function (Request $request) {
+        $file = $request->file('image');
 
+        if (!$file) {
+            return response()->json(['error' => 'No file uploaded'], 400);
+        }
+
+        // Kirim ke AnonFiles
+        $response = Http::attach('file', file_get_contents($file->getRealPath()), $file->getClientOriginalName())
+            ->post('https://api.anonfile.la/upload');
+
+        $result = $response->json();
+
+        if ($result['status']) {
+            return response()->json([
+                'file_url' => $result['data']['file']['url']['full']
+            ]);
+        } else {
+            return response()->json(['error' => 'Upload failed'], 500);
+        }
+    });
 
 
     Route::resource('utang-ke-operator', UtangKeOperatorController::class);
