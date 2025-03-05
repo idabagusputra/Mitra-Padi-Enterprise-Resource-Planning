@@ -43,7 +43,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::view('static-sign-in', 'static-sign-in')->name('sign-in');
     Route::view('static-sign-up', 'static-sign-up')->name('sign-up');
 
-    Route::get('/get-presigned-url', [JPGR2Controller::class, 'getPresignedUrl'])->name('get.presigned.url');
+
+    Route::get('/get-presigned-url', [JPGR2Controller::class, 'getPresignedUrl']);
+    Route::post('/upload-to-r2', [JPGR2Controller::class, 'uploadToR2']);
 
 
     Route::resource('utang-ke-operator', UtangKeOperatorController::class);
