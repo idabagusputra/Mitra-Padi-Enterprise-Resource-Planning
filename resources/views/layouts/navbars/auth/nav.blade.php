@@ -351,40 +351,47 @@
         // Add this inside the existing DOMContentLoaded event listener
 
        // Event listener untuk tombol WhatsApp Share
-        const whatsappShareButton = document.getElementById("whatsappSharePdf");
-        if (whatsappShareButton) {
-            whatsappShareButton.addEventListener("click", async function () {
-                try {
-                    // Tampilkan indikator loading
-                    whatsappShareButton.disabled = true;
-                    whatsappShareButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Preparing...';
+        // Event listener untuk tombol WhatsApp Share
+const whatsappShareButton = document.getElementById("whatsappSharePdf");
+if (whatsappShareButton) {
+    whatsappShareButton.addEventListener("click", async function () {
+        try {
+            // Tampilkan indikator loading
+            whatsappShareButton.disabled = true;
+            whatsappShareButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Preparing...';
 
-                    const pdfViewer = document.getElementById("pdfViewer");
-                    const pdfUrl = pdfViewer.src;
+            const pdfViewer = document.getElementById("pdfViewer");
+            const pdfUrl = pdfViewer.src;
 
-                    // Konversi PDF ke JPG
-                    const jpgBlob = await convertPdfToJpg(pdfUrl);
+            // Konversi PDF ke JPG
+            const jpgBlob = await convertPdfToJpg(pdfUrl);
 
-                    // Ambil nomor struk dari modal
-                    const receiptNumber = document.getElementById("pdfModalLabel").textContent.split("#")[1];
-                    const fileName = `receipt-${receiptNumber}.jpg`;
+            // Ambil nomor struk dari modal
+            const receiptNumber = document.getElementById("pdfModalLabel").textContent.split("#")[1];
+            const fileName = `receipt-${receiptNumber}.jpg`;
 
-                    // Unduh file JPG terlebih dahulu
-                    const fileUrl = await downloadBlob(jpgBlob, fileName);
+            // Simpan pesan ke clipboard agar user tinggal paste di WhatsApp
+            const message = `Receipt #${receiptNumber}`;
+            await navigator.clipboard.writeText(message);
 
-                    // Buka WhatsApp dengan pesan prefilled
-                    openWhatsAppWithMessage(receiptNumber);
+            // Unduh file secara otomatis
+            const fileUrl = await downloadBlob(jpgBlob, fileName);
 
-                } catch (error) {
-                    console.error("Error in WhatsApp share process:", error);
-                    alert("Gagal memproses struk untuk dikirim ke WhatsApp.");
-                } finally {
-                    // Reset tombol ke keadaan semula
-                    whatsappShareButton.disabled = false;
-                    whatsappShareButton.innerHTML = '<i class="bi bi-whatsapp me-1"></i> WhatsApp';
-                }
-            });
+            // Tunggu 2 detik sebelum membuka WhatsApp agar file benar-benar terunduh
+            setTimeout(() => {
+                openWhatsApp();
+            }, 2000);
+
+        } catch (error) {
+            console.error("Error in WhatsApp share process:", error);
+            alert("Gagal memproses struk untuk dikirim ke WhatsApp.");
+        } finally {
+            // Reset tombol ke keadaan semula
+            whatsappShareButton.disabled = false;
+            whatsappShareButton.innerHTML = '<i class="bi bi-whatsapp me-1"></i> WhatsApp';
         }
+    });
+}
 
         // Fungsi membuka WhatsApp dengan pesan otomatis
         function openWhatsAppWithMessage(receiptNumber) {
