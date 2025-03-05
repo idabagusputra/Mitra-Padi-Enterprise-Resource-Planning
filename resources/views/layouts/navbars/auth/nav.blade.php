@@ -350,66 +350,48 @@
 
         // Add this inside the existing DOMContentLoaded event listener
 
-       // Function to handle WhatsApp sharing
-        async function handleWhatsAppShare() {
+
+        // Function to share via WhatsApp
+        async function shareToWhatsApp() {
             const whatsappShareButton = document.getElementById("whatsappSharePdf");
             if (!whatsappShareButton) return;
 
             try {
-                // Show loading state
                 whatsappShareButton.disabled = true;
                 whatsappShareButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Preparing...';
 
                 const pdfViewer = document.getElementById("pdfViewer");
                 const pdfUrl = pdfViewer.src;
-
-                // Convert PDF to JPG
                 const jpgBlob = await convertPdfToJpg(pdfUrl);
 
-                // Get receipt number from modal title
                 const receiptNumber = document.getElementById("pdfModalLabel").textContent.split("#")[1];
                 const fileName = `receipt-${receiptNumber}.jpg`;
 
-                // Download JPG locally first
-                await downloadBlob(jpgBlob, fileName);
+                // Download file first
+                const fileUrl = await downloadBlob(jpgBlob, fileName);
 
-                // Create a File object
-                const jpgFile = new File([jpgBlob], fileName, { type: "image/jpeg" });
+                // Open WhatsApp with prefilled message
+                const whatsappUrl = `https://wa.me/?text=Receipt%20%23${receiptNumber}`;
+                window.open(whatsappUrl, '_blank');
 
-                // Check if Web Share API is supported
-                if (navigator.canShare && navigator.canShare({ files: [jpgFile] })) {
-                    try {
-                        await navigator.share({
-                            title: `Receipt #${receiptNumber}`,
-                            files: [jpgFile]
-                        });
-                        return;
-                    } catch (error) {
-                        console.error("Error sharing:", error);
-                    }
-                }
-
-                // Fallback for WhatsApp Web & Mobile
-                fallbackWhatsAppShare(fileName, receiptNumber);
+                alert(`Receipt saved as ${fileName}. Silakan unggah ke WhatsApp secara manual.`);
 
             } catch (error) {
-                console.error("Error in WhatsApp share process:", error);
-                alert("Failed to prepare receipt for sharing. Please try again.");
+                console.error("Error in WhatsApp sharing:", error);
+                alert("Gagal memproses struk untuk dikirim ke WhatsApp.");
             } finally {
-                // Reset button state
                 whatsappShareButton.disabled = false;
                 whatsappShareButton.innerHTML = '<i class="bi bi-whatsapp me-1"></i> WhatsApp';
             }
         }
 
-        // Fallback WhatsApp sharing method
-        function fallbackWhatsAppShare(fileName, receiptNumber) {
-            alert(`Receipt downloaded: ${fileName}. Now manually attach it in WhatsApp.`);
-
-            // Open WhatsApp manually with a prefilled message
-            const whatsappUrl = `https://wa.me/?text=Receipt%20%23${receiptNumber}`;
-            window.open(whatsappUrl, '_blank');
-        }
+        // Attach event listener
+        document.addEventListener("DOMContentLoaded", () => {
+            const whatsappShareButton = document.getElementById("whatsappSharePdf");
+            if (whatsappShareButton) {
+                whatsappShareButton.addEventListener("click", shareToWhatsApp);
+            }
+        });
 
         // Event listener untuk tombol Share
         const shareButton = document.getElementById("sharePdf");
