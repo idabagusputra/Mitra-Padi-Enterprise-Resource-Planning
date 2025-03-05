@@ -296,38 +296,65 @@
             });
         });
 
-        // Function to convert PDF to JPG without using canvas element
+       // Event listener untuk tombol WhatsApp Share
+        const whatsappShareButton = document.getElementById("whatsappSharePdf");
+        if (whatsappShareButton) {
+            whatsappShareButton.addEventListener("click", async function () {
+                try {
+                    // Tampilkan loading di tombol
+                    whatsappShareButton.disabled = true;
+                    whatsappShareButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Preparing...';
+
+                    const pdfViewer = document.getElementById("pdfViewer");
+                    const pdfUrl = pdfViewer.src;
+
+                    // Konversi PDF ke JPG
+                    const jpgBlob = await convertPdfToJpg(pdfUrl);
+
+                    // Ambil nomor struk dari modal
+                    const receiptNumber = document.getElementById("pdfModalLabel").textContent.split("#")[1];
+                    const fileName = `receipt-${receiptNumber}.jpg`;
+
+                    // Unduh file otomatis
+                    const filePath = await downloadBlob(jpgBlob, fileName);
+
+                    // Tunggu sebentar agar file selesai diunduh
+                    setTimeout(() => {
+                        openWhatsAppWithImage(filePath, receiptNumber);
+                    }, 3000);
+
+                } catch (error) {
+                    console.error("Error in WhatsApp share process:", error);
+                    alert("Gagal menyiapkan struk untuk dikirim ke WhatsApp.");
+                } finally {
+                    // Reset tombol
+                    whatsappShareButton.disabled = false;
+                    whatsappShareButton.innerHTML = '<i class="bi bi-whatsapp me-1"></i> WhatsApp';
+                }
+            });
+        }
+
+        // Fungsi konversi PDF ke JPG
         async function convertPdfToJpg(pdfUrl) {
             try {
-                // Load PDF
                 const loadingTask = pdfjsLib.getDocument(pdfUrl);
                 const pdf = await loadingTask.promise;
-
-                // Get first page
                 const page = await pdf.getPage(1);
 
-                // Set scale for better resolution
-                const scale = 4;
+                const scale = 3; // Ukuran sedang untuk kompatibilitas di Android
                 const viewport = page.getViewport({ scale });
 
-                // Create an off-screen canvas
                 const canvas = document.createElement("canvas");
                 const context = canvas.getContext("2d");
                 canvas.width = viewport.width;
                 canvas.height = viewport.height;
 
-                // Render PDF page to the canvas
-                const renderContext = {
-                    canvasContext: context,
-                    viewport: viewport
-                };
-                await page.render(renderContext).promise;
+                await page.render({ canvasContext: context, viewport }).promise;
 
-                // Convert canvas to Blob (JPG)
                 return new Promise((resolve) => {
                     canvas.toBlob((blob) => {
                         resolve(blob);
-                    }, "image/jpeg", 0.95);
+                    }, "image/jpeg", 0.9);
                 });
 
             } catch (error) {
@@ -336,68 +363,34 @@
             }
         }
 
-        // Function to download the file
+        // Fungsi untuk mengunduh file otomatis dan mengembalikan path file
         function downloadBlob(blob, fileName) {
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement("a");
-            link.href = url;
-            link.download = fileName;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
+            return new Promise((resolve) => {
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement("a");
+                link.href = url;
+                link.download = fileName;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+
+                // Simpan path file untuk digunakan di WhatsApp
+                resolve(url);
+            });
         }
 
-        // Add this inside the existing DOMContentLoaded event listener
-
-       // Event listener untuk tombol WhatsApp Share
-        // Event listener untuk tombol WhatsApp Share
-const whatsappShareButton = document.getElementById("whatsappSharePdf");
-if (whatsappShareButton) {
-    whatsappShareButton.addEventListener("click", async function () {
-        try {
-            // Tampilkan indikator loading
-            whatsappShareButton.disabled = true;
-            whatsappShareButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Preparing...';
-
-            const pdfViewer = document.getElementById("pdfViewer");
-            const pdfUrl = pdfViewer.src;
-
-            // Konversi PDF ke JPG
-            const jpgBlob = await convertPdfToJpg(pdfUrl);
-
-            // Ambil nomor struk dari modal
-            const receiptNumber = document.getElementById("pdfModalLabel").textContent.split("#")[1];
-            const fileName = `receipt-${receiptNumber}.jpg`;
-
-            // Simpan pesan ke clipboard agar user tinggal paste di WhatsApp
+        // Fungsi membuka WhatsApp dengan gambar dan teks otomatis
+        function openWhatsAppWithImage(filePath, receiptNumber) {
             const message = `Receipt #${receiptNumber}`;
-            await navigator.clipboard.writeText(message);
 
-            // Unduh file secara otomatis
-            const fileUrl = await downloadBlob(jpgBlob, fileName);
+            // Pastikan filePath sudah terdownload dan tersedia
+            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}&attachment=${encodeURIComponent(filePath)}`;
 
-            // Tunggu 2 detik sebelum membuka WhatsApp agar file benar-benar terunduh
-            setTimeout(() => {
-                openWhatsApp();
-            }, 2000);
-
-        } catch (error) {
-            console.error("Error in WhatsApp share process:", error);
-            alert("Gagal memproses struk untuk dikirim ke WhatsApp.");
-        } finally {
-            // Reset tombol ke keadaan semula
-            whatsappShareButton.disabled = false;
-            whatsappShareButton.innerHTML = '<i class="bi bi-whatsapp me-1"></i> WhatsApp';
+            // Buka WhatsApp
+            window.open(whatsappUrl, '_blank');
         }
-    });
-}
 
-// Fungsi membuka WhatsApp dengan pesan otomatis tersalin
-function openWhatsApp() {
-    const whatsappUrl = `https://wa.me/?text=`;
-    window.open(whatsappUrl, '_blank');
-}
 
         // Event listener untuk tombol Share
         const shareButton = document.getElementById("sharePdf");
