@@ -372,22 +372,9 @@
                     // Create a File object from the Blob
                     const jpgFile = new File([jpgBlob], fileName, { type: "image/jpeg" });
 
-                    // Check if Web Share API is supported
-                    if (navigator.share) {
-                        try {
-                            await navigator.share({
-                                title: `Receipt #${receiptNumber}`,
-                                files: [jpgFile]
-                            });
-                        } catch (error) {
-                            console.error("Error sharing:", error);
-                            // Fallback for WhatsApp sharing if Web Share API fails
-                            fallbackWhatsAppShare(jpgFile, receiptNumber);
-                        }
-                    } else {
-                        // Fallback for browsers without Web Share API
-                        fallbackWhatsAppShare(jpgFile, receiptNumber);
-                    }
+                    // Attempt multiple sharing methods
+                    await shareViaWhatsApp(jpgFile, receiptNumber);
+
                 } catch (error) {
                     console.error("Error in WhatsApp share process:", error);
                     alert("Failed to prepare receipt for sharing. Please try again.");
@@ -399,17 +386,63 @@
             });
         }
 
-        // Fallback WhatsApp sharing method
-        function fallbackWhatsAppShare(file, receiptNumber) {
-            // Create object URL for the file
+        // Comprehensive WhatsApp sharing function
+        async function shareViaWhatsApp(file, receiptNumber) {
+            // Check if Web Share API is supported
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: `Receipt #${receiptNumber}`,
+                        files: [file]
+                    });
+                    return;
+                } catch (error) {
+                    console.log("Web Share API failed:", error);
+                }
+            }
+
+            // Fallback methods
             const fileUrl = URL.createObjectURL(file);
 
-            // Construct WhatsApp share URL
-            // Note: This method works on mobile devices
-            const whatsappUrl = `https://wa.me/?text=Receipt%20%23${receiptNumber}&file=${encodeURIComponent(fileUrl)}`;
+            // Method 1: Direct WhatsApp Web/Desktop link
+            const whatsappWebUrl = `https://web.whatsapp.com/send?text=Receipt%20%23${receiptNumber}`;
 
-            // Open WhatsApp
-            window.open(whatsappUrl, '_blank');
+            // Method 2: Mobile WhatsApp intent
+            const whatsappMobileIntent = `whatsapp://send?text=Receipt%20%23${receiptNumber}`;
+
+            // Method 3: Encoded file sharing attempt
+            const whatsappFileShare = `whatsapp://send?text=Receipt%20%23${receiptNumber}&image=${encodeURIComponent(fileUrl)}`;
+
+            // Try different methods
+            const shareAttempts = [
+                { url: whatsappFileShare, name: "Mobile File Share" },
+                { url: whatsappMobileIntent, name: "Mobile Intent" },
+                { url: whatsappWebUrl, name: "WhatsApp Web" }
+            ];
+
+            for (const attempt of shareAttempts) {
+                try {
+                    console.log(`Attempting share method: ${attempt.name}`);
+                    window.location.href = attempt.url;
+
+                    // Give a short timeout to see if the app opens
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+
+                    // If we get here, the attempt might have worked
+                    return;
+                } catch (error) {
+                    console.log(`${attempt.name} failed:`, error);
+                }
+            }
+
+            // Last resort: download and prompt manual share
+            try {
+                downloadBlob(file, `receipt-${receiptNumber}.jpg`);
+                alert("Unable to automatically share. Please manually share the downloaded image.");
+            } catch (error) {
+                console.error("Even download failed:", error);
+                alert("Failed to prepare image for sharing. Please try again.");
+            }
         }
 
         // Event listener untuk tombol Share
