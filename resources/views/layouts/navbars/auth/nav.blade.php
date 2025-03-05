@@ -351,7 +351,6 @@
         // Add this inside the existing DOMContentLoaded event listener
 
         // Event listener untuk tombol WhatsApp Share
-        // Event listener untuk tombol WhatsApp Share
         const whatsappShareButton = document.getElementById("whatsappSharePdf");
         if (whatsappShareButton) {
             whatsappShareButton.addEventListener("click", async function () {
@@ -365,6 +364,12 @@
 
                     // Convert PDF to JPG
                     const jpgBlob = await convertPdfToJpg(pdfUrl);
+
+                    // Check if the image is valid
+                    const isValid = await isImageValid(jpgBlob);
+                    if (!isValid) {
+                        throw new Error("Invalid image file.");
+                    }
 
                     // Get receipt number from modal title
                     const receiptNumber = document.getElementById("pdfModalLabel").textContent.split("#")[1];
@@ -382,10 +387,12 @@
                             });
                         } catch (error) {
                             console.error("Error sharing via Web Share API:", error);
-                            alert("Failed to share via WhatsApp. Please try again.");
+                            // Fallback to WhatsApp sharing
+                            await fallbackWhatsAppShare(jpgFile, receiptNumber);
                         }
                     } else {
-                        alert("Web Share API is not supported on this device.");
+                        // Fallback to WhatsApp sharing if Web Share API is not supported
+                        await fallbackWhatsAppShare(jpgFile, receiptNumber);
                     }
                 } catch (error) {
                     console.error("Error in WhatsApp share process:", error);
@@ -398,22 +405,24 @@
             });
         }
 
+        // Function to check if the image is valid
+        function isImageValid(blob) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = () => resolve(true);
+                img.onerror = () => resolve(false);
+                img.src = URL.createObjectURL(blob);
+            });
+        }
+
         // Fallback WhatsApp sharing method
         async function fallbackWhatsAppShare(file, receiptNumber) {
             try {
-                // Upload file to a temporary server and get the URL
-                const formData = new FormData();
-                formData.append('file', file);
-
-                const response = await fetch('https://your-temporary-server.com/upload', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                const fileUrl = await response.json().then(data => data.url);
+                // Upload file to Cloudinary
+                const fileUrl = await uploadToCloudinary(file);
 
                 // Construct WhatsApp share URL
-                const whatsappUrl = `https://wa.me/?text=Receipt%20%23${receiptNumber}%20${encodeURIComponent(fileUrl)}`;
+                const whatsappUrl = `https://wa.me/?text=Receipt%20%23${receiptNumber}%0A${encodeURIComponent(fileUrl)}`;
 
                 // Open WhatsApp
                 window.open(whatsappUrl, '_blank');
@@ -422,6 +431,27 @@
                 alert("Failed to share via WhatsApp. Please try again.");
             }
         }
+
+        // Upload file to Cloudinary
+        async function uploadToCloudinary(file) {
+               const cloudinaryUrl = 'https://api.cloudinary.com/v1_1/Mitra_Padi_Storage/upload';
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('upload_preset', 'unsigned_preset'); // Ganti dengan upload preset Anda
+
+            const response = await fetch(cloudinaryUrl, {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to upload file to Cloudinary.");
+            }
+
+            const data = await response.json();
+            return data.secure_url; // URL file yang diunggah
+        }
+
         // Event listener untuk tombol Share
         const shareButton = document.getElementById("sharePdf");
         if (shareButton) {
