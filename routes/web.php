@@ -24,6 +24,7 @@ use App\Http\Controllers\RekapDanaController;
 use App\Http\Controllers\KreditNasabahPaluController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KreditTitipanPetaniController;
+use App\Http\Controllers\JPGR2Controller;
 
 use App\Models\RekapDana;
 use Illuminate\Support\Facades\Route;
@@ -41,6 +42,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::view('virtual-reality', 'virtual-reality')->name('virtual-reality');
     Route::view('static-sign-in', 'static-sign-in')->name('sign-in');
     Route::view('static-sign-up', 'static-sign-up')->name('sign-up');
+
+    Route::get('/get-presigned-url', [JPGR2Controller::class, 'getPresignedUrl'])->name('get.presigned.url');
 
 
     Route::resource('utang-ke-operator', UtangKeOperatorController::class);

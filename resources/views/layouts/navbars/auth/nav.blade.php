@@ -349,63 +349,68 @@
         }
 
         // Add this inside the existing DOMContentLoaded event listener
-        // Event listener untuk tombol WhatsApp Share
-        const whatsappShareButton = document.getElementById("whatsappSharePdf");
-        if (whatsappShareButton) {
-            whatsappShareButton.addEventListener("click", async function () {
-                try {
-                    // Show loading state
-                    whatsappShareButton.disabled = true;
-                    whatsappShareButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Preparing...';
-
-                    const pdfViewer = document.getElementById("pdfViewer");
-                    const pdfUrl = pdfViewer.src;
-
-                    // Convert PDF to JPG
-                    const jpgBlob = await convertPdfToJpg(pdfUrl);
-
-                    // Get receipt number from modal title
-                    const receiptNumber = document.getElementById("pdfModalLabel").textContent.split("#")[1];
-
-                    // Upload image and get URL from Cloudinary
-                    const imageUrl = await uploadImageToCloudinary(jpgBlob, `receipt-${receiptNumber}.jpg`);
-
-                    // WhatsApp Intent dengan gambar
-                    const whatsappIntent = `https://wa.me/?text=Receipt%20%23${receiptNumber}%0A${encodeURIComponent(imageUrl)}`;
-
-                    // Buka WhatsApp
-                    window.location.href = whatsappIntent;
-
-                } catch (error) {
-                    console.error("Error in WhatsApp share process:", error);
-                    alert("Failed to prepare receipt for sharing. Please try again.");
-                } finally {
-                    // Reset button state
-                    whatsappShareButton.disabled = false;
-                    whatsappShareButton.innerHTML = '<i class="bi bi-whatsapp me-1"></i> WhatsApp';
-                }
-            });
-        }
-
-        // Fungsi untuk upload gambar ke Cloudinary
-        async function uploadImageToCloudinary(blob, fileName) {
-            const formData = new FormData();
-            formData.append("file", blob);
-            formData.append("upload_preset", "Mitra-Padi"); // Gunakan Upload Preset Cloudinary
-
+        document.getElementById("whatsappSharePdf").addEventListener("click", async function () {
             try {
-                const response = await fetch("https://api.cloudinary.com/v1_1/your_cloud_name/image/upload", {
-                    method: "POST",
-                    body: formData
+                // Tampilkan loading
+                const btn = this;
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Preparing...';
+
+                // Ambil elemen PDF viewer dan URL PDF
+                const pdfViewer = document.getElementById("pdfViewer");
+                const pdfUrl = pdfViewer.src;
+
+                // Konversi PDF ke JPG
+                const jpgBlob = await convertPdfToJpg(pdfUrl);
+
+                // Ambil URL Presigned dari Backend
+                const presignedResponse = await fetch('/get-presigned-url');
+                const { url, fileName } = await presignedResponse.json();
+
+                // Upload File ke Cloudflare R2
+                await fetch(url, {
+                    method: "PUT",
+                    body: jpgBlob,
+                    headers: { "Content-Type": "image/jpeg" },
                 });
 
-                const result = await response.json();
-                return result.secure_url; // URL gambar yang bisa dibagikan
+                // URL Gambar yang sudah diunggah
+                const imageUrl = `https://pub-b2576acededb43e08e7292257cd6a4c8.r2.dev/${fileName}`;
+
+                // Bagikan ke WhatsApp
+                const receiptNumber = document.getElementById("pdfModalLabel").textContent.split("#")[1];
+                const whatsappIntent = `https://wa.me/?text=Receipt%20%23${receiptNumber}%0A${encodeURIComponent(imageUrl)}`;
+                window.location.href = whatsappIntent;
+
             } catch (error) {
-                console.error("Image upload failed:", error);
-                throw new Error("Failed to upload image.");
+                console.error("Error:", error);
+                alert("Failed to prepare receipt. Please try again.");
+            } finally {
+                // Reset tombol
+                const btn = document.getElementById("whatsappSharePdf");
+                btn.disabled = false;
+                btn.innerHTML = '<i class="bi bi-whatsapp me-1"></i> WhatsApp';
             }
+        });
+
+        async function convertPdfToJpg(pdfUrl) {
+            const pdf = await pdfjsLib.getDocument(pdfUrl).promise;
+            const page = await pdf.getPage(1);
+
+            const scale = 2;
+            const viewport = page.getViewport({ scale });
+            const canvas = document.createElement("canvas");
+            const context = canvas.getContext("2d");
+
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+
+            const renderContext = { canvasContext: context, viewport };
+            await page.render(renderContext).promise;
+
+            return new Promise(resolve => canvas.toBlob(resolve, "image/jpeg"));
         }
+
 
 
         // Event listener untuk tombol Share
