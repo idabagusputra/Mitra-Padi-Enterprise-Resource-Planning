@@ -296,90 +296,105 @@
             });
         });
 
-      // Event listener untuk tombol WhatsApp Share
-const whatsappShareButton = document.getElementById("whatsappSharePdf");
-if (whatsappShareButton) {
-    whatsappShareButton.addEventListener("click", async function () {
-        try {
-            // Tampilkan loading di tombol
-            whatsappShareButton.disabled = true;
-            whatsappShareButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Preparing...';
+        // Function to convert PDF to JPG without using canvas element
+        async function convertPdfToJpg(pdfUrl) {
+            try {
+                // Load PDF
+                const loadingTask = pdfjsLib.getDocument(pdfUrl);
+                const pdf = await loadingTask.promise;
 
-            const pdfViewer = document.getElementById("pdfViewer");
-            const pdfUrl = pdfViewer.src;
+                // Get first page
+                const page = await pdf.getPage(1);
 
-            // Konversi PDF ke JPG
-            const jpgBlob = await convertPdfToJpg(pdfUrl);
+                // Set scale for better resolution
+                const scale = 4;
+                const viewport = page.getViewport({ scale });
 
-            // Ambil nomor struk dari modal
-            const receiptNumber = document.getElementById("pdfModalLabel").textContent.split("#")[1];
-            const fileName = `receipt-${receiptNumber}.jpg`;
+                // Create an off-screen canvas
+                const canvas = document.createElement("canvas");
+                const context = canvas.getContext("2d");
+                canvas.width = viewport.width;
+                canvas.height = viewport.height;
 
-            // Simpan file & buka WhatsApp
-            const filePath = await saveFileAndOpenWhatsApp(jpgBlob, fileName, receiptNumber);
+                // Render PDF page to the canvas
+                const renderContext = {
+                    canvasContext: context,
+                    viewport: viewport
+                };
+                await page.render(renderContext).promise;
 
-        } catch (error) {
-            console.error("Error in WhatsApp share process:", error);
-            alert("Gagal menyiapkan struk untuk dikirim ke WhatsApp.");
-        } finally {
-            // Reset tombol
-            whatsappShareButton.disabled = false;
-            whatsappShareButton.innerHTML = '<i class="bi bi-whatsapp me-1"></i> WhatsApp';
+                // Convert canvas to Blob (JPG)
+                return new Promise((resolve) => {
+                    canvas.toBlob((blob) => {
+                        resolve(blob);
+                    }, "image/jpeg", 0.95);
+                });
+
+            } catch (error) {
+                console.error("Error converting PDF to JPG:", error);
+                throw error;
+            }
         }
-    });
-}
 
-// Fungsi konversi PDF ke JPG
-async function convertPdfToJpg(pdfUrl) {
-    try {
-        const loadingTask = pdfjsLib.getDocument(pdfUrl);
-        const pdf = await loadingTask.promise;
-        const page = await pdf.getPage(1);
+        // Function to download the file
+        function downloadBlob(blob, fileName) {
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = fileName;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
 
-        const scale = 3; // Resolusi tinggi untuk gambar
-        const viewport = page.getViewport({ scale });
+        // Add this inside the existing DOMContentLoaded event listener
 
-        const canvas = document.createElement("canvas");
-        const context = canvas.getContext("2d");
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
+        // Event listener untuk tombol WhatsApp Share
+        const whatsappShareButton = document.getElementById("whatsappSharePdf");
+        if (whatsappShareButton) {
+            whatsappShareButton.addEventListener("click", async function () {
+                try {
+                    // Show loading state
+                    whatsappShareButton.disabled = true;
+                    whatsappShareButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Preparing...';
 
-        await page.render({ canvasContext: context, viewport }).promise;
+                    // Ambil nomor kuitansi dari modal title
+                    const receiptNumber = document.getElementById("pdfModalLabel").textContent.split("#")[1];
+                    const fileName = `receipt-${receiptNumber}.jpg`;
 
-        return new Promise((resolve) => {
-            canvas.toBlob((blob) => {
-                resolve(blob);
-            }, "image/jpeg", 0.9);
-        });
+                    // Buat URL publik berdasarkan nama file
+                    const imageUrl = `${window.location.origin}/storage/receipts_jpg/${fileName}`;
 
-    } catch (error) {
-        console.error("Error converting PDF to JPG:", error);
-        throw error;
-    }
-}
+                    // Buat URL WhatsApp
+                    const whatsappUrl = `https://wa.me/?text=Receipt%20%23${receiptNumber}%20${encodeURIComponent(imageUrl)}`;
 
-// Fungsi menyimpan file & membuka WhatsApp otomatis
-async function saveFileAndOpenWhatsApp(blob, fileName, receiptNumber) {
-    return new Promise((resolve) => {
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = fileName;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
+                    // Buka WhatsApp
+                    window.open(whatsappUrl, '_blank');
+                } catch (error) {
+                    console.error("Error in WhatsApp share process:", error);
+                    alert("Failed to prepare receipt for sharing. Please try again.");
+                } finally {
+                    // Reset button state
+                    whatsappShareButton.disabled = false;
+                    whatsappShareButton.innerHTML = '<i class="bi bi-whatsapp me-1"></i> WhatsApp';
+                }
+            });
+        }
 
-        // Tunggu sejenak sebelum membuka WhatsApp
-        setTimeout(() => {
-            const message = `Receipt #${receiptNumber}`;
-            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+
+        // Fallback WhatsApp sharing method
+        function fallbackWhatsAppShare(file, receiptNumber) {
+            // Create object URL for the file
+            const fileUrl = URL.createObjectURL(file);
+
+            // Construct WhatsApp share URL
+            // Note: This method works on mobile devices
+            const whatsappUrl = `https://wa.me/?text=Receipt%20%23${receiptNumber}&file=${encodeURIComponent(fileUrl)}`;
+
+            // Open WhatsApp
             window.open(whatsappUrl, '_blank');
-            resolve(url);
-        }, 1500);
-    });
-}
-
+        }
 
         // Event listener untuk tombol Share
         const shareButton = document.getElementById("sharePdf");
