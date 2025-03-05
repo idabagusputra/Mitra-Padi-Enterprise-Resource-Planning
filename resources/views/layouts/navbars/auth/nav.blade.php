@@ -363,8 +363,8 @@
                     const receiptNumber = document.getElementById("pdfModalLabel").textContent.split("#")[1];
                     const fileName = `receipt-${receiptNumber}.jpg`;
 
-                    // Buat URL publik berdasarkan nama file
-                    const imageUrl = `${window.location.origin}/storage/receipts_jpg/${fileName}`;
+                    // Buat URL langsung ke dalam folder `public/receipts_jpg`
+                    const imageUrl = `${window.location.origin}/receipts_jpg/${fileName}`;
 
                     // Buat URL WhatsApp
                     const whatsappUrl = `https://wa.me/?text=Receipt%20%23${receiptNumber}%20${encodeURIComponent(imageUrl)}`;
