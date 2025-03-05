@@ -352,6 +352,7 @@
 
         // Event listener untuk tombol WhatsApp Share
         const whatsappShareButton = document.getElementById("whatsappSharePdf");
+
         if (whatsappShareButton) {
             whatsappShareButton.addEventListener("click", async function () {
                 try {
@@ -363,14 +364,23 @@
                     const receiptNumber = document.getElementById("pdfModalLabel").textContent.split("#")[1];
                     const fileName = `receipt-${receiptNumber}.jpg`;
 
-                    // Buat URL langsung ke dalam folder `public/receipts_jpg`
+                    // URL gambar di server
                     const imageUrl = `${window.location.origin}/receipts_jpg/${fileName}`;
 
-                    // Buat URL WhatsApp
-                    const whatsappUrl = `https://wa.me/?text=Receipt%20%23${receiptNumber}%20${encodeURIComponent(imageUrl)}`;
+                    // Fetch gambar sebagai blob
+                    const response = await fetch(imageUrl);
+                    const imageBlob = await response.blob();
+                    const imageFile = new File([imageBlob], fileName, { type: "image/jpeg" });
 
-                    // Buka WhatsApp
-                    window.open(whatsappUrl, '_blank');
+                    // Cek apakah Web Share API didukung
+                    if (navigator.canShare && navigator.canShare({ files: [imageFile] })) {
+                        await navigator.share({
+                            title: `Receipt #${receiptNumber}`,
+                            files: [imageFile]
+                        });
+                    } else {
+                        alert("Web Share API tidak didukung di perangkat ini.");
+                    }
                 } catch (error) {
                     console.error("Error in WhatsApp share process:", error);
                     alert("Failed to prepare receipt for sharing. Please try again.");
@@ -381,6 +391,7 @@
                 }
             });
         }
+
 
 
         // Fallback WhatsApp sharing method
