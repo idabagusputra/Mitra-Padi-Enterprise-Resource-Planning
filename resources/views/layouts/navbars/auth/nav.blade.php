@@ -367,26 +367,15 @@
 
                     // Get receipt number from modal title
                     const receiptNumber = document.getElementById("pdfModalLabel").textContent.split("#")[1];
-                    const fileName = `receipt-${receiptNumber}.jpg`;
 
-                    // Create a File object from the Blob
-                    const jpgFile = new File([jpgBlob], fileName, { type: "image/jpeg" });
+                    // Upload image and get URL
+                    const imageUrl = await uploadImageToServer(jpgBlob, `receipt-${receiptNumber}.jpg`);
 
-                    // Check if Web Share API is supported
-                    if (navigator.canShare && navigator.canShare({ files: [jpgFile] })) {
-                        try {
-                            await navigator.share({
-                                title: `Receipt #${receiptNumber}`,
-                                files: [jpgFile]
-                            });
-                            return;
-                        } catch (error) {
-                            console.error("Error sharing via Web Share API:", error);
-                        }
-                    }
+                    // WhatsApp Intent dengan gambar
+                    const whatsappIntent = `https://wa.me/?text=Receipt%20%23${receiptNumber}%0A${encodeURIComponent(imageUrl)}`;
 
-                    // Fallback to WhatsApp Intent
-                    fallbackWhatsAppShare(jpgFile, receiptNumber);
+                    // Buka WhatsApp
+                    window.location.href = whatsappIntent;
 
                 } catch (error) {
                     console.error("Error in WhatsApp share process:", error);
@@ -399,15 +388,23 @@
             });
         }
 
-        // Fallback WhatsApp sharing method using Intent
-        function fallbackWhatsAppShare(file, receiptNumber) {
-            const fileUrl = URL.createObjectURL(file);
+        // Fungsi untuk upload gambar ke server (Contoh menggunakan imgBB API)
+        async function uploadImageToServer(blob, fileName) {
+            const formData = new FormData();
+            formData.append("image", blob, fileName);
 
-            // WhatsApp intent format for Android
-            const whatsappIntent = `intent://send?text=Receipt%20%23${receiptNumber}&file=${encodeURIComponent(fileUrl)}#Intent;package=com.whatsapp;scheme=whatsapp;end;`;
+            try {
+                const response = await fetch("https://api.imgbb.com/1/upload?key=d2e1ad87b0cb357f0331b2f98482e63b", {
+                    method: "POST",
+                    body: formData
+                });
 
-            // Open WhatsApp via intent
-            window.location.href = whatsappIntent;
+                const result = await response.json();
+                return result.data.url; // URL gambar yang bisa dibagikan
+            } catch (error) {
+                console.error("Image upload failed:", error);
+                throw new Error("Failed to upload image.");
+            }
         }
 
         // Event listener untuk tombol Share
