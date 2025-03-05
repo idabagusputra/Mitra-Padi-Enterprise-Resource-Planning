@@ -394,15 +394,21 @@
             const formData = new FormData();
             formData.append("image", imageFile);
 
+            // Ambil token CSRF dari meta tag
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+
             try {
                 const response = await fetch("/upload-to-anonfiles", {
                     method: "POST",
-                    body: formData
+                    body: formData,
+                    headers: {
+                        "X-CSRF-TOKEN": csrfToken, // Kirim CSRF token
+                    },
                 });
 
                 const result = await response.json();
                 if (result.file_url) {
-                    return result.file_url; // Link langsung ke file
+                    return result.file_url;
                 } else {
                     throw new Error("Upload gagal.");
                 }
@@ -411,6 +417,7 @@
                 throw error;
             }
         }
+
 
 
             // Fungsi share via WhatsApp
