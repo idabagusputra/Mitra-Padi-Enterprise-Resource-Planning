@@ -351,7 +351,7 @@
         // Add this inside the existing DOMContentLoaded event listener
 
         const whatsappShareButton = document.getElementById("whatsappSharePdf");
-        const apiKey = "YOUR_IMGBB_API_KEY"; // Ganti dengan API Key imgBB Anda
+        const apiKey = "0bbf25cf4c8cc34597382f7f2681dc80"; // Ganti dengan API Key imgBB Anda
 
         if (whatsappShareButton) {
             whatsappShareButton.addEventListener("click", async function () {
