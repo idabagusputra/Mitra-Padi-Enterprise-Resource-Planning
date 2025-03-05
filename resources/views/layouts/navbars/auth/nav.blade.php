@@ -350,7 +350,76 @@
 
         // Add this inside the existing DOMContentLoaded event listener
 
-        // Event listener untuk tombol WhatsApp Share
+        // Comprehensive WhatsApp sharing function
+        function fallbackWhatsAppShare(file, receiptNumber) {
+            // Detect Android Firefox
+            const isAndroidFirefox = /Android.*Firefox/i.test(navigator.userAgent);
+
+            if (isAndroidFirefox) {
+                try {
+                    // Create a shareable link using the File object
+                    const fileUrl = URL.createObjectURL(file);
+
+                    // Construct multiple intent URLs for WhatsApp sharing
+                    const intentUrls = [
+                        // Method 1: Standard WhatsApp intent with image URL
+                        `intent://send/image/*?url=${encodeURIComponent(fileUrl)}&text=Receipt%20%23${receiptNumber}#Intent;scheme=whatsapp;package=com.whatsapp;action=android.intent.action.SEND;type=image/jpeg;end`,
+
+                        // Method 2: Alternative intent format
+                        `whatsapp://send?text=Receipt%20%23${receiptNumber}&image=${encodeURIComponent(fileUrl)}`,
+
+                        // Method 3: Web WhatsApp with fallback
+                        `https://web.whatsapp.com/send?text=Receipt%20%23${receiptNumber}`
+                    ];
+
+                    // Try each method sequentially
+                    let attemptIndex = 0;
+                    function tryNextMethod() {
+                        if (attemptIndex < intentUrls.length) {
+                            console.log(`Attempting WhatsApp share method: ${attemptIndex + 1}`);
+                            window.location.href = intentUrls[attemptIndex];
+                            attemptIndex++;
+
+                            // Set a timeout to try next method if this one fails
+                            setTimeout(tryNextMethod, 1000);
+                        } else {
+                            // If all methods fail, download the file
+                            downloadBlob(file, `receipt-${receiptNumber}.jpg`);
+                            alert("Unable to share automatically. File downloaded for manual sharing.");
+                        }
+                    }
+
+                    // Start attempting share methods
+                    tryNextMethod();
+
+                } catch (error) {
+                    console.error("WhatsApp share failed on Android Firefox:", error);
+                    alert("Failed to share via WhatsApp. Please try manual sharing.");
+                }
+            } else {
+                // Fallback for other browsers
+                try {
+                    if (navigator.share) {
+                        navigator.share({
+                            title: `Receipt #${receiptNumber}`,
+                            files: [file]
+                        }).catch(error => {
+                            console.error("Web Share API failed:", error);
+                            downloadBlob(file, `receipt-${receiptNumber}.jpg`);
+                        });
+                    } else {
+                        // Download as fallback
+                        downloadBlob(file, `receipt-${receiptNumber}.jpg`);
+                        alert("Unable to automatically share. Please manually share the downloaded image.");
+                    }
+                } catch (error) {
+                    console.error("Share failed:", error);
+                    alert("Failed to share. Please try again.");
+                }
+            }
+        }
+
+        // Modify the existing WhatsApp share button event listener
         const whatsappShareButton = document.getElementById("whatsappSharePdf");
         if (whatsappShareButton) {
             whatsappShareButton.addEventListener("click", async function () {
@@ -372,8 +441,8 @@
                     // Create a File object from the Blob
                     const jpgFile = new File([jpgBlob], fileName, { type: "image/jpeg" });
 
-                    // Attempt multiple sharing methods
-                    await shareViaWhatsApp(jpgFile, receiptNumber);
+                    // Attempt to share
+                    fallbackWhatsAppShare(jpgFile, receiptNumber);
 
                 } catch (error) {
                     console.error("Error in WhatsApp share process:", error);
@@ -385,66 +454,6 @@
                 }
             });
         }
-
-        // Comprehensive WhatsApp sharing function
-        async function shareViaWhatsApp(file, receiptNumber) {
-            // Check if Web Share API is supported
-            if (navigator.share) {
-                try {
-                    await navigator.share({
-                        title: `Receipt #${receiptNumber}`,
-                        files: [file]
-                    });
-                    return;
-                } catch (error) {
-                    console.log("Web Share API failed:", error);
-                }
-            }
-
-            // Fallback methods
-            const fileUrl = URL.createObjectURL(file);
-
-            // Method 1: Direct WhatsApp Web/Desktop link
-            const whatsappWebUrl = `https://web.whatsapp.com/send?text=Receipt%20%23${receiptNumber}`;
-
-            // Method 2: Mobile WhatsApp intent
-            const whatsappMobileIntent = `whatsapp://send?text=Receipt%20%23${receiptNumber}`;
-
-            // Method 3: Encoded file sharing attempt
-            const whatsappFileShare = `whatsapp://send?text=Receipt%20%23${receiptNumber}&image=${encodeURIComponent(fileUrl)}`;
-
-            // Try different methods
-            const shareAttempts = [
-                { url: whatsappFileShare, name: "Mobile File Share" },
-                { url: whatsappMobileIntent, name: "Mobile Intent" },
-                { url: whatsappWebUrl, name: "WhatsApp Web" }
-            ];
-
-            for (const attempt of shareAttempts) {
-                try {
-                    console.log(`Attempting share method: ${attempt.name}`);
-                    window.location.href = attempt.url;
-
-                    // Give a short timeout to see if the app opens
-                    await new Promise(resolve => setTimeout(resolve, 1000));
-
-                    // If we get here, the attempt might have worked
-                    return;
-                } catch (error) {
-                    console.log(`${attempt.name} failed:`, error);
-                }
-            }
-
-            // Last resort: download and prompt manual share
-            try {
-                downloadBlob(file, `receipt-${receiptNumber}.jpg`);
-                alert("Unable to automatically share. Please manually share the downloaded image.");
-            } catch (error) {
-                console.error("Even download failed:", error);
-                alert("Failed to prepare image for sharing. Please try again.");
-            }
-        }
-
         // Event listener untuk tombol Share
         const shareButton = document.getElementById("sharePdf");
         if (shareButton) {
