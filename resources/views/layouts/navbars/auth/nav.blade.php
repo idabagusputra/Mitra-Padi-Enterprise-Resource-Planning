@@ -229,12 +229,15 @@
                     <button id="printPdf" class="btn btn-primary me-2">
                         <i class="bi bi-printer-fill me-1"></i> print
                     </button>
-                    <button id="sharePdf" class="btn btn-info">
+                    <button id="sharePdf" class="btn btn-info me-2  ">
                         <i class="bi bi-floppy-fill me-1"></i> Save
+                    </button>
+                    <button id="whatsappSharePdf" class="btn btn-success me-2">
+                        <i class="bi bi-whatsapp me-1"></i> WhatsApp
                     </button>
                 </div>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="bi bi-x-square me-1"></i> close
+                    <i class="bi bi-x-square-fill me-1"></i> close
                 </button>
             </div>
 
@@ -343,6 +346,70 @@
             link.click();
             document.body.removeChild(link);
             URL.revokeObjectURL(url);
+        }
+
+        // Add this inside the existing DOMContentLoaded event listener
+
+        // Event listener untuk tombol WhatsApp Share
+        const whatsappShareButton = document.getElementById("whatsappSharePdf");
+        if (whatsappShareButton) {
+            whatsappShareButton.addEventListener("click", async function () {
+                try {
+                    // Show loading state
+                    whatsappShareButton.disabled = true;
+                    whatsappShareButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Preparing...';
+
+                    const pdfViewer = document.getElementById("pdfViewer");
+                    const pdfUrl = pdfViewer.src;
+
+                    // Convert PDF to JPG
+                    const jpgBlob = await convertPdfToJpg(pdfUrl);
+
+                    // Get receipt number from modal title
+                    const receiptNumber = document.getElementById("pdfModalLabel").textContent.split("#")[1];
+                    const fileName = `receipt-${receiptNumber}.jpg`;
+
+                    // Create a File object from the Blob
+                    const jpgFile = new File([jpgBlob], fileName, { type: "image/jpeg" });
+
+                    // Check if Web Share API is supported
+                    if (navigator.share) {
+                        try {
+                            await navigator.share({
+                                title: `Receipt #${receiptNumber}`,
+                                files: [jpgFile]
+                            });
+                        } catch (error) {
+                            console.error("Error sharing:", error);
+                            // Fallback for WhatsApp sharing if Web Share API fails
+                            fallbackWhatsAppShare(jpgFile, receiptNumber);
+                        }
+                    } else {
+                        // Fallback for browsers without Web Share API
+                        fallbackWhatsAppShare(jpgFile, receiptNumber);
+                    }
+                } catch (error) {
+                    console.error("Error in WhatsApp share process:", error);
+                    alert("Failed to prepare receipt for sharing. Please try again.");
+                } finally {
+                    // Reset button state
+                    whatsappShareButton.disabled = false;
+                    whatsappShareButton.innerHTML = '<i class="bi bi-whatsapp me-1"></i> WhatsApp';
+                }
+            });
+        }
+
+        // Fallback WhatsApp sharing method
+        function fallbackWhatsAppShare(file, receiptNumber) {
+            // Create object URL for the file
+            const fileUrl = URL.createObjectURL(file);
+
+            // Construct WhatsApp share URL
+            // Note: This method works on mobile devices
+            const whatsappUrl = `https://wa.me/?text=Receipt%20%23${receiptNumber}&file=${encodeURIComponent(fileUrl)}`;
+
+            // Open WhatsApp
+            window.open(whatsappUrl, '_blank');
         }
 
         // Event listener untuk tombol Share
