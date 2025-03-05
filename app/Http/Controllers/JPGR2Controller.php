@@ -15,12 +15,12 @@ class JPGR2Controller extends Controller
 
         $r2Client = new S3Client([
             'version' => 'latest',
-            'region' => 'auto',
+            'region'  => 'auto',
             'endpoint' => 'https://c9961806b72189a4d763edfd8dc0e55f.r2.cloudflarestorage.com',
             'credentials' => [
-                'key' => env('R2_ACCESS_KEY_ID'),
-                'secret' => env('R2_SECRET_ACCESS_KEY'),
-            ],
+                'key'    => '2abc6cf8c76a71e84264efef65031933',
+                'secret' => '1aa2ca39d8480cdbf846807ad5a7a1e492e72ee9a947ead03ef5d8ad67dea45d',
+            ]
         ]);
 
         // Generate Presigned URL (Berlaku 10 Menit)
