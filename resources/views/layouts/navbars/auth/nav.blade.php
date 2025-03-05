@@ -350,60 +350,70 @@
 
         // Add this inside the existing DOMContentLoaded event listener
 
-        // Event listener untuk tombol WhatsApp Share
-        const whatsappShareButton = document.getElementById("whatsappSharePdf");
-        if (whatsappShareButton) {
-            whatsappShareButton.addEventListener("click", async function () {
-                try {
-                    // Show loading state
-                    whatsappShareButton.disabled = true;
-                    whatsappShareButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Preparing...';
+        document.getElementById("whatsappSharePdf").addEventListener("click", async function () {
+            try {
+                const whatsappShareButton = this;
+                whatsappShareButton.disabled = true;
+                whatsappShareButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Uploading...';
 
-                    const pdfViewer = document.getElementById("pdfViewer");
-                    const pdfUrl = pdfViewer.src;
+                const pdfViewer = document.getElementById("pdfViewer");
+                const pdfUrl = pdfViewer.src;
 
-                    // Convert PDF to JPG
-                    const jpgBlob = await convertPdfToJpg(pdfUrl);
+                // Convert PDF to JPG
+                const jpgBlob = await convertPdfToJpg(pdfUrl);
 
-                    // Get receipt number from modal title
-                    const receiptNumber = document.getElementById("pdfModalLabel").textContent.split("#")[1];
+                // Dapatkan nomor receipt dari modal
+                const receiptNumber = document.getElementById("pdfModalLabel").textContent.split("#")[1];
+                const fileName = `receipt-${receiptNumber}.jpg`;
 
-                    // Upload image and get URL
-                    const imageUrl = await uploadImageToServer(jpgBlob, `receipt-${receiptNumber}.jpg`);
+                // Unggah langsung ke Cloudflare R2
+                const r2Url = await uploadToR2(jpgBlob, fileName);
 
-                    // WhatsApp Intent dengan gambar
-                    const whatsappIntent = `https://wa.me/?text=Receipt%20%23${receiptNumber}%0A${encodeURIComponent(imageUrl)}`;
+                if (!r2Url) throw new Error("Upload gagal!");
 
-                    // Buka WhatsApp
-                    window.location.href = whatsappIntent;
+                // Buat link WhatsApp dengan gambar dari Cloudflare R2
+                const whatsappIntent = `https://wa.me/?text=Receipt%20%23${receiptNumber}%0A${encodeURIComponent(r2Url)}`;
+                window.location.href = whatsappIntent;
 
-                } catch (error) {
-                    console.error("Error in WhatsApp share process:", error);
-                    alert("Failed to prepare receipt for sharing. Please try again.");
-                } finally {
-                    // Reset button state
-                    whatsappShareButton.disabled = false;
-                    whatsappShareButton.innerHTML = '<i class="bi bi-whatsapp me-1"></i> WhatsApp';
-                }
-            });
-        }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Gagal mengirim ke WhatsApp!");
+            } finally {
+                whatsappShareButton.disabled = false;
+                whatsappShareButton.innerHTML = '<i class="bi bi-whatsapp me-1"></i> WhatsApp';
+            }
+        });
 
-        // Fungsi untuk upload gambar ke server (Contoh menggunakan imgBB API)
-        async function uploadImageToServer(blob, fileName) {
+        /**
+         * Fungsi untuk mengunggah file ke Cloudflare R2 langsung dari JavaScript
+         */
+        async function uploadToR2(fileBlob, fileName) {
+            const r2Endpoint = "https://c9961806b72189a4d763edfd8dc0e55f.r2.cloudflarestorage.com";
+            const bucketName = "mitra-padi";
+            const accessKey = "2abc6cf8c76a71e84264efef65031933";
+            const secretKey = "1aa2ca39d8480cdbf846807ad5a7a1e492e72ee9a947ead03ef5d8ad67dea45d";
+            const r2PublicBase = "https://pub-b2576acededb43e08e7292257cd6a4c8.r2.dev";
+
             const formData = new FormData();
-            formData.append("image", blob, fileName);
+            formData.append("file", new File([fileBlob], fileName, { type: "image/jpeg" }));
 
             try {
-                const response = await fetch("https://api.imgbb.com/1/upload?key=d2e1ad87b0cb357f0331b2f98482e63b", {
-                    method: "POST",
-                    body: formData
+                const response = await fetch(`${r2Endpoint}/${bucketName}/${fileName}`, {
+                    method: "PUT",
+                    body: fileBlob,
+                    headers: {
+                        "Content-Type": "image/jpeg",
+                        "x-amz-acl": "public-read",
+                        "Authorization": "Basic " + btoa(`${accessKey}:${secretKey}`)
+                    }
                 });
 
-                const result = await response.json();
-                return result.data.url; // URL gambar yang bisa dibagikan
+                if (!response.ok) throw new Error("Gagal mengunggah ke R2!");
+
+                return `${r2PublicBase}/${fileName}`; // URL publik dari Cloudflare R2
             } catch (error) {
-                console.error("Image upload failed:", error);
-                throw new Error("Failed to upload image.");
+                console.error("Upload Error:", error);
+                return null;
             }
         }
 
