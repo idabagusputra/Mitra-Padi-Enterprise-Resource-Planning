@@ -381,23 +381,35 @@
             });
         }
 
-        // 🔹 Upload ke imgBB
         async function uploadToImgBB(imageBlob) {
-            const formData = new FormData();
-            formData.append("image", imageBlob);
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(imageBlob);
+                reader.onloadend = async function () {
+                    const base64Image = reader.result.split(',')[1]; // Ambil bagian Base64 tanpa prefix
+                    const formData = new FormData();
+                    formData.append("image", base64Image);
 
-            const response = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
-                method: "POST",
-                body: formData
+                    try {
+                        const response = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
+                            method: "POST",
+                            body: formData
+                        });
+
+                        const result = await response.json();
+                        if (result.success) {
+                            resolve(result.data.url);
+                        } else {
+                            console.error("Response imgBB:", result);
+                            reject(new Error("Upload imgBB gagal."));
+                        }
+                    } catch (error) {
+                        reject(error);
+                    }
+                };
             });
-
-            const result = await response.json();
-            if (result.success) {
-                return result.data.url; // URL gambar dari imgBB
-            } else {
-                throw new Error("Upload imgBB gagal.");
-            }
         }
+
 
         // 🔹 Bagikan ke WhatsApp
         function shareToWhatsApp(imageUrl) {
