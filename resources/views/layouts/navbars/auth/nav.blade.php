@@ -350,110 +350,78 @@
 
         // Add this inside the existing DOMContentLoaded event listener
 
-        // Comprehensive WhatsApp sharing function
-        // Enhanced WhatsApp sharing function for Android Firefox
-        function fallbackWhatsAppShare(file, receiptNumber) {
-            // Create a FileReader to convert blob to base64
-            const reader = new FileReader();
+        // Event listener untuk tombol WhatsApp Share
+        const whatsappShareButton = document.getElementById("whatsappSharePdf");
+        if (whatsappShareButton) {
+            whatsappShareButton.addEventListener("click", async function () {
+                try {
+                    // Show loading state
+                    whatsappShareButton.disabled = true;
+                    whatsappShareButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Preparing...';
 
-            reader.onloadend = function() {
-                // Get base64 representation of the file
-                const base64data = reader.result;
+                    const pdfViewer = document.getElementById("pdfViewer");
+                    const pdfUrl = pdfViewer.src;
 
-                // Create a hidden input to store the base64 image
-                const hiddenInput = document.createElement('input');
-                hiddenInput.type = 'hidden';
-                hiddenInput.id = 'whatsapp-share-image';
-                hiddenInput.value = base64data;
-                document.body.appendChild(hiddenInput);
+                    // Convert PDF to JPG
+                    const jpgBlob = await convertPdfToJpg(pdfUrl);
 
-                // Create a temporary form to trigger sharing
-                const form = document.createElement('form');
-                form.method = 'post';
-                form.action = `whatsapp://send?text=Receipt%20%23${receiptNumber}`;
-                form.style.display = 'none';
+                    // Get receipt number from modal title
+                    const receiptNumber = document.getElementById("pdfModalLabel").textContent.split("#")[1];
+                    const fileName = `receipt-${receiptNumber}.jpg`;
 
-                // Append a hidden input with the image data
-                const imageInput = document.createElement('input');
-                imageInput.type = 'hidden';
-                imageInput.name = 'image';
-                imageInput.value = base64data;
-                form.appendChild(imageInput);
+                    // Create a File object from the Blob
+                    const jpgFile = new File([jpgBlob], fileName, { type: "image/jpeg" });
 
-                document.body.appendChild(form);
-
-                // Multiple sharing attempts
-                const shareAttempts = [
-                    `intent://send/image/*?base64=${encodeURIComponent(base64data)}&text=Receipt%20%23${receiptNumber}#Intent;scheme=whatsapp;package=com.whatsapp;action=android.intent.action.SEND;type=image/jpeg;end`,
-                    `whatsapp://send?text=Receipt%20%23${receiptNumber}&image=${encodeURIComponent(base64data)}`,
-                    `https://wa.me/?text=Receipt%20%23${receiptNumber}`
-                ];
-
-                // Try each sharing method
-                function attemptShare(index = 0) {
-                    if (index < shareAttempts.length) {
-                        console.log(`Attempting WhatsApp share method: ${index + 1}`);
-
-                        // Create a temporary iframe to try sharing
-                        const iframe = document.createElement('iframe');
-                        iframe.style.display = 'none';
-                        iframe.src = shareAttempts[index];
-                        document.body.appendChild(iframe);
-
-                        // Set timeout to try next method
-                        setTimeout(() => {
-                            document.body.removeChild(iframe);
-                            attemptShare(index + 1);
-                        }, 1500);
+                    // Check if Web Share API is supported
+                    if (navigator.share) {
+                        try {
+                            await navigator.share({
+                                title: `Receipt #${receiptNumber}`,
+                                files: [jpgFile]
+                            });
+                        } catch (error) {
+                            console.error("Error sharing via Web Share API:", error);
+                            // Fallback for WhatsApp sharing if Web Share API fails
+                            await fallbackWhatsAppShare(jpgFile, receiptNumber);
+                        }
                     } else {
-                        // Fallback: download the file
-                        downloadBlob(file, `receipt-${receiptNumber}.jpg`);
-                        alert("Unable to share automatically. File downloaded for manual sharing.");
+                        // Fallback for browsers without Web Share API
+                        await fallbackWhatsAppShare(jpgFile, receiptNumber);
                     }
+                } catch (error) {
+                    console.error("Error in WhatsApp share process:", error);
+                    alert("Failed to prepare receipt for sharing. Please try again.");
+                } finally {
+                    // Reset button state
+                    whatsappShareButton.disabled = false;
+                    whatsappShareButton.innerHTML = '<i class="bi bi-whatsapp me-1"></i> WhatsApp';
                 }
-
-                // Start sharing attempts
-                attemptShare();
-            };
-
-            // Read the file as base64
-            reader.readAsDataURL(file);
+            });
         }
 
-        // Modify the existing WhatsApp share button event listener
-       const whatsappShareButton = document.getElementById("whatsappSharePdf");
-    if (whatsappShareButton) {
-        whatsappShareButton.addEventListener("click", async function () {
+        // Fallback WhatsApp sharing method
+        async function fallbackWhatsAppShare(file, receiptNumber) {
             try {
-                // Show loading state
-                whatsappShareButton.disabled = true;
-                whatsappShareButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Preparing...';
+                // Upload file to a temporary server and get the URL
+                const formData = new FormData();
+                formData.append('file', file);
 
-                const pdfViewer = document.getElementById("pdfViewer");
-                const pdfUrl = pdfViewer.src;
+                const response = await fetch('https://your-temporary-server.com/upload', {
+                    method: 'POST',
+                    body: formData
+                });
 
-                // Convert PDF to JPG
-                const jpgBlob = await convertPdfToJpg(pdfUrl);
+                const fileUrl = await response.json().then(data => data.url);
 
-                // Get receipt number from modal title
-                const receiptNumber = document.getElementById("pdfModalLabel").textContent.split("#")[1];
-                const fileName = `receipt-${receiptNumber}.jpg`;
+                // Construct WhatsApp share URL
+                const whatsappUrl = `https://wa.me/?text=Receipt%20%23${receiptNumber}%20${encodeURIComponent(fileUrl)}`;
 
-                // Create a File object from the Blob
-                const jpgFile = new File([jpgBlob], fileName, { type: "image/jpeg" });
-
-                // Attempt to share
-                fallbackWhatsAppShare(jpgFile, receiptNumber);
-
+                // Open WhatsApp
+                window.open(whatsappUrl, '_blank');
             } catch (error) {
-                console.error("Error in WhatsApp share process:", error);
-                alert("Failed to prepare receipt for sharing. Please try again.");
-            } finally {
-                // Reset button state
-                whatsappShareButton.disabled = false;
-                whatsappShareButton.innerHTML = '<i class="bi bi-whatsapp me-1"></i> WhatsApp';
+                console.error("Error in fallback WhatsApp share:", error);
+                alert("Failed to share via WhatsApp. Please try again.");
             }
-        });
         }
         // Event listener untuk tombol Share
         const shareButton = document.getElementById("sharePdf");
