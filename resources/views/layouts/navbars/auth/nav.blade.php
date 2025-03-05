@@ -350,68 +350,62 @@
 
         // Add this inside the existing DOMContentLoaded event listener
 
-  const whatsappShareButton = document.getElementById("whatsappSharePdf");
-    const apiKey = "d2e1ad87b0cb357f0331b2f98482e63b"; // Ganti dengan API Key imgBB Anda
+        const whatsappShareButton = document.getElementById("whatsappSharePdf");
+        const apiKey = "YOUR_IMGBB_API_KEY"; // Ganti dengan API Key imgBB Anda
 
-    if (whatsappShareButton) {
-        whatsappShareButton.addEventListener("click", async function () {
-            try {
-                whatsappShareButton.disabled = true;
-                whatsappShareButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Preparing...';
+        if (whatsappShareButton) {
+            whatsappShareButton.addEventListener("click", async function () {
+                try {
+                    whatsappShareButton.disabled = true;
+                    whatsappShareButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Preparing...';
 
-                const pdfViewer = document.getElementById("pdfViewer");
-                const pdfUrl = pdfViewer.src;
+                    const pdfViewer = document.getElementById("pdfViewer");
+                    const pdfUrl = pdfViewer.src;
 
-                // 1️⃣ Konversi PDF ke JPG
-                const jpgBlob = await convertPdfToJpg(pdfUrl);
-                const fileName = `receipt.jpg`;
+                    // 1️⃣ Konversi PDF ke JPG
+                    const jpgBlob = await convertPdfToJpg(pdfUrl);
 
-                // 2️⃣ Upload JPG ke imgBB
-                const imageUrl = await uploadToImgBB(jpgBlob, fileName);
+                    // 2️⃣ Upload JPG ke imgBB
+                    const imageUrl = await uploadToImgBB(jpgBlob);
 
-                // 3️⃣ Bagikan ke WhatsApp
-                shareToWhatsApp(imageUrl);
+                    // 3️⃣ Bagikan ke WhatsApp
+                    shareToWhatsApp(imageUrl);
 
-            } catch (error) {
-                console.error("Error in WhatsApp share process:", error);
-                alert("Failed to prepare receipt for sharing. Please try again.");
-            } finally {
-                whatsappShareButton.disabled = false;
-                whatsappShareButton.innerHTML = '<i class="bi bi-whatsapp me-1"></i> WhatsApp';
-            }
-        });
-    }
-
-    // Fungsi Konversi PDF ke JPG (Harus ada library yang mendukung, contoh PDF.js)
-    async function convertPdfToJpg(pdfUrl) {
-        // Implementasikan konversi PDF ke JPG (gunakan library seperti pdf.js atau backend processing)
-        throw new Error("Fungsi konversi PDF ke JPG belum diimplementasikan.");
-    }
-
-    // Fungsi Upload ke imgBB
-    async function uploadToImgBB(imageBlob, fileName) {
-        const formData = new FormData();
-        formData.append("image", imageBlob);
-
-        const response = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
-            method: "POST",
-            body: formData
-        });
-
-        const result = await response.json();
-        if (result.success) {
-            return result.data.url; // URL gambar dari imgBB
-        } else {
-            throw new Error("Upload imgBB gagal.");
+                } catch (error) {
+                    console.error("Error in WhatsApp share process:", error);
+                    alert("Failed to prepare receipt for sharing. Please try again.");
+                } finally {
+                    whatsappShareButton.disabled = false;
+                    whatsappShareButton.innerHTML = '<i class="bi bi-whatsapp me-1"></i> WhatsApp';
+                }
+            });
         }
-    }
 
-    // Fungsi Bagikan ke WhatsApp
-    function shareToWhatsApp(imageUrl) {
-        const message = `Here is your receipt: ${imageUrl}`;
-        const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
-        window.open(whatsappUrl, '_blank');
-    }
+        // 🔹 Upload ke imgBB
+        async function uploadToImgBB(imageBlob) {
+            const formData = new FormData();
+            formData.append("image", imageBlob);
+
+            const response = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
+                method: "POST",
+                body: formData
+            });
+
+            const result = await response.json();
+            if (result.success) {
+                return result.data.url; // URL gambar dari imgBB
+            } else {
+                throw new Error("Upload imgBB gagal.");
+            }
+        }
+
+        // 🔹 Bagikan ke WhatsApp
+        function shareToWhatsApp(imageUrl) {
+            const message = `Here is your receipt: ${imageUrl}`;
+            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
         // Event listener untuk tombol Share
         const shareButton = document.getElementById("sharePdf");
         if (shareButton) {
