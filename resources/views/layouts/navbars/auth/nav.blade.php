@@ -350,73 +350,75 @@
 
         // Add this inside the existing DOMContentLoaded event listener
 
+        // Event listener untuk tombol WhatsApp Share
         const whatsappShareButton = document.getElementById("whatsappSharePdf");
-        const apiKey = "0bbf25cf4c8cc34597382f7f2681dc80"; // Ganti dengan API Key imgBB Anda
 
         if (whatsappShareButton) {
             whatsappShareButton.addEventListener("click", async function () {
                 try {
+                    // Show loading state
                     whatsappShareButton.disabled = true;
                     whatsappShareButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Preparing...';
 
                     const pdfViewer = document.getElementById("pdfViewer");
                     const pdfUrl = pdfViewer.src;
 
-                    // 1️⃣ Konversi PDF ke JPG
+                    // Convert PDF to JPG
                     const jpgBlob = await convertPdfToJpg(pdfUrl);
 
-                    // 2️⃣ Upload JPG ke imgBB
-                    const imageUrl = await uploadToImgBB(jpgBlob);
+                    // Get receipt number from modal title
+                    const receiptNumber = document.getElementById("pdfModalLabel").textContent.split("#")[1];
+                    const fileName = `receipt-${receiptNumber}.jpg`;
 
-                    // 3️⃣ Bagikan ke WhatsApp
-                    shareToWhatsApp(imageUrl);
+                    // Create a File object from the Blob
+                    const jpgFile = new File([jpgBlob], fileName, { type: "image/jpeg" });
+
+                    // Upload ke AnonFiles
+                    const fileUrl = await uploadToAnonFiles(jpgFile);
+
+                    // Kirim ke WhatsApp
+                    shareViaWhatsApp(fileUrl, receiptNumber);
 
                 } catch (error) {
                     console.error("Error in WhatsApp share process:", error);
                     alert("Failed to prepare receipt for sharing. Please try again.");
                 } finally {
+                    // Reset button state
                     whatsappShareButton.disabled = false;
                     whatsappShareButton.innerHTML = '<i class="bi bi-whatsapp me-1"></i> WhatsApp';
                 }
             });
         }
 
-        async function uploadToImgBB(imageBlob) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(imageBlob);
-                reader.onloadend = async function () {
-                    const base64Image = reader.result.split(',')[1]; // Ambil bagian Base64 tanpa prefix
-                    const formData = new FormData();
-                    formData.append("image", base64Image);
+            // Fungsi upload ke AnonFiles
+            async function uploadToAnonFiles(imageFile) {
+                const formData = new FormData();
+                formData.append("file", imageFile);
 
-                    try {
-                        const response = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
-                            method: "POST",
-                            body: formData
-                        });
+                try {
+                    const response = await fetch("https://api.anonfile.la/upload", {
+                        method: "POST",
+                        body: formData
+                    });
 
-                        const result = await response.json();
-                        if (result.success) {
-                            resolve(result.data.url);
-                        } else {
-                            console.error("Response imgBB:", result);
-                            reject(new Error("Upload imgBB gagal."));
-                        }
-                    } catch (error) {
-                        reject(error);
+                    const result = await response.json();
+                    if (result.status) {
+                        return result.data.file.url.full; // Link langsung ke file
+                    } else {
+                        throw new Error("Upload ke AnonFiles gagal.");
                     }
-                };
-            });
-        }
+                } catch (error) {
+                    console.error("Error uploading to AnonFiles:", error);
+                    throw error;
+                }
+            }
 
+            // Fungsi share via WhatsApp
+            function shareViaWhatsApp(fileUrl, receiptNumber) {
+                const whatsappUrl = `https://wa.me/?text=Receipt%20%23${receiptNumber}%0A${encodeURIComponent(fileUrl)}`;
+                window.open(whatsappUrl, '_blank');
+            }
 
-        // 🔹 Bagikan ke WhatsApp
-        function shareToWhatsApp(imageUrl) {
-            const message = `Here is your receipt: ${imageUrl}`;
-            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
-            window.open(whatsappUrl, '_blank');
-        }
 
         // Event listener untuk tombol Share
         const shareButton = document.getElementById("sharePdf");
