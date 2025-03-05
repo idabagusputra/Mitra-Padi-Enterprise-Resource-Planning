@@ -351,6 +351,7 @@
         // Add this inside the existing DOMContentLoaded event listener
 
         // Event listener untuk tombol WhatsApp Share
+        // Event listener untuk tombol WhatsApp Share
         const whatsappShareButton = document.getElementById("whatsappSharePdf");
         if (whatsappShareButton) {
             whatsappShareButton.addEventListener("click", async function () {
@@ -381,12 +382,10 @@
                             });
                         } catch (error) {
                             console.error("Error sharing via Web Share API:", error);
-                            // Fallback for WhatsApp sharing if Web Share API fails
-                            await fallbackWhatsAppShare(jpgFile, receiptNumber);
+                            alert("Failed to share via WhatsApp. Please try again.");
                         }
                     } else {
-                        // Fallback for browsers without Web Share API
-                        await fallbackWhatsAppShare(jpgFile, receiptNumber);
+                        alert("Web Share API is not supported on this device.");
                     }
                 } catch (error) {
                     console.error("Error in WhatsApp share process:", error);
