@@ -354,26 +354,42 @@
             try {
                 const whatsappShareButton = this;
                 whatsappShareButton.disabled = true;
-                whatsappShareButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Uploading...';
+                whatsappShareButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Preparing...';
 
                 const pdfViewer = document.getElementById("pdfViewer");
                 const pdfUrl = pdfViewer.src;
 
-                // Convert PDF to JPG
+                // Konversi PDF ke JPG
                 const jpgBlob = await convertPdfToJpg(pdfUrl);
 
                 // Dapatkan nomor receipt dari modal
                 const receiptNumber = document.getElementById("pdfModalLabel").textContent.split("#")[1];
                 const fileName = `receipt-${receiptNumber}.jpg`;
 
-                // Unggah langsung ke Cloudflare R2
-                const r2Url = await uploadToR2(jpgBlob, fileName);
+                // Buat objek file dari Blob
+                const jpgFile = new File([jpgBlob], fileName, { type: "image/jpeg" });
 
-                if (!r2Url) throw new Error("Upload gagal!");
+                // Simpan JPG ke perangkat lokal
+                const fileUrl = URL.createObjectURL(jpgBlob);
+                const downloadLink = document.createElement("a");
+                downloadLink.href = fileUrl;
+                downloadLink.download = fileName;
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
 
-                // Buat link WhatsApp dengan gambar dari Cloudflare R2
-                const whatsappIntent = `https://wa.me/?text=Receipt%20%23${receiptNumber}%0A${encodeURIComponent(r2Url)}`;
-                window.location.href = whatsappIntent;
+                // Gunakan Web Share API untuk kirim ke WhatsApp
+                if (navigator.canShare && navigator.canShare({ files: [jpgFile] })) {
+                    await navigator.share({
+                        title: `Receipt #${receiptNumber}`,
+                        text: `Here is your receipt #${receiptNumber}`,
+                        files: [jpgFile]
+                    });
+                } else {
+                    // Jika Web Share API tidak didukung, fallback ke WhatsApp link
+                    const whatsappIntent = `https://wa.me/?text=Receipt%20%23${receiptNumber}`;
+                    window.open(whatsappIntent, "_blank");
+                }
 
             } catch (error) {
                 console.error("Error:", error);
@@ -384,38 +400,6 @@
             }
         });
 
-        /**
-         * Fungsi untuk mengunggah file ke Cloudflare R2 langsung dari JavaScript
-         */
-        async function uploadToR2(fileBlob, fileName) {
-            const r2Endpoint = "https://c9961806b72189a4d763edfd8dc0e55f.r2.cloudflarestorage.com";
-            const bucketName = "mitra-padi";
-            const accessKey = "2abc6cf8c76a71e84264efef65031933";
-            const secretKey = "1aa2ca39d8480cdbf846807ad5a7a1e492e72ee9a947ead03ef5d8ad67dea45d";
-            const r2PublicBase = "https://pub-b2576acededb43e08e7292257cd6a4c8.r2.dev";
-
-            const formData = new FormData();
-            formData.append("file", new File([fileBlob], fileName, { type: "image/jpeg" }));
-
-            try {
-                const response = await fetch(`${r2Endpoint}/${bucketName}/${fileName}`, {
-                    method: "PUT",
-                    body: fileBlob,
-                    headers: {
-                        "Content-Type": "image/jpeg",
-                        "x-amz-acl": "public-read",
-                        "Authorization": "Basic " + btoa(`${accessKey}:${secretKey}`)
-                    }
-                });
-
-                if (!response.ok) throw new Error("Gagal mengunggah ke R2!");
-
-                return `${r2PublicBase}/${fileName}`; // URL publik dari Cloudflare R2
-            } catch (error) {
-                console.error("Upload Error:", error);
-                return null;
-            }
-        }
 
         // Event listener untuk tombol Share
         const shareButton = document.getElementById("sharePdf");
