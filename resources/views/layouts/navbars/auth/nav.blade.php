@@ -349,56 +349,63 @@
         }
 
         // Add this inside the existing DOMContentLoaded event listener
+        // Event listener untuk tombol WhatsApp Share
+        const whatsappShareButton = document.getElementById("whatsappSharePdf");
+        if (whatsappShareButton) {
+            whatsappShareButton.addEventListener("click", async function () {
+                try {
+                    // Show loading state
+                    whatsappShareButton.disabled = true;
+                    whatsappShareButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Preparing...';
 
-        document.getElementById("whatsappSharePdf").addEventListener("click", async function () {
-            try {
-                const whatsappShareButton = this;
-                whatsappShareButton.disabled = true;
-                whatsappShareButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Preparing...';
+                    const pdfViewer = document.getElementById("pdfViewer");
+                    const pdfUrl = pdfViewer.src;
 
-                const pdfViewer = document.getElementById("pdfViewer");
-                const pdfUrl = pdfViewer.src;
+                    // Convert PDF to JPG
+                    const jpgBlob = await convertPdfToJpg(pdfUrl);
 
-                // Konversi PDF ke JPG
-                const jpgBlob = await convertPdfToJpg(pdfUrl);
+                    // Get receipt number from modal title
+                    const receiptNumber = document.getElementById("pdfModalLabel").textContent.split("#")[1];
 
-                // Dapatkan nomor receipt dari modal
-                const receiptNumber = document.getElementById("pdfModalLabel").textContent.split("#")[1];
-                const fileName = `receipt-${receiptNumber}.jpg`;
+                    // Upload image and get URL from Cloudinary
+                    const imageUrl = await uploadImageToCloudinary(jpgBlob, `receipt-${receiptNumber}.jpg`);
 
-                // Buat objek file dari Blob
-                const jpgFile = new File([jpgBlob], fileName, { type: "image/jpeg" });
+                    // WhatsApp Intent dengan gambar
+                    const whatsappIntent = `https://wa.me/?text=Receipt%20%23${receiptNumber}%0A${encodeURIComponent(imageUrl)}`;
 
-                // Simpan JPG ke perangkat lokal
-                const fileUrl = URL.createObjectURL(jpgBlob);
-                const downloadLink = document.createElement("a");
-                downloadLink.href = fileUrl;
-                downloadLink.download = fileName;
-                document.body.appendChild(downloadLink);
-                downloadLink.click();
-                document.body.removeChild(downloadLink);
+                    // Buka WhatsApp
+                    window.location.href = whatsappIntent;
 
-                // Gunakan Web Share API untuk kirim ke WhatsApp
-                if (navigator.canShare && navigator.canShare({ files: [jpgFile] })) {
-                    await navigator.share({
-                        title: `Receipt #${receiptNumber}`,
-                        text: `Here is your receipt #${receiptNumber}`,
-                        files: [jpgFile]
-                    });
-                } else {
-                    // Jika Web Share API tidak didukung, fallback ke WhatsApp link
-                    const whatsappIntent = `https://wa.me/?text=Receipt%20%23${receiptNumber}`;
-                    window.open(whatsappIntent, "_blank");
+                } catch (error) {
+                    console.error("Error in WhatsApp share process:", error);
+                    alert("Failed to prepare receipt for sharing. Please try again.");
+                } finally {
+                    // Reset button state
+                    whatsappShareButton.disabled = false;
+                    whatsappShareButton.innerHTML = '<i class="bi bi-whatsapp me-1"></i> WhatsApp';
                 }
+            });
+        }
 
+        // Fungsi untuk upload gambar ke Cloudinary
+        async function uploadImageToCloudinary(blob, fileName) {
+            const formData = new FormData();
+            formData.append("file", blob);
+            formData.append("upload_preset", "Mitra-Padi"); // Gunakan Upload Preset Cloudinary
+
+            try {
+                const response = await fetch("https://api.cloudinary.com/v1_1/your_cloud_name/image/upload", {
+                    method: "POST",
+                    body: formData
+                });
+
+                const result = await response.json();
+                return result.secure_url; // URL gambar yang bisa dibagikan
             } catch (error) {
-                console.error("Error:", error);
-                alert("Gagal mengirim ke WhatsApp!");
-            } finally {
-                whatsappShareButton.disabled = false;
-                whatsappShareButton.innerHTML = '<i class="bi bi-whatsapp me-1"></i> WhatsApp';
+                console.error("Image upload failed:", error);
+                throw new Error("Failed to upload image.");
             }
-        });
+        }
 
 
         // Event listener untuk tombol Share
