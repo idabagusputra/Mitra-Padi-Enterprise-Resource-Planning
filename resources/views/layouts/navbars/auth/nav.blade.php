@@ -393,11 +393,11 @@ if (whatsappShareButton) {
     });
 }
 
-        // Fungsi membuka WhatsApp dengan pesan otomatis
-        function openWhatsAppWithMessage(receiptNumber) {
-            const whatsappUrl = `https://wa.me/?text=Receipt%20%23${receiptNumber}`;
-            window.open(whatsappUrl, '_blank');
-        }
+// Fungsi membuka WhatsApp dengan pesan otomatis tersalin
+function openWhatsApp() {
+    const whatsappUrl = `https://wa.me/?text=`;
+    window.open(whatsappUrl, '_blank');
+}
 
         // Event listener untuk tombol Share
         const shareButton = document.getElementById("sharePdf");
