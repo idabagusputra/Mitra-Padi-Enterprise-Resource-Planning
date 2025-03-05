@@ -350,48 +350,47 @@
 
         // Add this inside the existing DOMContentLoaded event listener
 
+       // Event listener untuk tombol WhatsApp Share
+        const whatsappShareButton = document.getElementById("whatsappSharePdf");
+        if (whatsappShareButton) {
+            whatsappShareButton.addEventListener("click", async function () {
+                try {
+                    // Tampilkan indikator loading
+                    whatsappShareButton.disabled = true;
+                    whatsappShareButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Preparing...';
 
-        // Function to share via WhatsApp
-        async function shareToWhatsApp() {
-            const whatsappShareButton = document.getElementById("whatsappSharePdf");
-            if (!whatsappShareButton) return;
+                    const pdfViewer = document.getElementById("pdfViewer");
+                    const pdfUrl = pdfViewer.src;
 
-            try {
-                whatsappShareButton.disabled = true;
-                whatsappShareButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Preparing...';
+                    // Konversi PDF ke JPG
+                    const jpgBlob = await convertPdfToJpg(pdfUrl);
 
-                const pdfViewer = document.getElementById("pdfViewer");
-                const pdfUrl = pdfViewer.src;
-                const jpgBlob = await convertPdfToJpg(pdfUrl);
+                    // Ambil nomor struk dari modal
+                    const receiptNumber = document.getElementById("pdfModalLabel").textContent.split("#")[1];
+                    const fileName = `receipt-${receiptNumber}.jpg`;
 
-                const receiptNumber = document.getElementById("pdfModalLabel").textContent.split("#")[1];
-                const fileName = `receipt-${receiptNumber}.jpg`;
+                    // Unduh file JPG terlebih dahulu
+                    const fileUrl = await downloadBlob(jpgBlob, fileName);
 
-                // Download file first
-                const fileUrl = await downloadBlob(jpgBlob, fileName);
+                    // Buka WhatsApp dengan pesan prefilled
+                    openWhatsAppWithMessage(receiptNumber);
 
-                // Open WhatsApp with prefilled message
-                const whatsappUrl = `https://wa.me/?text=Receipt%20%23${receiptNumber}`;
-                window.open(whatsappUrl, '_blank');
-
-                alert(`Receipt saved as ${fileName}. Silakan unggah ke WhatsApp secara manual.`);
-
-            } catch (error) {
-                console.error("Error in WhatsApp sharing:", error);
-                alert("Gagal memproses struk untuk dikirim ke WhatsApp.");
-            } finally {
-                whatsappShareButton.disabled = false;
-                whatsappShareButton.innerHTML = '<i class="bi bi-whatsapp me-1"></i> WhatsApp';
-            }
+                } catch (error) {
+                    console.error("Error in WhatsApp share process:", error);
+                    alert("Gagal memproses struk untuk dikirim ke WhatsApp.");
+                } finally {
+                    // Reset tombol ke keadaan semula
+                    whatsappShareButton.disabled = false;
+                    whatsappShareButton.innerHTML = '<i class="bi bi-whatsapp me-1"></i> WhatsApp';
+                }
+            });
         }
 
-        // Attach event listener
-        document.addEventListener("DOMContentLoaded", () => {
-            const whatsappShareButton = document.getElementById("whatsappSharePdf");
-            if (whatsappShareButton) {
-                whatsappShareButton.addEventListener("click", shareToWhatsApp);
-            }
-        });
+        // Fungsi membuka WhatsApp dengan pesan otomatis
+        function openWhatsAppWithMessage(receiptNumber) {
+            const whatsappUrl = `https://wa.me/?text=Receipt%20%23${receiptNumber}`;
+            window.open(whatsappUrl, '_blank');
+        }
 
         // Event listener untuk tombol Share
         const shareButton = document.getElementById("sharePdf");
