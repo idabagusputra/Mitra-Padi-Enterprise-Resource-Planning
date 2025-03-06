@@ -30,25 +30,51 @@
             padding: 0;
         }
 
-        html, body {
-            height: 100%;
-            width: 100%;
-            overflow: hidden;
-        }
-
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: white;
+            background-color: #f5f7fa;
             color: var(--dark-color);
             line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .app-container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .app-header {
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #eaeaea;
+        }
+
+        .app-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin: 0;
+            flex-grow: 1;
+        }
+
+        .app-icon {
+            margin-right: 12px;
+            color: var(--primary-color);
+            font-size: 2rem;
         }
 
         .table-container {
-            flex: 1;
-            overflow-y: auto;
-            width: 100%;
+            overflow-x: auto;
+            margin-bottom: 20px;
+            border-radius:.5rem;
+            border: 1px solid #eaeaea;
         }
 
         table {
@@ -65,7 +91,6 @@
             padding: 12px 10px;
             position: sticky;
             top: 0;
-            z-index: 10;
         }
 
         td {
@@ -142,9 +167,6 @@
             font-weight: bold;
             background-color: #f0f4ff !important;
             color: var(--dark-color);
-            position: sticky;
-            bottom: 0;
-            z-index: 10;
         }
 
         .total-row td {
@@ -163,18 +185,21 @@
             color: var(--primary-color);
         }
 
-        .action-bar {
-            padding: 10px;
-            background-color: #f8f9fa;
-            border-top: 1px solid #eaeaea;
-            width: 100%;
-            text-align: center;
-            position: sticky;
-            bottom: 0;
-            z-index: 20;
+        .action-buttons {
+            margin-top: 16px;
+            display: flex;
+            gap: 10px;
         }
 
         @media (max-width: 768px) {
+            .app-container {
+                padding: 16px;
+            }
+
+            .app-title {
+                font-size: 1.4rem;
+            }
+
             th, td {
                 padding: 10px 8px;
             }
@@ -196,6 +221,14 @@
         }
 
         @media (max-width: 480px) {
+            .app-container {
+                padding: 12px;
+            }
+
+            .app-title {
+                font-size: 1.2rem;
+            }
+
             th, td {
                 padding: 8px 6px;
                 font-size: 14px;
@@ -214,35 +247,42 @@
     </style>
 </head>
 <body>
-    <div class="table-container">
-        <table id="kalkulatorTable">
-            <thead>
-                <tr>
-                    <th>JUMLAH</th>
-                    <th>HARGA</th>
-                    <th>HASIL</th>
-                    <th>AKSI</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><input inputmode="decimal" type="text" class="input-field jumlah" oninput="formatJumlah(this); hitung(this)" placeholder="Kg"></td>
-                    <td><input inputmode="decimal" type="text" class="input-field harga" oninput="formatHarga(this); hitung(this)" placeholder="Rp"></td>
-                    <td class="hasil hasil-cell">0</td>
-                    <td><button class="btn btn-danger" onclick="hapusBaris(this)"><i class="fas fa-trash-alt"></i>Hapus</button></td>
-                </tr>
-                <tr class="total-row">
-                    <td class="total-value" id="totalJumlah">0</td>
-                    <td class="total-value" id="totalRata">0</td>
-                    <td class="total-value" id="totalHasil">0</td>
-                    <td class="total-label">TOTAL</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+    <div class="app-container">
+        {{-- <div class="app-header">
+            <i class="app-icon fas fa-calculator"></i>
+            <h1 class="app-title">Kalkulator Penjualan Beras</h1>
+        </div> --}}
 
-    <div class="action-bar">
-        <button class="btn btn-primary" onclick="tambahBaris()"><i class="fas fa-plus"></i>Tambah Baris</button>
+        <div class="table-container">
+            <table id="kalkulatorTable">
+                <thead>
+                    <tr>
+                        <th>JUMLAH</th>
+                        <th>HARGA</th>
+                        <th>HASIL</th>
+                        <th>AKSI</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input inputmode="decimal" type="text" class="input-field jumlah" oninput="formatJumlah(this); hitung(this)" placeholder="Kg"></td>
+                        <td><input inputmode="decimal" type="text" class="input-field harga" oninput="formatHarga(this); hitung(this)" placeholder="Rp"></td>
+                        <td class="hasil hasil-cell">0</td>
+                        <td><button class="btn btn-danger" onclick="hapusBaris(this)"><i class="fas fa-trash-alt"></i>Hapus</button></td>
+                    </tr>
+                    <tr class="total-row">
+                        <td class="total-value" id="totalJumlah">0</td>
+                        <td class="total-value" id="totalRata">0</td>
+                        <td class="total-value" id="totalHasil">0</td>
+                        <td class="total-label">TOTAL</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn btn-primary" onclick="tambahBaris()"><i class="fas fa-plus"></i>Tambah Baris</button>
+        </div>
     </div>
 
     <script>
@@ -313,17 +353,6 @@
             row.remove();
             hitungTotal();
         }
-
-        // Adjust height on window resize
-        window.addEventListener('resize', adjustHeight);
-
-        // Initial height adjustment
-        function adjustHeight() {
-            let vh = window.innerHeight;
-            document.documentElement.style.setProperty('--vh', `${vh}px`);
-        }
-
-        adjustHeight();
     </script>
 </body>
 </html>
