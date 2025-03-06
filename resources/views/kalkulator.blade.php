@@ -341,8 +341,8 @@
             let table = document.getElementById("kalkulatorTable");
             let row = table.insertRow(table.rows.length - 1);
             row.innerHTML = `
-                <td><input type="text" class="input-field jumlah" oninput="formatJumlah(this); hitung(this)" placeholder="Kg"></td>
-                <td><input type="text" class="input-field harga" oninput="formatHarga(this); hitung(this)" placeholder="Rp"></td>
+                <td><input inputmode="decimal" type="text" class="input-field jumlah" oninput="formatJumlah(this); hitung(this)" placeholder="Kg"></td>
+                <td><input inputmode="decimal" type="text" class="input-field harga" oninput="formatHarga(this); hitung(this)" placeholder="Rp"></td>
                 <td class="hasil hasil-cell">0</td>
                 <td><button class="btn btn-danger" onclick="hapusBaris(this)"><i class="fas fa-trash-alt"></i>Hapus</button></td>
             `;
