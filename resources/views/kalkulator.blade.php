@@ -257,8 +257,8 @@
             <table id="kalkulatorTable">
                 <thead>
                     <tr>
-                        <th>JUMLAH (KG)</th>
-                        <th>HARGA (RP)</th>
+                        <th>JUMLAH</th>
+                        <th>HARGA</th>
                         <th>HASIL</th>
                         <th>AKSI</th>
                     </tr>
