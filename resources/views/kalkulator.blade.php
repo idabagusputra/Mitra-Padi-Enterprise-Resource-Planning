@@ -66,6 +66,7 @@
             position: sticky;
             top: 0;
             z-index: 10;
+            font-size: 16px;
         }
 
         td {
@@ -107,7 +108,6 @@
             padding: 8px 16px;
             border: none;
             border-radius: 6px;
-            font-size: 14px;
             font-weight: 500;
             cursor: pointer;
             transition: all 0.2s;
@@ -119,6 +119,7 @@
         .btn-danger {
             background-color: #ff5a5f;
             color: white;
+            font-size: 14px;
         }
 
         .btn-danger:hover {
@@ -128,6 +129,10 @@
         .btn-primary {
             background-color: var(--primary-color);
             color: white;
+            width: 100%;
+            height: 50px;
+            font-size: 16px;
+            border-radius: 0;
         }
 
         .btn-primary:hover {
@@ -142,9 +147,6 @@
             font-weight: bold;
             background-color: #f0f4ff !important;
             color: var(--dark-color);
-            position: sticky;
-            bottom: 0;
-            z-index: 10;
         }
 
         .total-row td {
@@ -164,14 +166,8 @@
         }
 
         .action-bar {
-            padding: 10px;
-            background-color: #f8f9fa;
-            border-top: 1px solid #eaeaea;
             width: 100%;
-            text-align: center;
-            position: sticky;
-            bottom: 0;
-            z-index: 20;
+            margin-top: auto;
         }
 
         @media (max-width: 768px) {
@@ -188,11 +184,6 @@
                 padding: 12px 8px;
                 font-size: 15px;
             }
-
-            .btn {
-                padding: 8px 12px;
-                font-size: 13px;
-            }
         }
 
         @media (max-width: 480px) {
@@ -204,11 +195,6 @@
             .input-field {
                 padding: 6px;
                 font-size: 13px;
-            }
-
-            .btn {
-                padding: 6px 10px;
-                font-size: 12px;
             }
         }
     </style>
@@ -242,7 +228,7 @@
     </div>
 
     <div class="action-bar">
-        <button class="btn btn-primary" onclick="tambahBaris()"><i class="fas fa-plus"></i>Tambah Baris</button>
+        <button class="btn btn-primary" onclick="tambahBaris()"><i class="fas fa-plus"></i>TAMBAH BARIS</button>
     </div>
 
     <script>
