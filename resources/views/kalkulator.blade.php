@@ -223,6 +223,7 @@
                     <td class="total-value" id="totalHasil">0</td>
                     <td class="total-label">TOTAL</td>
                 </tr>
+
             </tbody>
         </table>
     </div>
