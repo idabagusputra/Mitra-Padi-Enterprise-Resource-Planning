@@ -539,7 +539,7 @@
 
             // Jumlah = Sak × 50
             let nilaiJumlah = sak * KG_PER_SAK;
-            jumlah.textContent = formatRibuan(nilaiJumlah.toFixed(2));
+            jumlah.textContent = formatRibuan(nilaiJumlah.toFixed(0));
 
             // Hasil = Jumlah × Harga
             let nilaiHasil = nilaiJumlah * harga;
