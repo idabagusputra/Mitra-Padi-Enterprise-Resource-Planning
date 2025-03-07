@@ -308,9 +308,9 @@
             </table>
 
 
-            <div class="action-bar">
+            {{-- <div class="action-bar">
                 <button class="btn btn-primary" onclick="tambahBarisJumlah()"><i class="fas fa-plus"></i>TAMBAH BARIS</button>
-            </div>
+            </div> --}}
         </div>
 
         <!-- Kalkulator Sak -->
@@ -355,17 +355,17 @@
                 </tr>
             </table>
 
-            <div class="action-bar">
+            {{-- <div class="action-bar">
                 <button class="btn btn-primary" onclick="tambahBarisSak()"><i class="fas fa-plus"></i>TAMBAH BARIS</button>
-            </div>
+            </div> --}}
         </div>
 
         <!-- Toggle buttons at the bottom -->
         <div class="toggle-container">
-            <button class="toggle-btn active" onclick="toggleCalculator('jumlah')">
+            <button class="toggle-btn btn-primary active " onclick="toggleCalculator('jumlah')">
                 <i class="fas fa-balance-scale"></i> Jumlah (Kg)
             </button>
-            <button class="toggle-btn" onclick="toggleCalculator('sak')">
+            <button class="toggle-btn btn-primary" onclick="toggleCalculator('sak')">
                 <i class="fas fa-box"></i> Sak Beras
             </button>
         </div>
