@@ -385,7 +385,7 @@
             let selisih = jumlahDana - totalHasilJumlah;
 
             // Perbarui nilai pada elemen dengan id selisih
-            document.getElementById('selisih').textContent = "Rp " + formatRibuan(selisih.toFixed(2));
+            document.getElementById('selisih').textContent = "Rp " + formatRibuan(selisih.toFixed(0));
         }
 
         function hitungSelisihSak() {
@@ -399,7 +399,7 @@
             let selisih = jumlahDana - totalHasilSak;
 
             // Perbarui nilai pada elemen dengan id selisih di tabel Sak
-            document.querySelector('#sakTableSelisih .selisih').textContent = "Rp " + formatRibuan(selisih.toFixed(2));
+            document.querySelector('#sakTableSelisih .selisih').textContent = "Rp " + formatRibuan(selisih.toFixed(0));
         }
 
         function toggleCalculator(type) {
@@ -446,7 +446,7 @@
             let hasil = row.querySelector(".hasil");
 
             let nilaiHasil = jumlah * harga;
-            hasil.textContent = "Rp " + formatRibuan(nilaiHasil.toFixed(2));
+            hasil.textContent = "Rp " + formatRibuan(nilaiHasil.toFixed(0));
 
             hitungTotalJumlah();
         }
@@ -465,9 +465,9 @@
 
             let totalRata = totalJumlah ? totalHasil / totalJumlah : 0;
 
-            document.getElementById("totalJumlah").textContent = formatRibuan(totalJumlah.toFixed(2));
-            document.getElementById("totalHasilJumlah").textContent = "Rp " + formatRibuan(totalHasil.toFixed(2));
-            document.getElementById("totalRataJumlah").textContent = "Rp " + formatRibuan(totalRata.toFixed(2));
+            document.getElementById("totalJumlah").textContent = formatRibuan(totalJumlah.toFixed(0));
+            document.getElementById("totalHasilJumlah").textContent = "Rp " + formatRibuan(totalHasil.toFixed(0));
+            document.getElementById("totalRataJumlah").textContent = "Rp " + formatRibuan(totalRata.toFixed(0));
 
             // Panggil fungsi hitungSelisih setelah menghitung total
             hitungSelisih();
@@ -543,7 +543,7 @@
 
             // Hasil = Jumlah × Harga
             let nilaiHasil = nilaiJumlah * harga;
-            hasil.textContent = "Rp " + formatRibuan(nilaiHasil.toFixed(2));
+            hasil.textContent = "Rp " + formatRibuan(nilaiHasil.toFixed(0));
 
             hitungTotalSak();
         }
@@ -582,10 +582,10 @@
             // Harga rata-rata per kg
             let rataHarga = countHarga ? totalHarga / countHarga : 0;
 
-            document.getElementById("totalSak").textContent = formatRibuan(totalSak.toFixed(2));
-            document.getElementById("totalJumlahSak").textContent = formatRibuan(totalJumlah.toFixed(2));
-            document.getElementById("totalHasilSak").textContent = "Rp " + formatRibuan(totalHasil.toFixed(2));
-            document.getElementById("totalRataSak").textContent = "Rp " + formatRibuan(rataHarga.toFixed(2));
+            document.getElementById("totalSak").textContent = formatRibuan(totalSak.toFixed(0));
+            document.getElementById("totalJumlahSak").textContent = formatRibuan(totalJumlah.toFixed(0));
+            document.getElementById("totalHasilSak").textContent = "Rp " + formatRibuan(totalHasil.toFixed(0));
+            document.getElementById("totalRataSak").textContent = "Rp " + formatRibuan(rataHarga.toFixed(0));
 
             // Panggil fungsi hitungSelisihSak setelah menghitung total
             hitungSelisihSak();
