@@ -465,7 +465,7 @@
 
             let totalRata = totalJumlah ? totalHasil / totalJumlah : 0;
 
-            document.getElementById("totalJumlah").textContent = formatRibuan(totalJumlah.toFixed(0));
+            document.getElementById("totalJumlah").textContent = formatRibuan(totalJumlah.toFixed(0) + " Kg");
             document.getElementById("totalHasilJumlah").textContent = "Rp " + formatRibuan(totalHasil.toFixed(0));
             document.getElementById("totalRataJumlah").textContent = "Rp " + formatRibuan(totalRata.toFixed(0));
 
@@ -539,7 +539,7 @@
 
             // Jumlah = Sak × 50
             let nilaiJumlah = sak * KG_PER_SAK;
-            jumlah.textContent = formatRibuan(nilaiJumlah.toFixed(0));
+            jumlah.textContent = formatRibuan(nilaiJumlah.toFixed(0) + " Kg");
 
             // Hasil = Jumlah × Harga
             let nilaiHasil = nilaiJumlah * harga;
@@ -583,7 +583,7 @@
             let rataHarga = countHarga ? totalHarga / countHarga : 0;
 
             document.getElementById("totalSak").textContent = formatRibuan(totalSak.toFixed(0));
-            document.getElementById("totalJumlahSak").textContent = formatRibuan(totalJumlah.toFixed(0));
+            document.getElementById("totalJumlahSak").textContent = formatRibuan(totalJumlah.toFixed(0) + " Kg");
             document.getElementById("totalHasilSak").textContent = "Rp " + formatRibuan(totalHasil.toFixed(0));
             document.getElementById("totalRataSak").textContent = "Rp " + formatRibuan(rataHarga.toFixed(0));
 
