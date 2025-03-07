@@ -297,6 +297,17 @@
                 </table>
             </div>
 
+            <table id="TableSelisih" class="table-auto total-row w-full border-collapse border border-gray-300 mb-2">
+                <tr>
+                    <td style="width: 40%;">
+                        <input inputmode="decimal" type="text" class="input-field dana" oninput="formatHarga(this); hitungSelisih()" onkeydown="handleEnterKeySak(event, this)" placeholder="Jumlah Dana (Rp)">
+                    </td>
+                    <td class="total-value selisih" style="width: 40%; text-align: center; font-weight: bold;" id="selisih">0</td>
+                    <td class="total-label" style="width: 16.65%;">SELISIH</td>
+                </tr>
+            </table>
+
+
             <div class="action-bar">
                 <button class="btn btn-primary" onclick="tambahBarisJumlah()"><i class="fas fa-plus"></i>TAMBAH BARIS</button>
             </div>
@@ -310,7 +321,7 @@
                         <tr>
                             <th>SAK</th>
                             <th>HARGA</th>
-                            <th>JUMLAH (Kg)</th>
+                            <th>JUMLAH</th>
                             <th>HASIL</th>
                             <th>AKSI</th>
                         </tr>
@@ -334,6 +345,16 @@
                 </table>
             </div>
 
+           <table id="sakTableSelisih" class="table-auto total-row w-full border-collapse border border-gray-300 mb-2">
+                <tr>
+                    <td style="width: 40%;">
+                        <input inputmode="decimal" type="text" class="input-field dana" oninput="formatHarga(this); hitungSelisihSak()" onkeydown="handleEnterKeySak(event, this)" placeholder="Jumlah Dana (Rp)">
+                    </td>
+                    <td class="total-value selisih" style="width: 40%; text-align: center; font-weight: bold;">0</td>
+                    <td class="total-label" style="width: 16.65%;">SELISIH</td>
+                </tr>
+            </table>
+
             <div class="action-bar">
                 <button class="btn btn-primary" onclick="tambahBarisSak()"><i class="fas fa-plus"></i>TAMBAH BARIS</button>
             </div>
@@ -352,6 +373,34 @@
 
     <script>
         const KG_PER_SAK = 50; // Konstanta: 1 Sak = 50 Kg
+
+        function hitungSelisih() {
+            // Ambil nilai Jumlah Dana
+            let jumlahDana = getNumber(document.querySelector('.dana'));
+
+            // Ambil nilai totalHasilJumlah
+            let totalHasilJumlah = parseFloat(document.getElementById('totalHasilJumlah').textContent.replace(/Rp /g, "").replace(/,/g, "")) || 0;
+
+            // Hitung selisih
+            let selisih = jumlahDana - totalHasilJumlah;
+
+            // Perbarui nilai pada elemen dengan id selisih
+            document.getElementById('selisih').textContent = "Rp " + formatRibuan(selisih.toFixed(2));
+        }
+
+        function hitungSelisihSak() {
+            // Ambil nilai Jumlah Dana
+            let jumlahDana = getNumber(document.querySelector('#sakTableSelisih .dana'));
+
+            // Ambil nilai totalHasilSak
+            let totalHasilSak = parseFloat(document.getElementById('totalHasilSak').textContent.replace(/Rp /g, "").replace(/,/g, "")) || 0;
+
+            // Hitung selisih
+            let selisih = jumlahDana - totalHasilSak;
+
+            // Perbarui nilai pada elemen dengan id selisih di tabel Sak
+            document.querySelector('#sakTableSelisih .selisih').textContent = "Rp " + formatRibuan(selisih.toFixed(2));
+        }
 
         function toggleCalculator(type) {
             // Update button states
@@ -419,6 +468,9 @@
             document.getElementById("totalJumlah").textContent = formatRibuan(totalJumlah.toFixed(2));
             document.getElementById("totalHasilJumlah").textContent = "Rp " + formatRibuan(totalHasil.toFixed(2));
             document.getElementById("totalRataJumlah").textContent = "Rp " + formatRibuan(totalRata.toFixed(2));
+
+            // Panggil fungsi hitungSelisih setelah menghitung total
+            hitungSelisih();
         }
 
         function tambahBarisJumlah() {
@@ -534,6 +586,9 @@
             document.getElementById("totalJumlahSak").textContent = formatRibuan(totalJumlah.toFixed(2));
             document.getElementById("totalHasilSak").textContent = "Rp " + formatRibuan(totalHasil.toFixed(2));
             document.getElementById("totalRataSak").textContent = "Rp " + formatRibuan(rataHarga.toFixed(2));
+
+            // Panggil fungsi hitungSelisihSak setelah menghitung total
+            hitungSelisihSak();
         }
 
         function tambahBarisSak() {
