@@ -302,7 +302,7 @@
                     <td style="width: 40%;">
                         <input inputmode="decimal" type="text" class="input-field dana" oninput="formatHarga(this); hitungSelisih()" onkeydown="handleEnterKeySak(event, this)" placeholder="Jumlah Dana (Rp)">
                     </td>
-                    <td class="total-value selisih" style="width: 40%; text-align: center; font-weight: bold;" id="selisih">0</td>
+                    <td class="total-value selisih" style="width: 40%; text-align: center; font-weight: bold;" id="selisih">SELISIH</td>
                     {{-- <td class="total-label" style="width: 16.65%;">SELISIH</td> --}}
                 </tr>
             </table>
@@ -350,7 +350,7 @@
                     <td style="width: 50%;">
                         <input inputmode="decimal" type="text" class="input-field dana" oninput="formatHarga(this); hitungSelisihSak()" onkeydown="handleEnterKeySak(event, this)" placeholder="Jumlah Dana (Rp)">
                     </td>
-                    <td class="total-value selisih" style="width: 50%; text-align: center; font-weight: bold;">0</td>
+                    <td class="total-value selisih" style="width: 50%; text-align: center; font-weight: bold;">SELISIH</td>
                     {{-- <td class="total-label" style="width: 16.65%;">SELISIH</td> --}}
                 </tr>
             </table>
