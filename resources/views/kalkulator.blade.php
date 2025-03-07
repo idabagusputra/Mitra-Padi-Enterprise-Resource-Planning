@@ -45,6 +45,27 @@
             flex-direction: column;
         }
 
+        .header {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 20px;
+            font-weight: 500;
+        }
+
+        .calculator-container {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
         .table-container {
             flex: 1;
             overflow-y: auto;
@@ -102,6 +123,11 @@
         .hasil-cell {
             font-weight: 500;
             color: var(--primary-color);
+        }
+
+        .jumlah-cell {
+            font-weight: 500;
+            color: var(--success-color);
         }
 
         .btn {
@@ -167,7 +193,42 @@
 
         .action-bar {
             width: 100%;
-            margin-top: auto;
+        }
+
+        .toggle-container {
+            display: flex;
+            width: 100%;
+        }
+
+        .toggle-btn {
+            padding: 12px 16px;
+            border: none;
+            border-radius: 0;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            background-color: var(--secondary-color);
+            color: white;
+            flex: 1;
+            font-size: 16px;
+        }
+
+        .toggle-btn.active {
+            background-color: var(--primary-color);
+        }
+
+        .toggle-btn:hover:not(.active) {
+            background-color: #4a41d5;
+        }
+
+        .calculator {
+            display: none;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .calculator.active {
+            display: flex;
         }
 
         @media (max-width: 768px) {
@@ -196,47 +257,123 @@
                 padding: 6px;
                 font-size: 13px;
             }
+
+            .toggle-btn {
+                padding: 10px 12px;
+                font-size: 14px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="table-container">
-        <table id="kalkulatorTable">
-            <thead>
-                <tr>
-                    <th>JUMLAH</th>
-                    <th>HARGA</th>
-                    <th>HASIL</th>
-                    <th>AKSI</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><input inputmode="decimal" type="text" class="input-field jumlah" oninput="formatJumlah(this); hitung(this)" placeholder="Kg"></td>
-                    <td><input inputmode="decimal" type="text" class="input-field harga" oninput="formatHarga(this); hitung(this)" placeholder="Rp"></td>
-                    <td class="hasil hasil-cell">0</td>
-                    <td><button class="btn btn-danger" onclick="hapusBaris(this)"><i class="fas fa-trash-alt"></i>Hapus</button></td>
-                </tr>
-                <tr class="total-row">
-                    <td class="total-value" id="totalJumlah">0</td>
-                    <td class="total-value" id="totalRata">0</td>
-                    <td class="total-value" id="totalHasil">0</td>
-                    <td class="total-label">TOTAL</td>
-                </tr>
 
-            </tbody>
-        </table>
-    </div>
+    <div class="calculator-container">
+        <!-- Kalkulator Jumlah -->
+        <div id="jumlahCalculator" class="calculator active">
+            <div class="table-container">
+                <table id="jumlahTable">
+                    <thead>
+                        <tr>
+                            <th>JUMLAH</th>
+                            <th>HARGA</th>
+                            <th>HASIL</th>
+                            <th>AKSI</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input inputmode="decimal" type="text" class="input-field jumlah" oninput="formatJumlah(this); hitungJumlah(this)" onkeydown="handleEnterKeyJumlah(event, this)" placeholder="Kg"></td>
+                            <td><input inputmode="decimal" type="text" class="input-field harga" oninput="formatHarga(this); hitungJumlah(this)" onkeydown="handleEnterKeyJumlah(event, this)" placeholder="Rp"></td>
+                            <td class="hasil hasil-cell">0</td>
+                            <td><button class="btn btn-danger" onclick="hapusBarisJumlah(this)"><i class="fas fa-trash-alt"></i>Hapus</button></td>
+                        </tr>
+                        <tr class="total-row">
+                            <td class="total-value" id="totalJumlah">0</td>
+                            <td class="total-value" id="totalRataJumlah">0</td>
+                            <td class="total-value" id="totalHasilJumlah">0</td>
+                            <td class="total-label">TOTAL</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
-    <div class="action-bar">
-        <button class="btn btn-primary" onclick="tambahBaris()"><i class="fas fa-plus"></i>TAMBAH BARIS</button>
+            <div class="action-bar">
+                <button class="btn btn-primary" onclick="tambahBarisJumlah()"><i class="fas fa-plus"></i>TAMBAH BARIS</button>
+            </div>
+        </div>
+
+        <!-- Kalkulator Sak -->
+        <div id="sakCalculator" class="calculator">
+            <div class="table-container">
+                <table id="sakTable">
+                    <thead>
+                        <tr>
+                            <th>SAK</th>
+                            <th>HARGA</th>
+                            <th>JUMLAH (Kg)</th>
+                            <th>HASIL</th>
+                            <th>AKSI</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input inputmode="decimal" type="text" class="input-field sak" oninput="formatSak(this); hitungSak(this)" onkeydown="handleEnterKeySak(event, this)" placeholder="Sak"></td>
+                            <td><input inputmode="decimal" type="text" class="input-field harga" oninput="formatHarga(this); hitungSak(this)" onkeydown="handleEnterKeySak(event, this)" placeholder="Rp"></td>
+                            <td class="jumlah jumlah-cell">0</td>
+                            <td class="hasil hasil-cell">0</td>
+                            <td><button class="btn btn-danger" onclick="hapusBarisSak(this)"><i class="fas fa-trash-alt"></i>Hapus</button></td>
+                        </tr>
+                        <tr class="total-row">
+                            <td class="total-value" id="totalSak">0</td>
+                            <td class="total-value" id="totalRataSak">0</td>
+                            <td class="total-value" id="totalJumlahSak">0</td>
+                            <td class="total-value" id="totalHasilSak">0</td>
+                            <td class="total-label">TOTAL</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="action-bar">
+                <button class="btn btn-primary" onclick="tambahBarisSak()"><i class="fas fa-plus"></i>TAMBAH BARIS</button>
+            </div>
+        </div>
+
+        <!-- Toggle buttons at the bottom -->
+        <div class="toggle-container">
+            <button class="toggle-btn active" onclick="toggleCalculator('jumlah')">
+                <i class="fas fa-balance-scale"></i> Jumlah (Kg)
+            </button>
+            <button class="toggle-btn" onclick="toggleCalculator('sak')">
+                <i class="fas fa-box"></i> Sak Beras
+            </button>
+        </div>
     </div>
 
     <script>
-        function formatRibuan(angka) {
-            return angka.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        const KG_PER_SAK = 50; // Konstanta: 1 Sak = 50 Kg
+
+        function toggleCalculator(type) {
+            // Update button states
+            document.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+
+            // Hide all calculators
+            document.querySelectorAll('.calculator').forEach(calc => calc.classList.remove('active'));
+
+            // Show selected calculator
+            if (type === 'jumlah') {
+                document.getElementById('jumlahCalculator').classList.add('active');
+            } else if (type === 'sak') {
+                document.getElementById('sakCalculator').classList.add('active');
+            }
         }
 
+        function formatRibuan(angka) {
+            return angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        // FUNCTIONS FOR JUMLAH CALCULATOR
         function formatJumlah(input) {
             let angka = input.value.replace(/,/g, "").replace(/[^\d.]/g, ""); // Hanya angka & titik
             let parts = angka.split('.');
@@ -253,7 +390,7 @@
             return parseFloat(input.value.replace(/Rp /g, "").replace(/,/g, "")) || 0;
         }
 
-        function hitung(input) {
+        function hitungJumlah(input) {
             let row = input.closest("tr");
             let jumlah = getNumber(row.querySelector(".jumlah"));
             let harga = getNumber(row.querySelector(".harga"));
@@ -262,49 +399,196 @@
             let nilaiHasil = jumlah * harga;
             hasil.textContent = "Rp " + formatRibuan(nilaiHasil.toFixed(2));
 
-            hitungTotal();
+            hitungTotalJumlah();
         }
 
-        function hitungTotal() {
+        function hitungTotalJumlah() {
             let totalJumlah = 0;
             let totalHasil = 0;
 
-            document.querySelectorAll(".jumlah").forEach(input => {
+            document.querySelectorAll("#jumlahTable .jumlah").forEach(input => {
                 totalJumlah += getNumber(input);
             });
 
-            document.querySelectorAll(".hasil").forEach(td => {
+            document.querySelectorAll("#jumlahTable .hasil").forEach(td => {
                 totalHasil += parseFloat(td.textContent.replace(/Rp /g, "").replace(/,/g, "")) || 0;
             });
 
             let totalRata = totalJumlah ? totalHasil / totalJumlah : 0;
 
             document.getElementById("totalJumlah").textContent = formatRibuan(totalJumlah.toFixed(2));
-            document.getElementById("totalHasil").textContent = "Rp " + formatRibuan(totalHasil.toFixed(2));
-            document.getElementById("totalRata").textContent = "Rp " + formatRibuan(totalRata.toFixed(2));
+            document.getElementById("totalHasilJumlah").textContent = "Rp " + formatRibuan(totalHasil.toFixed(2));
+            document.getElementById("totalRataJumlah").textContent = "Rp " + formatRibuan(totalRata.toFixed(2));
         }
 
-        function tambahBaris() {
-            let table = document.getElementById("kalkulatorTable");
+        function tambahBarisJumlah() {
+            let table = document.getElementById("jumlahTable");
             let row = table.insertRow(table.rows.length - 1);
             row.innerHTML = `
-                <td><input inputmode="decimal" type="text" class="input-field jumlah" oninput="formatJumlah(this); hitung(this)" placeholder="Kg"></td>
-                <td><input inputmode="decimal" type="text" class="input-field harga" oninput="formatHarga(this); hitung(this)" placeholder="Rp"></td>
+                <td><input inputmode="decimal" type="text" class="input-field jumlah" oninput="formatJumlah(this); hitungJumlah(this)" onkeydown="handleEnterKeyJumlah(event, this)" placeholder="Kg"></td>
+                <td><input inputmode="decimal" type="text" class="input-field harga" oninput="formatHarga(this); hitungJumlah(this)" onkeydown="handleEnterKeyJumlah(event, this)" placeholder="Rp"></td>
                 <td class="hasil hasil-cell">0</td>
-                <td><button class="btn btn-danger" onclick="hapusBaris(this)"><i class="fas fa-trash-alt"></i>Hapus</button></td>
+                <td><button class="btn btn-danger" onclick="hapusBarisJumlah(this)"><i class="fas fa-trash-alt"></i>Hapus</button></td>
             `;
+
+            // Focus on the new jumlah input
+            setTimeout(() => {
+                row.querySelector('.jumlah').focus();
+            }, 100);
         }
 
-        function hapusBaris(button) {
+        function hapusBarisJumlah(button) {
             let row = button.closest("tr");
             row.remove();
-            hitungTotal();
+            hitungTotalJumlah();
         }
 
-        // Adjust height on window resize
+        function handleEnterKeyJumlah(event, input) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+
+                const row = input.closest('tr');
+
+                // If this is jumlah input, move to harga input
+                if (input.classList.contains('jumlah')) {
+                    row.querySelector('.harga').focus();
+                }
+                // If this is harga input
+                else if (input.classList.contains('harga')) {
+                    // Is this the last row before total?
+                    const allRows = Array.from(document.querySelectorAll('#jumlahTable tr:not(.total-row)'));
+                    const currentRowIndex = allRows.indexOf(row);
+
+                    // If it's the last row, add a new row
+                    if (currentRowIndex === allRows.length - 1) {
+                        tambahBarisJumlah();
+                    } else {
+                        // If not, move to the jumlah input of the next row
+                        allRows[currentRowIndex + 1].querySelector('.jumlah').focus();
+                    }
+                }
+            }
+        }
+
+        // FUNCTIONS FOR SAK CALCULATOR
+        function formatSak(input) {
+            let angka = input.value.replace(/,/g, "").replace(/[^\d.]/g, ""); // Hanya angka & titik
+            let parts = angka.split('.');
+            if (parts.length > 2) angka = parts[0] + '.' + parts.slice(1).join('');
+            input.value = angka ? formatRibuan(angka) : "";
+        }
+
+        function hitungSak(input) {
+            let row = input.closest("tr");
+            let sak = getNumber(row.querySelector(".sak"));
+            let harga = getNumber(row.querySelector(".harga"));
+            let jumlah = row.querySelector(".jumlah");
+            let hasil = row.querySelector(".hasil");
+
+            // Jumlah = Sak × 50
+            let nilaiJumlah = sak * KG_PER_SAK;
+            jumlah.textContent = formatRibuan(nilaiJumlah.toFixed(2));
+
+            // Hasil = Jumlah × Harga
+            let nilaiHasil = nilaiJumlah * harga;
+            hasil.textContent = "Rp " + formatRibuan(nilaiHasil.toFixed(2));
+
+            hitungTotalSak();
+        }
+
+        function hitungTotalSak() {
+            let totalSak = 0;
+            let totalJumlah = 0;
+            let totalHasil = 0;
+            let totalHarga = 0;
+            let countHarga = 0;
+
+            document.querySelectorAll("#sakTable .sak").forEach(input => {
+                totalSak += getNumber(input);
+            });
+
+            document.querySelectorAll("#sakTable .harga").forEach(input => {
+                let nilai = getNumber(input);
+                if (nilai > 0) {
+                    totalHarga += nilai;
+                    countHarga++;
+                }
+            });
+
+            document.querySelectorAll("#sakTable .jumlah").forEach(td => {
+                if (td.textContent !== "0") {
+                    totalJumlah += parseFloat(td.textContent.replace(/,/g, "")) || 0;
+                }
+            });
+
+            document.querySelectorAll("#sakTable .hasil").forEach(td => {
+                if (td.textContent !== "0") {
+                    totalHasil += parseFloat(td.textContent.replace(/Rp /g, "").replace(/,/g, "")) || 0;
+                }
+            });
+
+            // Harga rata-rata per kg
+            let rataHarga = countHarga ? totalHarga / countHarga : 0;
+
+            document.getElementById("totalSak").textContent = formatRibuan(totalSak.toFixed(2));
+            document.getElementById("totalJumlahSak").textContent = formatRibuan(totalJumlah.toFixed(2));
+            document.getElementById("totalHasilSak").textContent = "Rp " + formatRibuan(totalHasil.toFixed(2));
+            document.getElementById("totalRataSak").textContent = "Rp " + formatRibuan(rataHarga.toFixed(2));
+        }
+
+        function tambahBarisSak() {
+            let table = document.getElementById("sakTable");
+            let row = table.insertRow(table.rows.length - 1);
+            row.innerHTML = `
+                <td><input inputmode="decimal" type="text" class="input-field sak" oninput="formatSak(this); hitungSak(this)" onkeydown="handleEnterKeySak(event, this)" placeholder="Sak"></td>
+                <td><input inputmode="decimal" type="text" class="input-field harga" oninput="formatHarga(this); hitungSak(this)" onkeydown="handleEnterKeySak(event, this)" placeholder="Rp"></td>
+                <td class="jumlah jumlah-cell">0</td>
+                <td class="hasil hasil-cell">0</td>
+                <td><button class="btn btn-danger" onclick="hapusBarisSak(this)"><i class="fas fa-trash-alt"></i>Hapus</button></td>
+            `;
+
+            // Focus on the new sak input
+            setTimeout(() => {
+                row.querySelector('.sak').focus();
+            }, 100);
+        }
+
+        function hapusBarisSak(button) {
+            let row = button.closest("tr");
+            row.remove();
+            hitungTotalSak();
+        }
+
+        function handleEnterKeySak(event, input) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+
+                const row = input.closest('tr');
+
+                // If this is sak input, move to harga input
+                if (input.classList.contains('sak')) {
+                    row.querySelector('.harga').focus();
+                }
+                // If this is harga input
+                else if (input.classList.contains('harga')) {
+                    // Is this the last row before total?
+                    const allRows = Array.from(document.querySelectorAll('#sakTable tr:not(.total-row)'));
+                    const currentRowIndex = allRows.indexOf(row);
+
+                    // If it's the last row, add a new row
+                    if (currentRowIndex === allRows.length - 1) {
+                        tambahBarisSak();
+                    } else {
+                        // If not, move to the sak input of the next row
+                        allRows[currentRowIndex + 1].querySelector('.sak').focus();
+                    }
+                }
+            }
+        }
+
+        // Window resizing
         window.addEventListener('resize', adjustHeight);
 
-        // Initial height adjustment
         function adjustHeight() {
             let vh = window.innerHeight;
             document.documentElement.style.setProperty('--vh', `${vh}px`);

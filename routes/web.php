@@ -223,6 +223,7 @@ Route::group(['middleware' => 'guest'], function () {
     Route::get('/kalkulator', function () {
         return view('kalkulator');
     });
+
     Route::get('/', [HomeController::class, 'home']);
     Route::get('/register', [RegisterController::class, 'create']);
     Route::post('/register', [RegisterController::class, 'store']);
