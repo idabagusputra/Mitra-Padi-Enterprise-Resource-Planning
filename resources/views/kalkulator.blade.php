@@ -218,7 +218,7 @@
         }
 
         .toggle-btn:hover:not(.active) {
-            background-color: #4361ee;
+            background-color: #4a41d5;
         }
 
         .calculator {
