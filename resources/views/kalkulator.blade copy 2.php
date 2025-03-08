@@ -15,480 +15,257 @@
     </script>
     <style>
         :root {
-            --primary-color: #6c5ce7;
-            --primary-dark: #5549c9;
-            --primary-light: #a29bfe;
-            --secondary-color: #00cec9;
-            --accent-color: #fd79a8;
-            --dark-color: #2d3436;
-            --light-color: #f7f7f7;
-            --success-color: #00b894;
-            --warning-color: #fdcb6e;
-            --danger-color: #ff7675;
-            --card-shadow: 0 10px 30px rgba(108, 92, 231, 0.1);
-            --border-radius: 16px;
-            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #f72585;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --success-color: #38b000;
+            --warning-color: #ffaa00;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
         }
 
         html, body {
             height: 100%;
             width: 100%;
             overflow: hidden;
-            background: var(--light-color);
-            color: var(--dark-color);
         }
 
         body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: white;
+            color: var(--dark-color);
+            line-height: 1.6;
             display: flex;
             flex-direction: column;
-            background: linear-gradient(135deg, #f7f7f7 0%, #e6e9f0 100%);
         }
 
         .header {
-            background: linear-gradient(120deg, var(--primary-color), var(--primary-dark));
+            background-color: var(--primary-color);
             color: white;
             text-align: center;
-            padding: 20px 0;
-            border-radius: 0 0 var(--border-radius) var(--border-radius);
-            box-shadow: var(--card-shadow);
-            margin-bottom: 15px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .header::before {
-            content: '';
-            position: absolute;
-            top: -20px;
-            left: -20px;
-            width: 140%;
-            height: 140%;
-            background: radial-gradient(circle, transparent 20%, rgba(255, 255, 255, 0.05) 21%, transparent 22%), radial-gradient(circle, transparent 20%, rgba(255, 255, 255, 0.05) 21%, transparent 22%);
-            background-size: 30px 30px;
-            background-position: 0 0, 15px 15px;
-            transform: rotate(-5deg);
-            z-index: 0;
+            padding: 10px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .header h1 {
-            font-size: 28px;
-            font-weight: 700;
-            margin: 0;
-            position: relative;
-            z-index: 1;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            font-size: 20px;
+            font-weight: 500;
         }
 
         .calculator-container {
             display: flex;
             flex-direction: column;
             flex: 1;
-            padding: 15px 15px 15px;
-            max-width: 1200px;
-            margin: 0 auto;
-            width: 100%;
         }
 
         .table-container {
             flex: 1;
             overflow-y: auto;
-            background: white;
-            border-radius: var(--border-radius);
-            box-shadow: var(--card-shadow);
-            padding: 10px;
-            margin-bottom: 15px;
-            position: relative;
-            border: 1px solid rgba(108, 92, 231, 0.1);
+            width: 100%;
         }
 
         table {
             width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
+            border-collapse: collapse;
             font-size: 16px;
         }
 
         th {
-            background: linear-gradient(120deg, var(--primary-color), var(--primary-dark));
+            background-color: var(--primary-color);
             color: white;
-            font-weight: 600;
+            font-weight: 500;
             text-align: center;
-            padding: 15px 10px;
+            padding: 12px 10px;
             position: sticky;
             top: 0;
             z-index: 10;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-size: 14px;
-            border-radius: 10px 10px 0 0;
-        }
-
-        th:first-child {
-            border-top-left-radius: 10px;
-        }
-
-        th:last-child {
-            border-top-right-radius: 10px;
+            font-size: 16px;
         }
 
         td {
-            padding: 15px 10px;
+            padding: 12px 10px;
             text-align: center;
-            border-bottom: 1px solid rgba(108, 92, 231, 0.1);
-            transition: var(--transition);
-            font-weight: 400;
+            border-bottom: 1px solid #eaeaea;
         }
 
         tr:nth-child(even) {
-            background-color: rgba(108, 92, 231, 0.03);
+            background-color: #f8f9fa;
         }
 
         tr:hover:not(.total-row) {
-            background-color: rgba(108, 92, 231, 0.08);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(108, 92, 231, 0.1);
+            background-color: #e6f7ff;
         }
 
         .input-field {
             width: 100%;
-            padding: 12px 15px;
-            border: 2px solid rgba(108, 92, 231, 0.2);
-            border-radius: 12px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
             font-size: 16px;
             text-align: center;
-            transition: var(--transition);
-            background: white;
+            transition: border-color 0.2s;
         }
 
         .input-field:focus {
             outline: none;
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.15);
-            transform: translateY(-2px);
-        }
-
-        .input-field::placeholder {
-            color: rgba(45, 52, 54, 0.4);
+            box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
         }
 
         .hasil-cell {
-            font-weight: 600;
+            font-weight: 500;
             color: var(--primary-color);
-            font-size: 17px;
-            text-shadow: 0 1px 0 rgba(0, 0, 0, 0.05);
         }
 
         .jumlah-cell {
-            font-weight: 600;
+            font-weight: 500;
             color: var(--success-color);
-            font-size: 17px;
         }
 
         .btn {
-            padding: 12px 20px;
+            padding: 8px 16px;
             border: none;
-            border-radius: 12px;
-            font-weight: 600;
+            border-radius: 6px;
+            font-weight: 500;
             cursor: pointer;
-            transition: var(--transition);
+            transition: all 0.2s;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
 
         .btn-danger {
-            background-color: var(--danger-color);
+            background-color: #ff5a5f;
             color: white;
             font-size: 14px;
         }
 
         .btn-danger:hover {
-            background-color: #ff5f5f;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 14px rgba(255, 118, 117, 0.3);
+            background-color: #ff4146;
         }
 
         .btn-primary {
-            background: linear-gradient(120deg, var(--primary-color), var(--primary-dark));
+            background-color: var(--primary-color);
             color: white;
             width: 100%;
-            height: 55px;
+            height: 50px;
             font-size: 16px;
-            border-radius: 0 0 var(--border-radius) var(--border-radius);
+            border-radius: 0;
         }
 
         .btn-primary:hover {
-            background: linear-gradient(120deg, var(--primary-dark), var(--primary-color));
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(108, 92, 231, 0.3);
+            background-color: var(--secondary-color);
         }
 
         .btn i {
-            margin-right: 8px;
-            font-size: 0.9em;
+            margin-right: 6px;
         }
 
         .total-row {
-            font-weight: 600;
-            background: linear-gradient(135deg, rgba(108, 92, 231, 0.05) 0%, rgba(162, 155, 254, 0.1) 100%) !important;
+            font-weight: bold;
+            background-color: #f0f4ff !important;
             color: var(--dark-color);
-            position: relative;
-            box-shadow: 0 -4px 10px rgba(108, 92, 231, 0.05);
         }
 
         .total-row td {
-            padding: 18px 10px;
-            font-size: 18px;
-            border-top: 2px solid rgba(108, 92, 231, 0.2);
-            border-bottom: none;
+            padding: 14px 10px;
+            font-size: 17px;
+            border-top: 2px solid var(--primary-color);
         }
 
         .total-label {
-            background: linear-gradient(120deg, var(--primary-color), var(--primary-dark));
+            background-color: var(--primary-color);
             color: white;
-            font-weight: 600;
-            letter-spacing: 1px;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
-            position: relative;
-            overflow: hidden;
-            border-radius: 0 0 10px 10px;
-        }
-
-        .total-label::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            animation: shimmer 2s infinite;
-        }
-
-        @keyframes shimmer {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
+            font-weight: 500;
         }
 
         .total-value {
             color: var(--primary-color);
-            text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.5);
         }
 
         .action-bar {
             width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
         .toggle-container {
             display: flex;
             width: 100%;
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            box-shadow: var(--card-shadow);
-            margin-top: 5px;
         }
 
         .toggle-btn {
-            padding: 16px;
+            padding: 12px 16px;
             border: none;
-            font-weight: 600;
+            border-radius: 0;
+            font-weight: 500;
             cursor: pointer;
-            transition: var(--transition);
-            background-color: var(--dark-color);
+            transition: all 0.2s;
+            background-color: var(--secondary-color);
             color: white;
             flex: 1;
             font-size: 16px;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .toggle-btn i {
-            font-size: 1.1em;
-            transition: var(--transition);
         }
 
         .toggle-btn.active {
-            background: linear-gradient(120deg, var(--primary-color), var(--primary-dark));
-            color: white;
-        }
-
-        .toggle-btn.active i {
-            transform: scale(1.2);
+            background-color: var(--primary-color);
         }
 
         .toggle-btn:hover:not(.active) {
-            background-color: #3d3d3d;
-            transform: translateY(-2px);
-        }
-
-        .toggle-btn:first-child {
-            border-radius: var(--border-radius) 0 0 var(--border-radius);
-        }
-
-        .toggle-btn:last-child {
-            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+            background-color: #4a41d5;
         }
 
         .calculator {
             display: none;
             flex-direction: column;
             flex: 1;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.3s ease, transform 0.3s ease;
         }
 
         .calculator.active {
             display: flex;
-            opacity: 1;
-            transform: translateY(0);
         }
 
-        #TableSelisih, #sakTableSelisih {
-            margin: 0 0 15px 0;
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            box-shadow: var(--card-shadow);
-            background: white;
-            border: 1px solid rgba(108, 92, 231, 0.1);
-        }
-
-        #TableSelisih td, #sakTableSelisih td {
-            padding: 15px;
-        }
-
-        .selisih {
-            position: relative;
-            overflow: hidden;
-            background: linear-gradient(135deg, rgba(108, 92, 231, 0.05) 0%, rgba(162, 155, 254, 0.1) 100%);
-            font-size: 20px;
-        }
-
-        .selisih::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
-        }
-
-        /* Floating label for inputs */
-        .input-group {
-            position: relative;
-            width: 100%;
-        }
-
-        /* Animation effects */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* For table hover row effect */
-        tr {
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        /* Responsive adjustments */
         @media (max-width: 768px) {
-            .header {
-                padding: 15px 0;
-                margin-bottom: 10px;
-            }
-
-            .header h1 {
-                font-size: 22px;
-            }
-
             th, td {
-                padding: 12px 8px;
-                font-size: 14px;
-            }
-
-            .input-field {
-                padding: 10px;
-                font-size: 14px;
-            }
-
-            .total-row td {
-                padding: 15px 8px;
-                font-size: 16px;
-            }
-
-            .toggle-btn {
-                padding: 14px 10px;
-                font-size: 14px;
-            }
-
-            .btn-danger {
-                padding: 8px 12px;
-                font-size: 13px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            :root {
-                --border-radius: 12px;
-            }
-
-            .calculator-container {
-                padding: 0 10px 10px;
-            }
-
-            th, td {
-                padding: 10px 6px;
-                font-size: 13px;
+                padding: 10px 8px;
             }
 
             .input-field {
                 padding: 8px;
-                font-size: 13px;
-                border-radius: 8px;
-            }
-
-            .total-row td {
-                padding: 12px 6px;
                 font-size: 14px;
             }
 
-            .toggle-btn {
+            .total-row td {
                 padding: 12px 8px;
+                font-size: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            th, td {
+                padding: 8px 6px;
+                font-size: 14px;
+            }
+
+            .input-field {
+                padding: 6px;
                 font-size: 13px;
             }
 
-            .toggle-btn i {
-                margin-right: 4px;
-            }
-
-            .selisih {
-                font-size: 16px;
+            .toggle-btn {
+                padding: 10px 12px;
+                font-size: 14px;
             }
         }
     </style>
 </head>
 <body>
-    {{-- <header class="header">
-        <h1><i class="fas fa-calculator"></i> Kalkulator Beras Modern</h1>
-    </header> --}}
 
     <div class="calculator-container">
         <!-- Kalkulator Jumlah -->
@@ -497,18 +274,18 @@
                 <table id="jumlahTable">
                     <thead>
                         <tr>
-                            <th>Jumlah (Kg)</th>
-                            <th>Harga (Rp)</th>
-                            <th>Total (Rp)</th>
-                            <th>Aksi</th>
+                            <th>JUMLAH</th>
+                            <th>HARGA</th>
+                            <th>HASIL</th>
+                            <th>AKSI</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td><input inputmode="decimal" type="text" class="input-field jumlah" oninput="formatJumlah(this); hitungJumlah(this)" onkeydown="handleEnterKeyJumlah(event, this)" placeholder="Masukkan berat"></td>
-                            <td><input inputmode="decimal" type="text" class="input-field harga" oninput="formatHarga(this); hitungJumlah(this)" onkeydown="handleEnterKeyJumlah(event, this)" placeholder="Masukkan harga"></td>
+                            <td><input inputmode="decimal" type="text" class="input-field jumlah" oninput="formatJumlah(this); hitungJumlah(this)" onkeydown="handleEnterKeyJumlah(event, this)" placeholder="Kg"></td>
+                            <td><input inputmode="decimal" type="text" class="input-field harga" oninput="formatHarga(this); hitungJumlah(this)" onkeydown="handleEnterKeyJumlah(event, this)" placeholder="Rp"></td>
                             <td class="hasil hasil-cell">0</td>
-                            <td><button class="btn btn-danger" onclick="hapusBarisJumlah(this)"><i class="fas fa-trash-alt"></i> Hapus</button></td>
+                            <td><button class="btn btn-danger" onclick="hapusBarisJumlah(this)"><i class="fas fa-trash-alt"></i>Hapus</button></td>
                         </tr>
                         <tr class="total-row">
                             <td class="total-value" id="totalJumlah">0</td>
@@ -520,18 +297,20 @@
                 </table>
             </div>
 
-            <table id="TableSelisih">
+            <table id="TableSelisih" class="table-auto total-row w-full border-collapse border border-gray-300 mb-2">
                 <tr>
                     <td style="width: 40%;">
                         <input inputmode="decimal" type="text" class="input-field dana" oninput="formatHarga(this); hitungSelisih()" onkeydown="handleEnterKeySak(event, this)" placeholder="Jumlah Dana (Rp)">
                     </td>
-                    <td class="total-value selisih" style="width: 60%; text-align: center; font-weight: bold;" id="selisih">SELISIH</td>
+                    <td class="total-value selisih" style="width: 40%; text-align: center; font-weight: bold;" id="selisih">SELISIH</td>
+                    {{-- <td class="total-label" style="width: 16.65%;">SELISIH</td> --}}
                 </tr>
             </table>
 
-            <div class="action-bar">
+
+            {{-- <div class="action-bar">
                 <button class="btn btn-primary" onclick="tambahBarisJumlah()"><i class="fas fa-plus"></i>TAMBAH BARIS</button>
-            </div>
+            </div> --}}
         </div>
 
         <!-- Kalkulator Sak -->
@@ -540,20 +319,20 @@
                 <table id="sakTable">
                     <thead>
                         <tr>
-                            <th>Jumlah Sak</th>
-                            <th>Harga (Rp)</th>
-                            <th>Berat (Kg)</th>
-                            <th>Total (Rp)</th>
-                            <th>Aksi</th>
+                            <th>SAK</th>
+                            <th>HARGA</th>
+                            <th>JUMLAH</th>
+                            <th>HASIL</th>
+                            <th>AKSI</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td><input inputmode="decimal" type="text" class="input-field sak" oninput="formatSak(this); hitungSak(this)" onkeydown="handleEnterKeySak(event, this)" placeholder="Jumlah sak"></td>
-                            <td><input inputmode="decimal" type="text" class="input-field harga" oninput="formatHarga(this); hitungSak(this)" onkeydown="handleEnterKeySak(event, this)" placeholder="Harga per kg"></td>
+                            <td><input inputmode="decimal" type="text" class="input-field sak" oninput="formatSak(this); hitungSak(this)" onkeydown="handleEnterKeySak(event, this)" placeholder="Sak"></td>
+                            <td><input inputmode="decimal" type="text" class="input-field harga" oninput="formatHarga(this); hitungSak(this)" onkeydown="handleEnterKeySak(event, this)" placeholder="Rp"></td>
                             <td class="jumlah jumlah-cell">0</td>
                             <td class="hasil hasil-cell">0</td>
-                            <td><button class="btn btn-danger" onclick="hapusBarisSak(this)"><i class="fas fa-trash-alt"></i> Hapus</button></td>
+                            <td><button class="btn btn-danger" onclick="hapusBarisSak(this)"><i class="fas fa-trash-alt"></i>Hapus</button></td>
                         </tr>
                         <tr class="total-row">
                             <td class="total-value" id="totalSak">0</td>
@@ -566,26 +345,27 @@
                 </table>
             </div>
 
-            <table id="sakTableSelisih">
+           <table id="sakTableSelisih" class="table-auto total-row w-full border-collapse border border-gray-300 mb-2">
                 <tr>
-                    <td style="width: 40%;">
+                    <td style="width: 50%;">
                         <input inputmode="decimal" type="text" class="input-field dana" oninput="formatHarga(this); hitungSelisihSak()" onkeydown="handleEnterKeySak(event, this)" placeholder="Jumlah Dana (Rp)">
                     </td>
-                    <td class="total-value selisih" style="width: 60%; text-align: center; font-weight: bold;">SELISIH</td>
+                    <td class="total-value selisih" style="width: 50%; text-align: center; font-weight: bold;">SELISIH</td>
+                    {{-- <td class="total-label" style="width: 16.65%;">SELISIH</td> --}}
                 </tr>
             </table>
 
-            <div class="action-bar">
+            {{-- <div class="action-bar">
                 <button class="btn btn-primary" onclick="tambahBarisSak()"><i class="fas fa-plus"></i>TAMBAH BARIS</button>
-            </div>
+            </div> --}}
         </div>
 
         <!-- Toggle buttons at the bottom -->
         <div class="toggle-container">
-            <button class="toggle-btn active" onclick="toggleCalculator('jumlah')">
-                <i class="fas fa-weight-hanging"></i> INPUT BERAT
+            <button class="toggle-btn btn-primary active " onclick="toggleCalculator('jumlah')">
+                <i class="fas fa-balance-scale"></i> INPUT BERAT
             </button>
-            <button class="toggle-btn" onclick="toggleCalculator('sak')">
+            <button class="toggle-btn btn-primary" onclick="toggleCalculator('sak')">
                 <i class="fas fa-box"></i> INPUT SAK
             </button>
         </div>
