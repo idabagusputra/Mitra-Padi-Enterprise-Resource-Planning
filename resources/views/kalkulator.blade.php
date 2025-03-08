@@ -108,6 +108,18 @@
             border: 1px solid rgba(108, 92, 231, 0.1);
         }
 
+        @media (max-width: 768px) { /* Mobile portrait */
+            .table-container {
+                margin-top: 10px;
+            }
+        }
+
+        @media (max-width: 1024px) and (orientation: landscape) { /* Mobile atau tablet dalam mode horizontal */
+            .table-container {
+                margin-left: 10px;
+            }
+        }
+
         table {
             width: 100%;
             border-collapse: separate;
@@ -248,7 +260,7 @@
 
         .total-row td {
             padding: 18px 10px;
-            font-size: 18px;
+            font-size: 16px;
             border-top: 2px solid rgba(108, 92, 231, 0.2);
             border-bottom: none;
         }
@@ -283,6 +295,7 @@
         .total-value {
             color: var(--primary-color);
             text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.5);
+            font-size: 24px;
         }
 
         .action-bar {
@@ -467,7 +480,7 @@
 
             .total-row td {
                 padding: 12px 6px;
-                font-size: 14px;
+                font-size: 16px;
             }
 
             .toggle-btn {
@@ -511,9 +524,9 @@
                             <td><button class="btn btn-danger" onclick="hapusBarisJumlah(this)"><i class="fas fa-trash-alt"></i> Hapus</button></td>
                         </tr>
                         <tr class="total-row">
-                            <td class="total-value" id="totalJumlah">0</td>
-                            <td class="total-value" id="totalRataJumlah">0</td>
-                            <td class="total-value" id="totalHasilJumlah">0</td>
+                            <td class="total-value hasil-cell" id="totalJumlah">0</td>
+                            <td class="total-value hasil-cell" id="totalRataJumlah">0</td>
+                            <td class="total-value hasil-cell" id="totalHasilJumlah">0</td>
                             <td class="total-label">TOTAL</td>
                         </tr>
                     </tbody>
@@ -556,10 +569,10 @@
                             <td><button class="btn btn-danger" onclick="hapusBarisSak(this)"><i class="fas fa-trash-alt"></i> Hapus</button></td>
                         </tr>
                         <tr class="total-row">
-                            <td class="total-value" id="totalSak">0</td>
-                            <td class="total-value" id="totalRataSak">0</td>
-                            <td class="total-value" id="totalJumlahSak">0</td>
-                            <td class="total-value" id="totalHasilSak">0</td>
+                            <td class="total-value hasil-cell" id="totalSak">0</td>
+                            <td class="total-value hasil-cell" id="totalRataSak">0</td>
+                            <td class="total-value hasil-cell" id="totalJumlahSak">0</td>
+                            <td class="total-value hasil-cell" id="totalHasilSak">0</td>
                             <td class="total-label">TOTAL</td>
                         </tr>
                     </tbody>
