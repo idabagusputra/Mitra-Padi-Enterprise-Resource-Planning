@@ -260,7 +260,7 @@
 
         .total-row td {
             padding: 18px 10px;
-            font-size: 16px;
+            font-size: 17px;
             border-top: 2px solid rgba(108, 92, 231, 0.2);
             border-bottom: none;
         }
@@ -444,7 +444,7 @@
 
             .total-row td {
                 padding: 15px 8px;
-                font-size: 16px;
+                font-size: 17px;
             }
 
             .toggle-btn {
@@ -480,7 +480,7 @@
 
             .total-row td {
                 padding: 12px 6px;
-                font-size: 16px;
+                font-size: 17px;
             }
 
             .toggle-btn {
