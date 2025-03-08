@@ -493,7 +493,7 @@
             }
 
             .selisih {
-                font-size: 16px;
+                font-size: 17px;
             }
         }
     </style>
@@ -535,10 +535,10 @@
 
             <table id="TableSelisih">
                 <tr>
-                    <td style="width: 40%;">
+                    <td style="width: 50%;">
                         <input inputmode="decimal" type="text" class="input-field dana" oninput="formatHarga(this); hitungSelisih()" onkeydown="handleEnterKeySak(event, this)" placeholder="Jumlah Dana (Rp)">
                     </td>
-                    <td class="total-value selisih" style="width: 60%; text-align: center; font-weight: bold;" id="selisih">SELISIH</td>
+                    <td class="total-value selisih" style="width: 50%; text-align: center; font-weight: bold;" id="selisih">SELISIH</td>
                 </tr>
             </table>
 
@@ -581,10 +581,10 @@
 
             <table id="sakTableSelisih">
                 <tr>
-                    <td style="width: 40%;">
+                    <td style="width: 50%;">
                         <input inputmode="decimal" type="text" class="input-field dana" oninput="formatHarga(this); hitungSelisihSak()" onkeydown="handleEnterKeySak(event, this)" placeholder="Jumlah Dana (Rp)">
                     </td>
-                    <td class="total-value selisih" style="width: 60%; text-align: center; font-weight: bold;">SELISIH</td>
+                    <td class="total-value selisih" style="width: 50%; text-align: center; font-weight: bold;">SELISIH</td>
                 </tr>
             </table>
 
