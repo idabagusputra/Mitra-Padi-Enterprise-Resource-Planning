@@ -391,7 +391,7 @@
         }
 
         #TableSelisih, #sakTableSelisih {
-            margin: 0 0 12px 0;
+            margin: 0 0 11px 0;
             border-radius: var(--border-radius);
             overflow: hidden;
             box-shadow: var(--card-shadow);
