@@ -40,15 +40,17 @@
         html, body {
             height: 100%;
             width: 100%;
-            overflow: hidden;
             background: var(--light-color);
             color: var(--dark-color);
+            overflow-y: auto; /* Enable vertical scrolling */
+            position: relative;
         }
 
         body {
             display: flex;
             flex-direction: column;
             background: linear-gradient(135deg, #f7f7f7 0%, #e6e9f0 100%);
+            min-height: 100%;
         }
 
         .header {
@@ -94,11 +96,12 @@
             max-width: 1200px;
             margin: 0 auto;
             width: 100%;
+            overflow-y: visible; /* Ensure content can scroll */
         }
 
         .table-container {
             flex: 1;
-            overflow-y: auto;
+            overflow-y: visible; /* Changed from auto to visible */
             background: white;
             border-radius: var(--border-radius);
             box-shadow: var(--card-shadow);
@@ -106,6 +109,7 @@
             margin-bottom: 15px;
             position: relative;
             border: 1px solid rgba(108, 92, 231, 0.1);
+            max-height: none; /* Remove max-height restriction */
         }
 
         @media (max-width: 768px) { /* Mobile portrait */
@@ -124,7 +128,7 @@
             width: 100%;
             border-collapse: separate;
             border-spacing: 0;
-            font-size: 16px;
+            font-size: 18px; /* Increased font size for numbers */
         }
 
         th {
@@ -173,7 +177,7 @@
             padding: 12px 15px;
             border: 2px solid rgba(108, 92, 231, 0.2);
             border-radius: 12px;
-            font-size: 16px;
+            font-size: 18px; /* Increased font size */
             text-align: center;
             transition: var(--transition);
             background: white;
@@ -193,20 +197,20 @@
         .hasil-cell {
             font-weight: 600;
             color: var(--primary-color);
-            font-size: 17px;
+            font-size: 18px; /* Adjusted for consistency */
             text-shadow: 0 1px 0 rgba(0, 0, 0, 0.05);
         }
 
         .jumlah-cell {
             font-weight: 600;
             color: var(--success-color);
-            font-size: 17px;
+            font-size: 18px; /* Adjusted for consistency */
         }
 
         .btn {
-            padding: 12px 20px;
+            padding: 8px 12px; /* Reduced padding */
             border: none;
-            border-radius: 12px;
+            border-radius: 10px; /* Smaller radius */
             font-weight: 600;
             cursor: pointer;
             transition: var(--transition);
@@ -215,27 +219,29 @@
             justify-content: center;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Smaller shadow */
         }
 
         .btn-danger {
             background-color: var(--danger-color);
             color: white;
-            font-size: 14px;
+            font-size: 12px; /* Smaller font */
+            min-width: 60px; /* Minimum width */
+            max-width: 80px; /* Maximum width to keep button small */
         }
 
         .btn-danger:hover {
             background-color: #ff5f5f;
             transform: translateY(-2px);
-            box-shadow: 0 6px 14px rgba(255, 118, 117, 0.3);
+            box-shadow: 0 4px 8px rgba(255, 118, 117, 0.3);
         }
 
         .btn-primary {
             background: linear-gradient(120deg, var(--primary-color), var(--primary-dark));
             color: white;
             width: 100%;
-            height: 55px;
-            font-size: 16px;
+            height: 50px; /* Slightly shorter */
+            font-size: 15px; /* Smaller font */
             border-radius: 0 0 var(--border-radius) var(--border-radius);
         }
 
@@ -246,7 +252,7 @@
         }
 
         .btn i {
-            margin-right: 8px;
+            margin-right: 6px;
             font-size: 0.9em;
         }
 
@@ -259,8 +265,8 @@
         }
 
         .total-row td {
-            padding: 18px 10px;
-            font-size: 17px;
+            padding: 16px 10px;
+            font-size: 18px; /* Consistent with other numbers */
             border-top: 2px solid rgba(108, 92, 231, 0.2);
             border-bottom: none;
         }
@@ -274,6 +280,7 @@
             position: relative;
             overflow: hidden;
             border-radius: 0 0 10px 10px;
+            font-size: 14px; /* Slightly smaller */
         }
 
         .total-label::after {
@@ -295,7 +302,7 @@
         .total-value {
             color: var(--primary-color);
             text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.5);
-            font-size: 24px;
+            font-size: 18px; /* Made consistent with other text */
         }
 
         .action-bar {
@@ -303,6 +310,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            margin-bottom: 15px; /* Added spacing */
         }
 
         .toggle-container {
@@ -312,10 +320,14 @@
             overflow: hidden;
             box-shadow: var(--card-shadow);
             margin-top: 5px;
+            margin-bottom: 15px; /* Add space at bottom */
+            position: sticky;
+            bottom: 0;
+            z-index: 20;
         }
 
         .toggle-btn {
-            padding: 16px;
+            padding: 14px; /* Slightly smaller */
             border: none;
             font-weight: 600;
             cursor: pointer;
@@ -323,13 +335,13 @@
             background-color: var(--dark-color);
             color: white;
             flex: 1;
-            font-size: 16px;
+            font-size: 15px; /* Smaller text */
             position: relative;
             overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 8px; /* Smaller gap */
         }
 
         .toggle-btn i {
@@ -391,7 +403,7 @@
             position: relative;
             overflow: hidden;
             background: linear-gradient(135deg, rgba(108, 92, 231, 0.05) 0%, rgba(162, 155, 254, 0.1) 100%);
-            font-size: 20px;
+            font-size: 18px; /* Made consistent */
         }
 
         .selisih::before {
@@ -421,6 +433,14 @@
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
+        /* Optimize the button columns to be narrower */
+        table th:last-child,
+        table td:last-child {
+            width: 80px; /* Fixed width for action column */
+            min-width: 80px;
+            max-width: 80px;
+        }
+
         /* Responsive adjustments */
         @media (max-width: 768px) {
             .header {
@@ -433,28 +453,39 @@
             }
 
             th, td {
-                padding: 12px 8px;
+                padding: 12px 6px; /* Narrower padding */
                 font-size: 14px;
             }
 
             .input-field {
-                padding: 10px;
-                font-size: 14px;
+                padding: 10px 8px; /* Smaller padding */
+                font-size: 16px; /* Still keep readable size */
+            }
+
+            .hasil-cell, .jumlah-cell, .total-value {
+                font-size: 16px; /* Consistent font size */
             }
 
             .total-row td {
-                padding: 15px 8px;
-                font-size: 17px;
+                padding: 14px 6px;
             }
 
             .toggle-btn {
-                padding: 14px 10px;
+                padding: 12px 8px;
                 font-size: 14px;
             }
 
             .btn-danger {
-                padding: 8px 12px;
-                font-size: 13px;
+                padding: 6px 8px;
+                font-size: 12px;
+                min-width: 50px;
+            }
+
+            table th:last-child,
+            table td:last-child {
+                width: 60px; /* Even smaller on mobile */
+                min-width: 60px;
+                max-width: 60px;
             }
         }
 
@@ -464,36 +495,64 @@
             }
 
             .calculator-container {
-                padding: 0 10px 10px;
+                padding: 5px 8px 10px;
             }
 
             th, td {
+                padding: 10px 4px; /* Very small padding */
+                font-size: 13px;
+            }
+
+            .btn-danger {
+                padding: 5px 6px;
+                font-size: 11px;
+            }
+
+            .btn-danger i {
+                margin-right: 2px;
+                font-size: 0.8em;
+            }
+
+            .input-field {
+                padding: 8px 4px;
+                font-size: 15px; /* Maintain readability */
+                border-radius: 8px;
+                border-width: 1px; /* Thinner border */
+            }
+
+            .total-row td {
+                padding: 12px 4px;
+                font-size: 15px;
+            }
+
+            .toggle-btn {
                 padding: 10px 6px;
                 font-size: 13px;
             }
 
-            .input-field {
-                padding: 8px;
-                font-size: 13px;
-                border-radius: 8px;
-            }
-
-            .total-row td {
-                padding: 12px 6px;
-                font-size: 17px;
-            }
-
-            .toggle-btn {
-                padding: 12px 8px;
-                font-size: 13px;
-            }
-
-            .toggle-btn i {
-                margin-right: 4px;
-            }
-
             .selisih {
-                font-size: 17px;
+                font-size: 16px;
+            }
+
+            /* Smallest possible button area */
+            table th:last-child,
+            table td:last-child {
+                width: 50px;
+                min-width: 50px;
+                max-width: 50px;
+            }
+        }
+
+        /* Additional styles for landscape mode */
+        @media (orientation: landscape) {
+            .table-container {
+                max-height: none; /* Remove any max-height restriction */
+            }
+
+            body, html {
+                overflow-y: auto !important; /* Force scrolling */
+                height: auto !important; /* Allow content to determine height */
+                min-height: 100%; /* At least fill the viewport */
             }
         }
     </style>
@@ -521,7 +580,7 @@
                             <td><input inputmode="decimal" type="text" class="input-field jumlah" oninput="formatJumlah(this); hitungJumlah(this)" onkeydown="handleEnterKeyJumlah(event, this)" placeholder="Masukkan berat"></td>
                             <td><input inputmode="decimal" type="text" class="input-field harga" oninput="formatHarga(this); hitungJumlah(this)" onkeydown="handleEnterKeyJumlah(event, this)" placeholder="Masukkan harga"></td>
                             <td class="hasil hasil-cell">0</td>
-                            <td><button class="btn btn-danger" onclick="hapusBarisJumlah(this)"><i class="fas fa-trash-alt"></i> Hapus</button></td>
+                            <td><button class="btn btn-danger" onclick="hapusBarisJumlah(this)"><i class="fas fa-trash-alt"></i></button></td>
                         </tr>
                         <tr class="total-row">
                             <td class="total-value hasil-cell" id="totalJumlah">0</td>
@@ -566,7 +625,7 @@
                             <td><input inputmode="decimal" type="text" class="input-field harga" oninput="formatHarga(this); hitungSak(this)" onkeydown="handleEnterKeySak(event, this)" placeholder="Harga per kg"></td>
                             <td class="jumlah jumlah-cell">0</td>
                             <td class="hasil hasil-cell">0</td>
-                            <td><button class="btn btn-danger" onclick="hapusBarisSak(this)"><i class="fas fa-trash-alt"></i> Hapus</button></td>
+                            <td><button class="btn btn-danger" onclick="hapusBarisSak(this)"><i class="fas fa-trash-alt"></i></button></td>
                         </tr>
                         <tr class="total-row">
                             <td class="total-value hasil-cell" id="totalSak">0</td>
