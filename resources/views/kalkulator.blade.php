@@ -106,7 +106,7 @@
             border-radius: var(--border-radius);
             box-shadow: var(--card-shadow);
             padding: 10px;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             position: relative;
             border: 1px solid rgba(108, 92, 231, 0.1);
             max-height: none; /* Remove max-height restriction */
@@ -119,9 +119,7 @@
         }
 
         @media (max-width: 1024px) and (orientation: landscape) { /* Mobile atau tablet dalam mode horizontal */
-            .table-container {
-                margin-left: 10px;
-            }
+
         }
 
         table {
@@ -226,9 +224,13 @@
             background-color: var(--danger-color);
             color: white;
             font-size: 12px; /* Smaller font */
-            min-width: 30px; /* Minimum width */
+            min-width: 80px; /* Minimum width */
             max-width: 80px; /* Maximum width to keep button small */
-            height: 37.6px; /* Make height 100% */
+            height: 51.2px; /* Make height 100% */
+        }
+
+        td:has(.btn-danger) {
+            padding: 0; /* Hilangkan padding pada td yang berisi tombol */
         }
 
 
@@ -312,7 +314,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 15px; /* Added spacing */
+            margin-bottom: 10px; /* Added spacing */
         }
 
         .toggle-container {
@@ -389,7 +391,7 @@
         }
 
         #TableSelisih, #sakTableSelisih {
-            margin: 0 0 15px 0;
+            margin: 0 0 10px 0;
             border-radius: var(--border-radius);
             overflow: hidden;
             box-shadow: var(--card-shadow);
@@ -555,6 +557,14 @@
                 overflow-y: auto !important; /* Force scrolling */
                 height: auto !important; /* Allow content to determine height */
                 min-height: 100%; /* At least fill the viewport */
+            }
+        }
+
+        @media (orientation: portrait) {
+
+            .btn-danger {
+
+                height: 37.6px !important;/* Make height 100% */
             }
         }
     </style>
