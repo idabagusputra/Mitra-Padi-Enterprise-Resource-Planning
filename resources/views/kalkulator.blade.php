@@ -583,7 +583,7 @@
                         <tr>
                             <th>Jumlah (Kg)</th>
                             <th>Harga (Rp)</th>
-                            <th>Total (Rp)</th>
+                            <th>Hasil (Rp)</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -602,7 +602,7 @@
                             <td class="total-value hasil-cell" id="totalJumlah">0</td>
                             <td class="total-value hasil-cell" id="totalRataJumlah">0</td>
                             <td class="total-value hasil-cell" id="totalHasilJumlah">0</td>
-                            <td class="total-label">TOTAL</td>
+                            <td class="total-label">SUM</td>
                         </tr>
                     </tbody>
                 </table>
@@ -631,7 +631,7 @@
                             <th>Jumlah Sak</th>
                             <th>Harga (Rp)</th>
                             <th>Berat (Kg)</th>
-                            <th>Total (Rp)</th>
+                            <th>Hasil (Rp)</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -652,7 +652,7 @@
                             <td class="total-value hasil-cell" id="totalRataSak">0</td>
                             <td class="total-value hasil-cell" id="totalJumlahSak">0</td>
                             <td class="total-value hasil-cell" id="totalHasilSak">0</td>
-                            <td class="total-label">TOTAL</td>
+                            <td class="total-label">SUM</td>
                         </tr>
                     </tbody>
                 </table>
