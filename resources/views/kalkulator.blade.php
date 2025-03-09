@@ -226,9 +226,11 @@
             background-color: var(--danger-color);
             color: white;
             font-size: 12px; /* Smaller font */
-            min-width: 60px; /* Minimum width */
+            min-width: 30px; /* Minimum width */
             max-width: 80px; /* Maximum width to keep button small */
+            height: 37.6px; /* Make height 100% */
         }
+
 
         .btn-danger:hover {
             background-color: #ff5f5f;
@@ -580,7 +582,11 @@
                             <td><input inputmode="decimal" type="text" class="input-field jumlah" oninput="formatJumlah(this); hitungJumlah(this)" onkeydown="handleEnterKeyJumlah(event, this)" placeholder="Masukkan berat"></td>
                             <td><input inputmode="decimal" type="text" class="input-field harga" oninput="formatHarga(this); hitungJumlah(this)" onkeydown="handleEnterKeyJumlah(event, this)" placeholder="Masukkan harga"></td>
                             <td class="hasil hasil-cell">0</td>
-                            <td><button class="btn btn-danger" onclick="hapusBarisJumlah(this)"><i class="fas fa-trash-alt"></i></button></td>
+                            <td>
+                                <button class="btn btn-danger" onclick="hapusBarisJumlah(this)">
+                                    <i class="fas fa-trash-alt" style="margin: 0; padding: 0;"></i>
+                                </button>
+                            </td>
                         </tr>
                         <tr class="total-row">
                             <td class="total-value hasil-cell" id="totalJumlah">0</td>
@@ -625,7 +631,11 @@
                             <td><input inputmode="decimal" type="text" class="input-field harga" oninput="formatHarga(this); hitungSak(this)" onkeydown="handleEnterKeySak(event, this)" placeholder="Harga per kg"></td>
                             <td class="jumlah jumlah-cell">0</td>
                             <td class="hasil hasil-cell">0</td>
-                            <td><button class="btn btn-danger" onclick="hapusBarisSak(this)"><i class="fas fa-trash-alt"></i></button></td>
+                            <td>
+                                <button class="btn btn-danger" onclick="hapusBarisSak(this)">
+                                    <i class="fas fa-trash-alt" style="margin: 0; padding: 0;"></i>
+                                </button>
+                            </td>
                         </tr>
                         <tr class="total-row">
                             <td class="total-value hasil-cell" id="totalSak">0</td>
@@ -769,11 +779,16 @@
             let table = document.getElementById("jumlahTable");
             let row = table.insertRow(table.rows.length - 1);
             row.innerHTML = `
-                <td><input inputmode="decimal" type="text" class="input-field jumlah" oninput="formatJumlah(this); hitungJumlah(this)" onkeydown="handleEnterKeyJumlah(event, this)" placeholder="Kg"></td>
-                <td><input inputmode="decimal" type="text" class="input-field harga" oninput="formatHarga(this); hitungJumlah(this)" onkeydown="handleEnterKeyJumlah(event, this)" placeholder="Rp"></td>
+                <td><input inputmode="decimal" type="text" class="input-field jumlah" oninput="formatJumlah(this); hitungJumlah(this)" onkeydown="handleEnterKeyJumlah(event, this)" placeholder="Masukkan berat"></td>
+                <td><input inputmode="decimal" type="text" class="input-field harga" oninput="formatHarga(this); hitungJumlah(this)" onkeydown="handleEnterKeyJumlah(event, this)" placeholder="Masukkan harga"></td>
                 <td class="hasil hasil-cell">0</td>
-                <td><button class="btn btn-danger" onclick="hapusBarisJumlah(this)"><i class="fas fa-trash-alt"></i>Hapus</button></td>
-            `;
+                <td>
+                                <button class="btn btn-danger" onclick="hapusBarisJumlah(this)">
+                                    <i class="fas fa-trash-alt" style="margin: 0; padding: 0;"></i>
+                                </button>
+                </td>`;
+
+
 
             // Focus on the new jumlah input
             setTimeout(() => {
@@ -887,12 +902,16 @@
             let table = document.getElementById("sakTable");
             let row = table.insertRow(table.rows.length - 1);
             row.innerHTML = `
-                <td><input inputmode="decimal" type="text" class="input-field sak" oninput="formatSak(this); hitungSak(this)" onkeydown="handleEnterKeySak(event, this)" placeholder="Sak"></td>
-                <td><input inputmode="decimal" type="text" class="input-field harga" oninput="formatHarga(this); hitungSak(this)" onkeydown="handleEnterKeySak(event, this)" placeholder="Rp"></td>
+                <td><input inputmode="decimal" type="text" class="input-field sak" oninput="formatSak(this); hitungSak(this)" onkeydown="handleEnterKeySak(event, this)" placeholder="Jumlah sak"></td>
+                <td><input inputmode="decimal" type="text" class="input-field harga" oninput="formatHarga(this); hitungSak(this)" onkeydown="handleEnterKeySak(event, this)" placeholder="Harga per kg"></td>
                 <td class="jumlah jumlah-cell">0</td>
                 <td class="hasil hasil-cell">0</td>
-                <td><button class="btn btn-danger" onclick="hapusBarisSak(this)"><i class="fas fa-trash-alt"></i>Hapus</button></td>
-            `;
+                <td>
+                                <button class="btn btn-danger" onclick="hapusBarisSak(this)">
+                                    <i class="fas fa-trash-alt" style="margin: 0; padding: 0;"></i>
+                                </button>
+                            </td>
+                            `;
 
             // Focus on the new sak input
             setTimeout(() => {
