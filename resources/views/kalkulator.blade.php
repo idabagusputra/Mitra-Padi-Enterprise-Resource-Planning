@@ -326,7 +326,7 @@
             margin-top: 5px;
             margin-bottom: 15px; /* Add space at bottom */
             position: sticky;
-            bottom: 0;
+            bottom: 15px;
             z-index: 20;
         }
 
