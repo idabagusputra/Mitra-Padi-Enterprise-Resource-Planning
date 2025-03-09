@@ -591,7 +591,7 @@
                         <tr>
                             <td><input inputmode="decimal" type="text" class="input-field jumlah" oninput="formatJumlah(this); hitungJumlah(this)" onkeydown="handleEnterKeyJumlah(event, this)" placeholder="Masukkan berat"></td>
                             <td><input inputmode="decimal" type="text" class="input-field harga" oninput="formatHarga(this); hitungJumlah(this)" onkeydown="handleEnterKeyJumlah(event, this)" placeholder="Masukkan harga"></td>
-                            <td class="hasil hasil-cell" style="padding-right: 15px;">0</td>
+                            <td class="hasil hasil-cell">0</td>
                             <td>
                                 <button class="btn btn-danger" onclick="hapusBarisJumlah(this)">
                                     <i class="fas fa-trash-alt" style="margin: 0; padding: 0;"></i>
@@ -640,7 +640,7 @@
                             <td><input inputmode="decimal" type="text" class="input-field sak" oninput="formatSak(this); hitungSak(this)" onkeydown="handleEnterKeySak(event, this)" placeholder="Jumlah sak"></td>
                             <td><input inputmode="decimal" type="text" class="input-field harga" oninput="formatHarga(this); hitungSak(this)" onkeydown="handleEnterKeySak(event, this)" placeholder="Harga per kg"></td>
                             <td class="jumlah jumlah-cell">0</td>
-                            <td class="hasil hasil-cell" style="padding-right: 15px;">0</td>
+                            <td class="hasil hasil-cell">0</td>
                             <td>
                                 <button class="btn btn-danger" onclick="hapusBarisSak(this)">
                                     <i class="fas fa-trash-alt" style="margin: 0; padding: 0;"></i>
