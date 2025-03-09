@@ -323,7 +323,7 @@
             border-radius: var(--border-radius);
             overflow: hidden;
             box-shadow: var(--card-shadow);
-            margin-top: 5px;
+            margin-top: 0px;
             margin-bottom: 15px; /* Add space at bottom */
             position: sticky;
             bottom: 15px;
