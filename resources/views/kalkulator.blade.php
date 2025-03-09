@@ -114,7 +114,7 @@
 
         @media (max-width: 768px) { /* Mobile portrait */
             .table-container {
-                margin-top: 10px;
+                margin-top: 5px;
             }
         }
 
@@ -499,7 +499,7 @@
             }
 
             .calculator-container {
-                padding: 5px 8px 10px;
+                padding: 5px 8px 0px;
             }
 
             th, td {
