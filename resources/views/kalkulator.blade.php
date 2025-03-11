@@ -626,7 +626,7 @@
         <div id="sakCalculator" class="calculator">
             <div class="table-container">
                 <table id="sakTable">
-                    <thead>
+                    <thead style="margin-top: 15px;">
                         <tr>
                             <th>Jumlah Sak</th>
                             <th>Harga (Rp)</th>
@@ -635,6 +635,7 @@
                             <th>Aksi</th>
                         </tr>
                     </thead>
+
                     <tbody>
                         <tr>
                             <td><input inputmode="decimal" type="text" class="input-field sak" oninput="formatSak(this); hitungSak(this)" onkeydown="handleEnterKeySak(event, this)" placeholder="Jumlah sak"></td>
