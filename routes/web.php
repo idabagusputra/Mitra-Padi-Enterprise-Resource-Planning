@@ -33,6 +33,11 @@ use Illuminate\Support\Facades\Route;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 Route::group(['middleware' => 'auth'], function () {
+
+    Route::get('/kalkulator', function () {
+        return view('kalkulator');
+    });
+
     // Dashboard and other static pages
     Route::get('/', [HomeController::class, 'home']);
     // Route::view('dashboard', 'dashboard')->name('dashboard');

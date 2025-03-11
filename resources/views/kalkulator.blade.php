@@ -579,7 +579,7 @@
         <div id="jumlahCalculator" class="calculator active">
             <div class="table-container">
                 <table id="jumlahTable">
-                    <thead style="margin-top: 15px;">
+                    <thead>
                         <tr>
                             <th>Jumlah (Kg)</th>
                             <th>Harga (Rp)</th>
@@ -626,7 +626,7 @@
         <div id="sakCalculator" class="calculator">
             <div class="table-container">
                 <table id="sakTable">
-                    <thead style="margin-top: 15px;">
+                    <thead>
                         <tr>
                             <th>Jumlah Sak</th>
                             <th>Harga (Rp)</th>
