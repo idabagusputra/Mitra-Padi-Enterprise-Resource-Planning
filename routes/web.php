@@ -34,7 +34,7 @@ use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 Route::group(['middleware' => 'auth'], function () {
 
-    Route::get('/kalkulator', function () {
+    Route::get('/kallog', function () {
         return view('kalkulator');
     });
 
