@@ -579,7 +579,7 @@
         <div id="jumlahCalculator" class="calculator active">
             <div class="table-container">
                 <table id="jumlahTable">
-                    <thead>
+                    <thead style="margin-top: 15px;">
                         <tr>
                             <th>Jumlah (Kg)</th>
                             <th>Harga (Rp)</th>
@@ -635,7 +635,6 @@
                             <th>Aksi</th>
                         </tr>
                     </thead>
-
                     <tbody>
                         <tr>
                             <td><input inputmode="decimal" type="text" class="input-field sak" oninput="formatSak(this); hitungSak(this)" onkeydown="handleEnterKeySak(event, this)" placeholder="Jumlah sak"></td>
