@@ -350,9 +350,9 @@
                     'pinjam' => ['label' => 'Pinjaman Beras (Kg)'],
                     'jemur' => ['label' => 'Jemur (Karung)'],
                     'jumlah_konga' => ['label' => 'Jumlah Konga (Kg)'],
-                    'harga_konga' => ['label' => 'Harga Konga (Rp)'],
-                    'harga_jual' => ['label' => 'Harga Beras Laku (Rp)'],
                     'jumlah_menir' => ['label' => 'Jumlah Menir (Kg)'],
+                    'harga_jual' => ['label' => 'Harga Beras Laku (Rp)'],
+                    'harga_konga' => ['label' => 'Harga Konga (Rp)'],
                     'harga_menir' => ['label' => 'Harga Menir (Rp)'],
                     ];
                     @endphp
@@ -616,7 +616,7 @@
             <div class="pengambilan-item row mb-2">
             <div class="col-md-4">
                 <div class="form-group mb-0">
-                    <input type="text" name="pengambilans[${pengambilanCount}][keterangan]" class="form-control pengambilan keterangan-input w-100" placeholder="Keterangan" list="keterangan-list">
+                    <input type="text" name="pengambilans[${pengambilanCount}][keterangan]" class="form-control pengambilan keterangan-input w-100" placeholder="Keterangan" list="keterangan-list" value="Karung Konga">
                 </div>
             </div>
             <div class="col-md-3">
