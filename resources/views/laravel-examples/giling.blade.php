@@ -349,10 +349,10 @@
                     'pulang' => ['label' => 'Beras Pulang (Kg)'],
                     'pinjam' => ['label' => 'Pinjaman Beras (Kg)'],
                     'jemur' => ['label' => 'Jemur (Karung)'],
-                    'jumlah_konga' => ['label' => 'Jumlah Konga (Kg)'],
-                    'jumlah_menir' => ['label' => 'Jumlah Menir (Kg)'],
                     'harga_jual' => ['label' => 'Harga Beras Laku (Rp)'],
+                    'jumlah_konga' => ['label' => 'Jumlah Konga (Karung)'],
                     'harga_konga' => ['label' => 'Harga Konga (Rp)'],
+                    'jumlah_menir' => ['label' => 'Jumlah Menir (Kg)'],
                     'harga_menir' => ['label' => 'Harga Menir (Rp)'],
                     ];
                     @endphp
