@@ -142,7 +142,9 @@ class Debit extends Model
                 // Hitung bunga untuk kredit ini
                 $creditDate = Carbon::parse($kredit->tanggal);
                 // $paymentDate = $this->tanggal ? Carbon::parse($this->tanggal) : Carbon::now();
-                $paymentDate = $this->tanggal ? Carbon::parse($this->tanggal)->addDay()->setTime(Carbon::now()->hour, Carbon::now()->minute, Carbon::now()->second)->toDateTimeString() : Carbon::now()->toDateTimeString();
+                $paymentDate = $this->tanggal
+                    ? Carbon::parse($this->tanggal)->setTime(Carbon::now()->subDays(2)->startOfDay()->hour, Carbon::now()->subDays(2)->startOfDay()->minute, Carbon::now()->subDays(2)->startOfDay()->second)
+                    : Carbon::now()->subDays(2)->startOfDay();
 
                 // $debtDurationMonths = floor($creditDate->diffInMonths($paymentDate));
                 $debtDurationMonths = ceil($creditDate->diffInMonths($paymentDate) * 10) / 10;
