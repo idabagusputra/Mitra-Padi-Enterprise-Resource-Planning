@@ -139,6 +139,7 @@ class Giling extends Model
             // $debtDurationMonths = $debtDuration;
 
             Log::info("Credit: {$credit->jumlah}, Date: {$credit->tanggal}, Debt Duration: {$debtDurationMonths} months");
+            Log::info("Credit: {$credit->jumlah}, Payment Date: {$paymentDate}, Debt Duration: {$debtDurationMonths} months");
 
             if ($debtDurationMonths > 0) {
                 $monthlyInterest = $credit->jumlah * ($bungaInput / 100);
