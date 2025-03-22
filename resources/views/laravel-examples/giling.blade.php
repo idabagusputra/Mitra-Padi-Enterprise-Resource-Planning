@@ -339,12 +339,11 @@
 
 
 
-
-                <!-- Bagian Data Penggilingan -->
-                <h6 class="mb-3 text-primary">{{ __('Data Penggilingan') }}</h6>
-                <div class="row">
-                    @php
-                    $fields = [
+            <!-- Bagian Data Penggilingan -->
+            <h6 class="mb-3 text-primary">{{ __('Data Penggilingan') }}</h6>
+            <div class="row">
+                @php
+                $fields = [
                     'giling_kotor' => ['label' => 'Giling Kotor (Kg)'],
                     'pulang' => ['label' => 'Beras Pulang (Kg)'],
                     'pinjam' => ['label' => 'Pinjaman Beras (Kg)'],
@@ -354,14 +353,14 @@
                     'harga_konga' => ['label' => 'Harga Konga (Rp)', 'value' => 140000],
                     'jumlah_menir' => ['label' => 'Jumlah Menir (Kg)'],
                     'harga_menir' => ['label' => 'Harga Menir (Rp)', 'value' => 3000],
-                    ];
-                    @endphp
-                    @foreach($fields as $field => $data)
+                ];
+                @endphp
+                @foreach($fields as $field => $data)
                     @php
                     $label = $data['label'];
                     $placeholder = str_contains($label, '(Kg)') ? 'Kilogram'
-                    : (str_contains($label, '(Karung)') ? 'Karung'
-                    : (str_contains($label, '(Rp)') ? 'Rupiah' : ''));
+                        : (str_contains($label, '(Karung)') ? 'Karung'
+                        : (str_contains($label, '(Rp)') ? 'Rupiah' : ''));
                     $value = $data['value'] ?? ''; // Default ke string kosong jika tidak ada nilai
                     @endphp
                     <div class="col-md-4 mb-3">
@@ -376,8 +375,9 @@
                                 required>
                         </div>
                     </div>
-                    @endforeach
-                </div>
+                @endforeach
+            </div>
+
 
 
                 <h6 class="mb-3 mt-2 text-primary">{{ __('Pengambilan') }}</h6>
