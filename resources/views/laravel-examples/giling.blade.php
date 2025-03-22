@@ -341,6 +341,7 @@
 
 
                 <!-- Bagian Data Penggilingan -->
+<!-- Bagian Data Penggilingan -->
 <h6 class="mb-3 text-primary">{{ __('Data Penggilingan') }}</h6>
 <div class="row">
     @php
@@ -362,7 +363,7 @@
         $placeholder = str_contains($label, '(Kg)') ? 'Kilogram'
             : (str_contains($label, '(Karung)') ? 'Karung'
             : (str_contains($label, '(Rp)') ? 'Rupiah' : ''));
-        $defaultValue = $data['default'] ?? '';
+        $defaultValue = isset($data['default']) ? $data['default'] : '';
         @endphp
         <div class="col-md-4 mb-3">
             <div class="form-group">
@@ -372,12 +373,13 @@
                     id="{{ $field }}"
                     inputmode="numeric"
                     placeholder="{{ $placeholder }}"
-                    value="{{ old($field, $defaultValue) }}"
+                    value="{{ old($field) ?? $defaultValue }}"
                     required>
             </div>
         </div>
     @endforeach
 </div>
+
 
 
 
