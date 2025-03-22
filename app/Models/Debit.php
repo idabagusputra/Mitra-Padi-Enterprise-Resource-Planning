@@ -66,7 +66,8 @@ class Debit extends Model
             $totalHutang += $kredit->jumlah;
 
             $creditDate = Carbon::parse($kredit->tanggal);
-            $debtDurationMonths = floor($creditDate->diffInMonths($paymentDate));
+            // $debtDurationMonths = floor($creditDate->diffInMonths($paymentDate));
+            $debtDurationMonths = $creditDate->diffInMonths($paymentDate);
 
 
             Log::info("Kredit: {$kredit->jumlah}, Tanggal: {$kredit->tanggal}, Durasi Hutang: {$debtDurationMonths} bulan");
@@ -142,7 +143,8 @@ class Debit extends Model
                 // $paymentDate = $this->tanggal ? Carbon::parse($this->tanggal) : Carbon::now();
                 $paymentDate = $this->tanggal ? Carbon::parse($this->tanggal)->setTime(Carbon::now()->hour, Carbon::now()->minute, Carbon::now()->second)->toDateTimeString() : Carbon::now()->toDateTimeString();
 
-                $debtDurationMonths = floor($creditDate->diffInMonths($paymentDate));
+                // $debtDurationMonths = floor($creditDate->diffInMonths($paymentDate));
+                $debtDurationMonths = $creditDate->diffInMonths($paymentDate);
 
 
                 $monthlyInterest = $kredit->jumlah * ($this->bunga / 100);

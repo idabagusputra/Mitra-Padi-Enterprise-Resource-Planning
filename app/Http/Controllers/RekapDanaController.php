@@ -114,7 +114,8 @@ class RekapDanaController extends Controller
 
 
             // Ensure the difference is floored
-            $selisihBulan = floor($diffInMonthsUpdate);
+            // $selisihBulan = floor($diffInMonthsUpdate);
+            $selisihBulan = $diffInMonthsUpdate;
 
             // Calculate bunga menggunakan selisih bulan
             $bunga = $kredit->jumlah * 0.02 * $selisihBulan;
@@ -131,7 +132,8 @@ class RekapDanaController extends Controller
             }
 
             // Pastikan perbedaan bulan menjadi negatif dan dibulatkan ke bawah
-            $selisihBulanUpdate = floor($diffInMonthsUpdate);
+            // $selisihBulanUpdate = floor($diffInMonthsUpdate);
+            $selisihBulanUpdate = $diffInMonthsUpdate;
 
             // Hitung bunga menggunakan perbedaan bulan yang negatif
             $bungaUpdate = $kredit->jumlah * 0.02 * $selisihBulanUpdate;
@@ -331,7 +333,8 @@ class RekapDanaController extends Controller
 
 
             // Ensure the difference is floored
-            $selisihBulan = floor($diffInMonthsUpdate);
+            // $selisihBulan = floor($diffInMonthsUpdate);
+            $selisihBulan = $diffInMonthsUpdate;
 
             // Calculate bunga menggunakan selisih bulan
             $bunga = $kredit->jumlah * 0.02 * $selisihBulan;
@@ -348,7 +351,8 @@ class RekapDanaController extends Controller
             }
 
             // Pastikan perbedaan bulan menjadi negatif dan dibulatkan ke bawah
-            $selisihBulanUpdate = floor($diffInMonthsUpdate);
+            // $selisihBulanUpdate = floor($diffInMonthsUpdate);
+            $selisihBulanUpdate = $diffInMonthsUpdate;
 
             // Hitung bunga menggunakan perbedaan bulan yang negatif
             $bungaUpdate = $kredit->jumlah * 0.02 * $selisihBulanUpdate;
@@ -548,7 +552,8 @@ class RekapDanaController extends Controller
 
 
             // Ensure the difference is floored
-            $selisihBulan = floor($diffInMonthsUpdate);
+            // $selisihBulan = floor($diffInMonthsUpdate);
+            $selisihBulan = $diffInMonthsUpdate;
 
             // Calculate bunga menggunakan selisih bulan
             $bunga = $kredit->jumlah * 0.02 * $selisihBulan;
@@ -565,7 +570,8 @@ class RekapDanaController extends Controller
             }
 
             // Pastikan perbedaan bulan menjadi negatif dan dibulatkan ke bawah
-            $selisihBulanUpdate = floor($diffInMonthsUpdate);
+            // $selisihBulanUpdate = floor($diffInMonthsUpdate);
+            $selisihBulanUpdate = $diffInMonthsUpdate;
 
             // Hitung bunga menggunakan perbedaan bulan yang negatif
             $bungaUpdate = $kredit->jumlah * 0.02 * $selisihBulanUpdate;
@@ -765,7 +771,8 @@ class RekapDanaController extends Controller
 
 
             // Ensure the difference is floored
-            $selisihBulan = floor($diffInMonthsUpdate);
+            // $selisihBulan = floor($diffInMonthsUpdate);
+            $selisihBulan = $diffInMonthsUpdate;
 
             // Calculate bunga menggunakan selisih bulan
             $bunga = $kredit->jumlah * 0.02 * $selisihBulan;
@@ -782,7 +789,8 @@ class RekapDanaController extends Controller
             }
 
             // Pastikan perbedaan bulan menjadi negatif dan dibulatkan ke bawah
-            $selisihBulanUpdate = floor($diffInMonthsUpdate);
+            // $selisihBulanUpdate = floor($diffInMonthsUpdate);
+            $selisihBulanUpdate = $diffInMonthsUpdate;
 
             // Hitung bunga menggunakan perbedaan bulan yang negatif
             $bungaUpdate = $kredit->jumlah * 0.02 * $selisihBulanUpdate;

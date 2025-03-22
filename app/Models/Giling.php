@@ -134,7 +134,8 @@ class Giling extends Model
         foreach ($credits as $credit) {
             $creditDate = Carbon::parse($credit->tanggal);
             $debtDuration = $creditDate->diffInMonths($paymentDate);
-            $debtDurationMonths = floor($debtDuration);
+            // $debtDurationMonths = floor($debtDuration);
+            $debtDurationMonths = $debtDuration;
 
             Log::info("Credit: {$credit->jumlah}, Date: {$credit->tanggal}, Debt Duration: {$debtDurationMonths} months");
 
