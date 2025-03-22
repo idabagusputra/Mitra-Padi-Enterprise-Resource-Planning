@@ -31,7 +31,7 @@ class ReceiptController extends Controller
         $unpaidKredits = $giling->petani->kredits->where('status', false);
 
         // Calculate lama_bulan for each kredit
-        $now = Carbon::now()->startOfDay();
+        $now = Carbon::now()->subDay()->startOfDay();;
         foreach ($unpaidKredits as $kredit) {
             $tanggal = Carbon::parse($kredit->tanggal);
             $kredit->lama_bulan = $tanggal->diffInMonths($now);
