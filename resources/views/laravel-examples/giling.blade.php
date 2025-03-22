@@ -351,9 +351,9 @@
                     'jemur' => ['label' => 'Jemur (Karung)'],
                     'harga_jual' => ['label' => 'Harga Beras Laku (Rp)'],
                     'jumlah_konga' => ['label' => 'Jumlah Konga (Karung)'],
-                    'harga_konga' => ['label' => 'Harga Konga (Rp)', 'default' => 140000],
+                    'harga_konga' => ['label' => 'Harga Konga (Rp)', 'value' => 140000],
                     'jumlah_menir' => ['label' => 'Jumlah Menir (Kg)'],
-                    'harga_menir' => ['label' => 'Harga Menir (Rp)', 'default' => 3000],
+                    'harga_menir' => ['label' => 'Harga Menir (Rp)', 'value' => 3000],
                     ];
                     @endphp
                     @foreach($fields as $field => $data)
@@ -362,6 +362,7 @@
                     $placeholder = str_contains($label, '(Kg)') ? 'Kilogram'
                     : (str_contains($label, '(Karung)') ? 'Karung'
                     : (str_contains($label, '(Rp)') ? 'Rupiah' : ''));
+                    $value = $data['value'] ?? ''; // Default ke string kosong jika tidak ada nilai
                     @endphp
                     <div class="col-md-4 mb-3">
                         <div class="form-group">
@@ -371,6 +372,7 @@
                                 id="{{ $field }}"
                                 inputmode="numeric"
                                 placeholder="{{ $placeholder }}"
+                                value="{{ $value }}"
                                 required>
                         </div>
                     </div>
