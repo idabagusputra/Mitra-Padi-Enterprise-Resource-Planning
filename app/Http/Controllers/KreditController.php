@@ -96,6 +96,7 @@ class KreditController extends Controller
             // $selisihBulan = floor($diffInMonthsUpdate);
             $selisihBulan = ceil($diffInMonthsUpdate * 10) / 10;
             // $selisihBulan = $diffInMonthsUpdate;
+            Log::info('Current Time Minus 2 Days: ' . $now->toDateTimeString());
 
             // Calculate bunga menggunakan selisih bulan
             $bunga = $kredit->jumlah * 0.02 * $selisihBulan;
