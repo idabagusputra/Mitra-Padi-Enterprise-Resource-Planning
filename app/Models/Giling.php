@@ -137,8 +137,8 @@ class Giling extends Model
             $creditDate = Carbon::parse($credit->tanggal);
             $debtDuration = $creditDate->diffInMonths($paymentDate);
             // $debtDurationMonths = floor($debtDuration);
-            // $debtDurationMonths = ceil($debtDuration * 10) / 10;
-            $debtDurationMonths = $debtDuration;
+            $debtDurationMonths = ceil($debtDuration * 10) / 10;
+            // $debtDurationMonths = $debtDuration;
 
             Log::info("Credit: {$credit->jumlah}, Date: {$credit->tanggal}, Debt Duration: {$debtDurationMonths} months");
             Log::info("Credit: {$credit->jumlah}, Payment Date: {$paymentDate}, Debt Duration: {$debtDurationMonths} months");
