@@ -75,9 +75,14 @@ class PembayaranKredit extends Model
 
     public function hitungLamaHutangBulan($tanggalKredit)
     {
-        $tanggalPembayaran = $this->created_at ?? Carbon::now();
+        // Menentukan tanggal pembayaran
+        $tanggalPembayaran = $this->created_at ? Carbon::parse($this->created_at) : Carbon::now();
+        Log::info("Tanggal Pembayaran:", ['tanggalPembayaran' => $tanggalPembayaran->toDateTimeString()]);
+
+        // Memastikan $tanggalKredit adalah instance Carbon dan menyetel waktu
         if (!$tanggalKredit instanceof Carbon) {
-            $tanggalKredit = Carbon::parse($tanggalKredit)->startOfDay();
+            $tanggalKredit = Carbon::parse($tanggalKredit)->setTime(Carbon::now()->hour, Carbon::now()->minute, Carbon::now()->second);
+            Log::info("Tanggal Kredit setelah parsing:", ['tanggalKredit' => $tanggalKredit->toDateTimeString()]);
         }
 
         // Hitung selisih bulan tanpa pembulatan dulu
