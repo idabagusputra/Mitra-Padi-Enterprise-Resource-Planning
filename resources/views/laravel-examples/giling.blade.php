@@ -351,9 +351,9 @@
                     'jemur' => ['label' => 'Jemur (Karung)'],
                     'harga_jual' => ['label' => 'Harga Beras Laku (Rp)'],
                     'jumlah_konga' => ['label' => 'Jumlah Konga (Karung)'],
-                    'harga_konga' => ['label' => 'Harga Konga (Rp)'],
+                    'harga_konga' => ['label' => 'Harga Konga (Rp)', 'value' => 140000],
                     'jumlah_menir' => ['label' => 'Jumlah Menir (Kg)'],
-                    'harga_menir' => ['label' => 'Harga Menir (Rp)'],
+                    'harga_menir' => ['label' => 'Harga Menir (Rp)', 'value' => 3000],
                     ];
                     @endphp
                     @foreach($fields as $field => $data)
