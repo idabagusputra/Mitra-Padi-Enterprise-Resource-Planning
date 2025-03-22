@@ -126,8 +126,8 @@ class Giling extends Model
     {
         Log::info("Calculating Bunga for Giling ID: {$this->id}, Bunga Input: {$bungaInput}");
         $paymentDate = $this->created_at
-            ? Carbon::parse($this->created_at)->setTime(Carbon::now()->subDays(2)->setTime(0, 0, 0)->hour, Carbon::now()->subDays(2)->setTime(0, 0, 0)->minute, Carbon::now()->subDays(2)->setTime(0, 0, 0)->second)
-            : Carbon::now()->subDays()->startOfDay();
+            ? Carbon::parse($this->created_at)->setTime(Carbon::now()->subDays(4)->startOfDay()->hour, Carbon::now()->subDays(4)->startOfDay()->minute, Carbon::now()->subDays(4)->startOfDay()->second)
+            : Carbon::now()->subDays(4)->startOfDay();
 
         $totalBunga = 0;
         $credits = Kredit::where('petani_id', $this->petani_id)
@@ -138,8 +138,8 @@ class Giling extends Model
             $creditDate = Carbon::parse($credit->tanggal);
             $debtDuration = $creditDate->diffInMonths($paymentDate);
             // $debtDurationMonths = floor($debtDuration);
-            $debtDurationMonths = ceil($debtDuration * 10) / 10;
-            // $debtDurationMonths = $debtDuration;
+            // $debtDurationMonths = ceil($debtDuration * 10) / 10;
+            $debtDurationMonths = $debtDuration;
 
             Log::info("Credit: {$credit->jumlah}, Date: {$credit->tanggal}, Debt Duration: {$debtDurationMonths} months");
             Log::info("Credit: {$credit->jumlah}, Payment Date: {$paymentDate}, Debt Duration: {$debtDurationMonths} months");
