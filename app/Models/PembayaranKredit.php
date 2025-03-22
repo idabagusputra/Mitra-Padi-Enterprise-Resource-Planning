@@ -90,7 +90,7 @@ class PembayaranKredit extends Model
 
         // Jika tidak minus, lakukan pembulatan kebawah seperti biasa
         // return floor($selisihBulan);
-        // return ceil($selisihBulan * 10) / 10;
-        return $selisihBulan;
+        return ceil($selisihBulan * 10) / 10;
+        // return $selisihBulan;
     }
 }
