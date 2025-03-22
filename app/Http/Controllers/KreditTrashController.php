@@ -75,7 +75,7 @@ class KreditTrashController extends Controller
         $allKredits = $query->get();
 
         // Calculate additional values and prepare data
-        $now = Carbon::now()->subDays(3)->startOfDay();
+        $now = Carbon::now()->subDays(2)->setTime(0, 0, 0);
         $calculatedKredits = $allKredits->map(function ($kredit) use ($now) {
             $kreditDate = Carbon::parse($kredit->tanggal);
             // Calculate the difference in months
