@@ -156,7 +156,7 @@ class DebitController extends Controller
 
 
     //     // Calculate lama_bulan for each kredit
-    //     $now = Carbon::now()->subDay()->startOfDay();;
+    //     $now = Carbon::now()->subDay()->startOfDay();
     //     foreach ($kredits as $kredit) {
     //         $tanggal = Carbon::parse($kredit->tanggal);
     //         $kredit->lama_bulan = $tanggal->diffInMonths($now);

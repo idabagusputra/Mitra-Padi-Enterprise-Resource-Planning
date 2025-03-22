@@ -126,8 +126,8 @@ class Giling extends Model
     {
         Log::info("Calculating Bunga for Giling ID: {$this->id}, Bunga Input: {$bungaInput}");
         $paymentDate = $this->created_at
-            ? Carbon::parse($this->created_at)->setTime(Carbon::now()->subDay()->startOfDay();->hour, Carbon::now()->subDay()->startOfDay();->minute, Carbon::now()->subDay()->startOfDay();->second)
-            : Carbon::now()->subDay()->startOfDay();;
+            ? Carbon::parse($this->created_at)->setTime(Carbon::now()->subDay()->startOfDay()->hour, Carbon::now()->subDay()->startOfDay()->minute, Carbon::now()->subDay()->startOfDay()->second)
+            : Carbon::now()->subDay()->startOfDay();
 
         $totalBunga = 0;
         $credits = Kredit::where('petani_id', $this->petani_id)

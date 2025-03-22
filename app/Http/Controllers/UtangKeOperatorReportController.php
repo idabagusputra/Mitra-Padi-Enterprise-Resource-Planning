@@ -94,14 +94,14 @@ class UtangKeOperatorReportController extends Controller
         $sortOrder = 'desc';
 
         $allKredits = UtangKeOperator::with('petani')->get();
-        $now = Carbon::now()->subDay()->startOfDay();;
+        $now = Carbon::now()->subDay()->startOfDay();
         $calculatedKredits = $allKredits->map(function ($kredit) use ($now) {
             $kreditDate = Carbon::parse($kredit->tanggal);
 
             // Cek apakah tanggal created_at dan updated_at sama (tanpa waktu)
             if ($kredit->status === true) {
                 // Jika statusnya true, hitung selisih bulan menggunakan now
-                $now = Carbon::now()->subDay()->startOfDay();; // Dapatkan waktu sekarang
+                $now = Carbon::now()->subDay()->startOfDay(); // Dapatkan waktu sekarang
                 $diffInMonthsUpdate = $kreditDate->diffInMonths($kredit->updated_at); // Menghitung selisih bulan
                 // Lakukan sesuatu dengan $diffInMonthsUpdate jika diperlukan
                 // Jika diffInMonthsUpdate bernilai negatif, set nilainya menjadi 0
