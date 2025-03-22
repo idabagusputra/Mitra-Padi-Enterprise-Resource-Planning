@@ -125,10 +125,7 @@ class Giling extends Model
     public function kalkulasiBunga($bungaInput)
     {
         Log::info("Calculating Bunga for Giling ID: {$this->id}, Bunga Input: {$bungaInput}");
-        $paymentDate = $this->created_at
-            ? Carbon::parse($this->created_at)->setTime(Carbon::now()->subDays()->hour, Carbon::now()->subDays()->minute, Carbon::now()->subDays()->second)
-            : Carbon::now()->subDays();
-
+        $paymentDate = $this->created_at ? Carbon::parse($this->created_at)->addDay() : Carbon::now();
         $totalBunga = 0;
         $credits = Kredit::where('petani_id', $this->petani_id)
             ->where('status', false)
@@ -138,8 +135,8 @@ class Giling extends Model
             $creditDate = Carbon::parse($credit->tanggal);
             $debtDuration = $creditDate->diffInMonths($paymentDate);
             // $debtDurationMonths = floor($debtDuration);
-            // $debtDurationMonths = ceil($debtDuration * 10) / 10;
-            $debtDurationMonths = $debtDuration;
+            $debtDurationMonths = ceil($debtDuration * 10) / 10;
+            // $debtDurationMonths = $debtDuration;
 
             Log::info("Credit: {$credit->jumlah}, Date: {$credit->tanggal}, Debt Duration: {$debtDurationMonths} months");
             Log::info("Credit: {$credit->jumlah}, Payment Date: {$paymentDate}, Debt Duration: {$debtDurationMonths} months");
