@@ -341,46 +341,41 @@
 
 
                 <!-- Bagian Data Penggilingan -->
-<!-- Bagian Data Penggilingan -->
-<h6 class="mb-3 text-primary">{{ __('Data Penggilingan') }}</h6>
-<div class="row">
-    @php
-    $fields = [
-        'giling_kotor' => ['label' => 'Giling Kotor (Kg)'],
-        'pulang' => ['label' => 'Beras Pulang (Kg)'],
-        'pinjam' => ['label' => 'Pinjaman Beras (Kg)'],
-        'jemur' => ['label' => 'Jemur (Karung)'],
-        'harga_jual' => ['label' => 'Harga Beras Laku (Rp)'],
-        'jumlah_konga' => ['label' => 'Jumlah Konga (Karung)'],
-        'harga_konga' => ['label' => 'Harga Konga (Rp)', 'default' => 140000],
-        'jumlah_menir' => ['label' => 'Jumlah Menir (Kg)'],
-        'harga_menir' => ['label' => 'Harga Menir (Rp)', 'default' => 3000],
-    ];
-    @endphp
-    @foreach($fields as $field => $data)
-        @php
-        $label = $data['label'];
-        $placeholder = str_contains($label, '(Kg)') ? 'Kilogram'
-            : (str_contains($label, '(Karung)') ? 'Karung'
-            : (str_contains($label, '(Rp)') ? 'Rupiah' : ''));
-        $defaultValue = isset($data['default']) ? $data['default'] : '';
-        @endphp
-        <div class="col-md-4 mb-3">
-            <div class="form-group">
-                <label for="{{ $field }}" class="form-control-label">{{ __($label) }}</label>
-                <input class="form-control number-format" type="text"
-                    name="{{ $field }}"
-                    id="{{ $field }}"
-                    inputmode="numeric"
-                    placeholder="{{ $placeholder }}"
-                    value="{{ old($field) ?? $defaultValue }}"
-                    required>
-            </div>
-        </div>
-    @endforeach
-</div>
-
-
+                <h6 class="mb-3 text-primary">{{ __('Data Penggilingan') }}</h6>
+                <div class="row">
+                    @php
+                    $fields = [
+                    'giling_kotor' => ['label' => 'Giling Kotor (Kg)'],
+                    'pulang' => ['label' => 'Beras Pulang (Kg)'],
+                    'pinjam' => ['label' => 'Pinjaman Beras (Kg)'],
+                    'jemur' => ['label' => 'Jemur (Karung)'],
+                    'harga_jual' => ['label' => 'Harga Beras Laku (Rp)'],
+                    'jumlah_konga' => ['label' => 'Jumlah Konga (Karung)'],
+                    'harga_konga' => ['label' => 'Harga Konga (Rp)'],
+                    'jumlah_menir' => ['label' => 'Jumlah Menir (Kg)'],
+                    'harga_menir' => ['label' => 'Harga Menir (Rp)'],
+                    ];
+                    @endphp
+                    @foreach($fields as $field => $data)
+                    @php
+                    $label = $data['label'];
+                    $placeholder = str_contains($label, '(Kg)') ? 'Kilogram'
+                    : (str_contains($label, '(Karung)') ? 'Karung'
+                    : (str_contains($label, '(Rp)') ? 'Rupiah' : ''));
+                    @endphp
+                    <div class="col-md-4 mb-3">
+                        <div class="form-group">
+                            <label for="{{ $field }}" class="form-control-label">{{ __($label) }}</label>
+                            <input class="form-control number-format" type="text"
+                                name="{{ $field }}"
+                                id="{{ $field }}"
+                                inputmode="numeric"
+                                placeholder="{{ $placeholder }}"
+                                required>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
 
 
                 <h6 class="mb-3 mt-2 text-primary">{{ __('Pengambilan') }}</h6>
