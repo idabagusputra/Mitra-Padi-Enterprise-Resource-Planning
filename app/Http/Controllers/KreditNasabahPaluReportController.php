@@ -94,14 +94,14 @@ class KreditNasabahPaluReportController extends Controller
         $sortOrder = 'desc';
 
         $allKredits = KreditNasabahPalu::get();
-        $now = Carbon::now()->startOfDay();
+        $now = Carbon::now();
         $calculatedKredits = $allKredits->map(function ($kredit) use ($now) {
             $kreditDate = Carbon::parse($kredit->tanggal);
 
             // Cek apakah tanggal created_at dan updated_at sama (tanpa waktu)
             if ($kredit->status === true) {
                 // Jika statusnya true, hitung selisih bulan menggunakan now
-                $now = Carbon::now()->startOfDay(); // Dapatkan waktu sekarang
+                $now = Carbon::now(); // Dapatkan waktu sekarang
                 $diffInMonthsUpdate = $kreditDate->diffInMonths($kredit->updated_at); // Menghitung selisih bulan
                 // Lakukan sesuatu dengan $diffInMonthsUpdate jika diperlukan
                 // Jika diffInMonthsUpdate bernilai negatif, set nilainya menjadi 0
