@@ -77,7 +77,7 @@ class PembayaranKredit extends Model
     {
         $tanggalPembayaran = $this->created_at ?? Carbon::now();
         if (!$tanggalKredit instanceof Carbon) {
-            $tanggalKredit = Carbon::parse($tanggalKredit)->addDays();
+            $tanggalKredit = Carbon::parse($tanggalKredit)->setTime(Carbon::now()->hour, Carbon::now()->minute, Carbon::now()->second);
         }
 
         // Hitung selisih bulan tanpa pembulatan dulu
