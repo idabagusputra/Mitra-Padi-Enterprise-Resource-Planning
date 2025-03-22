@@ -121,7 +121,7 @@ class DanaTititpanPetaniReportController extends Controller
 
             // Ensure the difference is floored
             // $selisihBulan = floor($diffInMonthsUpdate);
-            $selisihBulan = ceil($diffInMonthsUpdate * 10) / 10;
+            $selisihBulan = ceil($diffInMonthsUpdate * 100) / 100;
             // $selisihBulan = $diffInMonthsUpdate;
 
             // Calculate bunga menggunakan selisih bulan
@@ -140,7 +140,7 @@ class DanaTititpanPetaniReportController extends Controller
 
             // Pastikan perbedaan bulan menjadi negatif dan dibulatkan ke bawah
             // $selisihBulanUpdate = floor($diffInMonthsUpdate);
-            $selisihBulanUpdate = ceil($diffInMonthsUpdate * 10) / 10;
+            $selisihBulanUpdate = ceil($diffInMonthsUpdate * 100) / 100;
             // $selisihBulanUpdate = $diffInMonthsUpdate;
 
             // Hitung bunga menggunakan perbedaan bulan yang negatif

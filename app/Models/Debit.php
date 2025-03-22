@@ -67,7 +67,7 @@ class Debit extends Model
 
             $creditDate = Carbon::parse($kredit->tanggal);
             // $debtDurationMonths = floor($creditDate->diffInMonths($paymentDate));
-            $debtDurationMonths = ceil($creditDate->diffInMonths($paymentDate) * 10) / 10;
+            $debtDurationMonths = ceil($creditDate->diffInMonths($paymentDate) * 100) / 100;
             // $debtDurationMonths = $creditDate->diffInMonths($paymentDate);
 
 
@@ -147,7 +147,7 @@ class Debit extends Model
                     : Carbon::now()->subDays(2)->startOfDay();
 
                 // $debtDurationMonths = floor($creditDate->diffInMonths($paymentDate));
-                $debtDurationMonths = ceil($creditDate->diffInMonths($paymentDate) * 10) / 10;
+                $debtDurationMonths = ceil($creditDate->diffInMonths($paymentDate) * 100) / 100;
                 // $debtDurationMonths = $creditDate->diffInMonths($paymentDate);
 
 
