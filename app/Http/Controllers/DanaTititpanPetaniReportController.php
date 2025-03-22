@@ -94,14 +94,14 @@ class DanaTititpanPetaniReportController extends Controller
         $sortOrder = 'desc';
 
         $allKredits = KreditTitipanPetani::with('petani')->get();
-        $now = Carbon::now();
+        $now = Carbon::now()->subDays()->startOfDay();
         $calculatedKredits = $allKredits->map(function ($kredit) use ($now) {
             $kreditDate = Carbon::parse($kredit->tanggal);
 
             // Cek apakah tanggal created_at dan updated_at sama (tanpa waktu)
             if ($kredit->status === true) {
                 // Jika statusnya true, hitung selisih bulan menggunakan now
-                $now = Carbon::now(); // Dapatkan waktu sekarang
+                $now = Carbon::now()->subDays()->startOfDay(); // Dapatkan waktu sekarang
                 $diffInMonthsUpdate = $kreditDate->diffInMonths($kredit->updated_at); // Menghitung selisih bulan
                 // Lakukan sesuatu dengan $diffInMonthsUpdate jika diperlukan
                 // Jika diffInMonthsUpdate bernilai negatif, set nilainya menjadi 0
