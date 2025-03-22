@@ -94,7 +94,8 @@ class KreditTitipanPetaniController extends Controller
 
             // Ensure the difference is floored
             // $selisihBulan = floor($diffInMonthsUpdate);
-            $selisihBulan = $diffInMonthsUpdate;
+            $selisihBulan = ceil($diffInMonthsUpdate * 10) / 10;
+            // $selisihBulan = $diffInMonthsUpdate;
 
             // Calculate bunga menggunakan selisih bulan
             $bunga = $kredit->jumlah * 0.02 * $selisihBulan;
@@ -113,7 +114,8 @@ class KreditTitipanPetaniController extends Controller
 
             // Pastikan perbedaan bulan menjadi negatif dan dibulatkan ke bawah
             // $selisihBulanUpdate = floor($diffInMonthsUpdate);
-            $selisihBulanUpdate = $diffInMonthsUpdate;
+            $selisihBulanUpdate = ceil($diffInMonthsUpdate * 10) / 10;
+            // $selisihBulanUpdate = $diffInMonthsUpdate;
 
             // Hitung bunga menggunakan perbedaan bulan yang negatif
             $bungaUpdate = $kredit->jumlah * 0.02 * $selisihBulanUpdate;

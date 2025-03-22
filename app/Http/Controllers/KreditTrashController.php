@@ -82,7 +82,8 @@ class KreditTrashController extends Controller
             $diffInMonths = $kreditDate->diffInMonths($now);
             // Ensure the difference is negative and floored
             // $selisihBulan = floor($diffInMonths);
-            $selisihBulan = $diffInMonths;
+            $selisihBulan = ceil($diffInMonths * 10) / 10;
+            // $selisihBulan = $diffInMonths;
             // Calculate bunga using the negative difference in months
             $bunga = $kredit->jumlah * 0.02 * $selisihBulan;
             // Calculate hutang plus bunga
