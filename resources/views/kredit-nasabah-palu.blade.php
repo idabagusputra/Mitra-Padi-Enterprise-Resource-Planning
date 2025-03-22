@@ -366,7 +366,7 @@
                                         </td>
                                         <!-- <td class="text-center">
                                             <p class="text-xs font-weight-bold mb-0">
-                                                Rp {{ number_format($kredit->hutang_plus_bunga, 2, ',', '.') }} | {{ number_format($kredit->lama_bulan) }} Bulan
+                                                Rp {{ number_format($kredit->hutang_plus_bunga, 2, ',', '.') }} | {{ number_format($kredit->lama_bulan, 1, ',', '.') }} Bulan Bulan
                                             </p>
                                             <small style="font-size: 0.7rem; color: #999;">
                                                 Bunga: Rp {{ number_format($kredit->bunga, 2, ',', '.') }}

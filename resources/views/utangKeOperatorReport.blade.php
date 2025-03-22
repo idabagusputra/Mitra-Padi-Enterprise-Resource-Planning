@@ -119,7 +119,7 @@
                 <!-- <td style="text-align: right; padding-right: 8px;">
                     Rp {{ number_format($kredit->hutang_plus_bunga, 2, ',', '.') }}
                     <br>
-                    <small>({{ number_format($kredit->lama_bulan) }} Bulan, Bunga: Rp {{ number_format($kredit->bunga, 2, ',', '.') }})</small>
+                    <small>({{ number_format($kredit->lama_bulan, 1, ',', '.') }} Bulan Bulan, Bunga: Rp {{ number_format($kredit->bunga, 2, ',', '.') }})</small>
                 </td> -->
                 <td style="text-align: center;">{{ $kredit->status ? 'Lunas' : 'Belum Lunas' }}</td>
             </tr>
