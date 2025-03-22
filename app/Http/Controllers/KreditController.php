@@ -69,13 +69,13 @@ class KreditController extends Controller
         // Calculate additional values and prepare data
         $now = Carbon::now();
         $calculatedKredits = $allKredits->map(function ($kredit) use ($now) {
-            $kreditDate = Carbon::parse($kredit->tanggal);
+            $kreditDate = Carbon::parse($kredit->tanggal)->subDays();
 
             // Cek apakah tanggal created_at dan updated_at sama (tanpa waktu)
             // Pastikan $kredit->status dan $kreditDate adalah objek yang valid
             if ($kredit->status === true) {
                 // Jika statusnya true, hitung selisih bulan menggunakan now
-                $now = Carbon::now()->subDays(30); // Dapatkan waktu sekarang
+                $now = Carbon::now(); // Dapatkan waktu sekarang
                 $diffInMonthsUpdate = $kreditDate->diffInMonths($kredit->updated_at); // Menghitung selisih bulan
                 // Lakukan sesuatu dengan $diffInMonthsUpdate jika diperlukan
                 // Jika diffInMonthsUpdate bernilai negatif, set nilainya menjadi 0
@@ -96,7 +96,6 @@ class KreditController extends Controller
             // $selisihBulan = floor($diffInMonthsUpdate);
             $selisihBulan = ceil($diffInMonthsUpdate * 10) / 10;
             // $selisihBulan = $diffInMonthsUpdate;
-            Log::info('Current Time Minus 2 Days: ' . $now->toDateTimeString());
 
             // Calculate bunga menggunakan selisih bulan
             $bunga = $kredit->jumlah * 0.02 * $selisihBulan;
