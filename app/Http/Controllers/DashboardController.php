@@ -55,8 +55,8 @@ class DashboardController extends Controller
 
 
         // Mendapatkan bulan saat ini
-        $currentMonth = Carbon::now()->subDays(2)->startOfDay()->format('m');
-        $currentYear = Carbon::now()->subDays(2)->startOfDay()->format('Y');
+        $currentMonth = Carbon::now()->format('m');
+        $currentYear = Carbon::now()->format('Y');
 
         // Query untuk mengambil nilai 'beras_bersih' yang memiliki 'created_at' pada bulan sekarang
         $totalBerasBersihBulanIni = DaftarGiling::whereYear('created_at', $currentYear)
@@ -79,17 +79,17 @@ class DashboardController extends Controller
 
         // foreach ($months as $month) {
         //     $totalBerasBersih = DaftarGiling::whereMonth('created_at', $month)
-        //         ->whereYear('created_at', Carbon::now()->subDays(2)->startOfDay()->year)
+        //         ->whereYear('created_at', Carbon::now()->year)
         //         ->sum('beras_bersih');
         //     $dataBerasBersih[] = $totalBerasBersih;
 
         //     $totalOngkosGiling = DaftarGiling::whereMonth('created_at', $month)
-        //         ->whereYear('created_at', Carbon::now()->subDays(2)->startOfDay()->year)
+        //         ->whereYear('created_at', Carbon::now()->year)
         //         ->sum('ongkos_giling');
         //     $dataOngkosGiling[] = $totalOngkosGiling;
 
         //     $totalHargaJual = DaftarGiling::whereMonth('created_at', $month)
-        //         ->whereYear('created_at', Carbon::now()->subDays(2)->startOfDay()->year)
+        //         ->whereYear('created_at', Carbon::now()->year)
         //         ->sum('harga_jual');
         //     $pendapatanBerasTerjual = $totalOngkosGiling * $totalHargaJual;
         //     $dataPendapatanTerjual[] = $pendapatanBerasTerjual;
@@ -98,7 +98,7 @@ class DashboardController extends Controller
         // Get the last 12 months starting from August 2023
         $months = [];
         $currentDate = Carbon::create(2024, 10, 1);
-        $endDate = Carbon::now()->subDays(2)->startOfDay();
+        $endDate = Carbon::now();
 
         // Collect the last 12 months
         while (count($months) < 12) {
@@ -820,7 +820,7 @@ class DashboardController extends Controller
         return view('dashboard', compact('totalkreditsTitipanPetaniBelumLunas', 'totalkreditsOperatorBelumLunas', 'totalkreditsNasabahPaluBelumLunas', 'totalHutangPerbulan', 'sumPendapatanDariBunga', 'sumTotalHutang', 'pendapatanDariBungaTotalPerbulan', 'dataTotalHutang', 'dataTotalHutangPlusBunga', 'dataPendapatanDariBunga', 'histories', 'data', 'totalKeseluruhanBulanIniOngkosGiling', 'pendapatanBerasTerjualTotal', 'pendapatanBerasTerjualTotalPerBulan', 'totalPetani', 'totalKreditBelumLunas', 'jumlahPetaniBelumLunas', 'totalBerasBersih', 'dataOngkosGiling', 'dataBerasBersih', 'dataPendapatanTerjual', 'monthLabels', 'totalBerasBersihBulanIni', 'totalKeseluruhanOngkosGiling'));
 
 
-        // $currentYear = Carbon::now()->subDays(2)->startOfDay()->year;
+        // $currentYear = Carbon::now()->year;
 
         // // Fetch data for ongkos_giling and total_hutang grouped by month for the current year
         // $monthlyData = DaftarGiling::select(
