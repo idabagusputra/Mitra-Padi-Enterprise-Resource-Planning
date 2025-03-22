@@ -63,7 +63,7 @@ class PembayaranKredit extends Model
 
     // public function hitungLamaHutangBulan($tanggalKredit)
     // {
-    //     $tanggalPembayaran = $this->created_at ?? Carbon::now()->subDays()->startOfDay();
+    //     $tanggalPembayaran = $this->created_at ?? Carbon::now()->subDays(2)->startOfDay();
 
     //     if (!$tanggalKredit instanceof Carbon) {
     //         $tanggalKredit = Carbon::parse($tanggalKredit);
@@ -75,7 +75,7 @@ class PembayaranKredit extends Model
 
     public function hitungLamaHutangBulan($tanggalKredit)
     {
-        $tanggalPembayaran = $this->created_at ?? Carbon::now()->subDays()->startOfDay();
+        $tanggalPembayaran = $this->created_at ?? Carbon::now()->subDays(2)->startOfDay();
         if (!$tanggalKredit instanceof Carbon) {
             $tanggalKredit = Carbon::parse($tanggalKredit);
         }

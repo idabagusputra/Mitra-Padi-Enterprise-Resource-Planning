@@ -67,7 +67,7 @@ class UtangKeOperatorController extends Controller
         $allKredits = $query->get();
 
         // Calculate additional values and prepare data
-        $now = Carbon::now()->subDays()->startOfDay();
+        $now = Carbon::now()->subDays(2)->startOfDay();
         $calculatedKredits = $allKredits->map(function ($kredit) use ($now) {
             $kreditDate = Carbon::parse($kredit->tanggal);
 
@@ -75,7 +75,7 @@ class UtangKeOperatorController extends Controller
             // Pastikan $kredit->status dan $kreditDate adalah objek yang valid
             if ($kredit->status === true) {
                 // Jika statusnya true, hitung selisih bulan menggunakan now
-                $now = Carbon::now()->subDays()->startOfDay(); // Dapatkan waktu sekarang
+                $now = Carbon::now()->subDays(2)->startOfDay(); // Dapatkan waktu sekarang
                 $diffInMonthsUpdate = $kreditDate->diffInMonths($kredit->updated_at); // Menghitung selisih bulan
                 // Lakukan sesuatu dengan $diffInMonthsUpdate jika diperlukan
                 // Jika diffInMonthsUpdate bernilai negatif, set nilainya menjadi 0
