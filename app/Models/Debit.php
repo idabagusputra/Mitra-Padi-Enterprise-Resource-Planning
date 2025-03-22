@@ -51,7 +51,7 @@ class Debit extends Model
             return 0;
         }
 
-        $paymentDate = $this->tanggal ? Carbon::parse($this->tanggal) : Carbon::now()->subDays(2)->subDays(2)->setTime(0, 0, 0);
+        $paymentDate = $this->tanggal ? Carbon::parse($this->tanggal) : Carbon::now()->subDays(2)->setTime(0, 0, 0);
         $kredits = $this->petani->kredits()->where('status', false)->get();
 
         if ($kredits->isEmpty()) {
@@ -141,8 +141,8 @@ class Debit extends Model
 
                 // Hitung bunga untuk kredit ini
                 $creditDate = Carbon::parse($kredit->tanggal);
-                // $paymentDate = $this->tanggal ? Carbon::parse($this->tanggal) : Carbon::now()->subDays(2)->subDays(2)->setTime(0, 0, 0);
-                $paymentDate = $this->tanggal ? Carbon::parse($this->tanggal)->setTime(Carbon::now()->subDays(2)->subDays(2)->setTime(0, 0, 0)->hour, Carbon::now()->subDays(2)->subDays(2)->setTime(0, 0, 0)->minute, Carbon::now()->subDays(2)->subDays(2)->setTime(0, 0, 0)->second)->toDateTimeString() : Carbon::now()->subDays(2)->subDays(2)->setTime(0, 0, 0)->toDateTimeString();
+                // $paymentDate = $this->tanggal ? Carbon::parse($this->tanggal) : Carbon::now()->subDays(2)->setTime(0, 0, 0);
+                $paymentDate = $this->tanggal ? Carbon::parse($this->tanggal)->setTime(Carbon::now()->subDays(2)->setTime(0, 0, 0)->hour, Carbon::now()->subDays(2)->setTime(0, 0, 0)->minute, Carbon::now()->subDays(2)->setTime(0, 0, 0)->second)->toDateTimeString() : Carbon::now()->subDays(2)->setTime(0, 0, 0)->toDateTimeString();
 
                 // $debtDurationMonths = floor($creditDate->diffInMonths($paymentDate));
                 $debtDurationMonths = ceil($creditDate->diffInMonths($paymentDate) * 10) / 10;
@@ -261,7 +261,7 @@ class Debit extends Model
     //     try {
     //         // Assume that you have calculated totalHutangDenganBunga already
     //         $totalHutangDenganBunga = $this->calculateTotalHutangDenganBunga();
-    //         $paymentDate = $this->tanggal ? Carbon::parse($this->tanggal) : Carbon::now()->subDays(2)->subDays(2)->setTime(0, 0, 0);
+    //         $paymentDate = $this->tanggal ? Carbon::parse($this->tanggal) : Carbon::now()->subDays(2)->setTime(0, 0, 0);
     //         $kredits = $this->petani->kredits()->where('status', false)->get();
 
     //         // Mengambil data debits terakhir untuk petani yang bersangkutan
