@@ -73,67 +73,29 @@ class PembayaranKredit extends Model
     //     return floor($tanggalKredit->diffInMonths($tanggalPembayaran)); // Pembulatan kebawah
     // }
 
-
-
     public function hitungLamaHutangBulan($tanggalKredit)
-
     {
-
-
-        $tanggalPembayaran = $this->created_at ?? Carbon::now();
-
-
         // Menentukan tanggal pembayaran
-
-
         $tanggalPembayaran = $this->created_at ? Carbon::parse($this->created_at) : Carbon::now();
-
-
         Log::info("Tanggal Pembayaran:", ['tanggalPembayaran' => $tanggalPembayaran->toDateTimeString()]);
 
-
-
-
-
         // Memastikan $tanggalKredit adalah instance Carbon dan menyetel waktu
-
         if (!$tanggalKredit instanceof Carbon) {
-
-
-            $tanggalKredit = Carbon::parse($tanggalKredit)->startOfDay();
-
-
             $tanggalKredit = Carbon::parse($tanggalKredit)->setTime(Carbon::now()->hour, Carbon::now()->minute, Carbon::now()->second);
-
-
             Log::info("Tanggal Kredit setelah parsing:", ['tanggalKredit' => $tanggalKredit->toDateTimeString()]);
         }
 
-
-
         // Hitung selisih bulan tanpa pembulatan dulu
-
         $selisihBulan = $tanggalKredit->diffInMonths($tanggalPembayaran);
 
-
-
         // Jika tanggal kredit lebih besar dari tanggal pembayaran
-
         if ($tanggalKredit > $tanggalPembayaran) {
-
             return 0; // Kembalikan 0 jika hasilnya akan minus
-
         }
 
-
-
         // Jika tidak minus, lakukan pembulatan kebawah seperti biasa
-
         // return floor($selisihBulan);
-
         return ceil($selisihBulan * 100) / 100;
-
         // return $selisihBulan;
-
     }
 }
