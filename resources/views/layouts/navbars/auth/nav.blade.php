@@ -435,7 +435,7 @@
                 } finally {
                     // Reset button state
                     shareButton.disabled = false;
-                    shareButton.innerHTML = '<i class="fas fa-share-alt me-1"></i> Share';
+                    shareButton.innerHTML = '<i class="bi bi-floppy-fill me-1"></i> SAVED';
                 }
             });
         }
