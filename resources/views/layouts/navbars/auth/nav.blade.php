@@ -232,9 +232,9 @@
                     <button id="sharePdf" class="btn btn-info me-2  ">
                         <i class="bi bi-floppy-fill me-1"></i> Save
                     </button>
-                    <button id="whatsappSharePdf" class="btn btn-success me-2">
+                    {{-- <button id="whatsappSharePdf" class="btn btn-success me-2">
                         <i class="bi bi-whatsapp me-1"></i> WhatsApp
-                    </button>
+                    </button> --}}
                 </div>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     <i class="bi bi-x-square-fill me-1"></i> close
