@@ -206,7 +206,7 @@
     </div> -->
     <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
         <div class="card">
-            <div class="card-body p-3">
+            <div class="card-body p-3" onclick="window.location.href='https://www.mitrapadi.com/kredit';" style="cursor: pointer;">
                 <div class="row">
                     <div class="col-8">
                         <div class="numbers">
@@ -239,7 +239,7 @@
     </div>
     <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
         <div class="card">
-            <div class="card-body p-3">
+            <div class="card-body p-3" onclick="window.location.href='https://www.mitrapadi.com/kredit';" style="cursor: pointer;">
                 <div class="row">
                     <div class="col-8">
                         <div class="numbers">
