@@ -721,6 +721,14 @@
                 document.querySelectorAll('form[id^="editKreditForm"]').forEach(form => {
                     form.addEventListener('submit', function(event) {
                         event.preventDefault();
+
+                        // Check if petani_id is set before submitting
+                        const petaniId = form.querySelector('[name="petani_id"]').value;
+                        if (!petaniId) {
+                            alert('The petani id field is required. Please select a petani.');
+                            return false;
+                        }
+
                         const formData = new FormData(form);
 
                         // Ambil nilai `jumlah` dari formData dan hapus semua koma
@@ -730,28 +738,46 @@
                             formData.set('jumlah', jumlah); // Perbarui nilai di formData
                         }
 
+                        // Log the formData to debug
+                        console.log('FormData contents:');
+                        for (let pair of formData.entries()) {
+                            console.log(pair[0] + ': ' + pair[1]);
+                        }
+
                         fetch(form.action, {
-                                method: 'POST',
-                                body: formData,
-                                headers: {
-                                    'X-Requested-With': 'XMLHttpRequest',
-                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                                },
-                            })
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.success) {
-                                    console.log('Kredit updated successfully');
-                                    location.reload();
+                            method: 'POST',
+                            body: formData,
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                            },
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                console.log('Kredit updated successfully');
+                                location.reload();
+                            } else {
+                                console.error('Error updating kredit:', data);
+
+                                // Better error handling
+                                let errorMessage = 'Error updating kredit: ';
+                                if (data.errors) {
+                                    // Format validation errors
+                                    errorMessage += Object.entries(data.errors)
+                                        .map(([field, messages]) => `${field}: ${messages.join(', ')}`)
+                                        .join('\n');
                                 } else {
-                                    console.error('Error updating kredit:', data);
-                                    alert('Error updating kredit: ' + (data.message || JSON.stringify(data)));
+                                    errorMessage += (data.message || JSON.stringify(data));
                                 }
-                            })
-                            .catch(error => {
-                                console.error('Error:', error);
-                                alert('An error occurred while updating kredit: ' + error);
-                            });
+
+                                alert(errorMessage);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('An error occurred while updating kredit: ' + error);
+                        });
                     });
                 });
 
