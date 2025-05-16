@@ -445,8 +445,10 @@
                                                 <div class="form-group">
                                                     <label for="petani_id">Petani</label>
                                                     <div class="position-relative">
-                                                        <input type="text" class="form-control" id="petani_search" placeholder="Search for a petani..." autocomplete="off" required>
-                                                        <input type="hidden" id="petani_id" name="petani_id" required>
+                                                        <input type="text" class="form-control" id="petani_search" placeholder="Search for a petani..." autocomplete="off" required
+                                                            value="{{ $kredit->petani->nama ?? '' }}">
+                                                        <input type="hidden" id="petani_id" name="petani_id" required
+                                                            value="{{ $kredit->petani_id }}">
                                                         <div id="petani_search_results" class="dropdown-menu w-100" style="display: none; position: absolute; max-height: 200px; overflow-y: auto; z-index: 1000;"></div>
                                                     </div>
                                                 </div>
