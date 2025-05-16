@@ -443,22 +443,15 @@
                                             <!-- ... (form fields) ... -->
                                             <div class="modal-body">
                                                 <div class="form-group">
-                                                <label for="petani_id_{{ $kredit->id }}">Petani</label>
-                                                <div class="position-relative">
-                                                    <input type="text" class="form-control petani-search"
-                                                        id="edit_petani_search_{{ $kredit->id }}"
-                                                        placeholder="Search for a petani..."
-                                                        autocomplete="off" required
-                                                        value="{{ $kredit->petani->nama ?? '' }}">
-                                                    <input type="hidden" id="petani_id_{{ $kredit->id }}"
-                                                        name="petani_id" required
-                                                        value="{{ $kredit->petani_id }}">
-                                                    <div id="edit_petani_search_results_{{ $kredit->id }}"
-                                                        class="dropdown-menu w-100 petani-results"
-                                                        style="display: none; position: absolute; max-height: 200px; overflow-y: auto; z-index: 1000;">
+                                                    <label for="petani_id">Petani</label>
+                                                    <div class="position-relative">
+                                                        <input type="text" class="form-control" id="edit_petani_search" placeholder="Search for a petani..." autocomplete="off" required
+                                                            value="{{ $kredit->petani->nama ?? '' }}">
+                                                        <input type="hidden" id="petani_id" name="petani_id" required
+                                                            value="{{ $kredit->petani_id }}">
+                                                        <div id="edit_petani_search_results" class="dropdown-menu w-100" style="display: none; position: absolute; max-height: 200px; overflow-y: auto; z-index: 1000;"></div>
                                                     </div>
                                                 </div>
-                                            </div>
                                                 <div class="form-group">
                                                     <label for="tanggal">Tanggal</label>
                                                     <input type="date" class="form-control" id="tanggal" name="tanggal" value="{{ date('Y-m-d', strtotime($kredit->tanggal)) }}" required>
