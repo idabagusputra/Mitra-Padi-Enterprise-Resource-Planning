@@ -473,20 +473,20 @@
                                 const div = document.createElement('div');
                                 div.classList.add('dropdown-item');
 
-                                // Buat container untuk nama dan alamat
+                                // Buat container untuk nama
                                 const nameSpan = document.createElement('span');
                                 nameSpan.style.fontWeight = 'bold';
-                                nameSpan.style.color = '#cc0c9c'; // Menambahkan warna ungu (#890f82)
-                                nameSpan.textContent = item.nama;
+                                nameSpan.style.color = '#cc0c9c';
+                                nameSpan.textContent = petani.nama;
 
-                                const addressSpan = document.createElement('span');
-                                addressSpan.style.color = '#666';
-                                addressSpan.style.fontSize = '0.9em';
-                                addressSpan.textContent = ` - ${item.alamat}`;
+                                // Buat container untuk alamat dan hutang
+                                const infoSpan = document.createElement('span');
+                                infoSpan.style.color = '#666';
+                                infoSpan.textContent = ` - ${petani.alamat} - (Hutang: Rp ${petani.total_hutang.toLocaleString('id-ID')})`;
 
-                                // Gabungkan nama dan alamat
+                                // Gabungkan semua elemen
                                 div.appendChild(nameSpan);
-                                div.appendChild(addressSpan);
+                                div.appendChild(infoSpan);
 
                                 // Styling untuk item dropdown
                                 div.style.cssText = `
