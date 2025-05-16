@@ -444,11 +444,11 @@
                                             <div class="modal-body">
                                                 <div class="form-group">
                                                     <label for="petani_id">Petani</label>
-                                                    <select class="form-control" id="petani_id" name="petani_id" required>
-                                                        @foreach($petanis as $petani)
-                                                        <option value="{{ $petani->id }}" {{ $kredit->petani_id == $petani->id ? 'selected' : '' }}>{{ $petani->nama }}</option>
-                                                        @endforeach
-                                                    </select>
+                                                    <div class="position-relative">
+                                                        <input type="text" class="form-control" id="petani_search" placeholder="Search for a petani..." autocomplete="off" required>
+                                                        <input type="hidden" id="petani_id" name="petani_id" required>
+                                                        <div id="petani_search_results" class="dropdown-menu w-100" style="display: none; position: absolute; max-height: 200px; overflow-y: auto; z-index: 1000;"></div>
+                                                    </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="tanggal">Tanggal</label>
