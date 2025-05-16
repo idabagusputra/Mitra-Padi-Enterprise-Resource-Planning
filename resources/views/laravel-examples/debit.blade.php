@@ -460,63 +460,64 @@
         box-shadow: 0 2px 4px #cc0c9c;
     `;
 
-            input.addEventListener('input', function() {
-                const searchTerm = this.value.trim();
-                if (searchTerm.length > 0) {
-                    fetch(`${url}?term=${searchTerm}`)
-                        .then(response => response.json())
-                        .then(data => {
-                            results.innerHTML = '';
-                            results.style.display = 'block';
+           input.addEventListener('input', function() {
+            const searchTerm = this.value.trim();
+            if (searchTerm.length > 0) {
+                fetch(`${url}?term=${searchTerm}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        results.innerHTML = '';
+                        results.style.display = 'block';
 
-                            data.forEach(item => {
-                                const div = document.createElement('div');
-                                div.classList.add('dropdown-item');
+                        data.forEach(item => {
+                            const div = document.createElement('div');
+                            div.classList.add('dropdown-item');
 
-                                // Buat container untuk nama
-                                const nameSpan = document.createElement('span');
-                                nameSpan.style.fontWeight = 'bold';
-                                nameSpan.style.color = '#cc0c9c';
-                                nameSpan.textContent = petani.nama;
+                            // Buat container untuk nama
+                            const nameSpan = document.createElement('span');
+                            nameSpan.style.fontWeight = 'bold';
+                            nameSpan.style.color = '#cc0c9c';
+                            nameSpan.textContent = item.nama;
 
-                                // Buat container untuk alamat dan hutang
-                                const infoSpan = document.createElement('span');
-                                infoSpan.style.color = '#666';
-                                infoSpan.textContent = ` - ${petani.alamat} - (Hutang: Rp ${petani.total_hutang.toLocaleString('id-ID')})`;
+                            // Buat container untuk alamat dan hutang
+                            const infoSpan = document.createElement('span');
+                            infoSpan.style.color = '#666';
+                            infoSpan.style.fontSize = '0.9em';
+                            infoSpan.textContent = ` - ${item.alamat} - (Hutang: Rp ${Number(item.total_hutang).toLocaleString('id-ID')})`;
 
-                                // Gabungkan semua elemen
-                                div.appendChild(nameSpan);
-                                div.appendChild(infoSpan);
+                            // Gabungkan semua elemen
+                            div.appendChild(nameSpan);
+                            div.appendChild(infoSpan);
 
-                                // Styling untuk item dropdown
-                                div.style.cssText = `
-                            padding: 8px 12px;
-                            cursor: pointer;
-                            border-bottom: 1px solid #eee;
-                        `;
+                            // Styling untuk item dropdown
+                            div.style.cssText = `
+                                padding: 8px 12px;
+                                cursor: pointer;
+                                border-bottom: 1px solid #eee;
+                            `;
 
-                                // Hover effect
-                                div.addEventListener('mouseover', () => {
-                                    div.style.backgroundColor = '#f5f5f5';
-                                });
-                                div.addEventListener('mouseout', () => {
-                                    div.style.backgroundColor = 'white';
-                                });
-
-                                div.addEventListener('click', function() {
-                                    // Update input dengan nama saja
-                                    input.value = item.nama;
-                                    results.style.display = 'none';
-                                    if (onSelectCallback) onSelectCallback(item);
-                                });
-
-                                results.appendChild(div);
+                            // Hover effect
+                            div.addEventListener('mouseover', () => {
+                                div.style.backgroundColor = '#f5f5f5';
                             });
+                            div.addEventListener('mouseout', () => {
+                                div.style.backgroundColor = 'white';
+                            });
+
+                            div.addEventListener('click', function() {
+                                // Update input dengan nama saja
+                                input.value = item.nama;
+                                results.style.display = 'none';
+                                if (onSelectCallback) onSelectCallback(item);
+                            });
+
+                            results.appendChild(div);
                         });
-                } else {
-                    results.style.display = 'none';
-                }
-            });
+                    });
+            } else {
+                results.style.display = 'none';
+            }
+        });
 
             // Close dropdown when clicking outside
             document.addEventListener('click', function(e) {
