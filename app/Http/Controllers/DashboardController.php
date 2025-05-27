@@ -565,7 +565,7 @@ class DashboardController extends Controller
                 return $item;
             }))
             ->sortByDesc('updated_at')
-            ->take(50);
+            ->take(300);
 
         $histories = $dataHistory->map(function ($history) {
             if ($history instanceof Petani && isset($history->nama) && isset($history->created_at)) {
