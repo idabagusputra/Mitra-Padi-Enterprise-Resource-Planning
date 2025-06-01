@@ -42,12 +42,10 @@
     @media (max-width: 575.98px) and (orientation: portrait) {
         .modal .modal-dialog {
             margin: 0.5rem auto;
-            height: 500px;
+
         }
 
-        .modal .modal-content {
-            height: 500px;
-        }
+
     }
 </style>
 
