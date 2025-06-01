@@ -49,6 +49,7 @@
     @media (max-width: 575.98px) {
         .modal .modal-dialog {
             max-width: 95%;
+            margin: 1rem;
         }
 
         /* Untuk mobile portrait yang sangat kecil */
