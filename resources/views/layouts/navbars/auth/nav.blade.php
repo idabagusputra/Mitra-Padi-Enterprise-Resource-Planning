@@ -1,6 +1,11 @@
 <style>
     /* Tambahkan style ini di bagian atas nav.blade.php */
 
+    .btn {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    margin-bottom: 0 !important;
+}
     /* Style untuk backdrop modal */
     .modal-backdrop {
         background-color: rgba(0, 0, 0, 0.3) !important;
@@ -31,10 +36,10 @@
         padding: 0 !important;
     }
 
-    /* .modal .modal-footer {
+    .modal .modal-footer {
         padding: 1rem;
         border-top: 1px solid #dee2e6;
-    } */
+    }
 
     /* Style untuk PDF viewer */
     .pdf-viewer {
