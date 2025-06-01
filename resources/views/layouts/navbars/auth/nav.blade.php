@@ -1,23 +1,15 @@
 <style>
-
+    /* Tambahkan style ini di bagian atas nav.blade.php */
 
     /* Style untuk backdrop modal */
     .modal-backdrop {
         background-color: rgba(0, 0, 0, 0.3) !important;
+        /* Sesuaikan opacity backdrop */
     }
 
-    /* Style untuk modal dengan vertical centering */
-    .modal {
-        display: flex !important;
-        align-items: center;
-        justify-content: center;
-    }
-
-    /* Style untuk modal dialog dengan responsive center */
+    /* Style untuk modal dialog */
     .modal .modal-dialog {
         max-width: 450px;
-        margin: 0; /* Remove default margin karena sudah menggunakan flexbox */
-        width: 100%;
     }
 
     .modal .modal-content {
@@ -45,21 +37,6 @@
         width: 100%;
         height: 500px;
         border: none;
-    }
-
-    /* Responsive adjustments */
-    @media (max-width: 575.98px) {
-        .modal .modal-dialog {
-            max-width: 95%;
-            margin: 1rem;
-        }
-
-        /* Untuk mobile portrait yang sangat kecil */
-        @media (orientation: portrait) {
-            .modal .modal-dialog {
-                margin: 0.5rem;
-            }
-        }
     }
 </style>
 
