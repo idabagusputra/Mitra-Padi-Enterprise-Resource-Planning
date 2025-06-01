@@ -228,7 +228,7 @@
 
 <!-- Modal PDF -->
 <!-- Modal PDF -->
-<div class="modal-nav fade" id="pdfModal" tabindex="-1" aria-labelledby="pdfModalLabel" aria-hidden="true">
+<div class="modal fade" id="pdfModal" tabindex="-1" aria-labelledby="pdfModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered centered-modal"> <!-- Tambahkan modal-dialog-centered di sini -->
         <div class="modal-content">
             <div class="modal-header">
