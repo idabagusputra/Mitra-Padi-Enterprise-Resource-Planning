@@ -1,13 +1,6 @@
 <style>
     /* Tambahkan style ini di bagian atas nav.blade.php */
 
-    /* Style untuk memposisikan modal di tengah */
-    .modal {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    padding: 0 !important;
-}
     /* Style untuk backdrop modal */
     .modal-backdrop {
         background-color: rgba(0, 0, 0, 0.3) !important;
