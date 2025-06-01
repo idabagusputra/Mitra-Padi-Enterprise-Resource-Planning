@@ -481,6 +481,17 @@
             }
             });
 
+            // Event listener untuk click outside modal (backdrop)
+            modal.addEventListener('click', function(event) {
+            // Jika yang diklik adalah modal itu sendiri (backdrop), tutup modal
+            if (event.target === modal) {
+                const modalInstance = bootstrap.Modal.getInstance(modal);
+                if (modalInstance) {
+                    modalInstance.hide();
+                }
+            }
+            });
+
             // Event listener untuk tombol Print
             const printButton = document.getElementById('printPdf');
             if (printButton) {
