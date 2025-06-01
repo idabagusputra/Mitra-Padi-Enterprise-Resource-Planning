@@ -45,7 +45,19 @@
         border: none;
     }
 
+    /* Responsive adjustments */
+    @media (max-width: 575.98px) {
+        .modal .modal-dialog {
+            max-width: 100;
+        }
 
+        /* Untuk mobile portrait yang sangat kecil */
+        @media (orientation: portrait) {
+            .modal .modal-dialog {
+                margin: 0.5rem;
+            }
+        }
+    }
 </style>
 
 <!-- Navbar -->
