@@ -463,12 +463,22 @@
         if (modal) {
             // Event saat modal ditutup
             modal.addEventListener('hidden.bs.modal', function() {
-                // Reset backdrop opacity
-                document.body.classList.remove('modal-open');
-                const backdrops = document.getElementsByClassName('modal-backdrop');
-                while (backdrops.length > 0) {
-                    backdrops[0].parentNode.removeChild(backdrops[0]);
-                }
+            // Reset body classes dan styles
+            document.body.classList.remove('modal-open');
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+
+            // Hapus semua backdrop yang tersisa
+            const backdrops = document.getElementsByClassName('modal-backdrop');
+            while (backdrops.length > 0) {
+                backdrops[0].parentNode.removeChild(backdrops[0]);
+            }
+
+            // Bersihkan iframe untuk menghemat memory
+            const pdfViewer = document.getElementById('pdfViewer');
+            if (pdfViewer) {
+                pdfViewer.src = '';
+            }
             });
 
             // Event listener untuk tombol Print
