@@ -15,10 +15,6 @@
     .modal .modal-content {
         border-radius: 0.5rem;
         border: none;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        padding: 0 !important;
     }
 
     .modal .modal-header {
