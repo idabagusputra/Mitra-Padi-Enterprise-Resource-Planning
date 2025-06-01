@@ -44,20 +44,23 @@
     }
 
     @media (max-width: 576px) {
-    .modal.show .modal-dialog {
-        position: fixed;
-        top: 50% !important;
-        left: 50% !important;
-        transform: translate(-50%, -50%) !important;
-        margin: 0;
+        .modal.show .modal-dialog {
+            position: fixed !important;
+            top: 50% !important;
+            left: 50% !important;
+            transform: translate(-50%, -50%) !important;
+            margin: 0 !important;
+            width: auto !important; /* Ini penting agar tetap gunakan ukuran aslinya */
+            max-width: 450px !important; /* Pertahankan ukuran asli */
+        }
+
+        .modal .modal-body {
+            height: auto;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
     }
 
-    .modal .modal-body {
-        height: auto;
-        max-height: 80vh;
-        overflow-y: auto;
-    }
-}
 </style>
 
 <!-- Navbar -->
