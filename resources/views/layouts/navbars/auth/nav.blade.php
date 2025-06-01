@@ -8,28 +8,31 @@
     }
 
     /* Style untuk modal dialog */
-    .modal .modal-dialog {
+    .modal-nav .modal-dialog {
         max-width: 450px;
     }
 
-    .modal .modal-content {
+    .modal-nav .modal-content {
         border-radius: 0.5rem;
         border: none;
     }
 
-    .modal .modal-header {
+
+    .modal-nav .modal-header {
         padding: 1rem;
         border-bottom: 1px solid #dee2e6;
     }
 
-    .modal .modal-body {
+    .modal-nav .modal-body {
         position: relative;
         padding: 15px;
         display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
         padding: 0 !important;
     }
 
-    .modal .modal-footer {
+    .modal-nav .modal-footer {
         padding: 1rem;
         border-top: 1px solid #dee2e6;
     }
@@ -226,7 +229,7 @@
 
 <!-- Modal PDF -->
 <!-- Modal PDF -->
-<div class="modal fade" id="pdfModal" tabindex="-1" aria-labelledby="pdfModalLabel" aria-hidden="true">
+<div class="modal fade" id="pdfModal" tabindex="-1" aria-labelledby="pdfModalLabel" aria-hidden="true" style="border: none;">
     <div class="modal-dialog modal-lg modal-dialog-centered centered-modal"> <!-- Tambahkan modal-dialog-centered di sini -->
         <div class="modal-content">
             <div class="modal-header">
