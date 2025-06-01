@@ -15,7 +15,6 @@
     .modal .modal-content {
         border-radius: 0.5rem;
         border: none;
-        position: fixed !important;
     }
 
     .modal .modal-header {
