@@ -276,10 +276,17 @@
                         <i class="bi bi-x-circle" aria-hidden="true"></i>
                     </button>
                 </div>
+                <button
+                    class="btn alert bg-gradient-secondary shadow-secondary px-4 m-0 view-pdf-btn"
+                    onclick="window.location.href='https://www.mitrapadi.com/daftar-giling'">
+                    <i class="bi bi-card-list me-2"></i>
+                    Daftar Giling
+                </button>
                 <button class="btn alert bg-gradient-info shadow-info px-4 m-0 view-pdf-btn" data-id="{{ $latestGiling->id }}">
                     <i class="bi bi-printer-fill me-2"></i>
                     Print Receipt
                 </button>
+
             </div>
             @endif
 
