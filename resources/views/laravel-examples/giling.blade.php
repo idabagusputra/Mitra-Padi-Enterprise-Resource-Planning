@@ -284,7 +284,7 @@
                         Print Receipt
                     </button>
                     <button
-                        class="btn alert bg-gradient-secondary shadow-secondary px-4 view-pdf-btn"
+                        class="btn alert bg-gradient-secondary shadow-secondary px-4"
                         onclick="window.location.href='https://www.mitrapadi.com/daftar-giling'">
                         <i class="bi bi-card-list me-2"></i>
                         Daftar Giling
