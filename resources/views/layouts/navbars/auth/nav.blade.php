@@ -1,11 +1,6 @@
 <style>
     /* Tambahkan style ini di bagian atas nav.blade.php */
 
-    .btn {
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
-    margin-bottom: 0 !important;
-}
     /* Style untuk backdrop modal */
     .modal-backdrop {
         background-color: rgba(0, 0, 0, 0.3) !important;
@@ -244,21 +239,20 @@
                 <iframe id="pdfViewer" class="pdf-viewer" frameborder="0"></iframe>
             </div>
             <div class="modal-footer d-flex justify-content-between">
-                <div>
-                    <button id="printPdf" class="btn btn-primary me-2">
-                        <i class="bi bi-printer-fill me-1"></i> print
-                    </button>
-                    <button id="sharePdf" class="btn btn-info me-2">
-                        <i class="bi bi-floppy-fill me-1"></i> Save
-                    </button>
-                    {{-- <button id="whatsappSharePdf" class="btn btn-success me-2">
-                        <i class="bi bi-whatsapp me-1"></i> WhatsApp
-                    </button> --}}
-                </div>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="bi bi-x-square-fill me-1"></i> close
+            <div>
+                <button id="printPdf" class="btn btn-primary me-2" style="margin-bottom: 0; padding-bottom: 0.375rem;">
+                    <i class="bi bi-printer-fill me-1"></i> print
                 </button>
+                <button id="sharePdf" class="btn btn-info me-2" style="margin-bottom: 0; padding-bottom: 0.375rem;">
+                    <i class="bi bi-floppy-fill me-1"></i> Save
+                </button>
+                {{-- <button id="whatsappSharePdf" class="btn btn-success me-2" style="margin-bottom: 0; padding-bottom: 0.375rem;"> --}}
             </div>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="margin-bottom: 0; padding-bottom: 0.375rem;">
+                <i class="bi bi-x-square-fill me-1"></i> close
+            </button>
+        </div>
+
         </div>
     </div>
 </div>
