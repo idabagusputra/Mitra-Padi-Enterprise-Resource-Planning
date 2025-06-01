@@ -404,7 +404,7 @@
             </tr> -->
 
             <tr class="total">
-                <td>T. Pengambilan</td>
+                <td>Total Ambil</td>
                 <td>:</td>
                 <td>Rp {{ number_format($daftar->total_pengambilan, 2) }}</td>
             </tr>
