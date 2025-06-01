@@ -1,24 +1,22 @@
 <style>
     /* Tambahkan style ini di bagian atas nav.blade.php */
+
+    /* Style untuk memposisikan modal di tengah */
+    .modal {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 !important;
+}
     /* Style untuk backdrop modal */
     .modal-backdrop {
         background-color: rgba(0, 0, 0, 0.3) !important;
         /* Sesuaikan opacity backdrop */
     }
 
-    /* Style untuk memposisikan modal di tengah */
-    .modal {
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        padding: 0 !important;
-    }
-
     /* Style untuk modal dialog */
     .modal .modal-dialog {
         max-width: 450px;
-        margin: 0 !important; /* Hapus margin default */
-        position: relative;
     }
 
     .modal .modal-content {
