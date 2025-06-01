@@ -240,15 +240,15 @@
             </div>
             <div class="modal-footer d-flex justify-content-between">
             <div>
-                <button id="printPdf" class="btn btn-primary me-2" style="margin-bottom: 0; padding-bottom: 0.375rem;">
+                <button id="printPdf" class="btn btn-primary me-2" style="margin-bottom: 0; padding-bottom: 0;">
                     <i class="bi bi-printer-fill me-1"></i> print
                 </button>
-                <button id="sharePdf" class="btn btn-info me-2" style="margin-bottom: 0; padding-bottom: 0.375rem;">
+                <button id="sharePdf" class="btn btn-info me-2" style="margin-bottom: 0; padding-bottom: 0;">
                     <i class="bi bi-floppy-fill me-1"></i> Save
                 </button>
                 {{-- <button id="whatsappSharePdf" class="btn btn-success me-2" style="margin-bottom: 0; padding-bottom: 0.375rem;"> --}}
             </div>
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="margin-bottom: 0; padding-bottom: 0.375rem;">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="margin-bottom: 0; padding-bottom: 0;">
                 <i class="bi bi-x-square-fill me-1"></i> close
             </button>
         </div>
