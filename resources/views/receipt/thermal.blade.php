@@ -402,16 +402,25 @@
                 <td>:</td>
                 <td>Rp {{ number_format($daftar->dana_jual_beras - $daftar->total_pengambilan , 2) }}</td>
             </tr> -->
+
+            <tr class="total">
+                <td>Total Pengambilan</td>
+                <td>:</td>
+                <td>Rp {{ number_format($daftar->total_pengambilan, 2) }}</td>
+            </tr>
+
             <tr class="total">
                 <td>Total Hutang</td>
                 <td>:</td>
                 <td>Rp {{ number_format($daftar->total_hutang, 2) }}</td>
             </tr>
+
             <!-- <tr class="total">
                 <td>Total Pengambilan</td>
                 <td>:</td>
                 <td>Rp {{ number_format($giling->calculateTotalPengambilan(), 2) }}</td>
             </tr> -->
+
 
             <tr class="total">
                 <td>Sisa Dana</td>
