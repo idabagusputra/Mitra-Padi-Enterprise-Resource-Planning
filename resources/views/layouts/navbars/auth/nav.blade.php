@@ -8,21 +8,21 @@
     }
 
     /* Style untuk modal dialog */
-    .modal-nav .modal-dialog {
+    .modal .modal-dialog {
         max-width: 450px;
     }
 
-    .modal-nav .modal-content {
+    .modal .modal-content {
         border-radius: 0.5rem;
         border: none;
     }
 
-    .modal-nav .modal-header {
+    .modal .modal-header {
         padding: 1rem;
         border-bottom: 1px solid #dee2e6;
     }
 
-    .modal-nav .modal-body {
+    .modal .modal-body {
         position: relative;
         padding: 15px;
         display: flex !important;
@@ -31,7 +31,7 @@
         padding: 0 !important;
     }
 
-    .modal-nav .modal-footer {
+    .modal .modal-footer {
         padding: 1rem;
         border-top: 1px solid #dee2e6;
     }
