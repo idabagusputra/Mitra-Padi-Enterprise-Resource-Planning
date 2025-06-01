@@ -42,6 +42,22 @@
         height: 500px;
         border: none;
     }
+
+    @media (max-width: 576px) {
+    .modal.show .modal-dialog {
+        position: fixed;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        margin: 0;
+    }
+
+    .modal .modal-body {
+        height: auto;
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+}
 </style>
 
 <!-- Navbar -->
