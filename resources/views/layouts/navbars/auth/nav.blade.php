@@ -1,28 +1,28 @@
 <style>
     /* Tambahkan style ini di bagian atas nav.blade.php */
 
-    /* Style untuk backdrop modalnav */
-    .modalnav-backdrop {
+    /* Style untuk backdrop modal */
+    .modal-backdrop {
         background-color: rgba(0, 0, 0, 0.3) !important;
         /* Sesuaikan opacity backdrop */
     }
 
-    /* Style untuk modalnav dialog */
-    .modalnav .modalnav-dialog {
+    /* Style untuk modal dialog */
+    .modal-nav .modal-dialog {
         max-width: 450px;
     }
 
-    .modalnav .modalnav-content {
+    .modal-nav .modal-content {
         border-radius: 0.5rem;
         border: none;
     }
 
-    .modalnav .modalnav-header {
+    .modal-nav .modal-header {
         padding: 1rem;
         border-bottom: 1px solid #dee2e6;
     }
 
-    .modalnav .modalnav-body {
+    .modal-nav .modal-body {
         position: relative;
         padding: 15px;
         display: flex !important;
@@ -31,7 +31,7 @@
         padding: 0 !important;
     }
 
-    .modalnav .modalnav-footer {
+    .modal-nav .modal-footer {
         padding: 1rem;
         border-top: 1px solid #dee2e6;
     }
@@ -44,7 +44,7 @@
     }
 
     @media (max-width: 767.98px) {
-    .centered-modalnav {
+    .centered-modal {
         margin-left: auto !important;
         margin-right: auto !important;
         padding: 1rem;
@@ -134,7 +134,7 @@
                             <a class="dropdown-item border-radius-md view-pdf-btn-nav"
                                 href="#"
                                 data-id="{{ $notification['id'] }}"
-                                data-bs-toggle="modalnav"
+                                data-bs-toggle="modal"
                                 data-bs-target="#pdfModal">
                                 <div class="d-flex py-1">
                                     <div class="avatar avatar-sm bg-gradient-secondary me-3 my-auto">
@@ -228,17 +228,17 @@
 
 <!-- Modal PDF -->
 <!-- Modal PDF -->
-<div class="modalnav fade" id="pdfModal" tabindex="-1" aria-labelledby="pdfModalLabel" aria-hidden="true">
-    <div class="modalnav-dialog modalnav-lg modalnav-dialog-centered centered-modalnav"> <!-- Tambahkan modalnav-dialog-centered di sini -->
-        <div class="modalnav-content">
-            <div class="modalnav-header">
-                <h5 class="modalnav-title" id="pdfModalLabel">Receipt #</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modalnav" aria-label="Close"></button>
+<div class="modal fade" id="pdfModal" tabindex="-1" aria-labelledby="pdfModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered centered-modal"> <!-- Tambahkan modal-dialog-centered di sini -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="pdfModalLabel">Receipt #</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modalnav-body">
+            <div class="modal-body">
                 <iframe id="pdfViewer" class="pdf-viewer" frameborder="0"></iframe>
             </div>
-            <div class="modalnav-footer d-flex justify-content-between" style="margin-bottom: 0; padding-bottom: 0;">
+            <div class="modal-footer d-flex justify-content-between" style="margin-bottom: 0; padding-bottom: 0;">
                 <div>
                     <button id="printPdf" class="btn btn-primary me-2">
                         <i class="bi bi-printer-fill me-1"></i> print
@@ -251,7 +251,7 @@
                     </button> --}}
                 </div>
                 <div>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modalnav">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     <i class="bi bi-x-square-fill me-1"></i> close
                 </button>
                 </div>
@@ -290,10 +290,10 @@
                 const pdfViewer = document.getElementById('pdfViewer');
                 pdfViewer.src = pdfPath;
 
-                // Update modalnav title
+                // Update modal title
                 document.getElementById('pdfModalLabel').textContent = `Receipt #${gilingId}`;
 
-                // Tampilkan modalnav dengan opsi backdrop yang dimodifikasi
+                // Tampilkan modal dengan opsi backdrop yang dimodifikasi
                 const pdfModal = new bootstrap.Modal(document.getElementById('pdfModal'), {
                     backdrop: 'static',
                     keyboard: false
@@ -376,7 +376,7 @@
         //             whatsappShareButton.disabled = true;
         //             whatsappShareButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Preparing...';
 
-        //             // Ambil nomor kuitansi dari modalnav title
+        //             // Ambil nomor kuitansi dari modal title
         //             const receiptNumber = document.getElementById("pdfModalLabel").textContent.split("#")[1];
         //             const fileName = `receipt-${receiptNumber}.jpg`;
 
@@ -438,7 +438,7 @@
                     // Convert PDF to JPG
                     const jpgBlob = await convertPdfToJpg(pdfUrl);
 
-                    // Get receipt number from modalnav title
+                    // Get receipt number from modal title
                     const receiptNumber = document.getElementById("pdfModalLabel").textContent.split("#")[1];
                     const fileName = `receipt-${receiptNumber}.jpg`;
 
@@ -458,13 +458,13 @@
 
 
         // Event listener untuk tombol Close dan Print
-        const modalnav = document.getElementById('pdfModal');
-        if (modalnav) {
-            // Event saat modalnav ditutup
-            modalnav.addEventListener('hidden.bs.modalnav', function() {
+        const modal = document.getElementById('pdfModal');
+        if (modal) {
+            // Event saat modal ditutup
+            modal.addEventListener('hidden.bs.modal', function() {
                 // Reset backdrop opacity
-                document.body.classList.remove('modalnav-open');
-                const backdrops = document.getElementsByClassName('modalnav-backdrop');
+                document.body.classList.remove('modal-open');
+                const backdrops = document.getElementsByClassName('modal-backdrop');
                 while (backdrops.length > 0) {
                     backdrops[0].parentNode.removeChild(backdrops[0]);
                 }
