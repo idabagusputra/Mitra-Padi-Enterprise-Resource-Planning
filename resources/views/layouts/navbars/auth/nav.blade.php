@@ -31,10 +31,10 @@
         padding: 0 !important;
     }
 
-    .modal .modal-footer {
+    /* .modal .modal-footer {
         padding: 1rem;
         border-top: 1px solid #dee2e6;
-    }
+    } */
 
     /* Style untuk PDF viewer */
     .pdf-viewer {
