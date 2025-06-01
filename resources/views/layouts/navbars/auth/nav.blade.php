@@ -17,6 +17,11 @@
         border: none;
     }
 
+    .modal {
+        border-radius: 0.5rem;
+        border: none;
+    }
+
     .modal-nav .modal-header {
         padding: 1rem;
         border-bottom: 1px solid #dee2e6;
@@ -228,7 +233,7 @@
 
 <!-- Modal PDF -->
 <!-- Modal PDF -->
-<div class="modal fade" id="pdfModal" tabindex="-1" aria-labelledby="pdfModalLabel" aria-hidden="true">
+<div class="modal fade" id="pdfModal" tabindex="-1" aria-labelledby="pdfModalLabel" aria-hidden="true" style="border: none;">
     <div class="modal-dialog modal-lg modal-dialog-centered centered-modal"> <!-- Tambahkan modal-dialog-centered di sini -->
         <div class="modal-content">
             <div class="modal-header">
