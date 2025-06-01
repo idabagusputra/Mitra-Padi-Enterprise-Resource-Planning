@@ -45,8 +45,6 @@
 
     @media (max-width: 767.98px) {
     .centered-modal {
-        margin-top: auto !important;
-        margin-bottom: auto !important;
         margin-left: auto !important;
         margin-right: auto !important;
         padding: 1rem;
@@ -231,7 +229,7 @@
 <!-- Modal PDF -->
 <!-- Modal PDF -->
 <div class="modal fade" id="pdfModal" tabindex="-1" aria-labelledby="pdfModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg centered-modal">
+    <div class="modal-dialog modal-lg modal-dialog-centered centered-modal"> <!-- Tambahkan modal-dialog-centered di sini -->
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="pdfModalLabel">Receipt #</h5>
@@ -245,7 +243,7 @@
                     <button id="printPdf" class="btn btn-primary me-2">
                         <i class="bi bi-printer-fill me-1"></i> print
                     </button>
-                    <button id="sharePdf" class="btn btn-info me-2  ">
+                    <button id="sharePdf" class="btn btn-info me-2">
                         <i class="bi bi-floppy-fill me-1"></i> Save
                     </button>
                     {{-- <button id="whatsappSharePdf" class="btn btn-success me-2">
@@ -256,10 +254,10 @@
                     <i class="bi bi-x-square-fill me-1"></i> close
                 </button>
             </div>
-
         </div>
     </div>
 </div>
+
 
 <!-- Tambahkan Script -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
