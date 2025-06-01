@@ -43,6 +43,13 @@
         border: none;
     }
 
+    @media (max-width: 767.98px) {
+    .centered-modal {
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+}
+
 
 </style>
 
@@ -221,7 +228,7 @@
 <!-- Modal PDF -->
 <!-- Modal PDF -->
 <div class="modal fade" id="pdfModal" tabindex="-1" aria-labelledby="pdfModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered"> <!-- Tambahkan modal-dialog-centered di sini -->
+    <div class="modal-dialog modal-lg modal-dialog-centered centered-modal"> <!-- Tambahkan modal-dialog-centered di sini -->
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="pdfModalLabel">Receipt #</h5>
