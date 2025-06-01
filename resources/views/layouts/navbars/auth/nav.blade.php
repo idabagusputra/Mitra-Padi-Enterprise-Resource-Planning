@@ -1,13 +1,13 @@
 <style>
     /* Style untuk backdrop modal */
+/* Style untuk backdrop modal */
     .modal-backdrop {
         background-color: rgba(0, 0, 0, 0.3) !important;
     }
 
-    /* Style untuk modal dialog dengan responsive center */
+    /* Style untuk modal dialog */
     .modal .modal-dialog {
         max-width: 450px;
-        margin: 1.75rem auto; /* Center horizontal */
     }
 
     .modal .modal-content {
@@ -37,41 +37,15 @@
         border: none;
     }
 
-    /* Responsive fixes untuk mobile portrait */
-    @media (max-width: 767.98px) {
-        .modal .modal-dialog {
-            max-width: 95%;
-            margin: 1rem auto;
-            min-height: calc(100vh - 2rem);
-            display: flex;
-            align-items: center;
-        }
-
-        .modal .modal-content {
-            width: 100%;
-            max-height: calc(100vh - 2rem);
-            overflow-y: auto;
-        }
-
-        .modal .modal-body {
-            padding: 12px;
-        }
-
-        .pdf-viewer {
-            height: 400px; /* Kurangi tinggi di mobile */
-        }
+    /* Fix centering untuk semua ukuran layar */
+    .modal {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
     }
 
-    /* Fix khusus untuk mobile portrait yang sangat kecil */
-    @media (max-width: 575.98px) and (orientation: portrait) {
-        .modal .modal-dialog {
-            margin: 0.5rem auto;
-            min-height: calc(100vh - 1rem);
-        }
-
-        .modal .modal-content {
-            max-height: calc(100vh - 1rem);
-        }
+    .modal .modal-dialog {
+        margin: 0;
     }
 </style>
 
