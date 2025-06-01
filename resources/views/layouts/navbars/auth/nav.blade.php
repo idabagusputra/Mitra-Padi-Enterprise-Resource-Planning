@@ -16,9 +16,6 @@
         border-radius: 0.5rem;
         border: none;
         position: fixed !important;
-        top: 50% !important;
-        left: 50% !important;
-        transform: translate(-50%, -50%) !important;
     }
 
     .modal .modal-header {
