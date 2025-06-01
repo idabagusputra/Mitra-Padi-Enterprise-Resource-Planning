@@ -4,10 +4,18 @@
         background-color: rgba(0, 0, 0, 0.3) !important;
     }
 
+    /* Style untuk modal dengan vertical centering */
+    .modal {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+    }
+
     /* Style untuk modal dialog dengan responsive center */
     .modal .modal-dialog {
         max-width: 450px;
-        margin: 1.75rem auto; /* Center horizontal */
+        margin: 0; /* Remove default margin karena sudah menggunakan flexbox */
+        width: 100%;
     }
 
     .modal .modal-content {
@@ -37,15 +45,19 @@
         border: none;
     }
 
-
-    /* Fix khusus untuk mobile portrait yang sangat kecil */
-    @media (max-width: 575.98px) and (orientation: portrait) {
+    /* Responsive adjustments */
+    @media (max-width: 575.98px) {
         .modal .modal-dialog {
-            margin: 0.5rem auto;
-
+            max-width: 95%;
+            margin: 1rem;
         }
 
-
+        /* Untuk mobile portrait yang sangat kecil */
+        @media (orientation: portrait) {
+            .modal .modal-dialog {
+                margin: 0.5rem;
+            }
+        }
     }
 </style>
 
