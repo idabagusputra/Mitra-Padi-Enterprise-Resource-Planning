@@ -37,22 +37,15 @@
         border: none;
     }
 
-    /* Fix untuk center vertikal */
-    .modal.show {
-        display: flex !important;
-        align-items: center;
-    }
-
-    .modal.show .modal-dialog {
-        margin-top: 0 !important;
-        margin-bottom: 0 !important;
-    }
 
     /* Fix khusus untuk mobile portrait yang sangat kecil */
     @media (max-width: 575.98px) and (orientation: portrait) {
         .modal .modal-dialog {
-            margin: 0 auto;
+            margin: 0.5rem auto;
+
         }
+
+
     }
 </style>
 
