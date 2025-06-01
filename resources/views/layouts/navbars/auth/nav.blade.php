@@ -1,22 +1,24 @@
 <style>
+    /* Tambahkan style ini di bagian atas nav.blade.php */
+
     /* Style untuk backdrop modal */
     .modal-backdrop {
         background-color: rgba(0, 0, 0, 0.3) !important;
+        /* Sesuaikan opacity backdrop */
     }
 
     /* Style untuk modal dialog */
     .modal .modal-dialog {
         max-width: 450px;
-        position: fixed !important;
-        top: 50% !important;
-        left: 50% !important;
-        transform: translate(-50%, -50%) !important;
-        margin: 0 !important;
     }
 
     .modal .modal-content {
         border-radius: 0.5rem;
         border: none;
+        position: fixed !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
     }
 
     .modal .modal-header {
@@ -44,8 +46,9 @@
         height: 500px;
         border: none;
     }
-</style>
 
+
+</style>
 
 <!-- Navbar -->
 <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" navbar-scroll="true">
