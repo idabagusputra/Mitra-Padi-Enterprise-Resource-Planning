@@ -38,12 +38,12 @@
     }
 
     /* Fix untuk center vertikal */
-    .modal {
+    .modal.show {
         display: flex !important;
         align-items: center;
     }
 
-    .modal .modal-dialog {
+    .modal.show .modal-dialog {
         margin-top: 0 !important;
         margin-bottom: 0 !important;
     }
