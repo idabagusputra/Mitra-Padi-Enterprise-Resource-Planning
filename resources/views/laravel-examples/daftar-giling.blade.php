@@ -266,14 +266,14 @@
                                     <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Tanggal</th>
                                     <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Sisa Dana</th>
                                     <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Total Giling</th>
-                                    <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Beras Jual</th>
+                                    {{-- <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Beras Jual</th> --}}
                                     <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Harga Jual</th>
-                                    <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Buruh Giling</th>
-                                    <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Buruh Jemur</th>
-                                    <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Jual Konga</th>
-                                    <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Jual Menir</th>
+                                    {{-- <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Buruh Giling</th> --}}
+                                    {{-- <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Buruh Jemur</th> --}}
+                                    {{-- <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Jual Konga</th> --}}
+                                    {{-- <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Jual Menir</th> --}}
                                     <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Bunga Hutang</th>
-                                    <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Total Pengambilan</th>
+                                    {{-- <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Total Pengambilan</th> --}}
                                 </tr>
                             </thead>
                             <tbody>
@@ -308,13 +308,13 @@
                                     <td class="text-center">
                                         <p class="text-xs font-weight-bold mb-0">{{ number_format($daftarGiling->giling_kotor, 2, ',', '.') }} Kg</p>
                                     </td>
-                                    <td class="text-center">
+                                    {{-- <td class="text-center">
                                         <p class="text-xs font-weight-bold mb-0">{{ number_format($daftarGiling->beras_jual, 2, ',', '.') }} Kg</p>
-                                    </td>
+                                    </td> --}}
                                     <td class="text-center">
                                         <p class="text-xs font-weight-bold mb-0">Rp {{ number_format($daftarGiling->harga_jual, 2, ',', '.') }},00</p>
                                     </td>
-                                    <td class="text-center">
+                                    {{-- <td class="text-center">
                                         <p class="text-xs font-weight-bold mb-0">Rp {{ number_format($daftarGiling->total_biaya_buruh_giling, 2, ',', '.') }}</p>
                                     </td>
                                     <td class="text-center">
@@ -325,13 +325,13 @@
                                     </td>
                                     <td class="text-center">
                                         <p class="text-xs font-weight-bold mb-0">Rp {{ number_format($daftarGiling->dana_jual_menir, 2, ',', '.') }}</p>
-                                    </td>
+                                    </td> --}}
                                     <td class="text-center">
                                         <p class="text-xs font-weight-bold mb-0">{{ number_format($daftarGiling->bunga) }}%</p>
                                     </td>
-                                    <td class="text-center">
+                                    {{-- <td class="text-center">
                                         <p class="text-xs font-weight-bold mb-0">Rp {{ number_format($daftarGiling->total_pengambilan, 2, ',', '.') }}</p>
-                                    </td>
+                                    </td> --}}
                                 </tr>
                                 @endforeach
                             </tbody>
