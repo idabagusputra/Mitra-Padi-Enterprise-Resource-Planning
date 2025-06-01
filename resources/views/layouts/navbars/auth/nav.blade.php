@@ -45,8 +45,11 @@
 
     @media (max-width: 767.98px) {
     .centered-modal {
+        margin-top: auto !important;
+        margin-bottom: auto !important;
         margin-left: auto !important;
         margin-right: auto !important;
+        padding: 1rem;
     }
 }
 
