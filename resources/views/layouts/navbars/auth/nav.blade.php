@@ -17,11 +17,6 @@
         border: none;
     }
 
-    .modal {
-        border-radius: 0.5rem;
-        border: none !important;
-    }
-
 
     .modal-nav .modal-header {
         padding: 1rem;
