@@ -406,8 +406,8 @@
                     @php
                     $constants = [
                     'biaya_giling' => ['label' => 'Biaya Giling (%)', 'default' => 9],
-                    'biaya_buruh_giling' => ['label' => 'Biaya Buruh Giling (Rp)', 'default' => 70],
-                    'biaya_buruh_jemur' => ['label' => 'Biaya Buruh Jemur (Rp)', 'default' => 7000],
+                    'biaya_buruh_giling' => ['label' => 'Biaya Buruh Giling (Rp)', 'default' => 80],
+                    'biaya_buruh_jemur' => ['label' => 'Biaya Buruh Jemur (Rp)', 'default' => 8000],
                     'bunga' => ['label' => 'Bunga (%)', 'default' => 2],
                     ];
                     @endphp
