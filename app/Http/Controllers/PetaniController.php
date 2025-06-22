@@ -53,7 +53,7 @@ class PetaniController extends Controller
 
 
         // Fetch paginated results
-        $petanis = $query->paginate(20); // Adjust pagination as needed
+        $petanis = $query->paginate(100); // Adjust pagination as needed
 
         return view('laravel-examples.petani', compact('petanis', 'alamatList'));
     }

@@ -67,7 +67,7 @@ class DaftarGilingTrashController extends Controller
         $query->orderBy('created_at', $sortOrder);
 
         // Get the data, even if no results, don't cause error
-        $daftarGilings = $query->paginate(20);
+        $daftarGilings = $query->paginate(100);
 
         // Pass data to the view, including the alamatList
         return view('laravel-examples.daftar-gilingTrash', compact('daftarGilings', 'search', 'sortOrder', 'alamatList'));

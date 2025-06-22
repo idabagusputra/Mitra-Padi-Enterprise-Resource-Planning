@@ -154,7 +154,7 @@ class UtangKeOperatorController extends Controller
 
         // Manually paginate the collection
         $page = $request->input('page', 1);
-        $perPage = 20;
+        $perPage = 100;
         $paginatedKredits = $sortedKredits->forPage($page, $perPage);
 
         // Create a custom paginator

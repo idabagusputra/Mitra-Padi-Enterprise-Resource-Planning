@@ -37,7 +37,7 @@ class DebitController extends Controller
             ->orderBy('id', $sort); // Urutkan berdasarkan id untuk menangani data dengan tanggal yang sama
 
 
-        $debits = $query->paginate(20);
+        $debits = $query->paginate(100);
 
         $petanisWithOutstandingKredits = Petani::whereHas('kredits', function ($query) {
             $query->where('status', false);
