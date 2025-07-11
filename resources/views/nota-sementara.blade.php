@@ -1139,7 +1139,7 @@
                                 <td>:</td>
                                 <td>${formatCurrency(formData.gilingKotor, getDecimalPlaces(formData.gilingKotor))} × ${formatCurrency(formData.biayaGiling, getDecimalPlaces(formData.biayaGiling))}%</td>
                                 <td>=</td>
-                                <td>${formatCurrency(calculations.ongkosGiling, 2)} Kg</td>
+                                <td>${formatCurrency(calculations.ongkosGiling, getDecimalPlaces(formData.ongkosGiling))} Kg</td>
                             </tr>
                             <tr class="calculation-row">
                                 <td class="small-text">Pinjam</td>
@@ -1167,35 +1167,35 @@
                                 <td>:</td>
                                 <td>${formatCurrency(calculations.berasJual, getDecimalPlaces(calculations.berasJual))} Kg × Rp ${formatCurrency(formData.hargaJual, getDecimalPlaces(formData.hargaJual))}</td>
                                 <td>=</td>
-                                <td class="bold">Rp ${formatCurrency(calculations.danaBeras, 2)}</td>
+                                <td class="bold">Rp ${formatCurrency(calculations.danaBeras, getDecimalPlaces(formData.danaBeras))}</td>
                             </tr>
                             <tr class="calculation-row">
                                 <td class="small-text">Buruh Giling</td>
                                 <td>:</td>
                                 <td>${formatCurrency(formData.gilingKotor, getDecimalPlaces(formData.gilingKotor))} × Rp ${formatCurrency(formData.biayaBuruhGiling, getDecimalPlaces(formData.biayaBuruhGiling))}</td>
                                 <td>=</td>
-                                <td class="bold">Rp ${formatCurrency(calculations.buruhGiling, 2)}</td>
+                                <td class="bold">Rp ${formatCurrency(calculations.buruhGiling, getDecimalPlaces(formData.buruhGiling))}</td>
                             </tr>
                             <tr class="calculation-row">
                                 <td class="small-text">Buruh Jemur</td>
                                 <td>:</td>
                                 <td>${formatCurrency(formData.jemur, getDecimalPlaces(formData.jemur))} × Rp ${formatCurrency(formData.biayaBuruhJemur, getDecimalPlaces(formData.biayaBuruhJemur))}</td>
                                 <td>=</td>
-                                <td class="bold">Rp ${formatCurrency(calculations.buruhJemur, 2)}</td>
+                                <td class="bold">Rp ${formatCurrency(calculations.buruhJemur, getDecimalPlaces(formData.buruhJemur))}</td>
                             </tr>
                             <tr class="calculation-row">
                                 <td class="small-text">Jual Konga</td>
                                 <td>:</td>
                                 <td>${formatCurrency(formData.jumlahKonga, getDecimalPlaces(formData.jumlahKonga))} × Rp ${formatCurrency(formData.hargaKonga, getDecimalPlaces(formData.hargaKonga))}</td>
                                 <td>=</td>
-                                <td class="bold">Rp ${formatCurrency(calculations.danaKonga, 2)}</td>
+                                <td class="bold">Rp ${formatCurrency(calculations.danaKonga, getDecimalPlaces(formData.danaKonga))}</td>
                             </tr>
                             <tr class="calculation-row">
                                 <td class="small-text">Jual Menir</td>
                                 <td>:</td>
                                 <td>${formatCurrency(formData.jumlahMenir, getDecimalPlaces(formData.jumlahMenir))} × Rp ${formatCurrency(formData.hargaMenir, getDecimalPlaces(formData.hargaMenir))}</td>
                                 <td>=</td>
-                                <td class="bold">Rp ${formatCurrency(calculations.danaMenir, 2)}</td>
+                                <td class="bold">Rp ${formatCurrency(calculations.danaMenir, getDecimalPlaces(formData.danaMenir))}</td>
                             </tr>
                         </table>
 
@@ -1218,19 +1218,6 @@
                         </table>
 
 
-
-                        <table class="w-100">
-    <tr class="total">
-        <td>Total Ambil</td>
-        <td>:</td>
-        <td style="text-align: right;">Rp ${formatCurrency(calculations.totalPengambilan, 2)}</td>
-    </tr>
-</table>
-
-
-                        <table>
-                            <div></div>
-                        </table>
 
                         <div class="footer">
                             <!-- Placeholder for footer image -->
