@@ -197,7 +197,8 @@
             background: linear-gradient(135deg, var(--primary-color), #1e40af);
             color: white;
             border-radius: var(--border-radius) var(--border-radius) 0 0;
-            padding: 1.5rem;
+            padding: 0.6rem;
+            padding-right: 1rem;
         }
 
         .modal-title {
@@ -567,12 +568,12 @@
     <div class="modal fade" id="pdfModal" tabindex="-1" aria-labelledby="pdfModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="pdfModalLabel">
-                        <i class="bi bi-file-earmark-text"></i>
-                        Nota Giling Sementara
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-header justify-content-center position-relative">
+        <h5 class="modal-title text-center" id="pdfModalLabel">
+            {{-- <i class="bi bi-file-earmark-text"></i> --}}
+            FORMAT NOTA
+        </h5>
+                    {{-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> --}}
                 </div>
                 <div class="modal-body px-4">
                     <div class="iframe-container">
