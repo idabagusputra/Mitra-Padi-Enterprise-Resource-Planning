@@ -974,7 +974,7 @@
 
                         @media print {
                 @page {
-                    size: auto 200mm;
+                    size: 80mm 200mm;
                     margin: 0 !important;
                     padding: 0 !important;
                 }
