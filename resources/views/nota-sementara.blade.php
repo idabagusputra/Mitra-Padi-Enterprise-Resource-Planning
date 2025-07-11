@@ -423,13 +423,14 @@
                                                inputmode="numeric" placeholder="Masukkan karung" required>
                                     </div>
                                 </div>
-                                <div class="col-md-4 col-sm-6">
-                                    <div class="form-group">
-                                        <label for="harga_jual" class="form-label">Harga Beras Laku (Rp)</label>
-                                        <input class="form-control number-format" type="text" name="harga_jual" id="harga_jual"
-                                               inputmode="numeric" placeholder="Masukkan rupiah" required>
-                                    </div>
-                                </div>
+                                <div class="col-md-4 col-sm-6" style="display: none;">
+    <div class="form-group">
+        <label for="harga_jual" class="form-label">Harga Beras Laku (Rp)</label>
+        <input class="form-control number-format" type="text" name="harga_jual" id="harga_jual"
+               inputmode="numeric" placeholder="Masukkan rupiah" value="0" required>
+    </div>
+</div>
+
                             </div>
 
                             <!-- Data Produk Sampingan -->
@@ -512,7 +513,7 @@
                                                id="biaya_buruh_jemur" value="8,000" inputmode="numeric" required>
                                     </div>
                                 </div>
-                                <div class="col-md-3 col-sm-6">
+                                <div class="col-md-3 col-sm-6" style="display: none;">
                                     <div class="form-group">
                                         <label for="bunga" class="form-label">Bunga (%)</label>
                                         <input class="form-control number-format" type="text" name="bunga"
@@ -974,7 +975,7 @@
 
                         @media print {
                 @page {
-                    size: 80mm 200mm;
+                    size: 80mm 135mm;
                     margin: 0 !important;
                     padding: 0 !important;
                 }
@@ -1165,9 +1166,9 @@
                             <tr class="calculation-row">
                                 <td class="small-text">Beras Jual</td>
                                 <td>:</td>
-                                <td>${formatCurrency(calculations.berasJual, getDecimalPlaces(calculations.berasJual))} Kg × Rp ${formatCurrency(formData.hargaJual, getDecimalPlaces(formData.hargaJual))}</td>
-                                <td>=</td>
-                                <td class="bold">Rp ${formatCurrency(calculations.danaBeras, getDecimalPlaces(formData.danaBeras))}</td>
+                                <td>${formatCurrency(calculations.berasJual, getDecimalPlaces(calculations.berasJual))} Kg</td>
+                                <td></td>
+                                <td></td>
                             </tr>
                             <tr class="calculation-row">
                                 <td class="small-text">Buruh Giling</td>
