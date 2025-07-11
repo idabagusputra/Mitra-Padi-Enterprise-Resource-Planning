@@ -327,7 +327,7 @@
         /* Thermal Print Styles - Tambahkan ini di bagian CSS */
 @media print {
     @page {
-        size: 80mm 172mm;
+        size: 80mm 151mm;
         margin: 0;
         padding: 0;
     }
@@ -903,7 +903,7 @@
 
                         .receipt {
                             width: 80mm; /* Standard thermal printer width */
-                            height: 172mm;
+                            height: 151mm;
                             margin: 0 auto; /* Center the receipt */
                         }
 
@@ -1012,7 +1012,7 @@
 
                         @media print {
                 @page {
-                    size: 80mm 172mm;
+                    size: 80mm 151mm;
                     margin: 0 !important;
                     padding: 0 !important;
                 }
@@ -1075,7 +1075,7 @@
             th, td {
                 padding: 2px 1px;
                 text-align: left;
-                font-size: 15px;
+                font-size: 14px;
             }
 
             .cut-line {
@@ -1120,7 +1120,7 @@
             }
 
             .small-text {
-                font-size: 15px;
+                font-size: 14px;
             }
 
             .bold {
@@ -1187,7 +1187,7 @@
                                 <td>:</td>
                                 <td>${formatCurrency(formData.gilingKotor, getDecimalPlaces(formData.gilingKotor))} × ${formatCurrency(formData.biayaGiling, getDecimalPlaces(formData.biayaGiling))}%</td>
                                 <td>=</td>
-                                <td>${formatCurrency(calculations.ongkosGiling, getDecimalPlaces(formData.ongkosGiling))} Kg</td>
+                                <td>${formatCurrency(calculations.ongkosGiling, 2)} Kg</td>
                             </tr>
                             <tr class="calculation-row">
                                 <td class="small-text">Pinjam</td>
