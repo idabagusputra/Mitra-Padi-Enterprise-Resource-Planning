@@ -229,6 +229,10 @@ Route::group(['middleware' => 'guest'], function () {
         return view('kalkulator');
     });
 
+    Route::get('/nota', function () {
+        return view('nota-sementara');
+    });
+
     Route::get('/', [HomeController::class, 'home']);
     Route::get('/register', [RegisterController::class, 'create']);
     Route::post('/register', [RegisterController::class, 'store']);
