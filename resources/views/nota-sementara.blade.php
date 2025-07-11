@@ -304,7 +304,7 @@
         /* Thermal Print Styles - Tambahkan ini di bagian CSS */
 @media print {
     @page {
-        size: 80mm 135mm;
+        size: 150mm 135mm;
         margin: 0;
         padding: 0;
     }
@@ -872,7 +872,7 @@
                         }
 
                         .receipt {
-                            width: 80mm; /* Standard thermal printer width */
+                            width: 150mm; /* Standard thermal printer width */
                             height: 135mm;
                             margin: 0 auto; /* Center the receipt */
                         }
@@ -976,7 +976,7 @@
 
                         @media print {
                 @page {
-                    size: 80mm 135mm;
+                    size: 150mm 135mm;
                     margin: 0 !important;
                     padding: 0 !important;
                 }
