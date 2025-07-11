@@ -711,10 +711,14 @@
                 }).format(number);
             }
 
+            function capitalizeWords(str) {
+    return str.replace(/\b\w/g, char => char.toUpperCase());
+}
+
             function generateNota() {
                 // Get form values
                 const formData = {
-                    namaPetani: document.getElementById('nama_petani').value,
+                     namaPetani: capitalizeWords(document.getElementById('nama_petani').value.trim()),
                     tanggalNota: document.getElementById('tanggal_nota').value,
                     gilingKotor: getRawValue(document.getElementById('giling_kotor')),
                     pulang: getRawValue(document.getElementById('pulang')),
@@ -970,7 +974,7 @@
 
                         @media print {
                 @page {
-                    size: 80mm auto;
+                    size: 80mm 200mm;
                     margin: 0 !important;
                     padding: 0 !important;
                 }
@@ -984,10 +988,8 @@
             }
 
             body {
-                font-family: 'Courier New', monospace;
                 font-size: 12px;
                 margin: 0;
-                padding: 5mm;
                 line-height: 1.3;
                 color: #000;
                 background: white;
