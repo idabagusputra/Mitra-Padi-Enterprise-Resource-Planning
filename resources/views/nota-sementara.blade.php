@@ -327,7 +327,7 @@
         /* Thermal Print Styles - Tambahkan ini di bagian CSS */
 @media print {
     @page {
-        size: 80mm 135mm;
+        size: 80mm 170mm;
         margin: 0;
         padding: 0;
     }
@@ -903,7 +903,7 @@
 
                         .receipt {
                             width: 80mm; /* Standard thermal printer width */
-                            height: 135mm;
+                            height: 170mm;
                             margin: 0 auto; /* Center the receipt */
                         }
 
@@ -989,7 +989,7 @@
                         }
 
                         .small-text {
-                            font-size: 10pt;
+                            font-size: 12pt;
                         }
 
                         .bold {
@@ -1012,7 +1012,7 @@
 
                         @media print {
                 @page {
-                    size: 80mm 135mm;
+                    size: 80mm 170mm;
                     margin: 0 !important;
                     padding: 0 !important;
                 }
@@ -1051,13 +1051,13 @@
             }
 
             .title {
-                font-size: 16px;
+                font-size: 20px;
                 font-weight: bold;
                 margin-bottom: 3px;
             }
 
             .title2 {
-                font-size: 13px;
+                font-size: 16px;
                 font-weight: bold;
                 margin-bottom: 3px;
             }
@@ -1075,7 +1075,7 @@
             th, td {
                 padding: 2px 1px;
                 text-align: left;
-                font-size: 11px;
+                font-size: 15px;
             }
 
             .cut-line {
@@ -1120,7 +1120,7 @@
             }
 
             .small-text {
-                font-size: 10px;
+                font-size: 15px;
             }
 
             .bold {
