@@ -371,7 +371,7 @@
                                     <div class="form-group">
                                         <label for="nama_petani" class="form-label">Nama Petani</label>
                                         <input type="text" id="nama_petani" name="nama_petani" class="form-control"
-                                               placeholder="Masukkan nama petani" required>
+                                               placeholder="" required>
                                     </div>
                                 </div>
                                 <div class="col-md-6 d-none">
@@ -399,35 +399,35 @@
                                     <div class="form-group">
                                         <label for="giling_kotor" class="form-label">Giling Kotor (Kg)</label>
                                         <input class="form-control number-format" type="text" name="giling_kotor" id="giling_kotor"
-                                               inputmode="numeric" placeholder="Masukkan kilogram" required>
+                                               inputmode="numeric" placeholder="" required>
                                     </div>
                                 </div>
                                 <div class="col-md-4 col-sm-6">
                                     <div class="form-group">
                                         <label for="pulang" class="form-label">Beras Pulang (Kg)</label>
                                         <input class="form-control number-format" type="text" name="pulang" id="pulang"
-                                               inputmode="numeric" placeholder="Masukkan kilogram" required>
+                                               inputmode="numeric" placeholder="" required>
                                     </div>
                                 </div>
                                 <div class="col-md-4 col-sm-6">
                                     <div class="form-group">
                                         <label for="pinjam" class="form-label">Pinjaman Beras (Kg)</label>
                                         <input class="form-control number-format" type="text" name="pinjam" id="pinjam"
-                                               inputmode="numeric" placeholder="Masukkan kilogram" required>
+                                               inputmode="numeric" placeholder="" required>
                                     </div>
                                 </div>
                                 <div class="col-md-4 col-sm-6">
                                     <div class="form-group">
                                         <label for="jemur" class="form-label">Jemur (Karung)</label>
                                         <input class="form-control number-format" type="text" name="jemur" id="jemur"
-                                               inputmode="numeric" placeholder="Masukkan karung" required>
+                                               inputmode="numeric" placeholder="" required>
                                     </div>
                                 </div>
                                 <div class="col-md-4 col-sm-6" style="display: none;">
     <div class="form-group">
         <label for="harga_jual" class="form-label">Harga Beras Laku (Rp)</label>
         <input class="form-control number-format" type="text" name="harga_jual" id="harga_jual"
-               inputmode="numeric" placeholder="Masukkan rupiah" value="0" required>
+               inputmode="numeric" placeholder="" value="0" required>
     </div>
 </div>
 
@@ -444,28 +444,28 @@
                                     <div class="form-group">
                                         <label for="jumlah_konga" class="form-label">Jumlah Konga (Karung)</label>
                                         <input class="form-control number-format" type="text" name="jumlah_konga" id="jumlah_konga"
-                                               inputmode="numeric" placeholder="Karung" required>
+                                               inputmode="numeric" placeholder="" required>
                                     </div>
                                 </div>
                                 <div class="col-md-3 col-sm-6">
                                     <div class="form-group">
                                         <label for="harga_konga" class="form-label">Harga Konga (Rp)</label>
                                         <input class="form-control number-format" type="text" name="harga_konga" id="harga_konga"
-                                               inputmode="numeric" placeholder="Rupiah" required>
+                                               inputmode="numeric" placeholder="" required>
                                     </div>
                                 </div>
                                 <div class="col-md-3 col-sm-6">
                                     <div class="form-group">
                                         <label for="jumlah_menir" class="form-label">Jumlah Menir (Kg)</label>
                                         <input class="form-control number-format" type="text" name="jumlah_menir" id="jumlah_menir"
-                                               inputmode="numeric" placeholder="Kilogram" required>
+                                               inputmode="numeric" placeholder="" required>
                                     </div>
                                 </div>
                                 <div class="col-md-3 col-sm-6">
                                     <div class="form-group">
                                         <label for="harga_menir" class="form-label">Harga Menir (Rp)</label>
                                         <input class="form-control number-format" type="text" name="harga_menir" id="harga_menir"
-                                               inputmode="numeric" placeholder="Rupiah" required>
+                                               inputmode="numeric" placeholder="" required>
                                     </div>
                                 </div>
                             </div>
@@ -643,14 +643,14 @@
                                 <div class="form-group" hidden>
                                     <label class="form-label">Keterangan</label>
                                     <input type="text" name="pengambilans[${pengambilanCount}][keterangan]"
-                                           class="form-control" placeholder="Masukkan keterangan" value="Karung Konga">
+                                           class="form-control" placeholder="" value="Karung Konga">
                                 </div>
                             </div>
                             <div class="col-md-3 col-sm-6">
                                 <div class="form-group">
                                     <label class="form-label">Jumlah</label>
                                     <input type="text" name="pengambilans[${pengambilanCount}][jumlah]"
-                                           class="form-control number-format" placeholder="Jumlah" inputmode="numeric" data-raw-value="">
+                                           class="form-control number-format" placeholder="" inputmode="numeric" data-raw-value="">
                                 </div>
                             </div>
                             <div class="col-md-3 col-sm-6">
