@@ -78,11 +78,16 @@
             margin-bottom: 1.5rem;
         }
 
-        .form-label {
-            font-weight: 500;
-            color: var(--secondary-color);
-            margin-bottom: 0.5rem;
-        }
+.form-label {
+    font-weight: 600; /* Sedikit lebih tegas */
+    color: #000; /* Abu gelap lebih lembut dari hitam */
+    font-size: 1rem; /* Sedikit lebih kecil dari default agar ringan */
+    margin-bottom: 0.5rem;
+    display: inline-block;
+    letter-spacing: 0.3px;
+    transition: color 0.3s ease;
+}
+
 
         .form-control {
             border-radius: 8px;
@@ -156,18 +161,18 @@
             color: #1e40af;
         }
 
-        .pengambilan-item {
+        /* .pengambilan-item {
             background: #f8fafc;
             border: 2px solid #e2e8f0;
             border-radius: 8px;
             padding: 1rem;
             margin-bottom: 1rem;
             transition: all 0.3s ease;
-        }
+        } */
 
-        .pengambilan-item:hover {
+        /* .pengambilan-item:hover {
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
+        } */
 
         .delete-btn {
             width: 100%;
@@ -222,6 +227,7 @@
             border-radius: 8px;
             overflow: hidden;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-top: 1.5rem;
         }
 
         .iframe-container iframe {
@@ -229,6 +235,12 @@
             height: 100%;
             border: none;
         }
+
+        .cut-line {
+                        border-top: 1px dashed #000;
+                        margin: 10px 0;
+                        page-break-after: always;
+                    }
 
         .loading-spinner {
             position: absolute;
@@ -246,6 +258,11 @@
         border-top: 1px solid #e2e8f0;
     }
 
+    html, body {
+    overflow-x: hidden; /* Hindari scroll horizontal */
+    width: 100%;         /* Pastikan body tidak lebih dari viewport */
+}
+
 
         /* Responsive Design */
         @media (max-width: 768px) {
@@ -257,13 +274,19 @@
                 padding: 1.5rem;
             }
 
-            .pengambilan-item {
+            /* .pengambilan-item {
                 padding: 1rem 0.5rem;
-            }
+            } */
 
             .delete-btn {
                 margin-top: 1rem;
             }
+
+            .cut-line {
+                        border-top: 1px dashed #000;
+                        margin: 10px 0;
+                        page-break-after: always;
+                    }
 
             .modal-lg {
                 max-width: 95%;
@@ -304,7 +327,7 @@
         /* Thermal Print Styles - Tambahkan ini di bagian CSS */
 @media print {
     @page {
-        size: 150mm 135mm;
+        size: 80mm 135mm;
         margin: 0;
         padding: 0;
     }
@@ -344,20 +367,20 @@
         <div class="row justify-content-center">
             <div class="col-xl-10 col-lg-11">
                 <div class="card form-card fade-in">
-                    <div class="card-header">
+                    {{-- <div class="card-header">
                         <h1 class="card-title">
                             <i class="bi bi-calculator"></i>
                             Kalkulasi Penggilingan Beras
                         </h1>
-                    </div>
+                    </div> --}}
 
                     <div class="card-body">
-                        <div class="alert alert-info d-flex align-items-center" role="alert">
+                        {{-- <div class="alert alert-info d-flex align-items-center" role="alert">
                             <i class="bi bi-info-circle me-2"></i>
                             <div>
                                 <strong>Form Temporary:</strong> Data tidak akan disimpan ke database
                             </div>
-                        </div>
+                        </div> --}}
 
                         <form id="gilingForm">
                             <!-- Informasi Petani -->
@@ -433,6 +456,22 @@
 
                             </div>
 
+                             <!-- Pengambilan -->
+                            <div class="section-title">
+                                <i class="bi bi-cart-dash"></i>
+                                Pengambilan Karung Konga
+                            </div>
+
+                            <div id="pengambilans"></div>
+
+                            <div class="submit-section d-flex justify-content-between">
+    <button type="button" class="btn btn-success btn-lg mb-4 w-100 add-pengambilan d-none"
+        style="background: var(--bg-gradient); border: none; color: white;">
+        <i class="bi bi-plus-circle me-2"></i>
+        Tambah Pengambilan
+    </button>
+</div>
+
                             <!-- Data Produk Sampingan -->
                             <div class="section-title">
                                 <i class="bi bi-box-seam"></i>
@@ -449,50 +488,36 @@
                                 </div>
                                 <div class="col-md-3 col-sm-6">
                                     <div class="form-group">
-                                        <label for="harga_konga" class="form-label">Harga Konga (Rp)</label>
-                                        <input class="form-control number-format" type="text" name="harga_konga" id="harga_konga"
-                                               inputmode="numeric" placeholder="" required>
+                                        <label for="jumlah_menir" class="form-label">Jumlah Menir (Kg)</label>
+                                        <input class="form-control number-format" type="text" name="jumlah_menir" id="jumlah_menir"
+                                        inputmode="numeric" placeholder="" required>
                                     </div>
                                 </div>
                                 <div class="col-md-3 col-sm-6">
                                     <div class="form-group">
-                                        <label for="jumlah_menir" class="form-label">Jumlah Menir (Kg)</label>
-                                        <input class="form-control number-format" type="text" name="jumlah_menir" id="jumlah_menir"
-                                               inputmode="numeric" placeholder="" required>
+                                        <label for="harga_konga" class="form-label">Harga Konga (Rp)</label>
+                                        <input class="form-control number-format" type="text" name="harga_konga" id="harga_konga"
+                                               inputmode="numeric" placeholder="" value="160000" required>
                                     </div>
                                 </div>
                                 <div class="col-md-3 col-sm-6">
                                     <div class="form-group">
                                         <label for="harga_menir" class="form-label">Harga Menir (Rp)</label>
                                         <input class="form-control number-format" type="text" name="harga_menir" id="harga_menir"
-                                               inputmode="numeric" placeholder="" required>
+                                               inputmode="numeric" placeholder="" value="5000" required>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Pengambilan -->
-                            <div class="section-title">
-                                <i class="bi bi-cart-dash"></i>
-                                Pengambilan Karung Konga
-                            </div>
 
-                            <div id="pengambilans"></div>
-
-                            <div class="submit-section d-flex justify-content-between">
-    <button type="button" class="btn btn-success btn-lg mb-4 w-100 add-pengambilan"
-        style="background: var(--bg-gradient); border: none; color: white;">
-        <i class="bi bi-plus-circle me-2"></i>
-        Tambah Pengambilan
-    </button>
-</div>
                             <!-- Konstanta -->
                             <div class="section-title">
                                 <i class="bi bi-sliders"></i>
-                                Konstanta
+                                Biaya Buruh Giling
                             </div>
 
                             <div class="row">
-                                <div class="col-md-3 col-sm-6">
+                                <div class="col-md-3 col-sm-6 d-none">
                                     <div class="form-group">
                                         <label for="biaya_giling" class="form-label">Biaya Giling (%)</label>
                                         <input class="form-control number-format" type="text" name="biaya_giling"
@@ -501,12 +526,12 @@
                                 </div>
                                 <div class="col-md-3 col-sm-6">
                                     <div class="form-group">
-                                        <label for="biaya_buruh_giling" class="form-label">Biaya Buruh Giling (Rp)</label>
+                                        <label for="biaya_buruh_giling" class="form-label d-none">Biaya Buruh Giling (Rp)</label>
                                         <input class="form-control number-format" type="text" name="biaya_buruh_giling"
                                                id="biaya_buruh_giling" value="80" inputmode="numeric" required>
                                     </div>
                                 </div>
-                                <div class="col-md-3 col-sm-6">
+                                <div class="col-md-3 col-sm-6 d-none">
                                     <div class="form-group">
                                         <label for="biaya_buruh_jemur" class="form-label">Biaya Buruh Jemur (Rp)</label>
                                         <input class="form-control number-format" type="text" name="biaya_buruh_jemur"
@@ -523,11 +548,12 @@
                             </div>
 
                             <!-- Submit Section -->
-                            <div class="submit-section d-flex justify-content-between">
+                            <div class="submit-section d-flex justify-content-between" style="height: 120px;">
 
-    <button type="submit" class="btn btn-success btn-lg w-100" style="background: var(--bg-gradient); border: none; color: white;">
+    <button type="submit" class="btn btn-success btn-lg w-100" style="background: var(--bg-gradient); border: none; color: white; margin-top: 1rem; margin-bottom: 1rem;">
+
         <i class="bi  bi-file-earmark-text me-2"></i>
-        Buat Nota Sementara
+        BUAT NOTA SEMENTARA
     </button>
 </div>
                         </form>
@@ -548,7 +574,7 @@
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body p-0">
+                <div class="modal-body px-4">
                     <div class="iframe-container">
                         <div class="loading-spinner text-center">
                             <div class="spinner-border text-primary" role="status">
@@ -648,22 +674,22 @@
                             </div>
                             <div class="col-md-3 col-sm-6">
                                 <div class="form-group">
-                                    <label class="form-label">Jumlah</label>
+                                    <label class="form-label d-none">Jumlah</label>
                                     <input type="text" name="pengambilans[${pengambilanCount}][jumlah]"
-                                           class="form-control number-format" placeholder="" inputmode="numeric" data-raw-value="">
+                                           class="form-control number-format" placeholder="Jumlah Karung" inputmode="numeric" data-raw-value="">
                                 </div>
                             </div>
                             <div class="col-md-3 col-sm-6">
-                                <div class="form-group">
+                                <div class="form-group" hidden>
                                     <label class="form-label">Harga</label>
                                     <input type="text" name="pengambilans[${pengambilanCount}][harga]"
                                            class="form-control number-format" placeholder="Harga" inputmode="numeric" data-raw-value="" value="4,000">
                                 </div>
                             </div>
-                            <div class="col-md-2 col-sm-6">
+                            <div class="col-md-2 col-sm-6 d-none">
                                 <div class="form-group">
                                     <label class="form-label d-none d-md-block">&nbsp;</label>
-                                    <button type="button" class="btn btn-danger delete-pengambilan delete-btn">
+                                    <button type="button" class="btn btn-danger delete-pengambilan delete-btn d-none">
                                         <i class="bi bi-trash3"></i>
                                         <span class="d-none d-md-inline ms-1">Hapus</span>
                                     </button>
@@ -871,8 +897,12 @@
                             padding: 0;
                         }
 
+                         .cut-line {
+                        page-break-after: always;
+                    }
+
                         .receipt {
-                            width: 150mm; /* Standard thermal printer width */
+                            width: 80mm; /* Standard thermal printer width */
                             height: 135mm;
                             margin: 0 auto; /* Center the receipt */
                         }
@@ -933,6 +963,12 @@
                             margin-bottom: 10px;
                         }
 
+                        .cut-line {
+                        border-top: 1px dashed #000;
+                        margin: 10px 0;
+                        page-break-after: always;
+                    }
+
                         .footer {
                             text-align: center;
                             margin-top: 10px;
@@ -976,7 +1012,7 @@
 
                         @media print {
                 @page {
-                    size: 150mm 135mm;
+                    size: 80mm 135mm;
                     margin: 0 !important;
                     padding: 0 !important;
                 }
@@ -997,10 +1033,16 @@
                 background: white;
             }
 
+            .cut-line {
+                        border-top: 1px dashed #000;
+                        margin: 10px 0;
+                        page-break-after: always;
+                    }
+
             .receipt {
                 width: 100%;
-                max-width: 70mm;
-                margin: 0 auto;
+                max-width: 100%;
+
             }
 
             .header {
@@ -1035,6 +1077,10 @@
                 text-align: left;
                 font-size: 11px;
             }
+
+            .cut-line {
+                        page-break-after: always;
+                    }
 
             .calculation-row td {
                 border-top: 1px dashed #000;
@@ -1223,12 +1269,13 @@
 
                         <div class="footer">
                             <!-- Placeholder for footer image -->
-                            <!-- <img src="{{ asset('footer.png') }}" alt="Putra Manuaba" class="header-logo"> -->
+                            <!-- <img src="{{ asset('footer.png') }}" alt="Putra Manuaba" class="header-logo cut-line"> -->
                             <div class="header-text">
                                 <div>TERIMA KASIH TELAH GILING DISINI</div>
                                 <div>SUKSES SELALU</div>
                             </div>
                         </div>
+
                     </div>
                 </body>
                 </html>
