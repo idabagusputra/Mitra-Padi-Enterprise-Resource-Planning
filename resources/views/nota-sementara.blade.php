@@ -300,6 +300,43 @@
                 display: none !important;
             }
         }
+
+        /* Thermal Print Styles - Tambahkan ini di bagian CSS */
+@media print {
+    @page {
+        size: 80mm auto;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        background: white !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .no-print {
+        display: none !important;
+    }
+}
+
+/* Hide blob URL in mobile browsers */
+.modal-body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: white;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.iframe-container iframe {
+    position: relative;
+    z-index: 2;
+}
     </style>
 </head>
 <body>
@@ -930,6 +967,115 @@
                             max-width: 100%;
                             height: auto;
                         }
+
+                        @media print {
+                @page {
+                    size: 80mm auto;
+                    margin: 0 !important;
+                    padding: 0 !important;
+                }
+
+                body {
+                    margin: 0 !important;
+                    padding: 0 !important;
+                    -webkit-print-color-adjust: exact;
+                    print-color-adjust: exact;
+                }
+            }
+
+            body {
+                font-family: 'Courier New', monospace;
+                font-size: 12px;
+                margin: 0;
+                padding: 5mm;
+                line-height: 1.3;
+                color: #000;
+                background: white;
+            }
+
+            .receipt {
+                width: 100%;
+                max-width: 70mm;
+                margin: 0 auto;
+            }
+
+            .header {
+                text-align: center;
+                margin-bottom: 10px;
+            }
+
+            .title {
+                font-size: 16px;
+                font-weight: bold;
+                margin-bottom: 3px;
+            }
+
+            .title2 {
+                font-size: 13px;
+                font-weight: bold;
+                margin-bottom: 3px;
+            }
+
+            .info-item {
+                margin-bottom: 2px;
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 8px;
+            }
+
+            th, td {
+                padding: 2px 1px;
+                text-align: left;
+                font-size: 11px;
+            }
+
+            .calculation-row td {
+                border-top: 1px dashed #000;
+                border-bottom: 1px dashed #000;
+                padding-top: 3px;
+                padding-bottom: 3px;
+            }
+
+            .calculation-row-top td {
+                border-top: 1px dashed #000;
+                padding-top: 3px;
+                padding-bottom: 3px;
+            }
+
+            .total {
+                font-size: 13px;
+                font-weight: bold;
+                border-top: 2px solid #000;
+                border-bottom: 2px solid #000;
+                margin-bottom: 8px;
+            }
+
+            .footer {
+                text-align: center;
+                margin-top: 10px;
+                font-style: italic;
+                font-size: 10px;
+            }
+
+            .bold-border-top {
+                border-top: 2px solid #000;
+                font-weight: bold;
+            }
+
+            .bold-border-top-top {
+                border-top: 2px solid #000;
+            }
+
+            .small-text {
+                font-size: 10px;
+            }
+
+            .bold {
+                font-weight: bold;
+            }
                     </style>
                 </head>
                 <body>
