@@ -1087,7 +1087,7 @@
                                 <!-- Placeholder for logo, as asset() won't work directly in client-side HTML -->
                                 <!-- <img src="{{ asset('logo_gilingan.png') }}" alt="Putra Manuaba" class="header-logo"> -->
                                 <div class="header-text">
-                                    <div class="title">NOTA SEMENTARA</div>
+                                    <div class="title">NOTA GILING SEMENTARA</div>
                                     <div class="title2">GILINGAN PADI PUTRA MANUABA</div>
                                     <div>DUS. BABAHAN, DES. TOLAI, KAB. PARIGI</div>
                                     <div>Telp: 0811-451-486 / 0822-6077-3867</div>
