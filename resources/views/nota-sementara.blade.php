@@ -559,13 +559,13 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        <i class="bi bi-x-circle me-2"></i>
-                        Tutup
-                    </button>
                     <button type="button" class="btn btn-primary" id="printPdf">
                         <i class="bi bi-printer me-2"></i>
                         Cetak Nota
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-2"></i>
+                        Tutup
                     </button>
                 </div>
             </div>
