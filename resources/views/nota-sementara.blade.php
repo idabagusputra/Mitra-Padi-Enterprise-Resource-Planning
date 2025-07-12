@@ -315,51 +315,70 @@
         }
 
         /* Print Styles */
-        @media print {
-            body {
-                background: white !important;
-            }
-
-            .no-print {
-                display: none !important;
-            }
-        }
 
         /* Thermal Print Styles - Tambahkan ini di bagian CSS */
 @media print {
-    @page {
-        size: 80mm 151mm;
-        margin: 0;
-        padding: 0;
+    /* Sembunyikan semua elemen kecuali modal dialog */
+    body * {
+        visibility: hidden;
     }
 
-    body {
+    /* Tampilkan hanya modal dan kontennya */
+    .modal,
+    .modal * {
+        visibility: visible;
+    }
+
+    /* Styling khusus untuk print */
+    .modal {
+        position: static !important;
+        display: block !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        background: none !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+
+    .modal-dialog {
+        margin: 0 !important;
+        max-width: none !important;
+        width: 100% !important;
+    }
+
+    .modal-content {
+        border: none !important;
+        box-shadow: none !important;
         background: white !important;
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
     }
 
-    .no-print {
+    .modal-header,
+    .modal-footer {
         display: none !important;
     }
-}
 
-/* Hide blob URL in mobile browsers */
-.modal-body::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: white;
-    z-index: 1;
-    pointer-events: none;
-}
+    .modal-body {
+        padding: 0 !important;
+    }
 
-.iframe-container iframe {
-    position: relative;
-    z-index: 2;
+    /* Potong kertas sesuai konten */
+    .receipt {
+        height: auto !important; /* Tinggi otomatis sesuai konten */
+        min-height: unset !important;
+        page-break-after: avoid !important;
+    }
+
+    /* Hilangkan ruang kosong */
+    @page {
+        margin: 0;
+        size: 80mm auto; /* Lebar tetap, tinggi otomatis */
+    }
+
+    /* Pastikan tidak ada elemen yang memaksa tinggi */
+    html, body {
+        height: auto !important;
+        min-height: unset !important;
+    }
 }
     </style>
 </head>
@@ -1012,121 +1031,68 @@
                         }
 
                         @media print {
-                @page {
-                    size: 80mm 151mm;
-                    margin: 0 !important;
-                    padding: 0 !important;
-                }
+    /* Sembunyikan semua elemen kecuali modal dialog */
+    body * {
+        visibility: hidden;
+    }
 
-                body {
-                    margin: 0 !important;
-                    padding: 0 !important;
-                    -webkit-print-color-adjust: exact;
-                    print-color-adjust: exact;
-                }
-            }
+    /* Tampilkan hanya modal dan kontennya */
+    .modal,
+    .modal * {
+        visibility: visible;
+    }
 
-            body {
-                font-size: 12px;
-                margin: 0;
-                line-height: 1.3;
-                color: #000;
-                background: white;
-            }
+    /* Styling khusus untuk print */
+    .modal {
+        position: static !important;
+        display: block !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        background: none !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
 
-            .cut-line {
-                        border-top: 1px dashed #000;
-                        margin: 10px 0;
-                        page-break-after: always;
-                    }
+    .modal-dialog {
+        margin: 0 !important;
+        max-width: none !important;
+        width: 100% !important;
+    }
 
-            .receipt {
-                width: 100%;
-                max-width: 100%;
+    .modal-content {
+        border: none !important;
+        box-shadow: none !important;
+        background: white !important;
+    }
 
-            }
+    .modal-header,
+    .modal-footer {
+        display: none !important;
+    }
 
-            .header {
-                text-align: center;
-                margin-bottom: 10px;
-            }
+    .modal-body {
+        padding: 0 !important;
+    }
 
-            .title {
-                font-size: 20px;
-                font-weight: bold;
-                margin-bottom: 3px;
-            }
+    /* Potong kertas sesuai konten */
+    .receipt {
+        height: auto !important; /* Tinggi otomatis sesuai konten */
+        min-height: unset !important;
+        page-break-after: avoid !important;
+    }
 
-            .title2 {
-                font-size: 16px;
-                font-weight: bold;
-                margin-bottom: 3px;
-            }
+    /* Hilangkan ruang kosong */
+    @page {
+        margin: 0;
+        size: 80mm auto; /* Lebar tetap, tinggi otomatis */
+    }
 
-            .info-item {
-                margin-bottom: 2px;
-            }
-
-            table {
-                width: 100%;
-                border-collapse: collapse;
-                margin-bottom: 8px;
-            }
-
-            th, td {
-                padding: 2px 1px;
-                text-align: left;
-                font-size: 14px;
-            }
-
-            .cut-line {
-                        page-break-after: always;
-                    }
-
-            .calculation-row td {
-                border-top: 1px dashed #000;
-                border-bottom: 1px dashed #000;
-                padding-top: 3px;
-                padding-bottom: 3px;
-            }
-
-            .calculation-row-top td {
-                border-top: 1px dashed #000;
-                padding-top: 3px;
-                padding-bottom: 3px;
-            }
-
-            .total {
-                font-size: 13px;
-                font-weight: bold;
-                border-top: 2px solid #000;
-                border-bottom: 2px solid #000;
-                margin-bottom: 8px;
-            }
-
-            .footer {
-                text-align: center;
-                margin-top: 10px;
-                font-style: italic;
-                font-size: 10px;
-            }
-
-            .bold-border-top {
-                border-top: 2px solid #000;
-                font-weight: bold;
-            }
-
-            .bold-border-top-top {
-                border-top: 2px solid #000;
-            }
-
-            .small-text {
-                font-size: 14px;
-            }
-
-            .bold {
-                font-weight: bold;
-            }
+    /* Pastikan tidak ada elemen yang memaksa tinggi */
+    html, body {
+        height: auto !important;
+        min-height: unset !important;
+    }
+}
                     </style>
                 </head>
                 <body>
