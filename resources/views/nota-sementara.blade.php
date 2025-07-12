@@ -1274,6 +1274,10 @@
                             <div class="header-text">
                                 <div>TERIMA KASIH TELAH GILING DISINI</div>
                                 <div>SUKSES SELALU</div>
+                                <div>.</div>
+                                <div>.</div>
+                                <div>.</div>
+                                <div>.</div>
                             </div>
                         </div>
 
