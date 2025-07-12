@@ -749,7 +749,7 @@
                      namaPetani: capitalizeWords(document.getElementById('nama_petani').value.trim()),
                     tanggalNota: document.getElementById('tanggal_nota').value,
                     gilingKotor: getRawValue(document.getElementById('giling_kotor')),
-                    pulang: getRawValue(document.getElementById('pulang')),
+                    pulang: getRawValue(document.getElementById('pulang')) || 0,
                     pinjam: getRawValue(document.getElementById('pinjam')),
                     jemur: getRawValue(document.getElementById('jemur')),
                     hargaJual: getRawValue(document.getElementById('harga_jual')),
@@ -854,18 +854,32 @@
                     });
                 };
 
+                // let pengambilanRows = '';
+                // if (pengambilanData.length > 0) {
+                //     pengambilanData.forEach((item, index) => {
+                //         pengambilanRows += `
+                //             <tr class="calculation-row">
+                //                 <td>${index + 1}. ${item.keterangan}</td>
+                //                 <td>${formatCurrency(item.jumlah, getDecimalPlaces(item.jumlah))}</td>
+                //                 <td>Rp ${formatCurrency(item.harga, getDecimalPlaces(item.harga))}</td>
+                //                 <td class="bold">Rp ${formatCurrency(item.subtotal, getDecimalPlaces(item.subtotal))}</td>
+                //             </tr>
+                //         `;
+                //     });
+
                 let pengambilanRows = '';
-                if (pengambilanData.length > 0) {
-                    pengambilanData.forEach((item, index) => {
-                        pengambilanRows += `
-                            <tr class="calculation-row">
-                                <td>${index + 1}. ${item.keterangan}</td>
-                                <td>${formatCurrency(item.jumlah, getDecimalPlaces(item.jumlah))}</td>
-                                <td>Rp ${formatCurrency(item.harga, getDecimalPlaces(item.harga))}</td>
-                                <td class="bold">Rp ${formatCurrency(item.subtotal, getDecimalPlaces(item.subtotal))}</td>
-                            </tr>
-                        `;
-                    });
+if (pengambilanData.length > 0) {
+   pengambilanData.forEach((item) => {
+       pengambilanRows += `
+           <tr class="calculation-row">
+               <td>${item.keterangan}</td>
+               <td>${formatCurrency(item.jumlah, getDecimalPlaces(item.jumlah))}</td>
+               <td>Rp ${formatCurrency(item.harga, getDecimalPlaces(item.harga))}</td>
+               <td class="bold">Rp ${formatCurrency(item.subtotal, getDecimalPlaces(item.subtotal))}</td>
+           </tr>
+       `;
+   });
+}
                 } else {
                     pengambilanRows = `
                         <tr class="calculation-row">
@@ -1254,7 +1268,7 @@
 
                         <table>
                             <tr class="bold-border-top">
-                                <th>Ambil</th>
+                                <th>Pengambilan</th>
                                 <th>Jumlah</th>
                                 <th>Harga</th>
                                 <th>Total</th>
