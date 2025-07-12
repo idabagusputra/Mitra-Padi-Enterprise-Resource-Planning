@@ -330,6 +330,7 @@
     @page {
         size: 80mm 151mm;
         margin: 0;
+        transform: scale(2); /* Scale 2x */
         padding: 0;
     }
 
@@ -905,6 +906,7 @@
                         .receipt {
                             width: 80mm; /* Standard thermal printer width */
                             height: 151mm;
+                            transform: scale(2); /* Scale 2x */
                             margin: 0 auto; /* Center the receipt */
                         }
 
@@ -1015,6 +1017,7 @@
                 @page {
                     size: 80mm 151mm;
                     margin: 0 !important;
+                    transform: scale(2); /* Scale 2x */
                     padding: 0 !important;
                 }
 
