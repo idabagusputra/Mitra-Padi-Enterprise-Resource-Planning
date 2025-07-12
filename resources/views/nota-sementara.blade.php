@@ -430,7 +430,7 @@
                                     <div class="form-group">
                                         <label for="pulang" class="form-label">Beras Pulang (Kg)</label>
                                         <input class="form-control number-format" type="text" name="pulang" id="pulang"
-                                               inputmode="numeric" placeholder="" required>
+                                               inputmode="numeric" placeholder="" >
                                     </div>
                                 </div>
                                 <div class="col-md-4 col-sm-6">
