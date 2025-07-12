@@ -1268,17 +1268,24 @@
 
 
 
-                        <div class="footer">
+                        <div class="footer" style="margin-bottom: 5rem;">
                             <!-- Placeholder for footer image -->
                             <!-- <img src="{{ asset('footer.png') }}" alt="Putra Manuaba" class="header-logo cut-line"> -->
                             <div class="header-text" >
                                 <div>TERIMA KASIH TELAH GILING DISINI</div>
                                 <div>SUKSES SELALU</div>
-                                <div></div>
-                                <div></div>
-                                <div></div>
                             </div>
                         </div>
+
+                         <table>
+                            <tr class="">
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+
+                        </table>
+
 
                     </div>
                 </body>
