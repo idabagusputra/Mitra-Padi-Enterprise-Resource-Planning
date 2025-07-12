@@ -1274,12 +1274,14 @@
                             <div class="header-text">
                                 <div>TERIMA KASIH TELAH GILING DISINI</div>
                                 <div>SUKSES SELALU</div>
-                                <div>.</div>
-                                <div>.</div>
-                                <div>.</div>
-                                <div>.</div>
-                                <div>.</div>
-                                <div>.</div>
+                            <div style="display: flex; justify-content: space-between;">
+                                        <div>.</div>
+                                        <div>.</div>
+                                        <div>.</div>
+                                        <div>.</div>
+                                        <div>.</div>
+                                        <div>.</div>
+                                    </div>
 
                             </div>
                         </div>
