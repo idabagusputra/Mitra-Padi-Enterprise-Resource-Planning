@@ -854,32 +854,18 @@
                     });
                 };
 
-                // let pengambilanRows = '';
-                // if (pengambilanData.length > 0) {
-                //     pengambilanData.forEach((item, index) => {
-                //         pengambilanRows += `
-                //             <tr class="calculation-row">
-                //                 <td>${index + 1}. ${item.keterangan}</td>
-                //                 <td>${formatCurrency(item.jumlah, getDecimalPlaces(item.jumlah))}</td>
-                //                 <td>Rp ${formatCurrency(item.harga, getDecimalPlaces(item.harga))}</td>
-                //                 <td class="bold">Rp ${formatCurrency(item.subtotal, getDecimalPlaces(item.subtotal))}</td>
-                //             </tr>
-                //         `;
-                //     });
-
                 let pengambilanRows = '';
-if (pengambilanData.length > 0) {
-   pengambilanData.forEach((item) => {
-       pengambilanRows += `
-           <tr class="calculation-row">
-               <td>${item.keterangan}</td>
-               <td>${formatCurrency(item.jumlah, getDecimalPlaces(item.jumlah))}</td>
-               <td>Rp ${formatCurrency(item.harga, getDecimalPlaces(item.harga))}</td>
-               <td class="bold">Rp ${formatCurrency(item.subtotal, getDecimalPlaces(item.subtotal))}</td>
-           </tr>
-       `;
-   });
-}
+                if (pengambilanData.length > 0) {
+                    pengambilanData.forEach((item, index) => {
+                        pengambilanRows += `
+                            <tr class="calculation-row">
+                                <td>${item.keterangan}</td>
+                                <td>${formatCurrency(item.jumlah, getDecimalPlaces(item.jumlah))}</td>
+                                <td>Rp ${formatCurrency(item.harga, getDecimalPlaces(item.harga))}</td>
+                                <td class="bold">Rp ${formatCurrency(item.subtotal, getDecimalPlaces(item.subtotal))}</td>
+                            </tr>
+                        `;
+                    });
                 } else {
                     pengambilanRows = `
                         <tr class="calculation-row">
