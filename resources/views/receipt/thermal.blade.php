@@ -442,24 +442,24 @@
         </div>
 
         <!-- Titik-titik di kiri dan kanan sebanyak 4 baris -->
-        <div style="display: flex; justify-content: space-between; margin: 2px 0;">
-            <div>.</div>
-            <div>.</div>
-        </div>
-        <div style="display: flex; justify-content: space-between; margin: 2px 0;">
-            <div>.</div>
-            <div>.</div>
-        </div>
-        <div style="display: flex; justify-content: space-between; margin: 2px 0;">
-            <div>.</div>
-            <div>.</div>
-        </div>
-        <div style="display: flex; justify-content: space-between; margin: 2px 0;">
-            <div>.</div>
-            <div>.</div>
-        </div>
-
-    </div>
+        <table style="width: 100%; border-collapse: collapse; margin: 5px 0;">
+            <tr>
+                <td style="width: 50%; text-align: left; padding: 1px 0;">.</td>
+                <td style="width: 50%; text-align: right; padding: 1px 0;">.</td>
+            </tr>
+            <tr>
+                <td style="width: 50%; text-align: left; padding: 1px 0;">.</td>
+                <td style="width: 50%; text-align: right; padding: 1px 0;">.</td>
+            </tr>
+            <tr>
+                <td style="width: 50%; text-align: left; padding: 1px 0;">.</td>
+                <td style="width: 50%; text-align: right; padding: 1px 0;">.</td>
+            </tr>
+            <tr>
+                <td style="width: 50%; text-align: left; padding: 1px 0;">.</td>
+                <td style="width: 50%; text-align: right; padding: 1px 0;">.</td>
+            </tr>
+        </table>
 
 
 </body>
