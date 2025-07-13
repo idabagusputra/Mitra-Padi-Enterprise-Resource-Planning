@@ -440,24 +440,26 @@
                 <div></div>
             </div>
         </div>
-{{--
-<div style="display: flex; justify-content: space-between;">
-    <div>.</div>
-    <div>.</div>
-</div>
-<div style="display: flex; justify-content: space-between;">
-    <div>.</div>
-    <div>.</div>
-</div>
-<div style="display: flex; justify-content: space-between;">
-    <div>.</div>
-    <div>.</div>
-</div>
-<div style="display: flex; justify-content: space-between;">
-    <div>.</div>
-    <div>.</div>
-</div> --}}
 
+        <!-- Titik-titik di kiri dan kanan sebanyak 4 baris -->
+        <div style="display: flex; justify-content: space-between; margin: 2px 0;">
+            <div>.</div>
+            <div>.</div>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin: 2px 0;">
+            <div>.</div>
+            <div>.</div>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin: 2px 0;">
+            <div>.</div>
+            <div>.</div>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin: 2px 0;">
+            <div>.</div>
+            <div>.</div>
+        </div>
+
+    </div>
 
 
 </body>
