@@ -1292,13 +1292,19 @@ function generateNotaHTML(calculatorType) {
         .header-info .tanggal {
             margin: 0;
             text-align: left;
-            font-weight: bold;
+font-size: 12px;
         }
 
-        .header-info .waktu {
+        .header-foot {
             margin: 0;
             text-align: right;
-            font-weight: bold;
+font-size: 12px;
+        }
+
+                .header-info .waktu {
+            margin: 0;
+            text-align: right;
+font-size: 12px;
         }
 
         table {
@@ -1514,7 +1520,34 @@ items.forEach(item => {
     <div class="footer-info">
         <p class="thank-you">Terima Kasih Atas Kunjungan Anda!</p>
     </div>
+
+     <div class="header-foot">
+    <div class="waktu" style="display: flex; justify-content: space-between;">
+        <div style="text-transform: none !important; font-weight: normal !important;">.</div>
+        <div style="text-transform: none !important; font-weight: normal !important;">.</div>
+    </div>
+    <div class="waktu" style="display: flex; justify-content: space-between;">
+        <div style="text-transform: none !important; font-weight: normal !important;">.</div>
+        <div style="text-transform: none !important; font-weight: normal !important;">.</div>
+    </div>
+    <div class="waktu" style="display: flex; justify-content: space-between;">
+        <div style="text-transform: none !important; font-weight: normal !important;">.</div>
+        <div style="text-transform: none !important; font-weight: normal !important;">.</div>
+    </div>
+    <div class="waktu" style="display: flex; justify-content: space-between;">
+        <div style="text-transform: none !important; font-weight: normal !important;">.</div>
+        <div style="text-transform: none !important; font-weight: normal !important;">.</div>
+    </div>
+    <div class="waktu" style="display: flex; justify-content: space-between;">
+        <div style="text-transform: none !important; font-weight: normal !important;">.</div>
+        <div style="text-transform: none !important; font-weight: normal !important;">.</div>
+    </div>
+</div>
+
+
 </body>
+
+
 </html>
 `;
             return notaHTML;
