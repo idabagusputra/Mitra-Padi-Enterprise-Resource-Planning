@@ -1524,7 +1524,6 @@ items.forEach(item => {
 function showNotaModal(calculatorType) {
     const notaContent = generateNotaHTML(calculatorType);
 
-    // Create a hidden iframe for printing
     const iframe = document.createElement('iframe');
     iframe.style.position = 'absolute';
     iframe.style.left = '-9999px';
@@ -1533,10 +1532,8 @@ function showNotaModal(calculatorType) {
     iframe.style.height = '0px';
     iframe.style.border = 'none';
 
-    // Append iframe to body
     document.body.appendChild(iframe);
 
-    // Create complete HTML with print-optimized styles
     const printHTML = `
         <!DOCTYPE html>
         <html>
@@ -1548,18 +1545,11 @@ function showNotaModal(calculatorType) {
                     margin: 0 !important;
                 }
                 * {
-                    margin: 0 !important;
-                    padding: 0 !important;
                     box-sizing: border-box !important;
                 }
                 body {
                     margin: 0 !important;
                     padding: 0 !important;
-                    font-family: Arial, sans-serif !important;
-                    font-size: 10px !important;
-                    line-height: 1.2 !important;
-                    color: #000 !important;
-                    background: white !important;
                     width: 80mm !important;
                     max-width: 80mm !important;
                 }
@@ -1571,8 +1561,6 @@ function showNotaModal(calculatorType) {
                     body {
                         margin: 0 !important;
                         padding: 0 !important;
-                        -webkit-print-color-adjust: exact !important;
-                        print-color-adjust: exact !important;
                     }
                 }
             </style>
@@ -1583,41 +1571,27 @@ function showNotaModal(calculatorType) {
         </html>
     `;
 
-    // Write content to iframe
     iframe.contentDocument.open();
     iframe.contentDocument.write(printHTML);
     iframe.contentDocument.close();
 
-    // Wait for content to load, then print
     iframe.onload = function() {
         setTimeout(() => {
-            try {
-                // Focus on iframe and trigger print
-                iframe.contentWindow.focus();
-                iframe.contentWindow.print();
+            iframe.contentWindow.focus();
+            iframe.contentWindow.print();
 
-                // Clean up after printing
-                setTimeout(() => {
-                    if (iframe.parentNode) {
-                        iframe.parentNode.removeChild(iframe);
-                    }
-                }, 1000);
-            } catch (error) {
-                console.error('Print error:', error);
-                // Fallback: remove iframe if print fails
+            setTimeout(() => {
                 if (iframe.parentNode) {
                     iframe.parentNode.removeChild(iframe);
                 }
-            }
+            }, 1000);
         }, 500);
     };
 }
 
-// Alternative method for Android WebView (if the above doesn't work)
 function showNotaModalAndroid(calculatorType) {
     const notaContent = generateNotaHTML(calculatorType);
 
-    // Create complete HTML with print-optimized styles
     const printHTML = `
         <!DOCTYPE html>
         <html>
@@ -1629,31 +1603,22 @@ function showNotaModalAndroid(calculatorType) {
                     margin: 0 !important;
                 }
                 * {
-                    margin: 0 !important;
-                    padding: 0 !important;
                     box-sizing: border-box !important;
                 }
                 body {
                     margin: 0 !important;
                     padding: 0 !important;
-                    font-family: Arial, sans-serif !important;
-                    font-size: 10px !important;
-                    line-height: 1.2 !important;
-                    color: #000 !important;
-                    background: white !important;
                     width: 80mm !important;
                     max-width: 80mm !important;
                 }
                 @media print {
                     @page {
-                        size: A4;
+                        size: 80mm auto;
                         margin: 0 !important;
                     }
                     body {
                         margin: 0 !important;
                         padding: 0 !important;
-                        -webkit-print-color-adjust: exact !important;
-                        print-color-adjust: exact !important;
                     }
                 }
             </style>
@@ -1664,7 +1629,6 @@ function showNotaModalAndroid(calculatorType) {
         </html>
     `;
 
-    // Create a new document in the same window
     const printWindow = window.open('', '_blank');
 
     if (printWindow) {
@@ -1672,241 +1636,53 @@ function showNotaModalAndroid(calculatorType) {
         printWindow.document.write(printHTML);
         printWindow.document.close();
 
-        // Wait for content to load
         printWindow.onload = function() {
-            setTimeout(() => {
-                printWindow.focus();
-                printWindow.print();
+            printWindow.focus();
+            printWindow.print();
 
-                // Close the window after printing
-                printWindow.onafterprint = function() {
-                    printWindow.close();
-                };
-
-                // Fallback: close after delay if onafterprint doesn't work
-                setTimeout(() => {
-                    if (!printWindow.closed) {
-                        printWindow.close();
-                    }
-                }, 2000);
-            }, 300);
+            printWindow.onafterprint = function() {
+                printWindow.close();
+            };
         };
     } else {
         alert('Tidak dapat membuka dialog print. Pastikan pop-up diizinkan.');
     }
 }
 
-// Method 3: Direct print without new window (for Android WebView)
 function printNotaDirect(calculatorType) {
     const notaContent = generateNotaHTML(calculatorType);
 
-    // Remove any existing print content
-    const existingPrintDiv = document.getElementById('printContent');
-    if (existingPrintDiv) {
-        existingPrintDiv.remove();
-    }
-
-    // Remove any existing print styles
-    const existingPrintStyles = document.getElementById('printStyles');
-    if (existingPrintStyles) {
-        existingPrintStyles.remove();
-    }
-
-    // Create a hidden div with print content
-    const printDiv = document.createElement('div');
-    printDiv.id = 'printContent';
-    printDiv.innerHTML = notaContent;
-    printDiv.style.display = 'none';
-
-    // Add print-specific styles
-    const printStyles = document.createElement('style');
-    printStyles.id = 'printStyles';
-    printStyles.innerHTML = `
+    const printStyles = `
         @page {
             size: 80mm auto;
             margin: 0 !important;
         }
         @media print {
-            body * {
-                visibility: hidden !important;
-            }
-            #printContent, #printContent * {
-                visibility: visible !important;
-            }
-            #printContent {
-                position: absolute !important;
-                left: 0 !important;
-                top: 0 !important;
-                width: 100% !important;
-                height: 100% !important;
-                display: block !important;
+            body {
                 margin: 0 !important;
                 padding: 0 !important;
-                font-family: Arial, sans-serif !important;
-                font-size: 10px !important;
-                line-height: 1.2 !important;
-                color: #000 !important;
-                background: white !important;
-            }
-            #printContent * {
-                margin: 0 !important;
-                padding: 0 !important;
+                width: 80mm !important;
+                max-width: 80mm !important;
             }
         }
     `;
 
-    document.head.appendChild(printStyles);
+    const style = document.createElement('style');
+    style.innerHTML = printStyles;
+    document.head.appendChild(style);
+
+    const printDiv = document.createElement('div');
+    printDiv.innerHTML = notaContent;
     document.body.appendChild(printDiv);
 
-    // Trigger print
+    window.print();
+
     setTimeout(() => {
-        window.focus();
-        window.print();
-
-        // Clean up after printing
-        setTimeout(() => {
-            printDiv.remove();
-            printStyles.remove();
-        }, 1000);
-    }, 100);
+        document.body.removeChild(printDiv);
+        document.head.removeChild(style);
+    }, 1000);
 }
 
-// Method 4: Optimized for Android WebView with complete style reset
-function printNotaAndroidOptimized(calculatorType) {
-    const notaContent = generateNotaHTML(calculatorType);
-
-    // Create a blob URL for the print content
-    const printHTML = `
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <style>
-                @page {
-                    size: 80mm auto;
-                    margin: 0 !important;
-                }
-                * {
-                    margin: 0 !important;
-                    padding: 0 !important;
-                    box-sizing: border-box !important;
-                    border: none !important;
-                    outline: none !important;
-                }
-                html, body {
-                    margin: 0 !important;
-                    padding: 0 !important;
-                    width: 80mm !important;
-                    max-width: 80mm !important;
-                    font-family: Arial, sans-serif !important;
-                    font-size: 10px !important;
-                    line-height: 1.2 !important;
-                    color: #000 !important;
-                    background: white !important;
-                    -webkit-print-color-adjust: exact !important;
-                    print-color-adjust: exact !important;
-                }
-                @media print {
-                    @page {
-                        size: A4;
-                        margin: 0 !important;
-                    }
-                    html, body {
-                        margin: 0 !important;
-                        padding: 0 !important;
-                        width: 80mm !important;
-                        max-width: 80mm !important;
-                    }
-                }
-            </style>
-        </head>
-        <body>
-            ${notaContent}
-        </body>
-        </html>
-    `;
-
-    // Create blob and URL
-    const blob = new Blob([printHTML], { type: 'text/html' });
-    const url = URL.createObjectURL(blob);
-
-    // Open in new window
-    const printWindow = window.open(url, '_blank');
-
-    if (printWindow) {
-        printWindow.onload = function() {
-            setTimeout(() => {
-                printWindow.focus();
-                printWindow.print();
-
-                // Clean up
-                printWindow.onafterprint = function() {
-                    printWindow.close();
-                    URL.revokeObjectURL(url);
-                };
-
-                // Fallback cleanup
-                setTimeout(() => {
-                    if (!printWindow.closed) {
-                        printWindow.close();
-                    }
-                    URL.revokeObjectURL(url);
-                }, 3000);
-            }, 500);
-        };
-    } else {
-        URL.revokeObjectURL(url);
-        alert('Tidak dapat membuka dialog print. Pastikan pop-up diizinkan.');
-    }
-}
-
-// Event listener - pilih salah satu method
-document.getElementById('printPdf').addEventListener('click', () => {
-    // Method 1: Hidden iframe (recommended for most cases)
-    showNotaModal('jumlah'); // atau 'sak'
-
-    // Method 2: New window with auto-close (alternative)
-    // showNotaModalAndroid('jumlah');
-
-    // Method 3: Direct print (untuk Android WebView yang strict)
-    // printNotaDirect('jumlah');
-
-    // Method 4: Optimized for Android WebView
-    // printNotaAndroidOptimized('jumlah');
-});
-
-// Untuk Android WebView, bisa juga menggunakan interface Java
-// Jika Anda menggunakan Android WebView dengan JavaScript Interface
-function printThermalAndroid(calculatorType) {
-    const notaContent = generateNotaHTML(calculatorType);
-
-    // Jika ada Android interface yang tersedia
-    if (typeof AndroidInterface !== 'undefined' && AndroidInterface.printThermal) {
-        // Buat HTML yang sudah dibersihkan untuk Android
-        const cleanHTML = `
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <meta charset="UTF-8">
-                <style>
-                    * { margin: 0 !important; padding: 0 !important; }
-                    body { font-family: Arial, sans-serif !important; font-size: 10px !important; width: 80mm !important; max-width: 80mm !important; }
-                </style>
-            </head>
-            <body>
-                ${notaContent}
-            </body>
-            </html>
-        `;
-
-        // Kirim HTML content ke Android untuk diprint
-        AndroidInterface.printThermal(cleanHTML);
-    } else {
-        // Fallback ke method biasa
-        showNotaModal(calculatorType);
-    }
-}
 
         // Window resizing
         window.addEventListener('resize', adjustHeight);
