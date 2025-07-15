@@ -1521,33 +1521,165 @@ items.forEach(item => {
         }
 
 
+function showNotaModal(calculatorType) {
+    const notaContent = generateNotaHTML(calculatorType);
 
-                function showNotaModal(calculatorType) {
-            const notaContent = generateNotaHTML(calculatorType);
-            // Create a Blob from the HTML content
-            const blob = new Blob([notaContent], { type: 'text/html' });
-            const url = URL.createObjectURL(blob);
-            // Open a new pop-up window
-            const newWindow = window.open(url, '_blank', 'width=800,height=600,scrollbars=yes,resizable=yes');
-            if (newWindow) {
-                newWindow.onload = () => {
-                    // Optional: Automatically print when the new window loads
-                    // newWindow.print();
-                    URL.revokeObjectURL(url); // Clean up the URL after loading
-                };
-            } else {
-                alert('Pop-up blocked! Please allow pop-ups for this site to view the receipt.');
-                URL.revokeObjectURL(url); // Clean up the URL even if pop-up is blocked
-            }
-        }
+    // Create a hidden iframe for printing
+    const iframe = document.createElement('iframe');
+    iframe.style.position = 'absolute';
+    iframe.style.left = '-9999px';
+    iframe.style.top = '-9999px';
+    iframe.style.width = '0px';
+    iframe.style.height = '0px';
+    iframe.style.border = 'none';
 
-        document.getElementById('printPdf').addEventListener('click', () => {
-            const iframe = document.getElementById('pdfViewer');
-            if (iframe && iframe.contentWindow) {
+    // Append iframe to body
+    document.body.appendChild(iframe);
+
+    // Write content to iframe
+    iframe.contentDocument.open();
+    iframe.contentDocument.write(notaContent);
+    iframe.contentDocument.close();
+
+    // Wait for content to load, then print
+    iframe.onload = function() {
+        setTimeout(() => {
+            try {
+                // Focus on iframe and trigger print
                 iframe.contentWindow.focus();
                 iframe.contentWindow.print();
+
+                // Clean up after printing
+                setTimeout(() => {
+                    if (iframe.parentNode) {
+                        iframe.parentNode.removeChild(iframe);
+                    }
+                }, 1000);
+            } catch (error) {
+                console.error('Print error:', error);
+                // Fallback: remove iframe if print fails
+                if (iframe.parentNode) {
+                    iframe.parentNode.removeChild(iframe);
+                }
             }
-        });
+        }, 500);
+    };
+}
+
+// Alternative method for Android WebView (if the above doesn't work)
+function showNotaModalAndroid(calculatorType) {
+    const notaContent = generateNotaHTML(calculatorType);
+
+    // Create a new document in the same window
+    const printWindow = window.open('', '_blank');
+
+    if (printWindow) {
+        printWindow.document.open();
+        printWindow.document.write(notaContent);
+        printWindow.document.close();
+
+        // Wait for content to load
+        printWindow.onload = function() {
+            setTimeout(() => {
+                printWindow.focus();
+                printWindow.print();
+
+                // Close the window after printing
+                printWindow.onafterprint = function() {
+                    printWindow.close();
+                };
+
+                // Fallback: close after delay if onafterprint doesn't work
+                setTimeout(() => {
+                    if (!printWindow.closed) {
+                        printWindow.close();
+                    }
+                }, 2000);
+            }, 300);
+        };
+    } else {
+        alert('Tidak dapat membuka dialog print. Pastikan pop-up diizinkan.');
+    }
+}
+
+// Method 3: Direct print without new window (for Android WebView)
+function printNotaDirect(calculatorType) {
+    const notaContent = generateNotaHTML(calculatorType);
+
+    // Remove any existing print content
+    const existingPrintDiv = document.getElementById('printContent');
+    if (existingPrintDiv) {
+        existingPrintDiv.remove();
+    }
+
+    // Create a hidden div with print content
+    const printDiv = document.createElement('div');
+    printDiv.id = 'printContent';
+    printDiv.innerHTML = notaContent;
+    printDiv.style.display = 'none';
+
+    // Add print-specific styles
+    const printStyles = document.createElement('style');
+    printStyles.innerHTML = `
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #printContent, #printContent * {
+                visibility: visible;
+            }
+            #printContent {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                display: block !important;
+            }
+        }
+    `;
+
+    document.head.appendChild(printStyles);
+    document.body.appendChild(printDiv);
+
+    // Trigger print
+    setTimeout(() => {
+        window.focus();
+        window.print();
+
+        // Clean up after printing
+        setTimeout(() => {
+            printDiv.remove();
+            printStyles.remove();
+        }, 1000);
+    }, 100);
+}
+
+// Event listener - pilih salah satu method
+document.getElementById('printPdf').addEventListener('click', () => {
+    // Method 1: Hidden iframe (recommended for most cases)
+    showNotaModal('jumlah'); // atau 'sak'
+
+    // Method 2: New window with auto-close (alternative)
+    // showNotaModalAndroid('jumlah');
+
+    // Method 3: Direct print (untuk Android WebView yang strict)
+    // printNotaDirect('jumlah');
+});
+
+// Untuk Android WebView, bisa juga menggunakan interface Java
+// Jika Anda menggunakan Android WebView dengan JavaScript Interface
+function printThermalAndroid(calculatorType) {
+    const notaContent = generateNotaHTML(calculatorType);
+
+    // Jika ada Android interface yang tersedia
+    if (typeof AndroidInterface !== 'undefined' && AndroidInterface.printThermal) {
+        // Kirim HTML content ke Android untuk diprint
+        AndroidInterface.printThermal(notaContent);
+    } else {
+        // Fallback ke method biasa
+        showNotaModal(calculatorType);
+    }
+}
 
         // Window resizing
         window.addEventListener('resize', adjustHeight);
