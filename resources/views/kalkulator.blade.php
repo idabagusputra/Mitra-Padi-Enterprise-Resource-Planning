@@ -1677,10 +1677,10 @@ function printNotaDirect(calculatorType) {
 
     window.print();
 
-    setTimeout(() => {
-        document.body.removeChild(printDiv);
-        document.head.removeChild(style);
-    }, 1000);
+    // setTimeout(() => {
+    //     document.body.removeChild(printDiv);
+    //     document.head.removeChild(style);
+    // }, 1000);
 }
 
 
