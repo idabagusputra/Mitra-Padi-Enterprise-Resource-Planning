@@ -112,6 +112,18 @@
             max-height: none; /* Remove max-height restriction */
         }
 
+        .table-container2 {
+
+
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            padding: 10px;
+
+            border: 1px solid rgba(108, 92, 231, 0.1);
+            max-height: none; /* Remove max-height restriction */
+        }
+
         @media (max-width: 768px) { /* Mobile portrait */
             .table-container {
                 margin-top: 5px;
@@ -756,6 +768,7 @@
                 </table>
             </div>
 
+<div class="table-container2">
             <table id="TableSelisih">
                 <thead>
                     <tr>
@@ -782,6 +795,7 @@
                     </tr>
                 </tbody>
             </table>
+</div>
 
             <div class="action-bar">
                 <button class="btn btn-primary" onclick="tambahBarisJumlah()"><i class="fas fa-plus"></i>TAMBAH BARIS</button>
@@ -825,6 +839,7 @@
                 </table>
             </div>
 
+<div class="table-container2">
             <table id="sakTableSelisih">
                 <thead>
                     <tr>
@@ -851,6 +866,7 @@
                     </tr>
                 </tbody>
             </table>
+</div>
 
             <div class="action-bar">
                 <button class="btn btn-primary" onclick="tambahBarisSak()"><i class="fas fa-plus"></i>TAMBAH BARIS</button>
