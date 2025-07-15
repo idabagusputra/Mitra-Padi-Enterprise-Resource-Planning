@@ -287,7 +287,29 @@
             font-size: 14px; /* Slightly smaller */
         }
 
+         .total-label-selisih {
+            background: linear-gradient(120deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px 10px 0 0;
+            font-size: 14px; /* Slightly smaller */
+        }
+
         .total-label::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: shimmer 2s infinite;
+        }
+        .total-label-selisih::after {
             content: '';
             position: absolute;
             top: 0;
@@ -399,9 +421,7 @@
             border: 1px solid rgba(108, 92, 231, 0.1);
         }
 
-        #TableSelisih td, #sakTableSelisih td {
-            padding: 15px;
-        }
+
 
         .selisih {
             position: relative;
@@ -567,6 +587,134 @@
                 height: 37.6px !important;/* Make height 100% */
             }
         }
+
+
+         /* Styles for the modal */
+    .modal-dialog-centered {
+        display: flex;
+        align-items: center;
+        min-height: calc(100% - 1rem);
+    }
+
+    .modal-body {
+        position: relative;
+        padding: 0; /* Remove padding to make iframe fill */
+    }
+
+    .iframe-container {
+        position: relative;
+        width: 100%;
+        padding-top: 141.42%; /* Aspect ratio for A4 portrait (297/210 * 100%) */
+        overflow: hidden;
+        background-color: #f0f0f0; /* Placeholder background */
+        border-radius: var(--border-radius);
+    }
+
+    .iframe-container iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+
+    .loading-spinner {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1;
+    }
+
+    /* Adjust modal size for better viewing of the nota */
+    @media (min-width: 992px) {
+        .modal-lg {
+            --bs-modal-width: 800px; /* Adjust as needed for better view */
+        }
+    }
+
+    /* Print button style */
+    .btn-print {
+        background: linear-gradient(120deg, var(--secondary-color), #00a8a4);
+        color: white;
+        width: 100%;
+        height: 50px;
+        font-size: 15px;
+        border-radius: 0 0 var(--border-radius) var(--border-radius);
+
+    }
+
+    .btn-print:hover {
+        background: linear-gradient(120deg, #00a8a4, var(--secondary-color));
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 206, 201, 0.3);
+    }
+
+    /* Specific styles for 80mm receipt */
+    @page {
+        size: 80mm auto; /* Set width to 80mm, height auto */
+        margin: 0; /* Remove default margins */
+    }
+
+    .receipt-80mm {
+        width: 80mm;
+        padding: 5mm; /* Small padding inside the receipt */
+        font-family: 'Segoe UI', sans-serif;
+        font-size: 10px; /* Smaller font for receipts */
+        line-height: 1.4;
+        color: #000; /* Ensure black text for printing */
+    }
+
+    .receipt-80mm h2, .receipt-80mm h3, .receipt-80mm h4 {
+        text-align: center;
+        margin-bottom: 2mm;
+        font-size: 12px;
+    }
+
+    .receipt-80mm .header-info, .receipt-80mm .footer-info {
+        text-align: center;
+        margin-bottom: 3mm;
+    }
+
+    .receipt-80mm table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 3mm;
+    }
+
+    .receipt-80mm th, .receipt-80mm td {
+        border-bottom: 1px dashed #ccc;
+        padding: 1mm 0;
+        text-align: left;
+    }
+
+    .receipt-80mm th {
+        font-weight: bold;
+    }
+
+    .receipt-80mm .text-right {
+        text-align: right;
+    }
+
+    .receipt-80mm .total-section {
+        border-top: 1px dashed #000;
+        padding-top: 2mm;
+        margin-top: 2mm;
+    }
+
+    .receipt-80mm .total-row td {
+        border-bottom: none;
+        font-weight: bold;
+    }
+
+    .receipt-80mm .thank-you {
+        text-align: center;
+        margin-top: 5mm;
+        font-size: 11px;
+    }
+
+
     </style>
 </head>
 <body>
@@ -574,16 +722,16 @@
         <h1><i class="fas fa-calculator"></i> Kalkulator Beras Modern</h1>
     </header> --}}
 
-    <div class="calculator-container">
+     <div class="calculator-container">
         <!-- Kalkulator Jumlah -->
         <div id="jumlahCalculator" class="calculator active">
             <div class="table-container">
                 <table id="jumlahTable">
                     <thead>
                         <tr>
-                            <th>Jumlah (Kg)</th>
-                            <th>Harga (Rp)</th>
-                            <th>Hasil (Rp)</th>
+                            <th>Jumlah</th>
+                            <th>Harga</th>
+                            <th>Hasil</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -609,16 +757,35 @@
             </div>
 
             <table id="TableSelisih">
-                <tr>
-                    <td style="width: 50%;">
-                        <input inputmode="decimal" type="text" class="input-field dana" oninput="formatHarga(this); hitungSelisih()" onkeydown="handleEnterKeySak(event, this)" placeholder="Jumlah Dana (Rp)">
-                    </td>
-                    <td class="total-value selisih" style="width: 50%; text-align: center; font-weight: bold;" id="selisih">SELISIH</td>
-                </tr>
+                <thead>
+                    <tr>
+                        <th>Jumlah Dana</th>
+                        <th>AKSI</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input inputmode="decimal" type="text" class="input-field dana" oninput="formatHarga(this); hitungSelisih()" onkeydown="handleEnterKeyDana(event, this)" placeholder="Jumlah Dana (Rp)"></td>
+                        <td>
+                            <button class="btn btn-danger" onclick="hapusBarisDana(this)">
+                                <i class="fas fa-trash-alt" style="margin: 0; padding: 0;"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="total-row">
+                        <td class="total-value hasil-cell" id="totalDana">0</td>
+                        <td class="total-label-selisih">TTL</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td class="total-value hasil-cell" id="totalSelisih">0</td>
+                        <td class="total-label">SSH</td>
+                    </tr>
+                </tbody>
             </table>
 
             <div class="action-bar">
                 <button class="btn btn-primary" onclick="tambahBarisJumlah()"><i class="fas fa-plus"></i>TAMBAH BARIS</button>
+                <button class="btn btn-print" onclick="showNotaModal('jumlah')"><i class="fas fa-print"></i> CETAK NOTA</button>
             </div>
         </div>
 
@@ -628,10 +795,10 @@
                 <table id="sakTable">
                     <thead>
                         <tr>
-                            <th>Jumlah Sak</th>
-                            <th>Harga (Rp)</th>
-                            <th>Berat (Kg)</th>
-                            <th>Hasil (Rp)</th>
+                            <th>Jumlah</th>
+                            <th>Harga</th>
+                            <th>Berat</th>
+                            <th>Hasil</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -659,16 +826,35 @@
             </div>
 
             <table id="sakTableSelisih">
-                <tr>
-                    <td style="width: 50%;">
-                        <input inputmode="decimal" type="text" class="input-field dana" oninput="formatHarga(this); hitungSelisihSak()" onkeydown="handleEnterKeySak(event, this)" placeholder="Jumlah Dana (Rp)">
-                    </td>
-                    <td class="total-value selisih" style="width: 50%; text-align: center; font-weight: bold;">SELISIH</td>
-                </tr>
+                <thead>
+                    <tr>
+                        <th>Jumlah Dana</th>
+                        <th>AKASI</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input inputmode="decimal" type="text" class="input-field dana" oninput="formatHarga(this); hitungSelisihSak()" onkeydown="handleEnterKeyDanaSak(event, this)" placeholder="Jumlah Dana (Rp)"></td>
+                        <td>
+                            <button class="btn btn-danger" onclick="hapusBarisDanaSak(this)">
+                                <i class="fas fa-trash-alt" style="margin: 0; padding: 0;"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="total-row">
+                        <td class="total-value hasil-cell" id="totalDanaSak">0</td>
+                        <td class="total-label-selisih">Total</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td class="total-value hasil-cell" id="totalSelisihSak">0</td>
+                        <td class="total-label">Selisih</td>
+                    </tr>
+                </tbody>
             </table>
 
             <div class="action-bar">
                 <button class="btn btn-primary" onclick="tambahBarisSak()"><i class="fas fa-plus"></i>TAMBAH BARIS</button>
+                <button class="btn btn-print" onclick="showNotaModal('sak')"><i class="fas fa-print"></i> CETAK NOTA</button>
             </div>
         </div>
 
@@ -683,55 +869,54 @@
         </div>
     </div>
 
-    <script>
+    <!-- Modal for displaying nota -->
+    <div class="modal fade" id="pdfModal" tabindex="-1" aria-labelledby="pdfModalLabel" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header justify-content-center position-relative">
+                    <h5 class="modal-title text-center" id="pdfModalLabel">
+                        FORMAT NOTA
+                    </h5>
+                </div>
+                <div class="modal-body px-4">
+                    <div class="iframe-container">
+                        <div class="loading-spinner text-center">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-2">Memuat nota...</p>
+                        </div>
+                        <iframe id="pdfViewer" src="" style="display: none;"></iframe>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-2"></i>
+                        Tutup
+                    </button>
+                    <button type="button" class="btn btn-primary" id="printPdf">
+                        <i class="bi bi-printer me-2"></i>
+                        Cetak Nota
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS (Popper.js and Bootstrap JS) -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
+
+       <script>
         const KG_PER_SAK = 50; // Konstanta: 1 Sak = 50 Kg
-
-        function hitungSelisih() {
-            // Ambil nilai Jumlah Dana
-            let jumlahDana = getNumber(document.querySelector('.dana'));
-
-            // Ambil nilai totalHasilJumlah
-            let totalHasilJumlah = parseFloat(document.getElementById('totalHasilJumlah').textContent.replace(/Rp /g, "").replace(/,/g, "")) || 0;
-
-            // Hitung selisih
-            let selisih = jumlahDana - totalHasilJumlah;
-
-            // Perbarui nilai pada elemen dengan id selisih
-            document.getElementById('selisih').textContent = "Rp " + formatRibuan(selisih.toFixed(0));
-        }
-
-        function hitungSelisihSak() {
-            // Ambil nilai Jumlah Dana
-            let jumlahDana = getNumber(document.querySelector('#sakTableSelisih .dana'));
-
-            // Ambil nilai totalHasilSak
-            let totalHasilSak = parseFloat(document.getElementById('totalHasilSak').textContent.replace(/Rp /g, "").replace(/,/g, "")) || 0;
-
-            // Hitung selisih
-            let selisih = jumlahDana - totalHasilSak;
-
-            // Perbarui nilai pada elemen dengan id selisih di tabel Sak
-            document.querySelector('#sakTableSelisih .selisih').textContent = "Rp " + formatRibuan(selisih.toFixed(0));
-        }
-
-        function toggleCalculator(type) {
-            // Update button states
-            document.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active'));
-            event.currentTarget.classList.add('active');
-
-            // Hide all calculators
-            document.querySelectorAll('.calculator').forEach(calc => calc.classList.remove('active'));
-
-            // Show selected calculator
-            if (type === 'jumlah') {
-                document.getElementById('jumlahCalculator').classList.add('active');
-            } else if (type === 'sak') {
-                document.getElementById('sakCalculator').classList.add('active');
-            }
-        }
 
         function formatRibuan(angka) {
             return angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        function getNumber(input) {
+            return parseFloat(input.value.replace(/Rp /g, "").replace(/,/g, "")) || 0;
         }
 
         // FUNCTIONS FOR JUMLAH CALCULATOR
@@ -745,10 +930,6 @@
         function formatHarga(input) {
             let angka = input.value.replace(/,/g, "").replace(/[^\d]/g, ""); // Hanya angka
             input.value = angka ? "Rp " + formatRibuan(angka) : "";
-        }
-
-        function getNumber(input) {
-            return parseFloat(input.value.replace(/Rp /g, "").replace(/,/g, "")) || 0;
         }
 
         function hitungJumlah(input) {
@@ -781,7 +962,6 @@
             document.getElementById("totalHasilJumlah").textContent = "Rp " + formatRibuan(totalHasil.toFixed(0));
             document.getElementById("totalRataJumlah").textContent = "Rp " + formatRibuan(totalRata.toFixed(0));
 
-            // Panggil fungsi hitungSelisih setelah menghitung total
             hitungSelisih();
         }
 
@@ -793,14 +973,10 @@
                 <td><input inputmode="decimal" type="text" class="input-field harga" oninput="formatHarga(this); hitungJumlah(this)" onkeydown="handleEnterKeyJumlah(event, this)" placeholder="Masukkan harga"></td>
                 <td class="hasil hasil-cell">0</td>
                 <td>
-                                <button class="btn btn-danger" onclick="hapusBarisJumlah(this)">
-                                    <i class="fas fa-trash-alt" style="margin: 0; padding: 0;"></i>
-                                </button>
+                    <button class="btn btn-danger" onclick="hapusBarisJumlah(this)">
+                        <i class="fas fa-trash-alt" style="margin: 0; padding: 0;"></i>
+                    </button>
                 </td>`;
-
-
-
-            // Focus on the new jumlah input
             setTimeout(() => {
                 row.querySelector('.jumlah').focus();
             }, 100);
@@ -815,26 +991,72 @@
         function handleEnterKeyJumlah(event, input) {
             if (event.key === 'Enter') {
                 event.preventDefault();
-
                 const row = input.closest('tr');
-
-                // If this is jumlah input, move to harga input
                 if (input.classList.contains('jumlah')) {
                     row.querySelector('.harga').focus();
-                }
-                // If this is harga input
-                else if (input.classList.contains('harga')) {
-                    // Is this the last row before total?
+                } else if (input.classList.contains('harga')) {
                     const allRows = Array.from(document.querySelectorAll('#jumlahTable tr:not(.total-row)'));
                     const currentRowIndex = allRows.indexOf(row);
-
-                    // If it's the last row, add a new row
                     if (currentRowIndex === allRows.length - 1) {
                         tambahBarisJumlah();
                     } else {
-                        // If not, move to the jumlah input of the next row
                         allRows[currentRowIndex + 1].querySelector('.jumlah').focus();
                     }
+                }
+            }
+        }
+
+        // FUNCTIONS FOR SELISIH (JUMLAH CALCULATOR)
+        function hitungSelisih() {
+            let totalDana = 0;
+            document.querySelectorAll('#TableSelisih .dana').forEach(input => {
+                totalDana += getNumber(input);
+            });
+            let totalHasilJumlah = parseFloat(document.getElementById('totalHasilJumlah').textContent.replace(/Rp /g, "").replace(/,/g, "")) || 0;
+            let totalSelisih = totalDana - totalHasilJumlah;
+            document.getElementById('totalDana').textContent = "Rp " + formatRibuan(totalDana.toFixed(0));
+            document.getElementById('totalSelisih').textContent = "Rp " + formatRibuan(totalSelisih.toFixed(0));
+        }
+
+        function tambahBarisDana() {
+            let table = document.getElementById("TableSelisih");
+            let tbody = table.querySelector('tbody');
+            let newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td><input inputmode="decimal" type="text" class="input-field dana" oninput="formatHarga(this); hitungSelisih()" onkeydown="handleEnterKeyDana(event, this)" placeholder="Jumlah Dana (Rp)"></td>
+                <td>
+                    <button class="btn btn-danger" onclick="hapusBarisDana(this)">
+                        <i class="fas fa-trash-alt" style="margin: 0; padding: 0;"></i>
+                    </button>
+                </td>`;
+            let totalRows = tbody.querySelectorAll('.total-row');
+            tbody.insertBefore(newRow, totalRows[0]);
+            setTimeout(() => {
+                newRow.querySelector('.dana').focus();
+            }, 100);
+        }
+
+        function hapusBarisDana(button) {
+            let row = button.closest("tr");
+            let inputRows = document.querySelectorAll('#TableSelisih tr:not(.total-row)');
+            if (inputRows.length > 1) {
+                row.remove();
+            } else {
+                row.querySelector('.dana').value = '';
+            }
+            hitungSelisih();
+        }
+
+        function handleEnterKeyDana(event, input) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                const inputRows = Array.from(document.querySelectorAll('#TableSelisih tr:not(.total-row)'));
+                const currentRow = input.closest('tr');
+                const currentRowIndex = inputRows.indexOf(currentRow);
+                if (currentRowIndex === inputRows.length - 1) {
+                    tambahBarisDana();
+                } else {
+                    inputRows[currentRowIndex + 1].querySelector('.dana').focus();
                 }
             }
         }
@@ -854,11 +1076,9 @@
             let jumlah = row.querySelector(".jumlah");
             let hasil = row.querySelector(".hasil");
 
-            // Jumlah = Sak × 50
             let nilaiJumlah = sak * KG_PER_SAK;
             jumlah.textContent = formatRibuan(nilaiJumlah.toFixed(0) + " Kg");
 
-            // Hasil = Jumlah × Harga
             let nilaiHasil = nilaiJumlah * harga;
             hasil.textContent = "Rp " + formatRibuan(nilaiHasil.toFixed(0));
 
@@ -896,7 +1116,6 @@
                 }
             });
 
-            // Harga rata-rata per kg
             let rataHarga = countHarga ? totalHarga / countHarga : 0;
 
             document.getElementById("totalSak").textContent = formatRibuan(totalSak.toFixed(0));
@@ -904,7 +1123,6 @@
             document.getElementById("totalHasilSak").textContent = "Rp " + formatRibuan(totalHasil.toFixed(0));
             document.getElementById("totalRataSak").textContent = "Rp " + formatRibuan(rataHarga.toFixed(0));
 
-            // Panggil fungsi hitungSelisihSak setelah menghitung total
             hitungSelisihSak();
         }
 
@@ -917,13 +1135,10 @@
                 <td class="jumlah jumlah-cell">0</td>
                 <td class="hasil hasil-cell">0</td>
                 <td>
-                                <button class="btn btn-danger" onclick="hapusBarisSak(this)">
-                                    <i class="fas fa-trash-alt" style="margin: 0; padding: 0;"></i>
-                                </button>
-                            </td>
-                            `;
-
-            // Focus on the new sak input
+                    <button class="btn btn-danger" onclick="hapusBarisSak(this)">
+                        <i class="fas fa-trash-alt" style="margin: 0; padding: 0;"></i>
+                    </button>
+                </td>`;
             setTimeout(() => {
                 row.querySelector('.sak').focus();
             }, 100);
@@ -938,29 +1153,401 @@
         function handleEnterKeySak(event, input) {
             if (event.key === 'Enter') {
                 event.preventDefault();
-
                 const row = input.closest('tr');
-
-                // If this is sak input, move to harga input
                 if (input.classList.contains('sak')) {
                     row.querySelector('.harga').focus();
-                }
-                // If this is harga input
-                else if (input.classList.contains('harga')) {
-                    // Is this the last row before total?
+                } else if (input.classList.contains('harga')) {
                     const allRows = Array.from(document.querySelectorAll('#sakTable tr:not(.total-row)'));
                     const currentRowIndex = allRows.indexOf(row);
-
-                    // If it's the last row, add a new row
                     if (currentRowIndex === allRows.length - 1) {
                         tambahBarisSak();
                     } else {
-                        // If not, move to the sak input of the next row
                         allRows[currentRowIndex + 1].querySelector('.sak').focus();
                     }
                 }
             }
         }
+
+        // FUNCTIONS FOR SELISIH (SAK CALCULATOR)
+        function hitungSelisihSak() {
+            let totalDana = 0;
+            document.querySelectorAll('#sakTableSelisih .dana').forEach(input => {
+                totalDana += getNumber(input);
+            });
+            let totalHasilSak = parseFloat(document.getElementById('totalHasilSak').textContent.replace(/Rp /g, "").replace(/,/g, "")) || 0;
+            let totalSelisih = totalDana - totalHasilSak;
+            document.getElementById('totalDanaSak').textContent = "Rp " + formatRibuan(totalDana.toFixed(0));
+            document.getElementById('totalSelisihSak').textContent = "Rp " + formatRibuan(totalSelisih.toFixed(0));
+        }
+
+        function tambahBarisDanaSak() {
+            let table = document.getElementById("sakTableSelisih");
+            let tbody = table.querySelector('tbody');
+            let newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td><input inputmode="decimal" type="text" class="input-field dana" oninput="formatHarga(this); hitungSelisihSak()" onkeydown="handleEnterKeyDanaSak(event, this)" placeholder="Jumlah Dana (Rp)"></td>
+                <td>
+                    <button class="btn btn-danger" onclick="hapusBarisDanaSak(this)">
+                        <i class="fas fa-trash-alt" style="margin: 0; padding: 0;"></i>
+                    </button>
+                </td>`;
+            let totalRows = tbody.querySelectorAll('.total-row');
+            tbody.insertBefore(newRow, totalRows[0]);
+            setTimeout(() => {
+                newRow.querySelector('.dana').focus();
+            }, 100);
+        }
+
+        function hapusBarisDanaSak(button) {
+            let row = button.closest("tr");
+            let inputRows = document.querySelectorAll('#sakTableSelisih tr:not(.total-row)');
+            if (inputRows.length > 1) {
+                row.remove();
+            } else {
+                row.querySelector('.dana').value = '';
+            }
+            hitungSelisihSak();
+        }
+
+        function handleEnterKeyDanaSak(event, input) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                const inputRows = Array.from(document.querySelectorAll('#sakTableSelisih tr:not(.total-row)'));
+                const currentRow = input.closest('tr');
+                const currentRowIndex = inputRows.indexOf(currentRow);
+                if (currentRowIndex === inputRows.length - 1) {
+                    tambahBarisDanaSak();
+                } else {
+                    inputRows[currentRowIndex + 1].querySelector('.dana').focus();
+                }
+            }
+        }
+
+        function toggleCalculator(type) {
+            document.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            document.querySelectorAll('.calculator').forEach(calc => calc.classList.remove('active'));
+            if (type === 'jumlah') {
+                document.getElementById('jumlahCalculator').classList.add('active');
+            } else if (type === 'sak') {
+                document.getElementById('sakCalculator').classList.add('active');
+            }
+        }
+
+       // NOTA GENERATION AND MODAL FUNCTIONS
+function generateNotaHTML(calculatorType) {
+   let notaHTML = `
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Nota Pembelian Beras</title>
+    <style>
+        body {
+            width: 80mm;
+            margin: 0;
+            padding: 4mm;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.2;
+            color: #000;
+            background: white;
+        }
+
+        .header-text {
+            text-align: center;
+            margin-bottom: 4mm;
+            padding-bottom: 3mm;
+            border-bottom: 1px solid #000;
+        }
+
+        .title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 3mm;
+            letter-spacing: 1px;
+        }
+
+        .title2 {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 3mm;
+            letter-spacing: 0.5px;
+        }
+
+        .header-text div:not(.title):not(.title2) {
+            font-size: 12px;
+            margin-bottom: 1mm;
+        }
+
+        .header-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            font-size: 14px;
+            padding: 2mm 0;
+            margin-bottom: 3mm;
+        }
+
+        .header-info .tanggal {
+            margin: 0;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        .header-info .waktu {
+            margin: 0;
+            text-align: right;
+            font-weight: bold;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 4mm;
+        }
+
+        th {
+            font-weight: bold;
+            font-size: 14px;
+            padding: 2mm 1mm;
+            border-bottom: 1px solid #000;
+            border-top: 1px solid #000;
+            text-align: center;
+        }
+
+        td {
+            padding: 2mm 1mm;
+            border-bottom: 1px dashed #ccc;
+            font-size: 14px;
+            vertical-align: middle;
+        }
+
+        th:first-child, td:first-child {
+            width: 25%;
+            text-align: left;
+            font-weight: normal;
+        }
+
+        th:nth-child(2), td:nth-child(2) {
+            width: 30%;
+            text-align: center;
+            font-weight: normal;
+        }
+
+        th:last-child, td:last-child {
+            width: 45%;
+            text-align: right;
+            font-weight: bold;
+        }
+
+        .text-right {
+            text-align: right;
+            font-weight: bold;
+        }
+
+        .total-section {
+            border-top: 1px solid #000;
+            padding-top: 3mm;
+            margin-top: 3mm;
+        }
+
+        .total-section table {
+            margin-bottom: 0;
+        }
+
+        .total-row td {
+            border-bottom: none;
+            font-weight: bold;
+            font-size: 14px;
+            padding: 1.5mm 1mm;
+        }
+
+        .total-row td:first-child {
+            width: 60%;
+            text-align: left;
+        }
+
+        .total-row td:last-child {
+            width: 40%;
+            text-align: right;
+            font-size: 14px;
+        }
+
+        .footer-info {
+            text-align: center;
+            margin-top: 6mm;
+            padding-top: 3mm;
+            border-top: 1px dashed #000;
+        }
+
+        .footer-info p {
+            margin: 2mm 0;
+        }
+
+        .thank-you {
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 2mm;
+        }
+
+        .separator {
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+
+        /* Responsive adjustments for better readability */
+        @media print {
+            body {
+                width: 80mm;
+                font-size: 14px;
+            }
+
+            .title {
+                font-size: 17px;
+            }
+
+            .title2 {
+                font-size: 15px;
+            }
+
+            .header-text div:not(.title):not(.title2) {
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header-text">
+        <div class="title">NOTA PEMBELIAN BERAS</div>
+        <div class="title2">GILINGAN PADI PUTRA MANUABA</div>
+        <div>DUS. BABAHAN, DES. TOLAI, KAB. PARIGI</div>
+        <div>Telp: 0811-451-486 / 0822-6077-3867</div>
+    </div>
+
+   <div class="header-info">
+    <p class="tanggal">Tanggal: ${new Date().toLocaleDateString('id-ID')}</p>
+    <p class="waktu">Waktu: ${new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</p>
+</div>
+
+    <table>
+        <thead>
+            <tr>
+    <th style="font-weight: bold;">JUMLAH</th>
+    <th class="text-right" style="font-weight: bold;">HARGA</th>
+    <th class="text-right" style="font-weight: bold;">TOTAL</th>
+</tr>
+        </thead>
+        <tbody>
+            `;
+
+            let items = [];
+            let totalHargaBeras = 0;
+            let totalDanaDibayar = 0;
+            let selisih = 0;
+
+            if (calculatorType === 'jumlah') {
+                document.querySelectorAll("#jumlahTable tbody tr:not(.total-row)").forEach(row => {
+                    const jumlah = row.querySelector(".jumlah").value;
+                    const harga = row.querySelector(".harga").value;
+                    const hasil = row.querySelector(".hasil").textContent;
+                    if (getNumber(row.querySelector(".jumlah")) > 0 && getNumber(row.querySelector(".harga")) > 0) {
+                        items.push({
+                            desc: `${jumlah}`,
+                            harga: harga,
+                            total: hasil
+                        });
+                    }
+                });
+                totalHargaBeras = parseFloat(document.getElementById('totalHasilJumlah').textContent.replace(/Rp /g, "").replace(/,/g, "")) || 0;
+                totalDanaDibayar = parseFloat(document.getElementById('totalDana').textContent.replace(/Rp /g, "").replace(/,/g, "")) || 0;
+                selisih = parseFloat(document.getElementById('totalSelisih').textContent.replace(/Rp /g, "").replace(/,/g, "")) || 0;
+
+            } else if (calculatorType === 'sak') {
+                document.querySelectorAll("#sakTable tbody tr:not(.total-row)").forEach(row => {
+                    const sak = row.querySelector(".sak").value;
+                    const harga = row.querySelector(".harga").value;
+                    const berat = row.querySelector(".jumlah").textContent;
+                    const hasil = row.querySelector(".hasil").textContent;
+                    if (getNumber(row.querySelector(".sak")) > 0 && getNumber(row.querySelector(".harga")) > 0) {
+                        items.push({
+                            desc: `${sak} Sak (${berat}) @ ${harga}`,
+                            harga: harga,
+                            total: hasil
+                        });
+                    }
+                });
+                totalHargaBeras = parseFloat(document.getElementById('totalHasilSak').textContent.replace(/Rp /g, "").replace(/,/g, "")) || 0;
+                totalDanaDibayar = parseFloat(document.getElementById('totalDanaSak').textContent.replace(/Rp /g, "").replace(/,/g, "")) || 0;
+                selisih = parseFloat(document.getElementById('totalSelisihSak').textContent.replace(/Rp /g, "").replace(/,/g, "")) || 0;
+            }
+items.forEach(item => {
+    notaHTML += `
+        <tr>
+            <td style="font-weight: bold;">${item.desc}</td>
+            <td class="text-right" style="font-weight: bold;">${item.harga}</td>
+            <td class="text-right" style="font-weight: bold;">${item.total}</td>
+        </tr>
+    `;
+});
+
+
+           notaHTML += `
+        </tbody>
+    </table>
+    <div class="total-section">
+        <table>
+            <tr class="total-row">
+                <td class="text-left">Total Belanja:</td>
+                <td class="text-right">${formatRibuan(totalHargaBeras.toFixed(0))}</td>
+            </tr>
+            <tr class="total-row">
+                <td class="text-left">Total Dibayar:</td>
+                <td class="text-right">${formatRibuan(totalDanaDibayar.toFixed(0))}</td>
+            </tr>
+            <tr class="total-row">
+                <td class="text-left">Selisih:</td>
+                <td class="text-right">${formatRibuan(selisih.toFixed(0))}</td>
+            </tr>
+        </table>
+    </div>
+    <div class="footer-info">
+        <p class="thank-you">Terima Kasih Atas Kunjungan Anda!</p>
+    </div>
+</body>
+</html>
+`;
+            return notaHTML;
+        }
+
+
+
+                function showNotaModal(calculatorType) {
+            const notaContent = generateNotaHTML(calculatorType);
+            // Create a Blob from the HTML content
+            const blob = new Blob([notaContent], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            // Open a new pop-up window
+            const newWindow = window.open(url, '_blank', 'width=800,height=600,scrollbars=yes,resizable=yes');
+            if (newWindow) {
+                newWindow.onload = () => {
+                    // Optional: Automatically print when the new window loads
+                    // newWindow.print();
+                    URL.revokeObjectURL(url); // Clean up the URL after loading
+                };
+            } else {
+                alert('Pop-up blocked! Please allow pop-ups for this site to view the receipt.');
+                URL.revokeObjectURL(url); // Clean up the URL even if pop-up is blocked
+            }
+        }
+
+        document.getElementById('printPdf').addEventListener('click', () => {
+            const iframe = document.getElementById('pdfViewer');
+            if (iframe && iframe.contentWindow) {
+                iframe.contentWindow.focus();
+                iframe.contentWindow.print();
+            }
+        });
 
         // Window resizing
         window.addEventListener('resize', adjustHeight);
@@ -971,6 +1558,14 @@
         }
 
         adjustHeight();
+
+        // Initial calculations on load
+        document.addEventListener('DOMContentLoaded', () => {
+            hitungTotalJumlah();
+            hitungSelisih();
+            hitungTotalSak();
+            hitungSelisihSak();
+        });
     </script>
 </body>
 </html>
