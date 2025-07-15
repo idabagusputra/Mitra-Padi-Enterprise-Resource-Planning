@@ -1314,7 +1314,7 @@ font-size: 12px;
         .header-foot {
             margin: 0;
             text-align: right;
-font-size: 12px;
+font-size: 10px;
         }
 
                 .header-info .waktu {
@@ -1340,7 +1340,8 @@ font-size: 12px;
 
         td {
             padding: 2mm 1mm;
-            border-bottom: 1px dashed #ccc;
+            border-bottom: 1px dashed #000;
+
             font-size: 14px;
             vertical-align: middle;
         }
@@ -1372,6 +1373,7 @@ font-size: 12px;
             border-top: 1px solid #000;
             padding-top: 3mm;
             margin-top: 3mm;
+
         }
 
         .total-section table {
@@ -1386,25 +1388,31 @@ font-size: 12px;
         }
 
         .total-row td:first-child {
-            width: 60%;
-            text-align: left;
-        }
+    width: 29%;
+    text-align: left;
+}
 
-        .total-row td:last-child {
-            width: 40%;
-            text-align: right;
-            font-size: 14px;
-        }
+.total-row td:nth-child(2) {
+    width: 21%;
+    text-align: left;
+}
+
+.total-row td:last-child {
+    width: 50%;
+    text-align: right;
+    font-size: 14px;
+}
+
 
         .footer-info {
             text-align: center;
-            margin-top: 6mm;
-            padding-top: 3mm;
-            border-top: 1px dashed #000;
+            margin-top: 3mm;
+
+             border-top: 1px solid #000;
         }
 
         .footer-info p {
-            margin: 2mm 0;
+padding-top: 6mm;
         }
 
         .thank-you {
@@ -1449,13 +1457,16 @@ font-size: 12px;
 
    <div class="header-info">
     <p class="tanggal">Tanggal: ${new Date().toLocaleDateString('id-ID')}</p>
-    <p class="waktu">Waktu: ${new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</p>
-</div>
+
+<p class="waktu">Waktu: ${new Date().getHours().toString().padStart(2, '0')}:${new Date().getMinutes().toString().padStart(2, '0')}:${new Date().getSeconds().toString().padStart(2, '0')}</p>
+
+
+    </div>
 
     <table>
         <thead>
             <tr>
-    <th style="font-weight: bold;">JUMLAH</th>
+    <th class="text-right" style="font-weight: bold;">JUMLAH</th>
     <th class="text-right" style="font-weight: bold;">HARGA</th>
     <th class="text-right" style="font-weight: bold;">TOTAL</th>
 </tr>
@@ -1493,7 +1504,7 @@ font-size: 12px;
                     const hasil = row.querySelector(".hasil").textContent;
                     if (getNumber(row.querySelector(".sak")) > 0 && getNumber(row.querySelector(".harga")) > 0) {
                         items.push({
-                            desc: `${sak} Sak (${berat}) @ ${harga}`,
+                            desc: `${sak} Sak (${berat})`,
                             harga: harga,
                             total: hasil
                         });
@@ -1520,16 +1531,19 @@ items.forEach(item => {
     <div class="total-section">
         <table>
             <tr class="total-row">
-                <td class="text-left">Total Belanja:</td>
-                <td class="text-right">${formatRibuan(totalHargaBeras.toFixed(0))}</td>
+                <td class="text-left">Total</td>
+                <td class="text-left">:</td>
+                <td class="text-right">Rp ${formatRibuan(totalHargaBeras.toFixed(0))}</td>
             </tr>
             <tr class="total-row">
-                <td class="text-left">Total Dibayar:</td>
-                <td class="text-right">${formatRibuan(totalDanaDibayar.toFixed(0))}</td>
+                <td class="text-left">Terbayar</td>
+                <td class="text-left">:</td>
+                <td class="text-right">Rp ${formatRibuan(totalDanaDibayar.toFixed(0))}</td>
             </tr>
             <tr class="total-row">
-                <td class="text-left">Selisih:</td>
-                <td class="text-right">${formatRibuan(selisih.toFixed(0))}</td>
+                <td class="text-left">Sisa</td>
+                <td class="text-left">:</td>
+                <td class="text-right">Rp ${formatRibuan(selisih.toFixed(0))}</td>
             </tr>
         </table>
     </div>
