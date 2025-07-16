@@ -1093,7 +1093,7 @@
             let hasil = row.querySelector(".hasil");
 
             let nilaiJumlah = sak * KG_PER_SAK;
-            jumlah.textContent = formatRibuan(nilaiJumlah.toFixed(0) + " Kg");
+            jumlah.textContent = formatRibuan(nilaiJumlah.toFixed(0));
 
             let nilaiHasil = nilaiJumlah * harga;
             hasil.textContent = "Rp " + formatRibuan(nilaiHasil.toFixed(0));
@@ -1504,7 +1504,7 @@ padding-top: 6mm;
                     const hasil = row.querySelector(".hasil").textContent;
                     if (getNumber(row.querySelector(".sak")) > 0 && getNumber(row.querySelector(".harga")) > 0) {
                         items.push({
-                            desc: `${berat} (${berat}) Sak`,
+                            desc: `${berat} (${sak} Sak)`,
                             harga: harga,
                             total: hasil
                         });
@@ -1515,13 +1515,25 @@ padding-top: 6mm;
                 selisih = parseFloat(document.getElementById('totalSelisihSak').textContent.replace(/Rp /g, "").replace(/,/g, "")) || 0;
             }
 items.forEach(item => {
-    notaHTML += `
-        <tr>
-            <td style="font-weight: bold;">${item.desc}</td>
-            <td class="text-right" style="font-weight: bold;">${item.harga}</td>
-            <td class="text-right" style="font-weight: bold;">${item.total}</td>
-        </tr>
-    `;
+// Modifikasi untuk memisahkan berat dan sak menjadi 2 baris
+const formatDesc = (desc) => {
+    // Memisahkan berat dan sak dari format "berat (sak Sak)"
+    const match = desc.match(/^(.+?)\s+\((.+?)\)$/);
+    if (match) {
+        const berat = match[1];
+        const sak = match[2];
+        return `${berat}<br><span style="font-size: 8px;">${sak}</span>`;
+    }
+    return desc;
+};
+
+notaHTML += `
+    <tr>
+        <td style="font-weight: bold;">${item.desc.replace(/^(.+?)\s+\((.+?)\)$/, '$1<br><span style="font-size: 12px;">$2</span>')}</td>
+        <td class="text-right" style="font-weight: bold;">${item.harga}</td>
+        <td class="text-right" style="font-weight: bold;">${item.total}</td>
+    </tr>
+`;
 });
 
 
