@@ -1655,11 +1655,11 @@ function showNotaModal(calculatorType) {
             iframe.contentWindow.focus();
             iframe.contentWindow.print();
 
-            setTimeout(() => {
-                if (iframe.parentNode) {
-                    iframe.parentNode.removeChild(iframe);
-                }
-            }, 1000);
+            // setTimeout(() => {
+            //     if (iframe.parentNode) {
+            //         iframe.parentNode.removeChild(iframe);
+            //     }
+            // }, 1000);
         }, 500);
     };
 }
