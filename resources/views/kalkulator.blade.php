@@ -663,14 +663,14 @@
         box-shadow: 0 8px 20px rgba(0, 206, 201, 0.3);
     }
 
-    /* Specific styles for 80mm receipt */
+    /* Specific styles for 40mm receipt */
     @page {
-        size: 80mm auto; /* Set width to 80mm, height auto */
+        size: 40mm auto; /* Set width to 40mm, height auto */
         margin: 0; /* Remove default margins */
     }
 
-    .receipt-80mm {
-        width: 80mm;
+    .receipt-40mm {
+        width: 40mm;
         padding: 5mm; /* Small padding inside the receipt */
         font-family: 'Segoe UI', sans-serif;
         font-size: 10px; /* Smaller font for receipts */
@@ -678,49 +678,49 @@
         color: #000; /* Ensure black text for printing */
     }
 
-    .receipt-80mm h2, .receipt-80mm h3, .receipt-80mm h4 {
+    .receipt-40mm h2, .receipt-40mm h3, .receipt-40mm h4 {
         text-align: center;
         margin-bottom: 2mm;
         font-size: 12px;
     }
 
-    .receipt-80mm .header-info, .receipt-80mm .footer-info {
+    .receipt-40mm .header-info, .receipt-40mm .footer-info {
         text-align: center;
         margin-bottom: 3mm;
     }
 
-    .receipt-80mm table {
+    .receipt-40mm table {
         width: 100%;
         border-collapse: collapse;
         margin-bottom: 3mm;
     }
 
-    .receipt-80mm th, .receipt-80mm td {
+    .receipt-40mm th, .receipt-40mm td {
         border-bottom: 1px dashed #ccc;
         padding: 1mm 0;
         text-align: left;
     }
 
-    .receipt-80mm th {
+    .receipt-40mm th {
         font-weight: bold;
     }
 
-    .receipt-80mm .text-right {
+    .receipt-40mm .text-right {
         text-align: right;
     }
 
-    .receipt-80mm .total-section {
+    .receipt-40mm .total-section {
         border-top: 1px dashed #000;
         padding-top: 2mm;
         margin-top: 2mm;
     }
 
-    .receipt-80mm .total-row td {
+    .receipt-40mm .total-row td {
         border-bottom: none;
         font-weight: bold;
     }
 
-    .receipt-80mm .thank-you {
+    .receipt-40mm .thank-you {
         text-align: center;
         margin-top: 5mm;
         font-size: 11px;
@@ -1259,7 +1259,7 @@ function generateNotaHTML(calculatorType) {
     <title>Nota Pembelian Beras</title>
     <style>
         body {
-            width: 80mm;
+            width: 40mm;
             margin: 0;
             padding: 4mm;
             font-family: 'Courier New', monospace;
@@ -1429,7 +1429,7 @@ padding-top: 6mm;
         /* Responsive adjustments for better readability */
         @media print {
             body {
-                width: 80mm;
+                width: 40mm;
                 font-size: 14px;
             }
 
@@ -1616,7 +1616,7 @@ function showNotaModal(calculatorType) {
             <meta charset="UTF-8">
             <style>
                 @page {
-                    size: 80mm auto;
+                    size: 40mm auto;
                     margin: 0 !important;
                 }
                 * {
@@ -1625,12 +1625,12 @@ function showNotaModal(calculatorType) {
                 body {
                     margin: 0 !important;
                     padding: 0 !important;
-                    width: 80mm !important;
-                    max-width: 80mm !important;
+                    width: 40mm !important;
+                    max-width: 40mm !important;
                 }
                 @media print {
                     @page {
-                        size: 80mm auto;
+                        size: 40mm auto;
                         margin: 0 !important;
                     }
                     body {
@@ -1674,7 +1674,7 @@ function showNotaModalAndroid(calculatorType) {
             <meta charset="UTF-8">
             <style>
                 @page {
-                    size: 80mm auto;
+                    size: 40mm auto;
                     margin: 0 !important;
                 }
                 * {
@@ -1683,12 +1683,12 @@ function showNotaModalAndroid(calculatorType) {
                 body {
                     margin: 0 !important;
                     padding: 0 !important;
-                    width: 80mm !important;
-                    max-width: 80mm !important;
+                    width: 40mm !important;
+                    max-width: 40mm !important;
                 }
                 @media print {
                     @page {
-                        size: 80mm auto;
+                        size: 40mm auto;
                         margin: 0 !important;
                     }
                     body {
@@ -1729,15 +1729,15 @@ function printNotaDirect(calculatorType) {
 
     const printStyles = `
         @page {
-            size: 80mm auto;
+            size: 40mm auto;
             margin: 0 !important;
         }
         @media print {
             body {
                 margin: 0 !important;
                 padding: 0 !important;
-                width: 80mm !important;
-                max-width: 80mm !important;
+                width: 40mm !important;
+                max-width: 40mm !important;
             }
         }
     `;
