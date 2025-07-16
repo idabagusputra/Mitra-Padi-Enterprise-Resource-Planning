@@ -799,8 +799,9 @@
 
             <div class="action-bar">
                 <button class="btn btn-primary" onclick="tambahBarisJumlah()"><i class="fas fa-plus"></i>TAMBAH BARIS</button>
-                <button class="btn btn-print" onclick="showNotaModal('jumlah')"><i class="fas fa-print"></i> CETAK NOTA</button>
-            </div>
+               <button class="btn btn-print" onclick="showNotaModal('jumlah')"><i class="fas fa-print"></i> CETAK NOTA</button>
+{{-- <button class="btn btn-print" onclick="saveNotaAsJPG('jumlah')"><i class="fas fa-download"></i> SAVE JPG</button> --}}
+  </div>
         </div>
 
         <!-- Kalkulator Sak -->
