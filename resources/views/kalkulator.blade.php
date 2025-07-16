@@ -1504,7 +1504,7 @@ padding-top: 6mm;
                     const hasil = row.querySelector(".hasil").textContent;
                     if (getNumber(row.querySelector(".sak")) > 0 && getNumber(row.querySelector(".harga")) > 0) {
                         items.push({
-                            desc: `${sak} Sak (${berat})`,
+                            desc: `${berat} (${berat}) Sak`,
                             harga: harga,
                             total: hasil
                         });
