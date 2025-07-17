@@ -602,75 +602,30 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+
         document.addEventListener('DOMContentLoaded', function() {
-            // Tambahkan kode ini di bagian paling atas setelah document.addEventListener('DOMContentLoaded', function() {
-
-// Clear browser cache dan temporary data
-if ('caches' in window) {
-    caches.keys().then(function(names) {
-        names.forEach(function(name) {
-            caches.delete(name);
-        });
-    });
-}
-
-// Clear semua storage
-if (typeof(Storage) !== "undefined") {
-    localStorage.clear();
-    sessionStorage.clear();
-}
-
-// Clear cookies
-document.cookie.split(";").forEach(function(c) {
-    document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
-});
-
-// Clear form data dan reset form
-const forms = document.querySelectorAll('form');
-forms.forEach(function(form) {
-    form.reset();
-});
-
-// Clear semua input fields
-const allInputs = document.querySelectorAll('input, textarea, select');
-allInputs.forEach(function(input) {
-    if (input.type !== 'hidden' && input.type !== 'submit' && input.type !== 'button') {
-        if (input.type === 'checkbox' || input.type === 'radio') {
-            input.checked = false;
-        } else {
-            input.value = '';
-        }
-    }
-});
-
-// Clear dynamic content
-const dynamicContainers = document.querySelectorAll('[id*="container"], [class*="container"]');
-dynamicContainers.forEach(function(container) {
-    if (container.id !== 'pengambilans') return; // hanya clear pengambilans
-    container.innerHTML = '';
-});
-
-// Force reload tanpa cache
-if (performance.navigation.type === 1) { // jika refresh
-    location.reload(true);
-}
-
-// Clear URL parameters
-if (window.location.search) {
-    window.history.replaceState({}, document.title, window.location.pathname);
-}
-
-// Clear any temporary variables
-window.tempData = null;
-window.cachedData = null;
-
-// Reset pengambilan counter
-if (typeof pengambilanCount !== 'undefined') {
-    pengambilanCount = -1;
-}
-
-
             // Set today's date
+
+            // Reset semua input form saat halaman dimuat
+document.getElementById('gilingForm').reset();
+
+// Kosongkan data raw-value dan input yang memakai format angka
+document.querySelectorAll('.number-format').forEach(input => {
+    input.value = '';
+    input.dataset.rawValue = '';
+
+    // Atur nilai default yang diinginkan saat halaman dimuat
+document.getElementById('harga_konga').value = '160,000';
+document.getElementById('harga_konga').dataset.rawValue = '160000';
+
+document.getElementById('harga_menir').value = '5,000';
+document.getElementById('harga_menir').dataset.rawValue = '5000';
+
+document.getElementById('biaya_buruh_giling').value = '80';
+document.getElementById('biaya_buruh_giling').dataset.rawValue = '80';
+
+});
+
 
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('tanggal_nota').value = today;
