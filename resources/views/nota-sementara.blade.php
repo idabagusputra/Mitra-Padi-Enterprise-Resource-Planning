@@ -604,6 +604,8 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Set today's date
+            // Clear all form fields on page load/refresh
+    clearAllFields();
 
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('tanggal_nota').value = today;
@@ -618,6 +620,38 @@
                     formatNumber(this);
                 });
             });
+
+            function clearAllFields() {
+    // Clear all input fields
+    const inputs = document.querySelectorAll('input');
+    inputs.forEach(input => {
+        if (input.type === 'text' || input.type === 'number' || input.type === 'email' || input.type === 'tel') {
+            input.value = '';
+        } else if (input.type === 'checkbox' || input.type === 'radio') {
+            input.checked = false;
+        } else if (input.type === 'date' || input.type === 'time' || input.type === 'datetime-local') {
+            input.value = '';
+        }
+    });
+
+    // Clear all textarea fields
+    const textareas = document.querySelectorAll('textarea');
+    textareas.forEach(textarea => {
+        textarea.value = '';
+    });
+
+    // Clear all select dropdowns
+    const selects = document.querySelectorAll('select');
+    selects.forEach(select => {
+        select.selectedIndex = 0; // Reset to first option
+    });
+
+    // Clear any elements with contenteditable
+    const editables = document.querySelectorAll('[contenteditable="true"]');
+    editables.forEach(editable => {
+        editable.innerHTML = '';
+    });
+}
 
             function formatNumber(input) {
                 let value = input.value;
