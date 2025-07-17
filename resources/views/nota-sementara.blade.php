@@ -608,6 +608,41 @@
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('tanggal_nota').value = today;
 
+            // Tambahkan kode ini setelah baris: document.getElementById('tanggal_nota').value = today;
+
+// Clear all form fields except those with default values
+const inputsToClear = document.querySelectorAll('input, textarea, select');
+inputsToClear.forEach(input => {
+    const hasDefaultValue = input.hasAttribute('value') && input.getAttribute('value') !== '';
+    const hasDefaultChecked = input.hasAttribute('checked');
+    const hasDefaultSelected = input.tagName === 'SELECT' && input.querySelector('option[selected]');
+
+    if (input.type === 'text' || input.type === 'number' || input.type === 'email' || input.type === 'tel') {
+        if (!hasDefaultValue && input.id !== 'tanggal_nota') {
+            input.value = '';
+        }
+    } else if (input.type === 'checkbox' || input.type === 'radio') {
+        if (!hasDefaultChecked) {
+            input.checked = false;
+        }
+    } else if (input.tagName === 'TEXTAREA') {
+        if (!hasDefaultValue) {
+            input.value = '';
+        }
+    } else if (input.tagName === 'SELECT') {
+        if (!hasDefaultSelected) {
+            input.selectedIndex = 0;
+        }
+    }
+});
+
+// Clear dynamic pengambilan items (reset to initial state)
+const pengambilansContainer = document.getElementById('pengambilans');
+if (pengambilansContainer) {
+    pengambilansContainer.innerHTML = '';
+    pengambilanCount = -1;
+}
+
             // Format number inputs
             const numberInputs = document.querySelectorAll('.number-format');
             numberInputs.forEach(input => {
