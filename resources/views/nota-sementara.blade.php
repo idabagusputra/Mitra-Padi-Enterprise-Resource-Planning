@@ -604,8 +604,6 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Set today's date
-            // Clear all form fields on page load/refresh
-    clearAllFields();
 
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('tanggal_nota').value = today;
@@ -621,97 +619,7 @@
                 });
             });
 
-document.addEventListener('DOMContentLoaded', function() {
-    // Clear all form fields on page load/refresh
-    clearAllFields();
 
-    // Set today's date after clearing
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('tanggal_nota').value = today;
-
-    // Format number inputs (jika ada)
-    // Tambahkan kode formatting lainnya di sini
-});
-
-function clearAllFields() {
-    // Clear all input fields (only if they don't have default values in HTML)
-    const inputs = document.querySelectorAll('input');
-    inputs.forEach(input => {
-        const defaultValue = input.getAttribute('value') || input.defaultValue;
-
-        if (input.type === 'text' || input.type === 'number' || input.type === 'email' || input.type === 'tel') {
-            // Only clear if no default value exists in HTML
-            if (!defaultValue || defaultValue === '') {
-                input.value = '';
-            } else {
-                input.value = defaultValue; // Reset to default value
-            }
-        } else if (input.type === 'checkbox' || input.type === 'radio') {
-            // Reset to default checked state
-            input.checked = input.defaultChecked;
-        } else if (input.type === 'date' || input.type === 'time' || input.type === 'datetime-local') {
-            // Only clear if no default value exists in HTML
-            if (!defaultValue || defaultValue === '') {
-                input.value = '';
-            } else {
-                input.value = defaultValue; // Reset to default value
-            }
-        }
-    });
-
-    // Clear textarea fields (only if they don't have default content)
-    const textareas = document.querySelectorAll('textarea');
-    textareas.forEach(textarea => {
-        const defaultValue = textarea.getAttribute('value') || textarea.defaultValue || textarea.textContent.trim();
-        if (!defaultValue || defaultValue === '') {
-            textarea.value = '';
-        } else {
-            textarea.value = defaultValue; // Reset to default value
-        }
-    });
-
-    // Reset select dropdowns to their default selected option
-    const selects = document.querySelectorAll('select');
-    selects.forEach(select => {
-        // Find the default selected option
-        const defaultOption = select.querySelector('option[selected]');
-        if (defaultOption) {
-            select.value = defaultOption.value;
-        } else {
-            select.selectedIndex = 0; // Reset to first option if no default
-        }
-    });
-
-    // Clear contenteditable elements (only if they don't have default content)
-    const editables = document.querySelectorAll('[contenteditable="true"]');
-    editables.forEach(editable => {
-        const defaultContent = editable.getAttribute('data-default') || '';
-        if (defaultContent) {
-            editable.innerHTML = defaultContent;
-        } else {
-            editable.innerHTML = '';
-        }
-    });
-}
-
-    // Clear all textarea fields
-    const textareas = document.querySelectorAll('textarea');
-    textareas.forEach(textarea => {
-        textarea.value = '';
-    });
-
-    // Clear all select dropdowns
-    const selects = document.querySelectorAll('select');
-    selects.forEach(select => {
-        select.selectedIndex = 0; // Reset to first option
-    });
-
-    // Clear any elements with contenteditable
-    const editables = document.querySelectorAll('[contenteditable="true"]');
-    editables.forEach(editable => {
-        editable.innerHTML = '';
-    });
-}
 
             function formatNumber(input) {
                 let value = input.value;
