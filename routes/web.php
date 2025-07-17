@@ -223,7 +223,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/daftar-gilings/{id}/url', [DaftarGilingController::class, 'getS3Url']);
     Route::get('/api/pdf-url/{gilingId}', [DaftarGilingController::class, 'getPdfUrl']);
 
-    Route::get('/Nota', function () {
+    Route::get('/notaa', function () {
         return view('nota-sementara');
     });
 });

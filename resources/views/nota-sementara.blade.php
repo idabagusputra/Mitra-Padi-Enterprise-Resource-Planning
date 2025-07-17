@@ -602,30 +602,8 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-
         document.addEventListener('DOMContentLoaded', function() {
             // Set today's date
-
-            // Reset semua input form saat halaman dimuat
-document.getElementById('gilingForm').reset();
-
-// Kosongkan data raw-value dan input yang memakai format angka
-document.querySelectorAll('.number-format').forEach(input => {
-    input.value = '';
-    input.dataset.rawValue = '';
-
-    // Atur nilai default yang diinginkan saat halaman dimuat
-document.getElementById('harga_konga').value = '160,000';
-document.getElementById('harga_konga').dataset.rawValue = '160000';
-
-document.getElementById('harga_menir').value = '5,000';
-document.getElementById('harga_menir').dataset.rawValue = '5000';
-
-document.getElementById('biaya_buruh_giling').value = '80';
-document.getElementById('biaya_buruh_giling').dataset.rawValue = '80';
-
-});
-
 
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('tanggal_nota').value = today;
@@ -1326,6 +1304,9 @@ document.getElementById('biaya_buruh_giling').dataset.rawValue = '80';
                 `;
             }
         });
+
+        // Reset form dulu
+        document.getElementById('gilingForm').reset();
     </script>
 </body>
 </html>
