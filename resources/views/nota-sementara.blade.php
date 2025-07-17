@@ -603,45 +603,77 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Set today's date
+            // Tambahkan kode ini di bagian paling atas setelah document.addEventListener('DOMContentLoaded', function() {
 
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('tanggal_nota').value = today;
+// Clear browser cache dan temporary data
+if ('caches' in window) {
+    caches.keys().then(function(names) {
+        names.forEach(function(name) {
+            caches.delete(name);
+        });
+    });
+}
 
-            // Tambahkan kode ini setelah baris: document.getElementById('tanggal_nota').value = today;
+// Clear semua storage
+if (typeof(Storage) !== "undefined") {
+    localStorage.clear();
+    sessionStorage.clear();
+}
 
-// Clear all form fields except those with default values
-const inputsToClear = document.querySelectorAll('input, textarea, select');
-inputsToClear.forEach(input => {
-    const hasDefaultValue = input.hasAttribute('value') && input.getAttribute('value') !== '';
-    const hasDefaultChecked = input.hasAttribute('checked');
-    const hasDefaultSelected = input.tagName === 'SELECT' && input.querySelector('option[selected]');
+// Clear cookies
+document.cookie.split(";").forEach(function(c) {
+    document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+});
 
-    if (input.type === 'text' || input.type === 'number' || input.type === 'email' || input.type === 'tel') {
-        if (!hasDefaultValue && input.id !== 'tanggal_nota') {
-            input.value = '';
-        }
-    } else if (input.type === 'checkbox' || input.type === 'radio') {
-        if (!hasDefaultChecked) {
+// Clear form data dan reset form
+const forms = document.querySelectorAll('form');
+forms.forEach(function(form) {
+    form.reset();
+});
+
+// Clear semua input fields
+const allInputs = document.querySelectorAll('input, textarea, select');
+allInputs.forEach(function(input) {
+    if (input.type !== 'hidden' && input.type !== 'submit' && input.type !== 'button') {
+        if (input.type === 'checkbox' || input.type === 'radio') {
             input.checked = false;
-        }
-    } else if (input.tagName === 'TEXTAREA') {
-        if (!hasDefaultValue) {
+        } else {
             input.value = '';
-        }
-    } else if (input.tagName === 'SELECT') {
-        if (!hasDefaultSelected) {
-            input.selectedIndex = 0;
         }
     }
 });
 
-// Clear dynamic pengambilan items (reset to initial state)
-const pengambilansContainer = document.getElementById('pengambilans');
-if (pengambilansContainer) {
-    pengambilansContainer.innerHTML = '';
+// Clear dynamic content
+const dynamicContainers = document.querySelectorAll('[id*="container"], [class*="container"]');
+dynamicContainers.forEach(function(container) {
+    if (container.id !== 'pengambilans') return; // hanya clear pengambilans
+    container.innerHTML = '';
+});
+
+// Force reload tanpa cache
+if (performance.navigation.type === 1) { // jika refresh
+    location.reload(true);
+}
+
+// Clear URL parameters
+if (window.location.search) {
+    window.history.replaceState({}, document.title, window.location.pathname);
+}
+
+// Clear any temporary variables
+window.tempData = null;
+window.cachedData = null;
+
+// Reset pengambilan counter
+if (typeof pengambilanCount !== 'undefined') {
     pengambilanCount = -1;
 }
+
+
+            // Set today's date
+
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('tanggal_nota').value = today;
 
             // Format number inputs
             const numberInputs = document.querySelectorAll('.number-format');
@@ -653,8 +685,6 @@ if (pengambilansContainer) {
                     formatNumber(this);
                 });
             });
-
-
 
             function formatNumber(input) {
                 let value = input.value;
