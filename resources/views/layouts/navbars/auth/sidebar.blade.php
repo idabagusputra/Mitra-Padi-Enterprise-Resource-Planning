@@ -273,6 +273,35 @@
 
 
 
+ <!-- Add a divider -->
+            <div class="pt-3">
+                <hr class="horizontal dark mt-0">
+            </div>
+
+            <li class="nav-item mt-2">
+                <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6 py-2">Perhitungan</h6>
+
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ (Request::is('kallog') ? 'active' : '') }}" href="{{ url('kallog') }}">
+                    <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i style="font-size: 1rem;" class="bi bi-calculator ps-2 pe-2 text-center text-dark {{ (Request::is('kallog') ? 'text-white' : 'text-dark') }} " aria-hidden="true"></i>
+                    </div>
+                    <!-- <span class="bi bi-currency-dollar me-2"></span> -->
+                    <span class="nav-link-text ms-1">Kalkulator Beras</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link {{ (Request::is('notaa') ? 'active' : '') }}" href="{{ url('notaa') }}">
+                    <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i style="font-size: 1rem;" class="bi bi-receipt-cutoff ps-2 pe-2 text-center text-dark {{ (Request::is('notaa') ? 'text-white' : 'text-dark') }} " aria-hidden="true"></i>
+                    </div>
+                    <!-- <span class="bi bi-list-check me-2"></span> -->
+                    <span class="nav-link-text ms-1">Nota Sementara</span>
+                </a>
+            </li>
+
 
 
             <!-- Add a divider -->
@@ -303,6 +332,8 @@
                     <span class="nav-link-text ms-1">Daftar Giling Ryclebin</span>
                 </a>
             </li>
+
+
 
 
 
