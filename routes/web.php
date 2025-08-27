@@ -25,6 +25,7 @@ use App\Http\Controllers\KreditNasabahPaluController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KreditTitipanPetaniController;
 use App\Http\Controllers\JPGR2Controller;
+use App\Http\Controllers\CarController;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 
@@ -71,6 +72,28 @@ Route::group(['middleware' => 'auth'], function () {
         } else {
             return response()->json(['error' => 'Upload failed'], 500);
         }
+    });
+
+    // ===========================================
+    // CAR SERVICE MANAGEMENT ROUTES - START
+    // ===========================================
+
+    // Halaman utama manajemen servis mobil
+    Route::get('/servis-mobil', [CarController::class, 'index'])->name('cars.index');
+    Route::get('/cars', [CarController::class, 'index'])->name('cars.list'); // Alternative route
+
+    // Search functionality untuk autocomplete
+    Route::get('/search-cars', [CarController::class, 'search'])->name('cars.search');
+    Route::get('/api/cars/autocomplete', [CarController::class, 'autocomplete'])->name('cars.autocomplete');
+
+    // API Routes untuk AJAX operations
+    Route::prefix('api/cars')->name('api.cars.')->group(function () {
+        Route::post('/', [CarController::class, 'store'])->name('store');
+        Route::get('/{id}', [CarController::class, 'show'])->name('show');
+        Route::put('/{id}', [CarController::class, 'update'])->name('update');
+        Route::delete('/{id}', [CarController::class, 'destroy'])->name('destroy');
+        Route::post('/servis', [CarController::class, 'updateServis'])->name('update_servis');
+        Route::post('/{nama_mobil}/reset-status', [CarController::class, 'resetStatus'])->name('reset_status');
     });
 
 

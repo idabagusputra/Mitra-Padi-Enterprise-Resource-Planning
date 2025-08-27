@@ -58,6 +58,15 @@
                 </a>
             </li>
 
+             <li class="nav-item">
+                <a class="nav-link {{ (Request::is('servis-mobil') ? 'active' : '') }}" href="{{ url('servis-mobil') }}">
+                    <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i style="font-size: 1rem;" class="bi bi-truck-front text-center text-dark {{ (Request::is('servis-mobil') ? 'text-white' : 'text-dark') }} " aria-hidden="false"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Servis Mobil</span>
+                </a>
+            </li>
+
             <!-- Add a divider -->
             <div class="pt-3">
                 <hr class="horizontal dark mt-0">
