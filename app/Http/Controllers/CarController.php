@@ -10,34 +10,67 @@ use Exception;
 
 class CarController extends Controller
 {
-    // Menampilkan halaman utama dengan daftar mobil
-    public function index(Request $request)
-    {
-        $query = Car::query();
-
-        // Filter berdasarkan pencarian
-        if ($request->filled('search')) {
-            $query->where('nama_mobil', 'like', '%' . $request->search . '%');
-        }
-
-        // Filter berdasarkan status
-        if ($request->filled('status') && $request->status != 'all') {
-            $query->where('status', $request->status);
-        }
-
-        // Sorting: Status belum_servis di atas, urut abjad nama_mobil, lalu ID
-        $sortOrder = $request->get('sort', 'desc');
-
-        $query->orderByRaw("CASE WHEN status = 'belum_servis' THEN 0 ELSE 1 END")
-            ->orderBy('nama_mobil', 'asc')
-            ->orderBy('id', $sortOrder);
-
-        $cars = $query->get();
-        $mobilBelumServis = Car::belumServis()->distinct('nama_mobil')->pluck('nama_mobil');
-
-        return view('servisMobil', compact('cars', 'mobilBelumServis'));
+public function index(Request $request)
+{
+    $query = Car::query();
+    
+    // Filter berdasarkan pencarian
+    if ($request->filled('search')) {
+        $query->where('nama_mobil', 'like', '%' . $request->search . '%');
     }
-
+    
+    // Filter berdasarkan status
+    if ($request->filled('status') && $request->status != 'all') {
+        $query->where('status', $request->status);
+    }
+    
+    // Sorting: Status belum_servis di atas, lalu kelompokkan berdasarkan nama_mobil
+    $query->orderByRaw("CASE WHEN status = 'belum_servis' THEN 0 ELSE 1 END")
+          ->orderBy('nama_mobil', 'asc')
+          ->orderBy('tanggal_servis', 'desc') // Tambahkan sorting berdasarkan tanggal untuk urutan yang konsisten
+          ->orderBy('id', 'desc');
+    
+    $cars = $query->get();
+    
+    // Kelompokkan berdasarkan status dulu, lalu nama mobil, beri nomor berdasarkan nama mobil
+    $groupedCars = collect();
+    
+    // Pisahkan berdasarkan status
+    $belumServis = $cars->where('status', 'belum_servis')->groupBy('nama_mobil');
+    $sudahServis = $cars->where('status', 'sudah_servis')->groupBy('nama_mobil');
+    
+    // Hitung total per nama mobil untuk penomoran
+    $totalPerNama = $cars->groupBy('nama_mobil')->map->count();
+    
+    // Proses belum servis dulu
+    foreach ($belumServis as $namaMobil => $group) {
+        $counter = $totalPerNama[$namaMobil];
+        $sortedGroup = $group->sortBy(['tanggal_servis', 'desc'])->sortBy(['id', 'desc']);
+        foreach ($sortedGroup as $car) {
+            $car->nomor_urut = $counter;
+            $counter--;
+            $groupedCars->push($car);
+        }
+    }
+    
+    // Proses sudah servis
+    foreach ($sudahServis as $namaMobil => $group) {
+        // Hitung sisa counter dari yang belum terpakai
+        $usedNumbers = $belumServis->get($namaMobil, collect())->count();
+        $counter = $totalPerNama[$namaMobil] - $usedNumbers;
+        
+        $sortedGroup = $group->sortBy(['tanggal_servis', 'desc'])->sortBy(['id', 'desc']);
+        foreach ($sortedGroup as $car) {
+            $car->nomor_urut = $counter;
+            $counter--;
+            $groupedCars->push($car);
+        }
+    }
+    
+    $mobilBelumServis = Car::belumServis()->distinct('nama_mobil')->pluck('nama_mobil');
+    
+    return view('servisMobil', compact('cars', 'groupedCars', 'mobilBelumServis'));
+}
 
     // Menyimpan data mobil baru (data awal)
     public function store(Request $request)
@@ -46,7 +79,8 @@ class CarController extends Controller
             'nama_mobil' => 'required|string|max:255',
             'tanggal_servis' => 'required|date',
             'kilometer' => 'required|integer|min:0',
-            'status' => 'required|in:belum_servis,sudah_servis'
+            'status' => 'required|in:belum_servis,sudah_servis',
+            'filter_oli' => 'boolean' // Tambahan validasi untuk filter_oli
         ]);
 
         if ($validator->fails()) {
@@ -57,7 +91,11 @@ class CarController extends Controller
             ], 422);
         }
 
-        $car = Car::create($request->all());
+        // Tambahkan filter_oli dengan default false jika tidak ada
+        $data = $request->all();
+        $data['filter_oli'] = $request->boolean('filter_oli');
+
+        $car = Car::create($data);
 
         return response()->json([
             'success' => true,
@@ -67,14 +105,14 @@ class CarController extends Controller
     }
 
     // Update servis terbaru
-    // Update servis terbaru - DIPERBAIKI
     public function updateServis(Request $request)
     {
         // Validasi input
         $validator = Validator::make($request->all(), [
             'nama_mobil' => 'required|string|exists:cars,nama_mobil',
             'tanggal_servis' => 'required|date',
-            'kilometer' => 'required|integer|min:0'
+            'kilometer' => 'required|integer|min:0',
+            'filter_oli' => 'boolean' // Tambahan validasi untuk filter_oli
         ]);
 
         if ($validator->fails()) {
@@ -111,8 +149,7 @@ class CarController extends Controller
 
                 // 1. Update data lama menjadi sudah_servis (data servis sebelumnya tetap ada)
                 $car->update([
-                    'tanggal_servis' => $request->tanggal_servis,
-                    'kilometer' => $request->kilometer,
+                    // 'filter_oli' => $request->boolean('filter_oli'), // Tambahan update filter_oli
                     'status' => 'sudah_servis'
                 ]);
 
@@ -121,6 +158,7 @@ class CarController extends Controller
                     'nama_mobil' => $car->nama_mobil,
                     'tanggal_servis' => now()->toDateString(), // Tanggal hari ini
                     'kilometer' => $request->kilometer, // Kilometer saat ini sebagai base
+                    'filter_oli' => $request->boolean('filter_oli'), // Default false untuk servis baru
                     'status' => 'belum_servis'
                 ]);
 
@@ -133,6 +171,7 @@ class CarController extends Controller
                             'nama_mobil' => $car->nama_mobil,
                             'tanggal_servis' => $car->tanggal_servis,
                             'kilometer' => $car->kilometer,
+                            'filter_oli' => $car->filter_oli,
                             'status' => $car->status
                         ],
                         'servis_baru' => [
@@ -140,13 +179,13 @@ class CarController extends Controller
                             'nama_mobil' => $newCar->nama_mobil,
                             'tanggal_servis' => $newCar->tanggal_servis,
                             'kilometer' => $newCar->kilometer,
+                            'filter_oli' => $newCar->filter_oli,
                             'status' => $newCar->status
                         ]
                     ]
                 ]);
             });
         } catch (Exception $e) {
-
 
             return response()->json([
                 'success' => false,
@@ -155,7 +194,6 @@ class CarController extends Controller
             ], 500);
         }
     }
-
 
     // Menampilkan detail mobil
     public function show($id)
@@ -171,7 +209,8 @@ class CarController extends Controller
             'nama_mobil' => 'required|string|max:255',
             'tanggal_servis' => 'required|date',
             'kilometer' => 'required|integer|min:0',
-            'status' => 'required|in:belum_servis,sudah_servis'
+            'status' => 'required|in:belum_servis,sudah_servis',
+            'filter_oli' => 'sometimes|boolean' // Ubah ke sometimes|boolean
         ]);
 
         if ($validator->fails()) {
@@ -183,7 +222,17 @@ class CarController extends Controller
         }
 
         $car = Car::findOrFail($id);
-        $car->update($request->all());
+        
+        // Siapkan data untuk update
+        $data = [
+            'nama_mobil' => $request->nama_mobil,
+            'tanggal_servis' => $request->tanggal_servis,
+            'kilometer' => $request->kilometer,
+            'status' => $request->status,
+            'filter_oli' => $request->boolean('filter_oli', false)
+        ];
+        
+        $car->update($data);
 
         return response()->json([
             'success' => true,
@@ -230,7 +279,7 @@ class CarController extends Controller
         $term = $request->get('term');
 
         $cars = Car::where('nama_mobil', 'LIKE', '%' . $term . '%')
-            ->select('id', 'nama_mobil', 'status', 'tanggal_servis', 'kilometer')
+            ->select('id', 'nama_mobil', 'status', 'tanggal_servis', 'kilometer', 'filter_oli')
             ->limit(10)
             ->get();
 
@@ -243,14 +292,15 @@ class CarController extends Controller
         $term = $request->get('term');
 
         $cars = Car::where('nama_mobil', 'LIKE', '%' . $term . '%')
-            ->select('nama_mobil', 'status')
+            ->select('nama_mobil', 'status', 'filter_oli')
             ->distinct('nama_mobil')
             ->limit(10)
             ->get()
             ->map(function ($car) {
                 return [
                     'nama' => $car->nama_mobil,
-                    'status' => $car->status == 'belum_servis' ? 'Belum Servis' : 'Sudah Servis'
+                    'status' => $car->status == 'belum_servis' ? 'Belum Servis' : 'Sudah Servis',
+                    'filter_oli' => $car->filter_oli ? 'Sudah Ganti' : 'Belum Ganti'
                 ];
             });
 

@@ -212,57 +212,92 @@
 
                 <div class="card-body px-0 pt-0 pb-2">
                     <div class="table-responsive p-0">
-                        <table class="table align-items-center mb-0">
-                            <thead>
-                                <tr>
-                                    {{-- <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">ID</th> --}}
-                                    <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Nama Mobil</th>
-                                    <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Tanggal Servis</th>
-                                    <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Kilometer</th>
-                                    <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Status</th>
-                                    <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($cars as $car)
-                                <tr>
-                                    {{-- <td class="text-center">
-                                        <p class="text-xs font-weight-bold mb-0">{{ $car->id }}</p>
-                                    </td> --}}
-                                    <td class="text-center">
-                                        <p class="text-xs font-weight-bold mb-0">{{ $car->nama_mobil }}</p>
-                                    </td>
-                                    <td class="text-center">
-                                        <p class="text-xs font-weight-bold mb-0">{{ $car->tanggal_servis_formatted }}</p>
-                                    </td>
-                                    <td class="text-center">
-                                        <p class="text-xs font-weight-bold mb-0">{{ number_format($car->kilometer, 0, ',', '.') }} km</p>
-                                    </td>
-                                    <td class="text-center">
-                                        @if($car->status == 'belum_servis')
-                                            <span class="badge badge-sm bg-gradient-warning">Belum Servis</span>
-                                        @else
-                                            <span class="badge badge-sm bg-gradient-success">Sudah Servis</span>
-                                        @endif
-                                    </td>
-                                    <td class="text-center">
-                                        <div class="d-flex justify-content-center align-items-center">
-                                            <a href="#" class="btn btn-link text-dark px-2 mb-0" data-bs-toggle="modal" data-bs-target="#editCarModal{{ $car->id }}">
-                                                <i class="bi bi-pencil-square text-dark me-2" aria-hidden="true"></i>
-                                                Edit
-                                            </a>
-                                            @if($car->status == 'belum_servis')
-                                            <button class="btn btn-link text-primary px-2 mb-0" onclick="openServisModal('{{ $car->nama_mobil }}', {{ $car->kilometer }})">
-                                                <i class="bi bi-gear text-primary me-2" aria-hidden="true"></i>
-                                                Servis
-                                            </button>
-                                            @endif
-                                        </div>
-                                    </td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                         <table class="table align-items-center mb-0">
+            <thead>
+                <tr>
+                    <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">No</th>
+                    <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Nama Mobil</th>
+                    <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Tanggal Servis</th>
+                    <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Kilometer</th>
+                    <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Status</th>
+                    <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Filter Oli</th>
+                    <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @php
+                    $currentGroup = '';
+                    $showGroupHeader = false;
+                @endphp
+                
+                @foreach($groupedCars as $car)
+                    @php
+                        $groupKey = $car->nama_mobil . '_' . $car->status;
+                        if ($currentGroup !== $groupKey) {
+                            $currentGroup = $groupKey;
+                            $showGroupHeader = true;
+                        } else {
+                            $showGroupHeader = false;
+                        }
+                    @endphp
+
+                       {{-- <tr class="{{ $showGroupHeader ? 'border-top-2 border-primary' : '' }}">
+                        <td class="text-center">
+                            <p class="text-xs font-weight-bold mb-0">{{ $car->nomor_urut }}</p>
+                        </td>
+                        <td class="text-center {{ $showGroupHeader ? 'font-weight-bolder' : '' }}">
+                            <p class="text-xs {{ $showGroupHeader ? 'font-weight-bolder text-primary' : 'font-weight-bold' }} mb-0">
+                                {{ $car->nama_mobil }}
+                            </p>
+                        </td> --}}
+                    
+                    <tr class="{{ $showGroupHeader ? '' : '' }}">
+                        <td class="text-center">
+                            <p class="text-xs font-weight-bold mb-0">{{ $car->nomor_urut }}</p>
+                        </td>
+                        <td class="text-center {{ $showGroupHeader ? 'font-weight-bolder' : '' }}">
+                            <p class="text-xs {{ $showGroupHeader ? 'font-weight-bolder text-primary' : 'font-weight-bold' }} mb-0">
+                                {{ $car->nama_mobil }}
+                            </p>
+                        </td>
+                        <td class="text-center">
+                            <p class="text-xs font-weight-bold mb-0">{{ $car->tanggal_servis_formatted }}</p>
+                        </td>
+                        <td class="text-center">
+                            <p class="text-xs font-weight-bold mb-0">{{ number_format($car->kilometer, 0, ',', '.') }} KM</p>
+                        </td>
+                        <td class="text-center">
+                            @if($car->status == 'belum_servis')
+                                <span class="badge badge-sm bg-gradient-warning">Belum Servis</span>
+                            @else
+                                <span class="badge badge-sm bg-gradient-success">Sudah Servis</span>
+                            @endif
+                        </td>
+                        <td class="text-center">
+                            @if($car->filter_oli)
+                                <span class="badge badge-sm bg-gradient-success">Sudah Ganti</span>
+                            @else
+                                <span class="badge badge-sm bg-gradient-secondary">Belum Ganti</span>
+                            @endif
+                        </td>
+                        <td class="text-center">
+                            <div class="d-flex justify-content-center align-items-center">
+                                <a href="#" class="btn btn-link text-dark px-2 mb-0" data-bs-toggle="modal" data-bs-target="#editCarModal{{ $car->id }}">
+                                    <i class="bi bi-pencil-square text-dark me-2" aria-hidden="true"></i>
+                                    Edit
+                                </a>
+                                @if($car->status == 'belum_servis')
+                                <button class="btn btn-link text-primary px-2 mb-0" onclick="openServisModal('{{ $car->nama_mobil }}', {{ $car->kilometer }})">
+                                    <i class="bi bi-gear text-primary me-2" aria-hidden="true"></i>
+                                    Servis
+                                </button>
+                                @endif
+                            </div>
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
                     </div>
                 </div>
             </div>
@@ -299,6 +334,15 @@
                             <option value="belum_servis">Belum Servis</option>
                             <option value="sudah_servis">Sudah Servis</option>
                         </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="filter_oli">Filter Oli</label>
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="filter_oli" name="filter_oli" value="1">
+                            <label class="form-check-label" for="filter_oli">
+                                Sudah Ganti Filter Oli
+                            </label>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -342,6 +386,15 @@
                             <option value="sudah_servis" {{ $car->status == 'sudah_servis' ? 'selected' : '' }}>Sudah Servis</option>
                         </select>
                     </div>
+                    <div class="form-group">
+                        <label for="filter_oli_{{ $car->id }}">Filter Oli</label>
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="filter_oli_{{ $car->id }}" name="filter_oli" value="1" {{ $car->filter_oli ? 'checked' : '' }}>
+                            <label class="form-check-label" for="filter_oli_{{ $car->id }}">
+                                Sudah Ganti Filter Oli
+                            </label>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
@@ -382,6 +435,15 @@
                         <input type="number" class="form-control" id="servis_kilometer" name="kilometer" min="0" required>
                         <small class="text-muted">Kilometer harus lebih besar dari: <span id="km-minimum">0</span> km</small>
                     </div>
+                    <div class="form-group">
+                        <label for="servis_filter_oli">Filter Oli</label>
+                        <div class="form-check ms-1">
+                            <input type="checkbox" class="form-check-input" id="servis_filter_oli" name="filter_oli" value="1">
+                            <label class="form-check-label" for="servis_filter_oli">
+                                Sudah Ganti Filter Oli
+                            </label>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
@@ -394,38 +456,50 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Add New Car
-        const addCarForm = document.getElementById('addCarForm');
-        if (addCarForm) {
-            addCarForm.addEventListener('submit', function(event) {
-                event.preventDefault();
+// Add New Car
+const addCarForm = document.getElementById('addCarForm');
+if (addCarForm) {
+    addCarForm.addEventListener('submit', function(event) {
+        event.preventDefault();
 
-                const formData = new FormData(this);
-                const data = Object.fromEntries(formData);
+        // Ambil data form secara manual
+        const data = {
+            nama_mobil: document.getElementById('nama_mobil').value,
+            tanggal_servis: document.getElementById('tanggal_servis').value,
+            kilometer: document.getElementById('kilometer').value,
+            status: document.getElementById('status').value,
+            filter_oli: document.getElementById('filter_oli').checked // Explicit boolean
+        };
 
-                fetch('/api/cars', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                    },
-                    body: JSON.stringify(data)
-                })
-                .then(response => response.json())
-                .then(result => {
-                    if (result.success) {
-                        alert('Mobil berhasil ditambahkan!');
-                        location.reload();
-                    } else {
-                        alert('Error: ' + result.message);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Terjadi kesalahan saat menambah mobil');
-                });
-            });
-        }
+        console.log('Data yang dikirim:', data); // Debug
+
+        fetch('/api/cars', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(result => {
+            console.log('Response:', result); // Debug
+            if (result.success) {
+                alert('Mobil berhasil ditambahkan!');
+                location.reload();
+            } else {
+                alert('Error: ' + result.message);
+                if (result.errors) {
+                    console.log('Validation errors:', result.errors);
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan saat menambah mobil: ' + error.message);
+        });
+    });
+}
 
         // Edit Car
         document.querySelectorAll('.editCarForm').forEach(form => {
@@ -434,7 +508,16 @@
 
                 const carId = this.getAttribute('data-car-id');
                 const formData = new FormData(this);
-                const data = Object.fromEntries(formData);
+                const data = {};
+                
+                // Handle semua field
+                for (let [key, value] of formData.entries()) {
+                    data[key] = value;
+                }
+                
+                // Khusus untuk checkbox filter_oli
+                const checkboxFilterOli = this.querySelector('input[name="filter_oli"]');
+                data.filter_oli = checkboxFilterOli ? checkboxFilterOli.checked : false;
 
                 fetch(`/api/cars/${carId}`, {
                     method: 'PUT',
@@ -451,6 +534,7 @@
                         location.reload();
                     } else {
                         alert('Error: ' + result.message);
+                        console.log(result.errors);
                     }
                 })
                 .catch(error => {
@@ -467,7 +551,15 @@
                 event.preventDefault();
 
                 const formData = new FormData(this);
-                const data = Object.fromEntries(formData);
+                const data = {};
+                
+                // Handle semua field
+                for (let [key, value] of formData.entries()) {
+                    data[key] = value;
+                }
+                
+                // Khusus untuk checkbox filter_oli
+                data.filter_oli = document.getElementById('servis_filter_oli').checked;
 
                 fetch('/api/cars/servis', {
                     method: 'POST',
@@ -480,10 +572,10 @@
                 .then(response => response.json())
                 .then(result => {
                     if (result.success) {
-                        // alert('Servis berhasil diperbarui!');
                         location.reload();
                     } else {
                         alert('Error: ' + result.message);
+                        console.log(result.errors);
                     }
                 })
                 .catch(error => {
@@ -501,15 +593,15 @@
 
     // Function to open servis modal with pre-filled data
     function openServisModal(namaMobil, currentKm) {
-        // Set selected option
         const selectElement = document.getElementById('servis_nama_mobil');
         selectElement.value = namaMobil;
 
-        // Set minimum kilometer info
         document.getElementById('km-minimum').textContent = new Intl.NumberFormat('id-ID').format(currentKm);
         document.getElementById('servis_kilometer').min = currentKm + 1;
 
-        // Show modal
+        // Reset checkbox filter oli
+        document.getElementById('servis_filter_oli').checked = false;
+
         const modal = new bootstrap.Modal(document.getElementById('servisModal'));
         modal.show();
     }
