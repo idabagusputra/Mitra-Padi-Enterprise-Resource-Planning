@@ -485,7 +485,7 @@ if (addCarForm) {
         .then(result => {
             console.log('Response:', result); // Debug
             if (result.success) {
-                alert('Mobil berhasil ditambahkan!');
+                // alert('Mobil berhasil ditambahkan!');
                 location.reload();
             } else {
                 alert('Error: ' + result.message);
@@ -530,7 +530,7 @@ if (addCarForm) {
                 .then(response => response.json())
                 .then(result => {
                     if (result.success) {
-                        alert('Data mobil berhasil diperbarui!');
+                        // alert('Data mobil berhasil diperbarui!');
                         location.reload();
                     } else {
                         alert('Error: ' + result.message);

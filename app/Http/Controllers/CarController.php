@@ -86,7 +86,7 @@ public function index(Request $request)
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                // 'message' => 'Validasi gagal',
+                'message' => 'Validasi gagal',
                 'errors' => $validator->errors()
             ], 422);
         }
@@ -99,7 +99,7 @@ public function index(Request $request)
 
         return response()->json([
             'success' => true,
-            // 'message' => 'Data mobil berhasil ditambahkan',
+            'message' => 'Data mobil berhasil ditambahkan',
             'data' => $car
         ]);
     }
@@ -118,7 +118,7 @@ public function index(Request $request)
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                // 'message' => 'Validasi gagal',
+                'message' => 'Validasi gagal',
                 'errors' => $validator->errors()
             ], 422);
         }
@@ -135,7 +135,7 @@ public function index(Request $request)
                 if (!$car) {
                     return response()->json([
                         'success' => false,
-                        // 'message' => 'Mobil dengan nama "' . $request->nama_mobil . '" tidak ditemukan atau sudah dalam status servis'
+                        'message' => 'Mobil dengan nama "' . $request->nama_mobil . '" tidak ditemukan atau sudah dalam status servis'
                     ], 404);
                 }
 
@@ -143,7 +143,7 @@ public function index(Request $request)
                 if ($request->kilometer <= $car->kilometer) {
                     return response()->json([
                         'success' => false,
-                        // 'message' => 'Kilometer baru (' . number_format($request->kilometer) . ' km) harus lebih besar dari kilometer sebelumnya (' . number_format($car->kilometer) . ' km)'
+                        'message' => 'Kilometer baru (' . number_format($request->kilometer) . ' km) harus lebih besar dari kilometer sebelumnya (' . number_format($car->kilometer) . ' km)'
                     ], 422);
                 }
 
@@ -164,7 +164,7 @@ public function index(Request $request)
 
                 return response()->json([
                     'success' => true,
-                    // 'message' => 'Data servis berhasil diperbarui. Data servis sebelumnya tersimpan dan data baru telah dibuat.',
+                    'message' => 'Data servis berhasil diperbarui. Data servis sebelumnya tersimpan dan data baru telah dibuat.',
                     'data' => [
                         'servis_selesai' => [
                             'id' => $car->id,
@@ -189,7 +189,7 @@ public function index(Request $request)
 
             return response()->json([
                 'success' => false,
-                // 'message' => 'Terjadi kesalahan saat memperbarui data servis. Silakan coba lagi.',
+                'message' => 'Terjadi kesalahan saat memperbarui data servis. Silakan coba lagi.',
                 'error_detail' => config('app.debug') ? $e->getMessage() : 'Internal server error'
             ], 500);
         }
@@ -216,7 +216,7 @@ public function index(Request $request)
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                // 'message' => 'Validasi gagal',
+                'message' => 'Validasi gagal',
                 'errors' => $validator->errors()
             ], 422);
         }
@@ -236,7 +236,7 @@ public function index(Request $request)
 
         return response()->json([
             'success' => true,
-            // 'message' => 'Data mobil berhasil diperbarui',
+            'message' => 'Data mobil berhasil diperbarui',
             'data' => $car
         ]);
     }
@@ -249,7 +249,7 @@ public function index(Request $request)
 
         return response()->json([
             'success' => true,
-            // 'message' => 'Data mobil berhasil dihapus'
+            'message' => 'Data mobil berhasil dihapus'
         ]);
     }
 
@@ -261,7 +261,7 @@ public function index(Request $request)
         if (!$car) {
             return response()->json([
                 'success' => false,
-                // 'message' => 'Mobil dengan nama tersebut tidak ditemukan atau sudah dalam status belum servis'
+                'message' => 'Mobil dengan nama tersebut tidak ditemukan atau sudah dalam status belum servis'
             ], 404);
         }
 
@@ -269,7 +269,7 @@ public function index(Request $request)
 
         return response()->json([
             'success' => true,
-            // 'message' => 'Status mobil berhasil direset ke belum servis'
+            'message' => 'Status mobil berhasil direset ke belum servis'
         ]);
     }
 
@@ -341,7 +341,7 @@ public function index(Request $request)
 
         return response()->json([
             'success' => true,
-            // 'message' => 'Laporan berhasil didownload'
+            'message' => 'Laporan berhasil didownload'
         ]);
     }
 
