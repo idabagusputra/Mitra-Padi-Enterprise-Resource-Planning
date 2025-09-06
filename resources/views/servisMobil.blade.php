@@ -337,7 +337,7 @@
                     </div>
                     <div class="form-group">
                         <label for="filter_oli">Filter Oli</label>
-                        <div class="form-check">
+                        <div class="form-check ms-1">
                             <input type="checkbox" class="form-check-input" id="filter_oli" name="filter_oli" value="1">
                             <label class="form-check-label" for="filter_oli">
                                 Sudah Ganti Filter Oli
