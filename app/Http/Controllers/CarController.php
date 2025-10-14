@@ -10,67 +10,67 @@ use Exception;
 
 class CarController extends Controller
 {
-public function index(Request $request)
-{
-    $query = Car::query();
-    
-    // Filter berdasarkan pencarian
-    if ($request->filled('search')) {
-        $query->where('nama_mobil', 'like', '%' . $request->search . '%');
-    }
-    
-    // Filter berdasarkan status
-    if ($request->filled('status') && $request->status != 'all') {
-        $query->where('status', $request->status);
-    }
-    
-    // Sorting: Status belum_servis di atas, lalu kelompokkan berdasarkan nama_mobil
-    $query->orderByRaw("CASE WHEN status = 'belum_servis' THEN 0 ELSE 1 END")
-          ->orderBy('nama_mobil', 'asc')
-          ->orderBy('tanggal_servis', 'desc') // Tambahkan sorting berdasarkan tanggal untuk urutan yang konsisten
-          ->orderBy('id', 'desc');
-    
-    $cars = $query->get();
-    
-    // Kelompokkan berdasarkan status dulu, lalu nama mobil, beri nomor berdasarkan nama mobil
-    $groupedCars = collect();
-    
-    // Pisahkan berdasarkan status
-    $belumServis = $cars->where('status', 'belum_servis')->groupBy('nama_mobil');
-    $sudahServis = $cars->where('status', 'sudah_servis')->groupBy('nama_mobil');
-    
-    // Hitung total per nama mobil untuk penomoran
-    $totalPerNama = $cars->groupBy('nama_mobil')->map->count();
-    
-    // Proses belum servis dulu
-    foreach ($belumServis as $namaMobil => $group) {
-        $counter = $totalPerNama[$namaMobil];
-        $sortedGroup = $group->sortBy(['tanggal_servis', 'desc'])->sortBy(['id', 'desc']);
-        foreach ($sortedGroup as $car) {
-            $car->nomor_urut = $counter;
-            $counter--;
-            $groupedCars->push($car);
+    public function index(Request $request)
+    {
+        $query = Car::query();
+
+        // Filter berdasarkan pencarian
+        if ($request->filled('search')) {
+            $query->where('nama_mobil', 'like', '%' . $request->search . '%');
         }
-    }
-    
-    // Proses sudah servis
-    foreach ($sudahServis as $namaMobil => $group) {
-        // Hitung sisa counter dari yang belum terpakai
-        $usedNumbers = $belumServis->get($namaMobil, collect())->count();
-        $counter = $totalPerNama[$namaMobil] - $usedNumbers;
-        
-        $sortedGroup = $group->sortBy(['tanggal_servis', 'desc'])->sortBy(['id', 'desc']);
-        foreach ($sortedGroup as $car) {
-            $car->nomor_urut = $counter;
-            $counter--;
-            $groupedCars->push($car);
+
+        // Filter berdasarkan status
+        if ($request->filled('status') && $request->status != 'all') {
+            $query->where('status', $request->status);
         }
+
+        // Sorting: Status belum_servis di atas, lalu kelompokkan berdasarkan nama_mobil
+        $query->orderByRaw("CASE WHEN status = 'belum_servis' THEN 0 ELSE 1 END")
+            ->orderBy('nama_mobil', 'asc')
+            ->orderBy('tanggal_servis', 'desc') // Tambahkan sorting berdasarkan tanggal untuk urutan yang konsisten
+            ->orderBy('id', 'desc');
+
+        $cars = $query->get();
+
+        // Kelompokkan berdasarkan status dulu, lalu nama mobil, beri nomor berdasarkan nama mobil
+        $groupedCars = collect();
+
+        // Pisahkan berdasarkan status
+        $belumServis = $cars->where('status', 'belum_servis')->groupBy('nama_mobil');
+        $sudahServis = $cars->where('status', 'sudah_servis')->groupBy('nama_mobil');
+
+        // Hitung total per nama mobil untuk penomoran
+        $totalPerNama = $cars->groupBy('nama_mobil')->map->count();
+
+        // Proses belum servis dulu
+        foreach ($belumServis as $namaMobil => $group) {
+            $counter = $totalPerNama[$namaMobil];
+            $sortedGroup = $group->sortBy(['tanggal_servis', 'desc'])->sortBy(['id', 'desc']);
+            foreach ($sortedGroup as $car) {
+                $car->nomor_urut = $counter;
+                $counter--;
+                $groupedCars->push($car);
+            }
+        }
+
+        // Proses sudah servis
+        foreach ($sudahServis as $namaMobil => $group) {
+            // Hitung sisa counter dari yang belum terpakai
+            $usedNumbers = $belumServis->get($namaMobil, collect())->count();
+            $counter = $totalPerNama[$namaMobil] - $usedNumbers;
+
+            $sortedGroup = $group->sortBy(['tanggal_servis', 'desc'])->sortBy(['id', 'desc']);
+            foreach ($sortedGroup as $car) {
+                $car->nomor_urut = $counter;
+                $counter--;
+                $groupedCars->push($car);
+            }
+        }
+
+        $mobilBelumServis = Car::belumServis()->distinct('nama_mobil')->pluck('nama_mobil');
+
+        return view('servisMobil', compact('cars', 'groupedCars', 'mobilBelumServis'));
     }
-    
-    $mobilBelumServis = Car::belumServis()->distinct('nama_mobil')->pluck('nama_mobil');
-    
-    return view('servisMobil', compact('cars', 'groupedCars', 'mobilBelumServis'));
-}
 
     // Menyimpan data mobil baru (data awal)
     public function store(Request $request)
@@ -171,7 +171,7 @@ public function index(Request $request)
                             'nama_mobil' => $car->nama_mobil,
                             'tanggal_servis' => $car->tanggal_servis,
                             'kilometer' => $car->kilometer,
-                            'filter_oli' => $car->filter_oli,
+                            'filter_oli' => $newCar->filter_oli,
                             'status' => $car->status
                         ],
                         'servis_baru' => [
@@ -179,7 +179,7 @@ public function index(Request $request)
                             'nama_mobil' => $newCar->nama_mobil,
                             'tanggal_servis' => $newCar->tanggal_servis,
                             'kilometer' => $newCar->kilometer,
-                            'filter_oli' => $newCar->filter_oli,
+                            'filter_oli' => $car->filter_oli,
                             'status' => $newCar->status
                         ]
                     ]
@@ -222,7 +222,7 @@ public function index(Request $request)
         }
 
         $car = Car::findOrFail($id);
-        
+
         // Siapkan data untuk update
         $data = [
             'nama_mobil' => $request->nama_mobil,
@@ -231,7 +231,7 @@ public function index(Request $request)
             'status' => $request->status,
             'filter_oli' => $request->boolean('filter_oli', false)
         ];
-        
+
         $car->update($data);
 
         return response()->json([
