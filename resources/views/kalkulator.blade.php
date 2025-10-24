@@ -113,16 +113,23 @@
         }
 
         .table-container2 {
+    background: white;
+    border-top: 1px solid rgba(108, 92, 231, 0.1);
+    border-left: 1px solid rgba(108, 92, 231, 0.1);
+    border-right: 1px solid rgba(108, 92, 231, 0.1);
 
+    border-bottom: none; /* Tidak ada border bawah */
 
-            background: white;
-            border-radius: var(--border-radius);
-            box-shadow: var(--card-shadow);
-            padding: 10px;
+    border-top-left-radius: var(--border-radius);
+    border-top-right-radius: var(--border-radius);
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
 
-            border: 1px solid rgba(108, 92, 231, 0.1);
-            max-height: none; /* Remove max-height restriction */
-        }
+    box-shadow: var(--card-shadow);
+    padding: 10px;
+    max-height: none;
+}
+
 
         @media (max-width: 768px) { /* Mobile portrait */
             .table-container {
@@ -297,6 +304,29 @@
             overflow: hidden;
             border-radius: 0 0 10px 10px;
             font-size: 14px; /* Slightly smaller */
+        }
+
+        .total-label-TTL {
+            background: linear-gradient(120deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+            border-radius: 0 0 0 0;
+            font-size: 14px; /* Slightly smaller */
+        }
+
+        .total-label-TTL::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: shimmer 2s infinite;
         }
 
          .total-label-selisih {
@@ -785,14 +815,24 @@
                             </button>
                         </td>
                     </tr>
+
                     <tr class="total-row">
                         <td class="total-value hasil-cell" id="totalDana">0</td>
-                        <td class="total-label-selisih">TTL</td>
+                        <td class="total-label-selisih">MSK</td>
                     </tr>
+
+                    <tr class="total-row">
+    <td class="total-value hasil-cell">
+        <span id="totalHarga">Rp 0</span>
+    </td>
+    <td class="total-label-TTL">TTL</td>
+</tr>
+
                     <tr class="total-row">
                         <td class="total-value hasil-cell" id="totalSelisih">0</td>
                         <td class="total-label">SSH</td>
                     </tr>
+
                 </tbody>
             </table>
 </div>
@@ -845,7 +885,7 @@
                 <thead>
                     <tr>
                         <th>Jumlah Dana</th>
-                        <th>AKASI</th>
+                        <th>AKSI</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -859,11 +899,19 @@
                     </tr>
                     <tr class="total-row">
                         <td class="total-value hasil-cell" id="totalDanaSak">0</td>
-                        <td class="total-label-selisih">Total</td>
+                        <td class="total-label-selisih">MSK</td>
                     </tr>
+
+                    <tr class="total-row">
+    <td class="total-value hasil-cell">
+        <span id="totalHargaSak">Rp 0</span>
+    </td>
+    <td class="total-label-TTL">TTL</td>
+</tr>
+
                     <tr class="total-row">
                         <td class="total-value hasil-cell" id="totalSelisihSak">0</td>
-                        <td class="total-label">Selisih</td>
+                        <td class="total-label">SSH</td>
                     </tr>
                 </tbody>
             </table>
@@ -924,8 +972,280 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+
+
 
        <script>
+
+        // Fungsi untuk recalculate semua nilai saat page load
+function recalculateAllOnLoad() {
+    // Recalculate untuk Jumlah Calculator
+    document.querySelectorAll("#jumlahTable tbody tr:not(.total-row)").forEach(row => {
+        const jumlahInput = row.querySelector(".jumlah");
+        const hargaInput = row.querySelector(".harga");
+        if (jumlahInput && hargaInput) {
+            if (jumlahInput.value || hargaInput.value) {
+                hitungJumlah(jumlahInput);
+            }
+        }
+    });
+
+    // Recalculate Dana untuk Jumlah
+    document.querySelectorAll('#TableSelisih .dana').forEach(input => {
+        if (input.value) {
+            hitungSelisih();
+        }
+    });
+
+    // Recalculate untuk Sak Calculator
+    document.querySelectorAll("#sakTable tbody tr:not(.total-row)").forEach(row => {
+        const sakInput = row.querySelector(".sak");
+        const hargaInput = row.querySelector(".harga");
+        if (sakInput && hargaInput) {
+            if (sakInput.value || hargaInput.value) {
+                hitungSak(sakInput);
+            }
+        }
+    });
+
+    // Recalculate Dana untuk Sak
+    document.querySelectorAll('#sakTableSelisih .dana').forEach(input => {
+        if (input.value) {
+            hitungSelisihSak();
+        }
+    });
+}
+
+
+// Fungsi untuk menyimpan data ke localStorage
+function saveToLocalStorage() {
+    // Simpan data Jumlah Calculator
+    const jumlahData = [];
+    document.querySelectorAll("#jumlahTable tbody tr:not(.total-row)").forEach(row => {
+        const jumlah = row.querySelector(".jumlah").value;
+        const harga = row.querySelector(".harga").value;
+        if (jumlah || harga) {
+            jumlahData.push({ jumlah, harga });
+        }
+    });
+    localStorage.setItem('jumlahData', JSON.stringify(jumlahData));
+
+    // Simpan data Dana Jumlah
+    const danaJumlahData = [];
+    document.querySelectorAll('#TableSelisih tbody tr:not(.total-row)').forEach(row => {
+        const dana = row.querySelector(".dana").value;
+        if (dana) {
+            danaJumlahData.push({ dana });
+        }
+    });
+    localStorage.setItem('danaJumlahData', JSON.stringify(danaJumlahData));
+
+    // Simpan data Sak Calculator
+    const sakData = [];
+    document.querySelectorAll("#sakTable tbody tr:not(.total-row)").forEach(row => {
+        const sak = row.querySelector(".sak").value;
+        const harga = row.querySelector(".harga").value;
+        if (sak || harga) {
+            sakData.push({ sak, harga });
+        }
+    });
+    localStorage.setItem('sakData', JSON.stringify(sakData));
+
+    // Simpan data Dana Sak
+    const danaSakData = [];
+    document.querySelectorAll('#sakTableSelisih tbody tr:not(.total-row)').forEach(row => {
+        const dana = row.querySelector(".dana").value;
+        if (dana) {
+            danaSakData.push({ dana });
+        }
+    });
+    localStorage.setItem('danaSakData', JSON.stringify(danaSakData));
+}
+
+// Fungsi untuk restore data dari localStorage
+function restoreFromLocalStorage() {
+    // Restore Jumlah Calculator
+    const jumlahData = JSON.parse(localStorage.getItem('jumlahData') || '[]');
+    if (jumlahData.length > 0) {
+        const jumlahTable = document.getElementById("jumlahTable");
+        const jumlahTbody = jumlahTable.querySelector('tbody');
+
+        // Hapus baris pertama yang kosong
+        const firstRow = jumlahTbody.querySelector('tr:not(.total-row)');
+        if (firstRow) firstRow.remove();
+
+        jumlahData.forEach(data => {
+            const row = jumlahTable.insertRow(jumlahTable.rows.length - 1);
+            row.innerHTML = `
+                <td><input inputmode="decimal" type="text" class="input-field jumlah" oninput="formatJumlah(this); hitungJumlah(this); saveToLocalStorage()" onkeydown="handleEnterKeyJumlah(event, this)" placeholder="Masukkan berat" value="${data.jumlah}"></td>
+                <td><input inputmode="decimal" type="text" class="input-field harga" oninput="formatHarga(this); hitungJumlah(this); saveToLocalStorage()" onkeydown="handleEnterKeyJumlah(event, this)" placeholder="Masukkan harga" value="${data.harga}"></td>
+                <td class="hasil hasil-cell">0</td>
+                <td>
+                    <button class="btn btn-danger" onclick="hapusBarisJumlah(this)">
+                        <i class="fas fa-trash-alt" style="margin: 0; padding: 0;"></i>
+                    </button>
+                </td>`;
+        });
+    }
+
+    // Restore Dana Jumlah
+    const danaJumlahData = JSON.parse(localStorage.getItem('danaJumlahData') || '[]');
+    if (danaJumlahData.length > 0) {
+        const danaTable = document.getElementById("TableSelisih");
+        const danaTbody = danaTable.querySelector('tbody');
+
+        // Hapus baris pertama yang kosong
+        const firstDanaRow = danaTbody.querySelector('tr:not(.total-row)');
+        if (firstDanaRow) firstDanaRow.remove();
+
+        danaJumlahData.forEach(data => {
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td><input inputmode="decimal" type="text" class="input-field dana" oninput="formatHarga(this); hitungSelisih(); saveToLocalStorage()" onkeydown="handleEnterKeyDana(event, this)" placeholder="Jumlah Dana (Rp)" value="${data.dana}"></td>
+                <td>
+                    <button class="btn btn-danger" onclick="hapusBarisDana(this)">
+                        <i class="fas fa-trash-alt" style="margin: 0; padding: 0;"></i>
+                    </button>
+                </td>`;
+            const totalRows = danaTbody.querySelectorAll('.total-row');
+            danaTbody.insertBefore(newRow, totalRows[0]);
+        });
+    }
+
+    // Restore Sak Calculator
+    const sakData = JSON.parse(localStorage.getItem('sakData') || '[]');
+    if (sakData.length > 0) {
+        const sakTable = document.getElementById("sakTable");
+        const sakTbody = sakTable.querySelector('tbody');
+
+        // Hapus baris pertama yang kosong
+        const firstSakRow = sakTbody.querySelector('tr:not(.total-row)');
+        if (firstSakRow) firstSakRow.remove();
+
+        sakData.forEach(data => {
+            const row = sakTable.insertRow(sakTable.rows.length - 1);
+            row.innerHTML = `
+                <td><input inputmode="decimal" type="text" class="input-field sak" oninput="formatSak(this); hitungSak(this); saveToLocalStorage()" onkeydown="handleEnterKeySak(event, this)" placeholder="Jumlah sak" value="${data.sak}"></td>
+                <td><input inputmode="decimal" type="text" class="input-field harga" oninput="formatHarga(this); hitungSak(this); saveToLocalStorage()" onkeydown="handleEnterKeySak(event, this)" placeholder="Harga per kg" value="${data.harga}"></td>
+                <td class="jumlah jumlah-cell">0</td>
+                <td class="hasil hasil-cell">0</td>
+                <td>
+                    <button class="btn btn-danger" onclick="hapusBarisSak(this)">
+                        <i class="fas fa-trash-alt" style="margin: 0; padding: 0;"></i>
+                    </button>
+                </td>`;
+        });
+    }
+
+    // Restore Dana Sak
+    const danaSakData = JSON.parse(localStorage.getItem('danaSakData') || '[]');
+    if (danaSakData.length > 0) {
+        const danaSakTable = document.getElementById("sakTableSelisih");
+        const danaSakTbody = danaSakTable.querySelector('tbody');
+
+        // Hapus baris pertama yang kosong
+        const firstDanaSakRow = danaSakTbody.querySelector('tr:not(.total-row)');
+        if (firstDanaSakRow) firstDanaSakRow.remove();
+
+        danaSakData.forEach(data => {
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td><input inputmode="decimal" type="text" class="input-field dana" oninput="formatHarga(this); hitungSelisihSak(); saveToLocalStorage()" onkeydown="handleEnterKeyDanaSak(event, this)" placeholder="Jumlah Dana (Rp)" value="${data.dana}"></td>
+                <td>
+                    <button class="btn btn-danger" onclick="hapusBarisDanaSak(this)">
+                        <i class="fas fa-trash-alt" style="margin: 0; padding: 0;"></i>
+                    </button>
+                </td>`;
+            const totalRows = danaSakTbody.querySelectorAll('.total-row');
+            danaSakTbody.insertBefore(newRow, totalRows[0]);
+        });
+    }
+}
+
+// Update fungsi tambahBarisJumlah
+function tambahBarisJumlah() {
+    let table = document.getElementById("jumlahTable");
+    let row = table.insertRow(table.rows.length - 1);
+    row.innerHTML = `
+        <td><input inputmode="decimal" type="text" class="input-field jumlah" oninput="formatJumlah(this); hitungJumlah(this); saveToLocalStorage()" onkeydown="handleEnterKeyJumlah(event, this)" placeholder="Masukkan berat"></td>
+        <td><input inputmode="decimal" type="text" class="input-field harga" oninput="formatHarga(this); hitungJumlah(this); saveToLocalStorage()" onkeydown="handleEnterKeyJumlah(event, this)" placeholder="Masukkan harga"></td>
+        <td class="hasil hasil-cell">0</td>
+        <td>
+            <button class="btn btn-danger" onclick="hapusBarisJumlah(this)">
+                <i class="fas fa-trash-alt" style="margin: 0; padding: 0;"></i>
+            </button>
+        </td>`;
+    setTimeout(() => {
+        row.querySelector('.jumlah').focus();
+    }, 100);
+    saveToLocalStorage();
+}
+
+// Update fungsi hapusBarisJumlah
+function hapusBarisJumlah(button) {
+    let row = button.closest("tr");
+    row.remove();
+    hitungTotalJumlah();
+    saveToLocalStorage();
+}
+
+// Update fungsi tambahBarisSak
+function tambahBarisSak() {
+    let table = document.getElementById("sakTable");
+    let row = table.insertRow(table.rows.length - 1);
+    row.innerHTML = `
+        <td><input inputmode="decimal" type="text" class="input-field sak" oninput="formatSak(this); hitungSak(this); saveToLocalStorage()" onkeydown="handleEnterKeySak(event, this)" placeholder="Jumlah sak"></td>
+        <td><input inputmode="decimal" type="text" class="input-field harga" oninput="formatHarga(this); hitungSak(this); saveToLocalStorage()" onkeydown="handleEnterKeySak(event, this)" placeholder="Harga per kg"></td>
+        <td class="jumlah jumlah-cell">0</td>
+        <td class="hasil hasil-cell">0</td>
+        <td>
+            <button class="btn btn-danger" onclick="hapusBarisSak(this)">
+                <i class="fas fa-trash-alt" style="margin: 0; padding: 0;"></i>
+            </button>
+        </td>`;
+    setTimeout(() => {
+        row.querySelector('.sak').focus();
+    }, 100);
+    saveToLocalStorage();
+}
+
+// Update fungsi hapusBarisSak
+function hapusBarisSak(button) {
+    let row = button.closest("tr");
+    row.remove();
+    hitungTotalSak();
+    saveToLocalStorage();
+}
+
+// Update fungsi hapusBarisDana
+function hapusBarisDana(button) {
+    let row = button.closest("tr");
+    let inputRows = document.querySelectorAll('#TableSelisih tr:not(.total-row)');
+    if (inputRows.length > 1) {
+        row.remove();
+    } else {
+        row.querySelector('.dana').value = '';
+    }
+    hitungSelisih();
+    saveToLocalStorage();
+}
+
+// Update fungsi hapusBarisDanaSak
+function hapusBarisDanaSak(button) {
+    let row = button.closest("tr");
+    let inputRows = document.querySelectorAll('#sakTableSelisih tr:not(.total-row)');
+    if (inputRows.length > 1) {
+        row.remove();
+    } else {
+        row.querySelector('.dana').value = '';
+    }
+    hitungSelisihSak();
+    saveToLocalStorage();
+}
+
         const KG_PER_SAK = 50; // Konstanta: 1 Sak = 50 Kg
 
         function formatRibuan(angka) {
@@ -1031,7 +1351,9 @@
             });
             let totalHasilJumlah = parseFloat(document.getElementById('totalHasilJumlah').textContent.replace(/Rp /g, "").replace(/,/g, "")) || 0;
             let totalSelisih = totalDana - totalHasilJumlah;
+            let totalHarga = totalHasilJumlah;
             document.getElementById('totalDana').textContent = "Rp " + formatRibuan(totalDana.toFixed(0));
+            document.getElementById('totalHarga').textContent = "Rp " + formatRibuan(totalHarga.toFixed(0));
             document.getElementById('totalSelisih').textContent = "Rp " + formatRibuan(totalSelisih.toFixed(0));
         }
 
@@ -1193,6 +1515,8 @@
             });
             let totalHasilSak = parseFloat(document.getElementById('totalHasilSak').textContent.replace(/Rp /g, "").replace(/,/g, "")) || 0;
             let totalSelisih = totalDana - totalHasilSak;
+            let totalHargaSak = totalHasilSak;
+            document.getElementById('totalHargaSak').textContent = "Rp " + formatRibuan(totalHargaSak.toFixed(0));
             document.getElementById('totalDanaSak').textContent = "Rp " + formatRibuan(totalDana.toFixed(0));
             document.getElementById('totalSelisihSak').textContent = "Rp " + formatRibuan(totalSelisih.toFixed(0));
         }
@@ -1597,73 +1921,208 @@ notaHTML += `
         }
 
 
-function showNotaModal(calculatorType) {
+// function showNotaModal(calculatorType) {
+//     const notaContent = generateNotaHTML(calculatorType);
+
+//     const iframe = document.createElement('iframe');
+//     iframe.style.position = 'absolute';
+//     iframe.style.left = '-9999px';
+//     iframe.style.top = '-9999px';
+//     iframe.style.width = '0px';
+//     iframe.style.height = '0px';
+//     iframe.style.border = 'none';
+
+//     document.body.appendChild(iframe);
+
+//     const printHTML = `
+//         <!DOCTYPE html>
+//         <html>
+//         <head>
+//             <meta charset="UTF-8">
+//             <style>
+//                 @page {
+//                     size: 80mm auto;
+//                     margin: 0 !important;
+//                 }
+//                 * { box-sizing: border-box !important; }
+//                 body {
+//                     margin: 0 !important;
+//                     padding: 10px 8px 10px 8px !important; /* 👈 Tambahkan padding keliling */
+//                     width: 80mm !important;
+//                     max-width: 80mm !important;
+//                     background: white;
+//                 }
+//                 @media print {
+//                     @page { size: 80mm auto; margin: 0 !important; }
+//                     body {
+//                         margin: 0 !important;
+//                         padding: 10px 8px 10px 8px !important; /* padding tetap di mode print */
+//                     }
+//                 }
+//             </style>
+//         </head>
+//         <body>
+//             ${notaContent}
+//         </body>
+//         </html>
+//     `;
+
+//     iframe.contentDocument.open();
+//     iframe.contentDocument.write(printHTML);
+//     iframe.contentDocument.close();
+
+//     iframe.onload = async function() {
+//         const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+//         const iframeBody = iframeDoc.body;
+
+//         // Tunggu render sedikit
+//         await new Promise(resolve => setTimeout(resolve, 300));
+
+//         // Konversi ke canvas
+//         const canvas = await html2canvas(iframeBody, {
+//             scale: 2, // gunakan scale tinggi untuk hasil tajam
+//             useCORS: true,
+//             backgroundColor: '#fff'
+//         });
+
+//         const imgData = canvas.toDataURL('image/png');
+
+//         const { jsPDF } = window.jspdf;
+//         const pdf = new jsPDF({
+//             orientation: 'portrait',
+//             unit: 'px',
+//             format: [canvas.width, canvas.height]
+//         });
+
+//         pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+
+//         // Buat blob untuk print
+//         const blob = pdf.output('blob');
+//         const pdfUrl = URL.createObjectURL(blob);
+
+//         const printFrame = document.createElement('iframe');
+//         printFrame.style.position = 'fixed';
+//         printFrame.style.right = '0';
+//         printFrame.style.bottom = '0';
+//         printFrame.style.width = '0';
+//         printFrame.style.height = '0';
+//         printFrame.style.border = 'none';
+//         printFrame.src = pdfUrl;
+//         document.body.appendChild(printFrame);
+
+//         printFrame.onload = function() {
+//             printFrame.contentWindow.focus();
+//             printFrame.contentWindow.print();
+
+//             // bersihkan setelah print
+//             setTimeout(() => {
+//                 URL.revokeObjectURL(pdfUrl);
+//                 document.body.removeChild(printFrame);
+//                 document.body.removeChild(iframe);
+//             }, 2000);
+//         };
+//     };
+// }
+
+async function showNotaModal(calculatorType) {
     const notaContent = generateNotaHTML(calculatorType);
 
+    // --- buat iframe tersembunyi ---
     const iframe = document.createElement('iframe');
     iframe.style.position = 'absolute';
     iframe.style.left = '-9999px';
     iframe.style.top = '-9999px';
-    iframe.style.width = '0px';
-    iframe.style.height = '0px';
+    iframe.style.width = '0';
+    iframe.style.height = '0';
     iframe.style.border = 'none';
-
     document.body.appendChild(iframe);
 
-    const printHTML = `
+    const html = `
         <!DOCTYPE html>
         <html>
         <head>
             <meta charset="UTF-8">
             <style>
-                @page {
-                    size: 80mm auto;
-                    margin: 0 !important;
-                }
-                * {
-                    box-sizing: border-box !important;
-                }
+                @page { size: 80mm auto; margin: 0; }
+                * { box-sizing: border-box; }
                 body {
-                    margin: 0 !important;
-                    padding: 0 !important;
-                    width: 80mm !important;
-                    max-width: 80mm !important;
-                }
-                @media print {
-                    @page {
-                        size: 80mm auto;
-                        margin: 0 !important;
-                    }
-                    body {
-                        margin: 0 !important;
-                        padding: 0 !important;
-                    }
+                    margin: 0;
+                    padding: 12px 10px;
+                    width: 80mm;
+                    max-width: 80mm;
+                    background: white;
+                    font-family: "Arial", sans-serif;
+                    -webkit-print-color-adjust: exact !important;
                 }
             </style>
         </head>
-        <body>
-            ${notaContent}
-        </body>
+        <body>${notaContent}</body>
         </html>
     `;
 
     iframe.contentDocument.open();
-    iframe.contentDocument.write(printHTML);
+    iframe.contentDocument.write(html);
     iframe.contentDocument.close();
 
-    iframe.onload = function() {
-        setTimeout(() => {
-            iframe.contentWindow.focus();
-            iframe.contentWindow.print();
+    iframe.onload = async function () {
+        const iframeBody = iframe.contentDocument.body;
 
-            // setTimeout(() => {
-            //     if (iframe.parentNode) {
-            //         iframe.parentNode.removeChild(iframe);
-            //     }
-            // }, 1000);
-        }, 500);
+        // Tunggu render selesai
+        await new Promise((r) => setTimeout(r, 300));
+
+        // === 🔍 Render tajam dengan html2canvas ===
+        const scale = window.devicePixelRatio * 4; // bisa 3–6 tergantung tajam yang diinginkan
+        const canvas = await html2canvas(iframeBody, {
+            scale: scale,
+            useCORS: true,
+            backgroundColor: '#fff',
+            logging: false,
+        });
+
+        // Pastikan hasilnya dalam ukuran mm yang benar
+        const imgData = canvas.toDataURL('image/png', 1.0); // kualitas 100%
+
+        // === Buat PDF resolusi tinggi ===
+        const { jsPDF } = window.jspdf;
+        const pdfWidth = 80; // mm
+        const pxPerMm = canvas.width / pdfWidth;
+        const pdfHeight = canvas.height / pxPerMm;
+
+        const pdf = new jsPDF({
+            orientation: 'portrait',
+            unit: 'mm',
+            format: [pdfWidth, pdfHeight],
+        });
+
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight, '', 'FAST');
+
+        // === Print otomatis ===
+        const blob = pdf.output('blob');
+        const pdfUrl = URL.createObjectURL(blob);
+
+        const printFrame = document.createElement('iframe');
+        printFrame.style.position = 'fixed';
+        printFrame.style.right = '0';
+        printFrame.style.bottom = '0';
+        printFrame.style.width = '0';
+        printFrame.style.height = '0';
+        printFrame.src = pdfUrl;
+        document.body.appendChild(printFrame);
+
+        printFrame.onload = function () {
+            printFrame.contentWindow.focus();
+            printFrame.contentWindow.print();
+
+            setTimeout(() => {
+                URL.revokeObjectURL(pdfUrl);
+                document.body.removeChild(printFrame);
+                document.body.removeChild(iframe);
+            }, 2000);
+        };
     };
 }
+
+
 
 function showNotaModalAndroid(calculatorType) {
     const notaContent = generateNotaHTML(calculatorType);
@@ -1772,6 +2231,13 @@ function printNotaDirect(calculatorType) {
 
         // Initial calculations on load
         document.addEventListener('DOMContentLoaded', () => {
+            // Restore data dari localStorage
+    restoreFromLocalStorage();
+
+    // Tunggu sebentar untuk memastikan browser sudah restore nilai
+    setTimeout(() => {
+        recalculateAllOnLoad();
+    }, 100);
             hitungTotalJumlah();
             hitungSelisih();
             hitungTotalSak();
