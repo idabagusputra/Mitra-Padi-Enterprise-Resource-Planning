@@ -1965,94 +1965,94 @@ notaHTML += `
 
 
 
-function showNotaModal(calculatorType) {
-    const notaContent = generateNotaHTML(calculatorType);
+// function showNotaModal(calculatorType) {
+//     const notaContent = generateNotaHTML(calculatorType);
 
-    const printHTML = `
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <meta charset="UTF-8">
-            <title>Nota</title>
-            <style>
-                @page {
-                    size: 80mm auto;
-                    margin: 0 !important;
-                }
-                * {
-                    box-sizing: border-box !important;
-                }
-                body {
-                    margin: 0 !important;
-                    padding: 10px !important;
-                    width: 80mm !important;
-                    max-width: 80mm !important;
-                    font-family: Arial, sans-serif;
-                    background: white;
-                }
-                @media print {
-                    @page {
-                        size: 80mm auto;
-                        margin: 0 !important;
-                    }
-                    body {
-                        margin: 0 !important;
-                        padding: 10px !important;
-                    }
-                }
-            </style>
-        </head>
-        <body>
-            ${notaContent}
-        </body>
-        </html>
-    `;
+//     const printHTML = `
+//         <!DOCTYPE html>
+//         <html>
+//         <head>
+//             <meta charset="UTF-8">
+//             <title>Nota</title>
+//             <style>
+//                 @page {
+//                     size: 80mm auto;
+//                     margin: 0 !important;
+//                 }
+//                 * {
+//                     box-sizing: border-box !important;
+//                 }
+//                 body {
+//                     margin: 0 !important;
+//                     padding: 10px !important;
+//                     width: 80mm !important;
+//                     max-width: 80mm !important;
+//                     font-family: Arial, sans-serif;
+//                     background: white;
+//                 }
+//                 @media print {
+//                     @page {
+//                         size: 80mm auto;
+//                         margin: 0 !important;
+//                     }
+//                     body {
+//                         margin: 0 !important;
+//                         padding: 10px !important;
+//                     }
+//                 }
+//             </style>
+//         </head>
+//         <body>
+//             ${notaContent}
+//         </body>
+//         </html>
+//     `;
 
-    // Coba deteksi jika sedang di iPhone/iPad (iOS Safari)
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+//     // Coba deteksi jika sedang di iPhone/iPad (iOS Safari)
+//     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
-    if (isIOS) {
-        // Gunakan window baru (iframe tidak bekerja di iOS)
-        const printWindow = window.open('', '_blank');
-        printWindow.document.open();
-        printWindow.document.write(printHTML);
-        printWindow.document.close();
+//     if (isIOS) {
+//         // Gunakan window baru (iframe tidak bekerja di iOS)
+//         const printWindow = window.open('', '_blank');
+//         printWindow.document.open();
+//         printWindow.document.write(printHTML);
+//         printWindow.document.close();
 
-        // Tunggu sebentar agar halaman termuat sempurna sebelum print
-        printWindow.onload = function () {
-            setTimeout(() => {
-                printWindow.focus();
-                printWindow.print();
-                printWindow.close();
-            }, 500);
-        };
-    } else {
-        // Gunakan iframe tersembunyi untuk browser lain (lebih halus)
-        const iframe = document.createElement('iframe');
-        iframe.style.position = 'absolute';
-        iframe.style.left = '-9999px';
-        iframe.style.top = '-9999px';
-        iframe.style.width = '0';
-        iframe.style.height = '0';
-        iframe.style.border = 'none';
-        document.body.appendChild(iframe);
+//         // Tunggu sebentar agar halaman termuat sempurna sebelum print
+//         printWindow.onload = function () {
+//             setTimeout(() => {
+//                 printWindow.focus();
+//                 printWindow.print();
+//                 printWindow.close();
+//             }, 500);
+//         };
+//     } else {
+//         // Gunakan iframe tersembunyi untuk browser lain (lebih halus)
+//         const iframe = document.createElement('iframe');
+//         iframe.style.position = 'absolute';
+//         iframe.style.left = '-9999px';
+//         iframe.style.top = '-9999px';
+//         iframe.style.width = '0';
+//         iframe.style.height = '0';
+//         iframe.style.border = 'none';
+//         document.body.appendChild(iframe);
 
-        iframe.contentDocument.open();
-        iframe.contentDocument.write(printHTML);
-        iframe.contentDocument.close();
+//         iframe.contentDocument.open();
+//         iframe.contentDocument.write(printHTML);
+//         iframe.contentDocument.close();
 
-        iframe.onload = function () {
-            setTimeout(() => {
-                iframe.contentWindow.focus();
-                iframe.contentWindow.print();
-                // Bersihkan iframe setelah print
-                setTimeout(() => {
-                    if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
-                }, 1000);
-            }, 500);
-        };
-    }
-}
+//         iframe.onload = function () {
+//             setTimeout(() => {
+//                 iframe.contentWindow.focus();
+//                 iframe.contentWindow.print();
+//                 // Bersihkan iframe setelah print
+//                 setTimeout(() => {
+//                     if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
+//                 }, 1000);
+//             }, 500);
+//         };
+//     }
+// }
 
 
 // function showNotaModal(calculatorType) {
@@ -2158,6 +2158,9 @@ function showNotaModal(calculatorType) {
 //     };
 // }
 
+
+
+
 // async function showNotaModal(calculatorType) {
 //     const notaContent = generateNotaHTML(calculatorType);
 
@@ -2257,24 +2260,96 @@ function showNotaModal(calculatorType) {
 // }
 
 
-async function saveNotaAsJPG(calculatorType) {
+// async function saveNotaAsJPG(calculatorType) {
+//     const notaContent = generateNotaHTML(calculatorType);
+
+//     // Buat iframe tersembunyi
+//     const iframe = document.createElement('iframe');
+//     iframe.style.position = 'absolute';
+//     iframe.style.left = '-9999px';
+//     iframe.style.top = '-9999px';
+//     iframe.style.width = '400px'; // beri ukuran agar browser render penuh
+//     iframe.style.height = 'auto';
+//     iframe.style.border = 'none';
+//     document.body.appendChild(iframe);
+
+//     const html = `
+//         <!DOCTYPE html>
+//         <html>
+//         <head>
+//             <meta charset="UTF-8">
+//             <style>
+//                 @page { size: 80mm auto; margin: 0; }
+//                 * { box-sizing: border-box; }
+//                 body {
+//                     margin: 0;
+//                     padding: 12px 10px;
+//                     width: 80mm;
+//                     max-width: 80mm;
+//                     background: white;
+//                     font-family: "Arial", sans-serif;
+//                     -webkit-print-color-adjust: exact !important;
+//                     transform: scale(2); /* render dua kali lebih besar */
+//                     transform-origin: top left;
+//                 }
+//             </style>
+//         </head>
+//         <body>${notaContent}</body>
+//         </html>
+//     `;
+
+//     iframe.contentDocument.open();
+//     iframe.contentDocument.write(html);
+//     iframe.contentDocument.close();
+
+//     iframe.onload = async function () {
+//         const iframeBody = iframe.contentDocument.body;
+
+//         // Pastikan font dan gambar sudah ter-load
+//         await new Promise(resolve => setTimeout(resolve, 600));
+
+//         // Render dengan resolusi tinggi
+//         const canvas = await html2canvas(iframeBody, {
+//             scale: 6, // scale tinggi = tajam
+//             useCORS: true,
+//             backgroundColor: '#ffffff',
+//             windowWidth: iframeBody.scrollWidth * 2,
+//             windowHeight: iframeBody.scrollHeight * 2
+//         });
+
+//         // Konversi ke JPG tajam
+//         const imgData = canvas.toDataURL('image/jpeg', 1.0);
+
+//         // Buat link download
+//         const link = document.createElement('a');
+//         link.href = imgData;
+//         link.download = `nota_${new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')}.jpg`;
+//         document.body.appendChild(link);
+//         link.click();
+//         document.body.removeChild(link);
+
+//         // Bersihkan
+//         document.body.removeChild(iframe);
+//     };
+// }
+
+
+
+
+
+
+async function showNotaModal(calculatorType) {
     const notaContent = generateNotaHTML(calculatorType);
 
-    // Buat iframe tersembunyi
-    const iframe = document.createElement('iframe');
-    iframe.style.position = 'absolute';
-    iframe.style.left = '-9999px';
-    iframe.style.top = '-9999px';
-    iframe.style.width = '400px'; // beri ukuran agar browser render penuh
-    iframe.style.height = 'auto';
-    iframe.style.border = 'none';
-    document.body.appendChild(iframe);
+    // --- buat jendela popup untuk iPhone (bukan iframe) ---
+    const printWindow = window.open('', '_blank', 'width=400,height=600');
 
     const html = `
         <!DOCTYPE html>
         <html>
         <head>
             <meta charset="UTF-8">
+            <title>Cetak Nota</title>
             <style>
                 @page { size: 80mm auto; margin: 0; }
                 * { box-sizing: border-box; }
@@ -2286,8 +2361,6 @@ async function saveNotaAsJPG(calculatorType) {
                     background: white;
                     font-family: "Arial", sans-serif;
                     -webkit-print-color-adjust: exact !important;
-                    transform: scale(2); /* render dua kali lebih besar */
-                    transform-origin: top left;
                 }
             </style>
         </head>
@@ -2295,38 +2368,79 @@ async function saveNotaAsJPG(calculatorType) {
         </html>
     `;
 
-    iframe.contentDocument.open();
-    iframe.contentDocument.write(html);
-    iframe.contentDocument.close();
+    printWindow.document.open();
+    printWindow.document.write(html);
+    printWindow.document.close();
 
-    iframe.onload = async function () {
-        const iframeBody = iframe.contentDocument.body;
+    // Pastikan isi ter-load
+    printWindow.onload = async function () {
+        await new Promise(resolve => setTimeout(resolve, 500));
 
-        // Pastikan font dan gambar sudah ter-load
-        await new Promise(resolve => setTimeout(resolve, 600));
+        // Jalankan print dialog — iPhone butuh interaksi pengguna
+        printWindow.focus();
+        printWindow.print();
 
-        // Render dengan resolusi tinggi
-        const canvas = await html2canvas(iframeBody, {
-            scale: 6, // scale tinggi = tajam
+        // Tutup otomatis setelah print di desktop (iPhone abaikan)
+        setTimeout(() => {
+            printWindow.close();
+        }, 1500);
+    };
+}
+
+
+async function saveNotaAsJPG(calculatorType) {
+    const notaContent = generateNotaHTML(calculatorType);
+
+    // Buat jendela baru agar bisa render penuh di iPhone
+    const w = window.open('', '_blank');
+    w.document.open();
+    w.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>Nota</title>
+            <style>
+                @page { size: 80mm auto; margin: 0; }
+                * { box-sizing: border-box; }
+                body {
+                    margin: 0;
+                    padding: 12px 10px;
+                    width: 80mm;
+                    max-width: 80mm;
+                    background: white;
+                    font-family: "Arial", sans-serif;
+                    -webkit-print-color-adjust: exact !important;
+                }
+            </style>
+        </head>
+        <body>${notaContent}</body>
+        </html>
+    `);
+    w.document.close();
+
+    w.onload = async () => {
+        await new Promise(r => setTimeout(r, 800));
+        const body = w.document.body;
+
+        const canvas = await html2canvas(body, {
+            scale: 4,
             useCORS: true,
             backgroundColor: '#ffffff',
-            windowWidth: iframeBody.scrollWidth * 2,
-            windowHeight: iframeBody.scrollHeight * 2
         });
 
-        // Konversi ke JPG tajam
         const imgData = canvas.toDataURL('image/jpeg', 1.0);
 
-        // Buat link download
-        const link = document.createElement('a');
+        // === iPhone tidak bisa auto-download blob, jadi tampilkan link manual ===
+        const link = w.document.createElement('a');
         link.href = imgData;
         link.download = `nota_${new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')}.jpg`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-
-        // Bersihkan
-        document.body.removeChild(iframe);
+        link.textContent = "📥 Tekan di sini untuk menyimpan gambar nota";
+        link.style.display = "block";
+        link.style.margin = "20px";
+        link.style.fontSize = "18px";
+        w.document.body.innerHTML = '';
+        w.document.body.appendChild(link);
     };
 }
 
