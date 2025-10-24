@@ -1963,19 +1963,22 @@ notaHTML += `
         }
 
 
+
+
 function showNotaModal(calculatorType) {
     const notaContent = generateNotaHTML(calculatorType);
 
+    // Buat elemen iframe tersembunyi
     const iframe = document.createElement('iframe');
     iframe.style.position = 'absolute';
     iframe.style.left = '-9999px';
     iframe.style.top = '-9999px';
-    iframe.style.width = '0px';
-    iframe.style.height = '0px';
+    iframe.style.width = '0';
+    iframe.style.height = '0';
     iframe.style.border = 'none';
-
     document.body.appendChild(iframe);
 
+    // Konten HTML untuk dicetak
     const printHTML = `
         <!DOCTYPE html>
         <html>
@@ -1986,19 +1989,23 @@ function showNotaModal(calculatorType) {
                     size: 80mm auto;
                     margin: 0 !important;
                 }
-                * { box-sizing: border-box !important; }
+                * {
+                    box-sizing: border-box !important;
+                }
                 body {
                     margin: 0 !important;
-                    padding: 10px 8px 10px 8px !important; /* 👈 Tambahkan padding keliling */
+                    padding: 0 !important;
                     width: 80mm !important;
                     max-width: 80mm !important;
-                    background: white;
                 }
                 @media print {
-                    @page { size: 80mm auto; margin: 0 !important; }
+                    @page {
+                        size: 80mm auto;
+                        margin: 0 !important;
+                    }
                     body {
                         margin: 0 !important;
-                        padding: 10px 8px 10px 8px !important; /* padding tetap di mode print */
+                        padding: 0 !important;
                     }
                 }
             </style>
@@ -2009,62 +2016,128 @@ function showNotaModal(calculatorType) {
         </html>
     `;
 
+    // Tulis HTML ke iframe
     iframe.contentDocument.open();
     iframe.contentDocument.write(printHTML);
     iframe.contentDocument.close();
 
-    iframe.onload = async function() {
-        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-        const iframeBody = iframeDoc.body;
+    // Tunggu iframe siap, lalu cetak
+    iframe.onload = function () {
+        setTimeout(() => {
+            iframe.contentWindow.focus();
+            iframe.contentWindow.print();
 
-        // Tunggu render sedikit
-        await new Promise(resolve => setTimeout(resolve, 300));
-
-        // Konversi ke canvas
-        const canvas = await html2canvas(iframeBody, {
-            scale: 2, // gunakan scale tinggi untuk hasil tajam
-            useCORS: true,
-            backgroundColor: '#fff'
-        });
-
-        const imgData = canvas.toDataURL('image/png');
-
-        const { jsPDF } = window.jspdf;
-        const pdf = new jsPDF({
-            orientation: 'portrait',
-            unit: 'px',
-            format: [canvas.width, canvas.height]
-        });
-
-        pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
-
-        // Buat blob untuk print
-        const blob = pdf.output('blob');
-        const pdfUrl = URL.createObjectURL(blob);
-
-        const printFrame = document.createElement('iframe');
-        printFrame.style.position = 'fixed';
-        printFrame.style.right = '0';
-        printFrame.style.bottom = '0';
-        printFrame.style.width = '0';
-        printFrame.style.height = '0';
-        printFrame.style.border = 'none';
-        printFrame.src = pdfUrl;
-        document.body.appendChild(printFrame);
-
-        printFrame.onload = function() {
-            printFrame.contentWindow.focus();
-            printFrame.contentWindow.print();
-
-            // bersihkan setelah print
-            setTimeout(() => {
-                URL.revokeObjectURL(pdfUrl);
-                document.body.removeChild(printFrame);
-                document.body.removeChild(iframe);
-            }, 2000);
-        };
+            // Hapus iframe jika ingin membersihkan DOM setelah print
+            // setTimeout(() => {
+            //     if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
+            // }, 1000);
+        }, 500);
     };
 }
+
+
+// function showNotaModal(calculatorType) {
+//     const notaContent = generateNotaHTML(calculatorType);
+
+//     const iframe = document.createElement('iframe');
+//     iframe.style.position = 'absolute';
+//     iframe.style.left = '-9999px';
+//     iframe.style.top = '-9999px';
+//     iframe.style.width = '0px';
+//     iframe.style.height = '0px';
+//     iframe.style.border = 'none';
+
+//     document.body.appendChild(iframe);
+
+//     const printHTML = `
+//         <!DOCTYPE html>
+//         <html>
+//         <head>
+//             <meta charset="UTF-8">
+//             <style>
+//                 @page {
+//                     size: 80mm auto;
+//                     margin: 0 !important;
+//                 }
+//                 * { box-sizing: border-box !important; }
+//                 body {
+//                     margin: 0 !important;
+//                     padding: 10px 8px 10px 8px !important; /* 👈 Tambahkan padding keliling */
+//                     width: 80mm !important;
+//                     max-width: 80mm !important;
+//                     background: white;
+//                 }
+//                 @media print {
+//                     @page { size: 80mm auto; margin: 0 !important; }
+//                     body {
+//                         margin: 0 !important;
+//                         padding: 10px 8px 10px 8px !important; /* padding tetap di mode print */
+//                     }
+//                 }
+//             </style>
+//         </head>
+//         <body>
+//             ${notaContent}
+//         </body>
+//         </html>
+//     `;
+
+//     iframe.contentDocument.open();
+//     iframe.contentDocument.write(printHTML);
+//     iframe.contentDocument.close();
+
+//     iframe.onload = async function() {
+//         const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+//         const iframeBody = iframeDoc.body;
+
+//         // Tunggu render sedikit
+//         await new Promise(resolve => setTimeout(resolve, 300));
+
+//         // Konversi ke canvas
+//         const canvas = await html2canvas(iframeBody, {
+//             scale: 2, // gunakan scale tinggi untuk hasil tajam
+//             useCORS: true,
+//             backgroundColor: '#fff'
+//         });
+
+//         const imgData = canvas.toDataURL('image/png');
+
+//         const { jsPDF } = window.jspdf;
+//         const pdf = new jsPDF({
+//             orientation: 'portrait',
+//             unit: 'px',
+//             format: [canvas.width, canvas.height]
+//         });
+
+//         pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+
+//         // Buat blob untuk print
+//         const blob = pdf.output('blob');
+//         const pdfUrl = URL.createObjectURL(blob);
+
+//         const printFrame = document.createElement('iframe');
+//         printFrame.style.position = 'fixed';
+//         printFrame.style.right = '0';
+//         printFrame.style.bottom = '0';
+//         printFrame.style.width = '0';
+//         printFrame.style.height = '0';
+//         printFrame.style.border = 'none';
+//         printFrame.src = pdfUrl;
+//         document.body.appendChild(printFrame);
+
+//         printFrame.onload = function() {
+//             printFrame.contentWindow.focus();
+//             printFrame.contentWindow.print();
+
+//             // bersihkan setelah print
+//             setTimeout(() => {
+//                 URL.revokeObjectURL(pdfUrl);
+//                 document.body.removeChild(printFrame);
+//                 document.body.removeChild(iframe);
+//             }, 2000);
+//         };
+//     };
+// }
 
 // async function showNotaModal(calculatorType) {
 //     const notaContent = generateNotaHTML(calculatorType);
