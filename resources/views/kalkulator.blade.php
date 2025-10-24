@@ -1968,22 +1968,12 @@ notaHTML += `
 function showNotaModal(calculatorType) {
     const notaContent = generateNotaHTML(calculatorType);
 
-    // Buat elemen iframe tersembunyi
-    const iframe = document.createElement('iframe');
-    iframe.style.position = 'absolute';
-    iframe.style.left = '-9999px';
-    iframe.style.top = '-9999px';
-    iframe.style.width = '0';
-    iframe.style.height = '0';
-    iframe.style.border = 'none';
-    document.body.appendChild(iframe);
-
-    // Konten HTML untuk dicetak
     const printHTML = `
         <!DOCTYPE html>
         <html>
         <head>
             <meta charset="UTF-8">
+            <title>Nota</title>
             <style>
                 @page {
                     size: 80mm auto;
@@ -1994,9 +1984,11 @@ function showNotaModal(calculatorType) {
                 }
                 body {
                     margin: 0 !important;
-                    padding: 0 !important;
+                    padding: 10px !important;
                     width: 80mm !important;
                     max-width: 80mm !important;
+                    font-family: Arial, sans-serif;
+                    background: white;
                 }
                 @media print {
                     @page {
@@ -2005,7 +1997,7 @@ function showNotaModal(calculatorType) {
                     }
                     body {
                         margin: 0 !important;
-                        padding: 0 !important;
+                        padding: 10px !important;
                     }
                 }
             </style>
@@ -2016,23 +2008,50 @@ function showNotaModal(calculatorType) {
         </html>
     `;
 
-    // Tulis HTML ke iframe
-    iframe.contentDocument.open();
-    iframe.contentDocument.write(printHTML);
-    iframe.contentDocument.close();
+    // Coba deteksi jika sedang di iPhone/iPad (iOS Safari)
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
-    // Tunggu iframe siap, lalu cetak
-    iframe.onload = function () {
-        setTimeout(() => {
-            iframe.contentWindow.focus();
-            iframe.contentWindow.print();
+    if (isIOS) {
+        // Gunakan window baru (iframe tidak bekerja di iOS)
+        const printWindow = window.open('', '_blank');
+        printWindow.document.open();
+        printWindow.document.write(printHTML);
+        printWindow.document.close();
 
-            // Hapus iframe jika ingin membersihkan DOM setelah print
-            // setTimeout(() => {
-            //     if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
-            // }, 1000);
-        }, 500);
-    };
+        // Tunggu sebentar agar halaman termuat sempurna sebelum print
+        printWindow.onload = function () {
+            setTimeout(() => {
+                printWindow.focus();
+                printWindow.print();
+                printWindow.close();
+            }, 500);
+        };
+    } else {
+        // Gunakan iframe tersembunyi untuk browser lain (lebih halus)
+        const iframe = document.createElement('iframe');
+        iframe.style.position = 'absolute';
+        iframe.style.left = '-9999px';
+        iframe.style.top = '-9999px';
+        iframe.style.width = '0';
+        iframe.style.height = '0';
+        iframe.style.border = 'none';
+        document.body.appendChild(iframe);
+
+        iframe.contentDocument.open();
+        iframe.contentDocument.write(printHTML);
+        iframe.contentDocument.close();
+
+        iframe.onload = function () {
+            setTimeout(() => {
+                iframe.contentWindow.focus();
+                iframe.contentWindow.print();
+                // Bersihkan iframe setelah print
+                setTimeout(() => {
+                    if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
+                }, 1000);
+            }, 500);
+        };
+    }
 }
 
 
