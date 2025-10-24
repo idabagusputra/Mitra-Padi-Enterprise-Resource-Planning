@@ -693,6 +693,22 @@
         box-shadow: 0 8px 20px rgba(0, 206, 201, 0.3);
     }
 
+.btn-save {
+    background: linear-gradient(120deg, #2c3e50, #4b79a1);
+    color: white;
+    width: 100%;
+    height: 50px;
+    font-size: 15px;
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
+}
+
+.btn-save:hover {
+    background: linear-gradient(120deg, #4b79a1, #2c3e50);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(75, 121, 161, 0.4);
+}
+
+
     /* Specific styles for 80mm receipt */
     @page {
         size: 80mm auto; /* Set width to 80mm, height auto */
@@ -838,10 +854,23 @@
 </div>
 
             <div class="action-bar">
-                <button class="btn btn-primary" onclick="tambahBarisJumlah()"><i class="fas fa-plus"></i>TAMBAH BARIS</button>
-               <button class="btn btn-print" onclick="showNotaModal('jumlah')"><i class="fas fa-print"></i> CETAK NOTA</button>
-{{-- <button class="btn btn-print" onclick="saveNotaAsJPG('jumlah')"><i class="fas fa-download"></i> SAVE JPG</button> --}}
-  </div>
+    <button class="btn btn-primary" onclick="tambahBarisJumlah()">
+        <i class="fas fa-plus"></i> TAMBAH BARIS
+    </button>
+
+
+        <button class="btn btn-print half" onclick="showNotaModal('jumlah')">
+            <i class="fas fa-print"></i> CETAK NOTA
+        </button>
+        <button class="btn btn-save half" onclick="saveNotaAsJPG('jumlah')"
+        {{-- style="width: 178px; text-align: center;"> --}}
+        style="text-align: center;">
+        <i class="fas fa-download"></i> SAVE GAMBAR
+    </button>
+
+</div>
+
+
         </div>
 
         <!-- Kalkulator Sak -->
@@ -918,8 +947,21 @@
 </div>
 
             <div class="action-bar">
-                <button class="btn btn-primary" onclick="tambahBarisSak()"><i class="fas fa-plus"></i>TAMBAH BARIS</button>
-                <button class="btn btn-print" onclick="showNotaModal('sak')"><i class="fas fa-print"></i> CETAK NOTA</button>
+    <button class="btn btn-primary" onclick="tambahBarisSak()">
+        <i class="fas fa-plus"></i> TAMBAH BARIS
+    </button>
+
+    <button class="btn btn-print" onclick="showNotaModal('sak')">
+        <i class="fas fa-print"></i> CETAK NOTA
+    </button>
+
+      <button class="btn btn-save half" onclick="saveNotaAsJPG('sak')"
+        {{-- style="width: 178px; text-align: center;"> --}}
+        style=" text-align: center;">
+        <i class="fas fa-download"></i> SAVE GAMBAR
+    </button>
+</div>
+
             </div>
         </div>
 
@@ -2121,6 +2163,81 @@ async function showNotaModal(calculatorType) {
         };
     };
 }
+
+
+async function saveNotaAsJPG(calculatorType) {
+    const notaContent = generateNotaHTML(calculatorType);
+
+    // Buat iframe tersembunyi
+    const iframe = document.createElement('iframe');
+    iframe.style.position = 'absolute';
+    iframe.style.left = '-9999px';
+    iframe.style.top = '-9999px';
+    iframe.style.width = '400px'; // beri ukuran agar browser render penuh
+    iframe.style.height = 'auto';
+    iframe.style.border = 'none';
+    document.body.appendChild(iframe);
+
+    const html = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <style>
+                @page { size: 80mm auto; margin: 0; }
+                * { box-sizing: border-box; }
+                body {
+                    margin: 0;
+                    padding: 12px 10px;
+                    width: 80mm;
+                    max-width: 80mm;
+                    background: white;
+                    font-family: "Arial", sans-serif;
+                    -webkit-print-color-adjust: exact !important;
+                    transform: scale(2); /* render dua kali lebih besar */
+                    transform-origin: top left;
+                }
+            </style>
+        </head>
+        <body>${notaContent}</body>
+        </html>
+    `;
+
+    iframe.contentDocument.open();
+    iframe.contentDocument.write(html);
+    iframe.contentDocument.close();
+
+    iframe.onload = async function () {
+        const iframeBody = iframe.contentDocument.body;
+
+        // Pastikan font dan gambar sudah ter-load
+        await new Promise(resolve => setTimeout(resolve, 600));
+
+        // Render dengan resolusi tinggi
+        const canvas = await html2canvas(iframeBody, {
+            scale: 6, // scale tinggi = tajam
+            useCORS: true,
+            backgroundColor: '#ffffff',
+            windowWidth: iframeBody.scrollWidth * 2,
+            windowHeight: iframeBody.scrollHeight * 2
+        });
+
+        // Konversi ke JPG tajam
+        const imgData = canvas.toDataURL('image/jpeg', 1.0);
+
+        // Buat link download
+        const link = document.createElement('a');
+        link.href = imgData;
+        link.download = `nota_${new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')}.jpg`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        // Bersihkan
+        document.body.removeChild(iframe);
+    };
+}
+
 
 
 
