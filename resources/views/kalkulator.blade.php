@@ -962,7 +962,7 @@
     </button>
 </div>
 
-            </div>
+
         </div>
 
         <!-- Toggle buttons at the bottom -->
