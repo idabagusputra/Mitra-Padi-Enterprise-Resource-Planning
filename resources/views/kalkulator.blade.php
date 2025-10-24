@@ -1963,182 +1963,82 @@ notaHTML += `
         }
 
 
-// function showNotaModal(calculatorType) {
-//     const notaContent = generateNotaHTML(calculatorType);
-
-//     const iframe = document.createElement('iframe');
-//     iframe.style.position = 'absolute';
-//     iframe.style.left = '-9999px';
-//     iframe.style.top = '-9999px';
-//     iframe.style.width = '0px';
-//     iframe.style.height = '0px';
-//     iframe.style.border = 'none';
-
-//     document.body.appendChild(iframe);
-
-//     const printHTML = `
-//         <!DOCTYPE html>
-//         <html>
-//         <head>
-//             <meta charset="UTF-8">
-//             <style>
-//                 @page {
-//                     size: 80mm auto;
-//                     margin: 0 !important;
-//                 }
-//                 * { box-sizing: border-box !important; }
-//                 body {
-//                     margin: 0 !important;
-//                     padding: 10px 8px 10px 8px !important; /* 👈 Tambahkan padding keliling */
-//                     width: 80mm !important;
-//                     max-width: 80mm !important;
-//                     background: white;
-//                 }
-//                 @media print {
-//                     @page { size: 80mm auto; margin: 0 !important; }
-//                     body {
-//                         margin: 0 !important;
-//                         padding: 10px 8px 10px 8px !important; /* padding tetap di mode print */
-//                     }
-//                 }
-//             </style>
-//         </head>
-//         <body>
-//             ${notaContent}
-//         </body>
-//         </html>
-//     `;
-
-//     iframe.contentDocument.open();
-//     iframe.contentDocument.write(printHTML);
-//     iframe.contentDocument.close();
-
-//     iframe.onload = async function() {
-//         const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-//         const iframeBody = iframeDoc.body;
-
-//         // Tunggu render sedikit
-//         await new Promise(resolve => setTimeout(resolve, 300));
-
-//         // Konversi ke canvas
-//         const canvas = await html2canvas(iframeBody, {
-//             scale: 2, // gunakan scale tinggi untuk hasil tajam
-//             useCORS: true,
-//             backgroundColor: '#fff'
-//         });
-
-//         const imgData = canvas.toDataURL('image/png');
-
-//         const { jsPDF } = window.jspdf;
-//         const pdf = new jsPDF({
-//             orientation: 'portrait',
-//             unit: 'px',
-//             format: [canvas.width, canvas.height]
-//         });
-
-//         pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
-
-//         // Buat blob untuk print
-//         const blob = pdf.output('blob');
-//         const pdfUrl = URL.createObjectURL(blob);
-
-//         const printFrame = document.createElement('iframe');
-//         printFrame.style.position = 'fixed';
-//         printFrame.style.right = '0';
-//         printFrame.style.bottom = '0';
-//         printFrame.style.width = '0';
-//         printFrame.style.height = '0';
-//         printFrame.style.border = 'none';
-//         printFrame.src = pdfUrl;
-//         document.body.appendChild(printFrame);
-
-//         printFrame.onload = function() {
-//             printFrame.contentWindow.focus();
-//             printFrame.contentWindow.print();
-
-//             // bersihkan setelah print
-//             setTimeout(() => {
-//                 URL.revokeObjectURL(pdfUrl);
-//                 document.body.removeChild(printFrame);
-//                 document.body.removeChild(iframe);
-//             }, 2000);
-//         };
-//     };
-// }
-
-async function showNotaModal(calculatorType) {
+function showNotaModal(calculatorType) {
     const notaContent = generateNotaHTML(calculatorType);
 
-    // --- buat iframe tersembunyi ---
     const iframe = document.createElement('iframe');
     iframe.style.position = 'absolute';
     iframe.style.left = '-9999px';
     iframe.style.top = '-9999px';
-    iframe.style.width = '0';
-    iframe.style.height = '0';
+    iframe.style.width = '0px';
+    iframe.style.height = '0px';
     iframe.style.border = 'none';
+
     document.body.appendChild(iframe);
 
-    const html = `
+    const printHTML = `
         <!DOCTYPE html>
         <html>
         <head>
             <meta charset="UTF-8">
             <style>
-                @page { size: 80mm auto; margin: 0; }
-                * { box-sizing: border-box; }
+                @page {
+                    size: 80mm auto;
+                    margin: 0 !important;
+                }
+                * { box-sizing: border-box !important; }
                 body {
-                    margin: 0;
-                    padding: 12px 10px;
-                    width: 80mm;
-                    max-width: 80mm;
+                    margin: 0 !important;
+                    padding: 10px 8px 10px 8px !important; /* 👈 Tambahkan padding keliling */
+                    width: 80mm !important;
+                    max-width: 80mm !important;
                     background: white;
-                    font-family: "Arial", sans-serif;
-                    -webkit-print-color-adjust: exact !important;
+                }
+                @media print {
+                    @page { size: 80mm auto; margin: 0 !important; }
+                    body {
+                        margin: 0 !important;
+                        padding: 10px 8px 10px 8px !important; /* padding tetap di mode print */
+                    }
                 }
             </style>
         </head>
-        <body>${notaContent}</body>
+        <body>
+            ${notaContent}
+        </body>
         </html>
     `;
 
     iframe.contentDocument.open();
-    iframe.contentDocument.write(html);
+    iframe.contentDocument.write(printHTML);
     iframe.contentDocument.close();
 
-    iframe.onload = async function () {
-        const iframeBody = iframe.contentDocument.body;
+    iframe.onload = async function() {
+        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+        const iframeBody = iframeDoc.body;
 
-        // Tunggu render selesai
-        await new Promise((r) => setTimeout(r, 300));
+        // Tunggu render sedikit
+        await new Promise(resolve => setTimeout(resolve, 300));
 
-        // === 🔍 Render tajam dengan html2canvas ===
-        const scale = window.devicePixelRatio * 4; // bisa 3–6 tergantung tajam yang diinginkan
+        // Konversi ke canvas
         const canvas = await html2canvas(iframeBody, {
-            scale: scale,
+            scale: 2, // gunakan scale tinggi untuk hasil tajam
             useCORS: true,
-            backgroundColor: '#fff',
-            logging: false,
+            backgroundColor: '#fff'
         });
 
-        // Pastikan hasilnya dalam ukuran mm yang benar
-        const imgData = canvas.toDataURL('image/png', 1.0); // kualitas 100%
+        const imgData = canvas.toDataURL('image/png');
 
-        // === Buat PDF resolusi tinggi ===
         const { jsPDF } = window.jspdf;
-        const pdfWidth = 80; // mm
-        const pxPerMm = canvas.width / pdfWidth;
-        const pdfHeight = canvas.height / pxPerMm;
-
         const pdf = new jsPDF({
             orientation: 'portrait',
-            unit: 'mm',
-            format: [pdfWidth, pdfHeight],
+            unit: 'px',
+            format: [canvas.width, canvas.height]
         });
 
-        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight, '', 'FAST');
+        pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
 
-        // === Print otomatis ===
+        // Buat blob untuk print
         const blob = pdf.output('blob');
         const pdfUrl = URL.createObjectURL(blob);
 
@@ -2148,13 +2048,15 @@ async function showNotaModal(calculatorType) {
         printFrame.style.bottom = '0';
         printFrame.style.width = '0';
         printFrame.style.height = '0';
+        printFrame.style.border = 'none';
         printFrame.src = pdfUrl;
         document.body.appendChild(printFrame);
 
-        printFrame.onload = function () {
+        printFrame.onload = function() {
             printFrame.contentWindow.focus();
             printFrame.contentWindow.print();
 
+            // bersihkan setelah print
             setTimeout(() => {
                 URL.revokeObjectURL(pdfUrl);
                 document.body.removeChild(printFrame);
@@ -2163,6 +2065,104 @@ async function showNotaModal(calculatorType) {
         };
     };
 }
+
+// async function showNotaModal(calculatorType) {
+//     const notaContent = generateNotaHTML(calculatorType);
+
+//     // --- buat iframe tersembunyi ---
+//     const iframe = document.createElement('iframe');
+//     iframe.style.position = 'absolute';
+//     iframe.style.left = '-9999px';
+//     iframe.style.top = '-9999px';
+//     iframe.style.width = '0';
+//     iframe.style.height = '0';
+//     iframe.style.border = 'none';
+//     document.body.appendChild(iframe);
+
+//     const html = `
+//         <!DOCTYPE html>
+//         <html>
+//         <head>
+//             <meta charset="UTF-8">
+//             <style>
+//                 @page { size: 80mm auto; margin: 0; }
+//                 * { box-sizing: border-box; }
+//                 body {
+//                     margin: 0;
+//                     padding: 12px 10px;
+//                     width: 80mm;
+//                     max-width: 80mm;
+//                     background: white;
+//                     font-family: "Arial", sans-serif;
+//                     -webkit-print-color-adjust: exact !important;
+//                 }
+//             </style>
+//         </head>
+//         <body>${notaContent}</body>
+//         </html>
+//     `;
+
+//     iframe.contentDocument.open();
+//     iframe.contentDocument.write(html);
+//     iframe.contentDocument.close();
+
+//     iframe.onload = async function () {
+//         const iframeBody = iframe.contentDocument.body;
+
+//         // Tunggu render selesai
+//         await new Promise((r) => setTimeout(r, 300));
+
+//         // === 🔍 Render tajam dengan html2canvas ===
+//         const scale = window.devicePixelRatio * 4; // bisa 3–6 tergantung tajam yang diinginkan
+//         const canvas = await html2canvas(iframeBody, {
+//             scale: scale,
+//             useCORS: true,
+//             backgroundColor: '#fff',
+//             logging: false,
+//         });
+
+//         // Pastikan hasilnya dalam ukuran mm yang benar
+//         const imgData = canvas.toDataURL('image/png', 1.0); // kualitas 100%
+
+//         // === Buat PDF resolusi tinggi ===
+//         const { jsPDF } = window.jspdf;
+//         const pdfWidth = 80; // mm
+//         const pxPerMm = canvas.width / pdfWidth;
+//         const pdfHeight = canvas.height / pxPerMm;
+
+//         const pdf = new jsPDF({
+//             orientation: 'portrait',
+//             unit: 'mm',
+//             format: [pdfWidth, pdfHeight],
+//         });
+
+//         pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight, '', 'FAST');
+
+//         // === Print otomatis ===
+//         const blob = pdf.output('blob');
+//         const pdfUrl = URL.createObjectURL(blob);
+
+//         const printFrame = document.createElement('iframe');
+//         printFrame.style.position = 'fixed';
+//         printFrame.style.right = '0';
+//         printFrame.style.bottom = '0';
+//         printFrame.style.width = '0';
+//         printFrame.style.height = '0';
+//         printFrame.src = pdfUrl;
+//         document.body.appendChild(printFrame);
+
+//         printFrame.onload = function () {
+//             printFrame.contentWindow.focus();
+//             printFrame.contentWindow.print();
+
+//             setTimeout(() => {
+//                 URL.revokeObjectURL(pdfUrl);
+//                 document.body.removeChild(printFrame);
+//                 document.body.removeChild(iframe);
+//             }, 2000);
+//         };
+//     };
+// }
 
 
 async function saveNotaAsJPG(calculatorType) {
