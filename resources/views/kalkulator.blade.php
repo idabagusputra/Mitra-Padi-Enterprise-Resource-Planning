@@ -2388,6 +2388,7 @@ async function saveNotaAsJPG(calculatorType) {
 }
 
 // === FUNGSI BARU KHUSUS iOS (TAMBAHAN) ===
+// === FUNGSI BARU KHUSUS iOS (DIPERBAIKI) ===
 async function saveNotaAsJPG_iOS(notaContent, calculatorType) {
     // Buat container untuk render
     const container = document.createElement('div');
@@ -2413,29 +2414,46 @@ async function saveNotaAsJPG_iOS(notaContent, calculatorType) {
         logging: false,
     });
 
-    // Konversi ke blob
-    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 1.0));
+    // Konversi ke data URL (JPG)
+    const imgData = canvas.toDataURL('image/jpeg', 1.0);
 
-    // Gunakan Share API untuk iOS
-    if (navigator.share) {
-        const file = new File([blob], `nota_${new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')}.jpg`, { type: 'image/jpeg' });
-        try {
-            await navigator.share({
-                files: [file],
-                title: 'Nota',
-            });
-        } catch (err) {
-            // Fallback: buka di tab baru
-            const url = URL.createObjectURL(blob);
-            window.open(url, '_blank');
-        }
-    } else {
-        // Fallback: buka di tab baru untuk save manual
-        const url = URL.createObjectURL(blob);
-        window.open(url, '_blank');
+    // Buka di tab baru
+    const newWindow = window.open('', '_blank');
+    if (newWindow) {
+        newWindow.document.write(`
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Nota - ${new Date().toLocaleString('id-ID')}</title>
+                <style>
+                    body {
+                        margin: 0;
+                        padding: 0;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        min-height: 100vh;
+                        background: #f0f0f0;
+                    }
+                    img {
+                        max-width: 100%;
+                        height: auto;
+                        display: block;
+                        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                    }
+                </style>
+            </head>
+            <body>
+                <img src="${imgData}" alt="Nota" />
+            </body>
+            </html>
+        `);
+        newWindow.document.close();
     }
 
-    // Bersihkan
+    // Bersihkan container
     document.body.removeChild(container);
 }
 
