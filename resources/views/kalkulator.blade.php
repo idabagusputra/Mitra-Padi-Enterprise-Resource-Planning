@@ -2139,103 +2139,105 @@ notaHTML += `
 //     }
 // }
 
-async function showNotaModal(calculatorType) {
-    const notaContent = generateNotaHTML(calculatorType);
 
-    // --- buat iframe tersembunyi ---
-    const iframe = document.createElement('iframe');
-    iframe.style.position = 'absolute';
-    iframe.style.left = '-9999px';
-    iframe.style.top = '-9999px';
-    iframe.style.width = '0';
-    iframe.style.height = '0';
-    iframe.style.border = 'none';
-    document.body.appendChild(iframe);
+//INI FIX ANDROID
+// async function showNotaModal(calculatorType) {
+//     const notaContent = generateNotaHTML(calculatorType);
 
-    const html = `
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <meta charset="UTF-8">
-            <style>
-                @page { size: 80mm auto; margin: 0; }
-                * { box-sizing: border-box; }
-                body {
-                    margin: 0;
-                    padding: 12px 10px;
-                    width: 80mm;
-                    max-width: 80mm;
-                    background: white;
-                    font-family: "Arial", sans-serif;
-                    -webkit-print-color-adjust: exact !important;
-                }
-            </style>
-        </head>
-        <body>${notaContent}</body>
-        </html>
-    `;
+//     // --- buat iframe tersembunyi ---
+//     const iframe = document.createElement('iframe');
+//     iframe.style.position = 'absolute';
+//     iframe.style.left = '-9999px';
+//     iframe.style.top = '-9999px';
+//     iframe.style.width = '0';
+//     iframe.style.height = '0';
+//     iframe.style.border = 'none';
+//     document.body.appendChild(iframe);
 
-    iframe.contentDocument.open();
-    iframe.contentDocument.write(html);
-    iframe.contentDocument.close();
+//     const html = `
+//         <!DOCTYPE html>
+//         <html>
+//         <head>
+//             <meta charset="UTF-8">
+//             <style>
+//                 @page { size: 80mm auto; margin: 0; }
+//                 * { box-sizing: border-box; }
+//                 body {
+//                     margin: 0;
+//                     padding: 12px 10px;
+//                     width: 80mm;
+//                     max-width: 80mm;
+//                     background: white;
+//                     font-family: "Arial", sans-serif;
+//                     -webkit-print-color-adjust: exact !important;
+//                 }
+//             </style>
+//         </head>
+//         <body>${notaContent}</body>
+//         </html>
+//     `;
 
-    iframe.onload = async function () {
-        const iframeBody = iframe.contentDocument.body;
+//     iframe.contentDocument.open();
+//     iframe.contentDocument.write(html);
+//     iframe.contentDocument.close();
 
-        // Tunggu render selesai
-        await new Promise((r) => setTimeout(r, 300));
+//     iframe.onload = async function () {
+//         const iframeBody = iframe.contentDocument.body;
 
-        // === 🔍 Render tajam dengan html2canvas ===
-        const scale = window.devicePixelRatio * 4; // bisa 3–6 tergantung tajam yang diinginkan
-        const canvas = await html2canvas(iframeBody, {
-            scale: scale,
-            useCORS: true,
-            backgroundColor: '#fff',
-            logging: false,
-        });
+//         // Tunggu render selesai
+//         await new Promise((r) => setTimeout(r, 300));
 
-        // Pastikan hasilnya dalam ukuran mm yang benar
-        const imgData = canvas.toDataURL('image/png', 1.0); // kualitas 100%
+//         // === 🔍 Render tajam dengan html2canvas ===
+//         const scale = window.devicePixelRatio * 4; // bisa 3–6 tergantung tajam yang diinginkan
+//         const canvas = await html2canvas(iframeBody, {
+//             scale: scale,
+//             useCORS: true,
+//             backgroundColor: '#fff',
+//             logging: false,
+//         });
 
-        // === Buat PDF resolusi tinggi ===
-        const { jsPDF } = window.jspdf;
-        const pdfWidth = 80; // mm
-        const pxPerMm = canvas.width / pdfWidth;
-        const pdfHeight = canvas.height / pxPerMm;
+//         // Pastikan hasilnya dalam ukuran mm yang benar
+//         const imgData = canvas.toDataURL('image/png', 1.0); // kualitas 100%
 
-        const pdf = new jsPDF({
-            orientation: 'portrait',
-            unit: 'mm',
-            format: [pdfWidth, pdfHeight],
-        });
+//         // === Buat PDF resolusi tinggi ===
+//         const { jsPDF } = window.jspdf;
+//         const pdfWidth = 80; // mm
+//         const pxPerMm = canvas.width / pdfWidth;
+//         const pdfHeight = canvas.height / pxPerMm;
 
-        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight, '', 'FAST');
+//         const pdf = new jsPDF({
+//             orientation: 'portrait',
+//             unit: 'mm',
+//             format: [pdfWidth, pdfHeight],
+//         });
 
-        // === Print otomatis ===
-        const blob = pdf.output('blob');
-        const pdfUrl = URL.createObjectURL(blob);
+//         pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight, '', 'FAST');
 
-        const printFrame = document.createElement('iframe');
-        printFrame.style.position = 'fixed';
-        printFrame.style.right = '0';
-        printFrame.style.bottom = '0';
-        printFrame.style.width = '0';
-        printFrame.style.height = '0';
-        printFrame.src = pdfUrl;
-        document.body.appendChild(printFrame);
+//         // === Print otomatis ===
+//         const blob = pdf.output('blob');
+//         const pdfUrl = URL.createObjectURL(blob);
 
-        printFrame.onload = function () {
-            printFrame.contentWindow.focus();
-            printFrame.contentWindow.print();
+//         const printFrame = document.createElement('iframe');
+//         printFrame.style.position = 'fixed';
+//         printFrame.style.right = '0';
+//         printFrame.style.bottom = '0';
+//         printFrame.style.width = '0';
+//         printFrame.style.height = '0';
+//         printFrame.src = pdfUrl;
+//         document.body.appendChild(printFrame);
 
-            setTimeout(() => {
-                URL.revokeObjectURL(pdfUrl);
-                document.body.removeChild(printFrame);
-                document.body.removeChild(iframe);
-            }, 2000);
-        };
-    };
-}
+//         printFrame.onload = function () {
+//             printFrame.contentWindow.focus();
+//             printFrame.contentWindow.print();
+
+//             setTimeout(() => {
+//                 URL.revokeObjectURL(pdfUrl);
+//                 document.body.removeChild(printFrame);
+//                 document.body.removeChild(iframe);
+//             }, 2000);
+//         };
+//     };
+// }
 
 // async function saveNotaAsJPG(calculatorType) {
 //     const notaContent = generateNotaHTML(calculatorType);
@@ -2313,6 +2315,16 @@ async function showNotaModal(calculatorType) {
 async function saveNotaAsJPG(calculatorType) {
     const notaContent = generateNotaHTML(calculatorType);
 
+    // === DETEKSI iOS ===
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+    if (isIOS) {
+        // === METODE KHUSUS UNTUK iOS ===
+        await saveNotaAsJPG_iOS(notaContent, calculatorType);
+        return;
+    }
+
+    // === KODE ASLI ANDA (TIDAK DIUBAH) ===
     // --- Buat iframe tersembunyi ---
     const iframe = document.createElement('iframe');
     iframe.style.position = 'absolute';
@@ -2322,7 +2334,6 @@ async function saveNotaAsJPG(calculatorType) {
     iframe.style.height = '0';
     iframe.style.border = 'none';
     document.body.appendChild(iframe);
-
     const html = `
         <!DOCTYPE html>
         <html>
@@ -2345,17 +2356,13 @@ async function saveNotaAsJPG(calculatorType) {
         <body>${notaContent}</body>
         </html>
     `;
-
     iframe.contentDocument.open();
     iframe.contentDocument.write(html);
     iframe.contentDocument.close();
-
     iframe.onload = async function () {
         const iframeBody = iframe.contentDocument.body;
-
         // Tunggu render selesai
         await new Promise((r) => setTimeout(r, 300));
-
         // === 🔍 Render tajam dengan html2canvas ===
         const scale = window.devicePixelRatio * 4; // atau 3-6 sesuai kebutuhan
         const canvas = await html2canvas(iframeBody, {
@@ -2364,23 +2371,72 @@ async function saveNotaAsJPG(calculatorType) {
             backgroundColor: '#fff',
             logging: false,
         });
-
         // Konversi ke JPG dengan kualitas maksimal
         const imgData = canvas.toDataURL('image/jpeg', 1.0);
-
         // Buat link download
         const link = document.createElement('a');
         link.href = imgData;
         link.download = `nota_${new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')}.jpg`;
         document.body.appendChild(link);
         link.click();
-
         // Bersihkan setelah download
         setTimeout(() => {
             document.body.removeChild(link);
             document.body.removeChild(iframe);
         }, 100);
     };
+}
+
+// === FUNGSI BARU KHUSUS iOS (TAMBAHAN) ===
+async function saveNotaAsJPG_iOS(notaContent, calculatorType) {
+    // Buat container untuk render
+    const container = document.createElement('div');
+    container.style.position = 'absolute';
+    container.style.left = '-9999px';
+    container.style.top = '-9999px';
+    container.style.width = '80mm';
+    container.style.padding = '12px 10px';
+    container.style.background = 'white';
+    container.style.fontFamily = 'Arial, sans-serif';
+    container.innerHTML = notaContent;
+    document.body.appendChild(container);
+
+    // Tunggu render
+    await new Promise(r => setTimeout(r, 300));
+
+    // Render dengan html2canvas
+    const scale = window.devicePixelRatio * 4;
+    const canvas = await html2canvas(container, {
+        scale: scale,
+        useCORS: true,
+        backgroundColor: '#fff',
+        logging: false,
+    });
+
+    // Konversi ke blob
+    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 1.0));
+
+    // Gunakan Share API untuk iOS
+    if (navigator.share) {
+        const file = new File([blob], `nota_${new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')}.jpg`, { type: 'image/jpeg' });
+        try {
+            await navigator.share({
+                files: [file],
+                title: 'Nota',
+            });
+        } catch (err) {
+            // Fallback: buka di tab baru
+            const url = URL.createObjectURL(blob);
+            window.open(url, '_blank');
+        }
+    } else {
+        // Fallback: buka di tab baru untuk save manual
+        const url = URL.createObjectURL(blob);
+        window.open(url, '_blank');
+    }
+
+    // Bersihkan
+    document.body.removeChild(container);
 }
 
 
