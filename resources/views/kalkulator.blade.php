@@ -2413,47 +2413,22 @@ async function saveNotaAsJPG_iOS(notaContent, calculatorType) {
         logging: false,
     });
 
-    // Konversi ke data URL (JPG)
-    const imgData = canvas.toDataURL('image/jpeg', 1.0);
+    // Konversi ke blob
+    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 1.0));
+
+    // Buat URL dari blob
+    const url = URL.createObjectURL(blob);
 
     // Buka di tab baru
-    const newWindow = window.open('', '_blank');
-    if (newWindow) {
-        newWindow.document.write(`
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Nota - ${new Date().toLocaleString('id-ID')}</title>
-                <style>
-                    body {
-                        margin: 0;
-                        padding: 0;
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                        min-height: 100vh;
-                        background: #f0f0f0;
-                    }
-                    img {
-                        max-width: 100%;
-                        height: auto;
-                        display: block;
-                        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-                    }
-                </style>
-            </head>
-            <body>
-                <img src="${imgData}" alt="Nota" />
-            </body>
-            </html>
-        `);
-        newWindow.document.close();
-    }
+    window.open(url, '_blank');
 
     // Bersihkan container
     document.body.removeChild(container);
+
+    // Bersihkan URL setelah beberapa saat
+    setTimeout(() => {
+        URL.revokeObjectURL(url);
+    }, 60000); // 1 menit
 }
 
 
