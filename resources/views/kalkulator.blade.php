@@ -135,6 +135,10 @@
             .table-container {
                 margin-top: 5px;
             }
+
+            .btn-save {
+        width: 60px; /* Sesuaikan dengan kolom aksi mobile */
+    }
         }
 
         @media (max-width: 1024px) and (orientation: landscape) { /* Mobile atau tablet dalam mode horizontal */
@@ -260,24 +264,30 @@
         }
 
         .btn-primary {
-            background: linear-gradient(120deg, var(--primary-color), var(--primary-dark));
-            color: white;
-            width: 100%;
-            height: 50px; /* Slightly shorter */
-            font-size: 15px; /* Smaller font */
-            border-radius: 0 0 var(--border-radius) var(--border-radius);
-        }
+    background: linear-gradient(120deg, var(--primary-color), var(--primary-dark));
+    color: white;
+    flex: 1; /* Mengambil sisa ruang */
+    height: 50px;
+    font-size: 15px;
+    border-radius: var(--border-radius) 0 0 var(--border-radius);
+}
 
-        .btn-primary:hover {
-            background: linear-gradient(120deg, var(--primary-dark), var(--primary-color));
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(108, 92, 231, 0.3);
-        }
+.btn-primary:hover {
+    background: linear-gradient(120deg, var(--primary-dark), var(--primary-color));
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(108, 92, 231, 0.3);
+}
 
         .btn i {
             margin-right: 6px;
             font-size: 0.9em;
         }
+
+        .btnn i {
+            margin-right: 0px !important;
+            font-size: 0.9em;
+        }
+
 
         .total-row {
             font-weight: 600;
@@ -373,13 +383,14 @@
             font-size: 18px; /* Made consistent with other text */
         }
 
-        .action-bar {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 10px; /* Added spacing */
-        }
+.action-bar {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+    gap: 0; /* Pastikan tidak ada gap */
+}
 
         .toggle-container {
             display: flex;
@@ -556,6 +567,15 @@
         }
 
         @media (max-width: 480px) {
+
+            .btn-save {
+        width: 50px; /* Sesuaikan dengan kolom aksi mobile terkecil */
+        font-size: 11px;
+    }
+
+    .btn-print {
+        font-size: 13px;
+    }
             :root {
                 --border-radius: 12px;
             }
@@ -678,36 +698,34 @@
 
     /* Print button style */
     .btn-print {
-        background: linear-gradient(120deg, var(--secondary-color), #00a8a4);
-        color: white;
-        width: 100%;
-        height: 50px;
-        font-size: 15px;
-        border-radius: 0 0 var(--border-radius) var(--border-radius);
-
-    }
-
-    .btn-print:hover {
-        background: linear-gradient(120deg, #00a8a4, var(--secondary-color));
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(0, 206, 201, 0.3);
-    }
-
-.btn-save {
-    background: linear-gradient(120deg, #2c3e50, #4b79a1);
+    background: linear-gradient(120deg, var(--secondary-color), #00a8a4);
     color: white;
-    width: 100%;
+    width: calc(33.33%); /* 1/3 dari tambah baris */
     height: 50px;
     font-size: 15px;
-    border-radius: 0 0 var(--border-radius) var(--border-radius);
+    border-radius: 0;
+}
+
+.btn-print:hover {
+    background: linear-gradient(120deg, #00a8a4, var(--secondary-color));
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 206, 201, 0.3);
+}
+
+.btn-save {
+    background: linear-gradient(120deg, var(--success-color), #00a17a);
+    color: white;
+    width: 80px; /* Sama dengan lebar kolom aksi */
+    height: 50px;
+    font-size: 15px;
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
 }
 
 .btn-save:hover {
-    background: linear-gradient(120deg, #4b79a1, #2c3e50);
+    background: linear-gradient(120deg, #00a17a, var(--success-color));
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(75, 121, 161, 0.4);
+    box-shadow: 0 8px 20px rgba(0, 184, 148, 0.4);
 }
-
 
     /* Specific styles for 80mm receipt */
     @page {
@@ -771,6 +789,69 @@
         margin-top: 5mm;
         font-size: 11px;
     }
+
+.action-bar {
+    width: 100%;
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    gap: 0;
+    margin-top: 0;
+    /* padding: 0 10px; Sama dengan padding table-container2 */
+}
+
+/* Tombol Tambah Baris dan Cetak Nota berbagi ruang kolom Jumlah Dana */
+.btn-primary {
+    flex: 1;
+    min-width: 0;
+    /* margin-right: 10px; Gap antar tombol kiri */
+     border-top-left-radius: 0;
+    border-top-right-radius: 0;
+
+}
+
+.btn-print {
+    flex: 1;
+    min-width: 0;
+    font-size: 14px;
+    /* margin-right: 10px; Gap antara tombol kiri dan kanan */
+}
+
+/* Button Save mengikuti ukuran kolom Aksi dan posisi di kanan */
+.btn-save {
+    width: 90px; /* Sama dengan lebar kolom aksi (th:last-child) */
+    font-size: 15px;
+    flex-shrink: 0;
+     border-top-left-radius: 0;
+    border-top-right-radius: 0;
+
+}
+
+/* Pastikan kolom Aksi di tabel juga 70px */
+
+@media (max-width: 480px) {
+
+
+    /* Button Save mengikuti ukuran kolom aksi terkecil */
+    .btn-save {
+        width: 60px; /* Sama dengan lebar kolom aksi mobile */
+        font-size: 15px;
+        flex-shrink: 0;
+    }
+
+    .btn-primary {
+        font-size: 13px;
+        /* margin-right: 8px; */
+    }
+
+    .btn-print {
+        font-size: 13px;
+        /* margin-right: 8px; */
+    }
+
+
+}
 
 
     </style>
@@ -859,13 +940,15 @@
     </button>
 
 
-        <button class="btn btn-print half" onclick="showNotaModal('jumlah')">
-            <i class="fas fa-print"></i> CETAK NOTA
+        <button class="btn btn-print half" onclick="saveNotaAsJPG('jumlah')">
+            <i class="fas fa-download"></i> SAVE GAMBAR
         </button>
-        <button class="btn btn-save half" onclick="saveNotaAsJPG('jumlah')"
+        <button class="btn btnn btn-save half" onclick="showNotaModal('jumlah')"
         {{-- style="width: 178px; text-align: center;"> --}}
-        style="text-align: center;">
-        <i class="fas fa-download"></i> SAVE GAMBAR
+        style="text-align: center; margin: 0 !important;">
+            <i class="fas fa-print"></i>
+
+
     </button>
 
 </div>
@@ -946,19 +1029,21 @@
             </table>
 </div>
 
-            <div class="action-bar">
+           <div class="action-bar">
     <button class="btn btn-primary" onclick="tambahBarisSak()">
         <i class="fas fa-plus"></i> TAMBAH BARIS
     </button>
 
-    <button class="btn btn-print" onclick="showNotaModal('sak')">
-        <i class="fas fa-print"></i> CETAK NOTA
+    <button class="btn btn-print" onclick="saveNotaAsJPG('sak')">
+        <i class="fas fa-download"></i> SAVE GAMBAR
     </button>
 
-      <button class="btn btn-save half" onclick="saveNotaAsJPG('sak')"
+      <button class="btn btnn btn-save half" onclick="showNotaModal('sak')"
         {{-- style="width: 178px; text-align: center;"> --}}
-        style=" text-align: center;">
-        <i class="fas fa-download"></i> SAVE GAMBAR
+        style=" text-align: center; padding: 0 !important;">
+        <i class="fas fa-print"></i>
+
+
     </button>
 </div>
 
