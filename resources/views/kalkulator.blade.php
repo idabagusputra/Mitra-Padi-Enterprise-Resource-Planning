@@ -2387,7 +2387,7 @@ async function saveNotaAsJPG(calculatorType) {
     };
 }
 
-// === FUNGSI iOS DIPERBAIKI - AUTO DOWNLOAD ===
+// === FUNGSI iOS - BUKA WINDOW BARU DENGAN JPG ===
 async function saveNotaAsJPG_iOS(notaContent, calculatorType) {
     try {
         // Buat container untuk render
@@ -2414,27 +2414,53 @@ async function saveNotaAsJPG_iOS(notaContent, calculatorType) {
             logging: false,
         });
 
-        // Konversi ke data URL (bukan blob)
+        // Konversi ke data URL JPG
         const imgData = canvas.toDataURL('image/jpeg', 1.0);
 
-        // Buat link download seperti metode Android
-        const link = document.createElement('a');
-        link.href = imgData;
-        link.download = `nota_${new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')}.jpg`;
+        // Buka window baru dengan gambar JPG
+        const newWindow = window.open('', '_blank');
+        if (newWindow) {
+            newWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Nota - ${new Date().toLocaleString('id-ID')}</title>
+                    <style>
+                        body {
+                            margin: 0;
+                            padding: 0;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            min-height: 100vh;
+                            background: #f0f0f0;
+                        }
+                        img {
+                            max-width: 100%;
+                            height: auto;
+                            display: block;
+                            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                        }
+                    </style>
+                </head>
+                <body>
+                    <img src="${imgData}" alt="Nota">
+                </body>
+                </html>
+            `);
+            newWindow.document.close();
+        } else {
+            alert('Pop-up diblokir! Silakan izinkan pop-up untuk situs ini.');
+        }
 
-        // iOS memerlukan user interaction langsung
-        document.body.appendChild(link);
-        link.click();
-
-        // Bersihkan
-        setTimeout(() => {
-            document.body.removeChild(link);
-            document.body.removeChild(container);
-        }, 100);
+        // Bersihkan container
+        document.body.removeChild(container);
 
     } catch (error) {
         console.error('Error saving on iOS:', error);
-        alert('Gagal menyimpan gambar. Silakan coba lagi.');
+        alert('Gagal membuat gambar. Silakan coba lagi.');
     }
 }
 
