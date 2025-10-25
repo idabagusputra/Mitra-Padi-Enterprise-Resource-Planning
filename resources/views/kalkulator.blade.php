@@ -2054,6 +2054,178 @@ notaHTML += `
 //     }
 // }
 
+async function showNotaModal(calculatorType) {
+    const notaContent = generateNotaHTML(calculatorType);
+
+    // --- buat iframe tersembunyi ---
+    const iframe = document.createElement('iframe');
+    iframe.style.position = 'absolute';
+    iframe.style.left = '-9999px';
+    iframe.style.top = '-9999px';
+    iframe.style.width = '0';
+    iframe.style.height = '0';
+    iframe.style.border = 'none';
+    document.body.appendChild(iframe);
+
+    const html = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <style>
+                @page { size: 80mm auto; margin: 0; }
+                * { box-sizing: border-box; }
+                body {
+                    margin: 0;
+                    padding: 12px 10px;
+                    width: 80mm;
+                    max-width: 80mm;
+                    background: white;
+                    font-family: "Arial", sans-serif;
+                    -webkit-print-color-adjust: exact !important;
+                }
+            </style>
+        </head>
+        <body>${notaContent}</body>
+        </html>
+    `;
+
+    iframe.contentDocument.open();
+    iframe.contentDocument.write(html);
+    iframe.contentDocument.close();
+
+    iframe.onload = async function () {
+        const iframeBody = iframe.contentDocument.body;
+
+        // Tunggu render selesai
+        await new Promise((r) => setTimeout(r, 300));
+
+        // === 🔍 Render tajam dengan html2canvas ===
+        const scale = window.devicePixelRatio * 4; // bisa 3–6 tergantung tajam yang diinginkan
+        const canvas = await html2canvas(iframeBody, {
+            scale: scale,
+            useCORS: true,
+            backgroundColor: '#fff',
+            logging: false,
+        });
+
+        // Pastikan hasilnya dalam ukuran mm yang benar
+        const imgData = canvas.toDataURL('image/png', 1.0); // kualitas 100%
+
+        // === Buat PDF resolusi tinggi ===
+        const { jsPDF } = window.jspdf;
+        const pdfWidth = 80; // mm
+        const pxPerMm = canvas.width / pdfWidth;
+        const pdfHeight = canvas.height / pxPerMm;
+
+        const pdf = new jsPDF({
+            orientation: 'portrait',
+            unit: 'mm',
+            format: [pdfWidth, pdfHeight],
+        });
+
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight, '', 'FAST');
+
+        // === Print otomatis ===
+        const blob = pdf.output('blob');
+        const pdfUrl = URL.createObjectURL(blob);
+
+        const printFrame = document.createElement('iframe');
+        printFrame.style.position = 'fixed';
+        printFrame.style.right = '0';
+        printFrame.style.bottom = '0';
+        printFrame.style.width = '0';
+        printFrame.style.height = '0';
+        printFrame.src = pdfUrl;
+        document.body.appendChild(printFrame);
+
+        printFrame.onload = function () {
+            printFrame.contentWindow.focus();
+            printFrame.contentWindow.print();
+
+            setTimeout(() => {
+                URL.revokeObjectURL(pdfUrl);
+                document.body.removeChild(printFrame);
+                document.body.removeChild(iframe);
+            }, 2000);
+        };
+    };
+}
+
+async function saveNotaAsJPG(calculatorType) {
+    const notaContent = generateNotaHTML(calculatorType);
+
+    // --- Buat iframe tersembunyi ---
+    const iframe = document.createElement('iframe');
+    iframe.style.position = 'absolute';
+    iframe.style.left = '-9999px';
+    iframe.style.top = '-9999px';
+    iframe.style.width = '0';
+    iframe.style.height = '0';
+    iframe.style.border = 'none';
+    document.body.appendChild(iframe);
+
+    const html = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <style>
+                @page { size: 80mm auto; margin: 0; }
+                * { box-sizing: border-box; }
+                body {
+                    margin: 0;
+                    padding: 12px 10px;
+                    width: 80mm;
+                    max-width: 80mm;
+                    background: white;
+                    font-family: "Arial", sans-serif;
+                    -webkit-print-color-adjust: exact !important;
+                }
+            </style>
+        </head>
+        <body>${notaContent}</body>
+        </html>
+    `;
+
+    iframe.contentDocument.open();
+    iframe.contentDocument.write(html);
+    iframe.contentDocument.close();
+
+    iframe.onload = async function () {
+        const iframeBody = iframe.contentDocument.body;
+
+        // Tunggu render selesai
+        await new Promise((r) => setTimeout(r, 300));
+
+        // === 🔍 Render tajam dengan html2canvas ===
+        const scale = window.devicePixelRatio * 4; // atau 3-6 sesuai kebutuhan
+        const canvas = await html2canvas(iframeBody, {
+            scale: scale,
+            useCORS: true,
+            backgroundColor: '#fff',
+            logging: false,
+        });
+
+        // Konversi ke JPG dengan kualitas maksimal
+        const imgData = canvas.toDataURL('image/jpeg', 1.0);
+
+        // Buat link download
+        const link = document.createElement('a');
+        link.href = imgData;
+        link.download = `nota_${new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')}.jpg`;
+        document.body.appendChild(link);
+        link.click();
+
+        // Bersihkan setelah download
+        setTimeout(() => {
+            document.body.removeChild(link);
+            document.body.removeChild(iframe);
+        }, 100);
+    };
+}
+
+
 
 // function showNotaModal(calculatorType) {
 //     const notaContent = generateNotaHTML(calculatorType);
@@ -2161,177 +2333,177 @@ notaHTML += `
 
 
 
-async function showNotaModal(calculatorType) {
-    const notaContent = generateNotaHTML(calculatorType);
+// async function showNotaModal(calculatorType) {
+//     const notaContent = generateNotaHTML(calculatorType);
 
-    // --- buat iframe tersembunyi ---
-    const iframe = document.createElement('iframe');
-    iframe.style.position = 'absolute';
-    iframe.style.left = '-9999px';
-    iframe.style.top = '-9999px';
-    iframe.style.width = '0';
-    iframe.style.height = '0';
-    iframe.style.border = 'none';
-    document.body.appendChild(iframe);
+//     // --- buat iframe tersembunyi ---
+//     const iframe = document.createElement('iframe');
+//     iframe.style.position = 'absolute';
+//     iframe.style.left = '-9999px';
+//     iframe.style.top = '-9999px';
+//     iframe.style.width = '0';
+//     iframe.style.height = '0';
+//     iframe.style.border = 'none';
+//     document.body.appendChild(iframe);
 
-    const html = `
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <meta charset="UTF-8">
-            <style>
-                @page { size: 80mm auto; margin: 0; }
-                * { box-sizing: border-box; }
-                body {
-                    margin: 0;
-                    padding: 12px 10px;
-                    width: 80mm;
-                    max-width: 80mm;
-                    background: white;
-                    font-family: "Arial", sans-serif;
-                    -webkit-print-color-adjust: exact !important;
-                }
-            </style>
-        </head>
-        <body>${notaContent}</body>
-        </html>
-    `;
+//     const html = `
+//         <!DOCTYPE html>
+//         <html>
+//         <head>
+//             <meta charset="UTF-8">
+//             <style>
+//                 @page { size: 80mm auto; margin: 0; }
+//                 * { box-sizing: border-box; }
+//                 body {
+//                     margin: 0;
+//                     padding: 12px 10px;
+//                     width: 80mm;
+//                     max-width: 80mm;
+//                     background: white;
+//                     font-family: "Arial", sans-serif;
+//                     -webkit-print-color-adjust: exact !important;
+//                 }
+//             </style>
+//         </head>
+//         <body>${notaContent}</body>
+//         </html>
+//     `;
 
-    iframe.contentDocument.open();
-    iframe.contentDocument.write(html);
-    iframe.contentDocument.close();
+//     iframe.contentDocument.open();
+//     iframe.contentDocument.write(html);
+//     iframe.contentDocument.close();
 
-    iframe.onload = async function () {
-        const iframeBody = iframe.contentDocument.body;
+//     iframe.onload = async function () {
+//         const iframeBody = iframe.contentDocument.body;
 
-        // Tunggu render selesai
-        await new Promise((r) => setTimeout(r, 300));
+//         // Tunggu render selesai
+//         await new Promise((r) => setTimeout(r, 300));
 
-        // === 🔍 Render tajam dengan html2canvas ===
-        const scale = window.devicePixelRatio * 4; // bisa 3–6 tergantung tajam yang diinginkan
-        const canvas = await html2canvas(iframeBody, {
-            scale: scale,
-            useCORS: true,
-            backgroundColor: '#fff',
-            logging: false,
-        });
+//         // === 🔍 Render tajam dengan html2canvas ===
+//         const scale = window.devicePixelRatio * 4; // bisa 3–6 tergantung tajam yang diinginkan
+//         const canvas = await html2canvas(iframeBody, {
+//             scale: scale,
+//             useCORS: true,
+//             backgroundColor: '#fff',
+//             logging: false,
+//         });
 
-        // Pastikan hasilnya dalam ukuran mm yang benar
-        const imgData = canvas.toDataURL('image/png', 1.0); // kualitas 100%
+//         // Pastikan hasilnya dalam ukuran mm yang benar
+//         const imgData = canvas.toDataURL('image/png', 1.0); // kualitas 100%
 
-        // === Buat PDF resolusi tinggi ===
-        const { jsPDF } = window.jspdf;
-        const pdfWidth = 80; // mm
-        const pxPerMm = canvas.width / pdfWidth;
-        const pdfHeight = canvas.height / pxPerMm;
+//         // === Buat PDF resolusi tinggi ===
+//         const { jsPDF } = window.jspdf;
+//         const pdfWidth = 80; // mm
+//         const pxPerMm = canvas.width / pdfWidth;
+//         const pdfHeight = canvas.height / pxPerMm;
 
-        const pdf = new jsPDF({
-            orientation: 'portrait',
-            unit: 'mm',
-            format: [pdfWidth, pdfHeight],
-        });
+//         const pdf = new jsPDF({
+//             orientation: 'portrait',
+//             unit: 'mm',
+//             format: [pdfWidth, pdfHeight],
+//         });
 
-        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight, '', 'FAST');
+//         pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight, '', 'FAST');
 
-        // === Print otomatis ===
-        const blob = pdf.output('blob');
-        const pdfUrl = URL.createObjectURL(blob);
+//         // === Print otomatis ===
+//         const blob = pdf.output('blob');
+//         const pdfUrl = URL.createObjectURL(blob);
 
-        const printFrame = document.createElement('iframe');
-        printFrame.style.position = 'fixed';
-        printFrame.style.right = '0';
-        printFrame.style.bottom = '0';
-        printFrame.style.width = '0';
-        printFrame.style.height = '0';
-        printFrame.src = pdfUrl;
-        document.body.appendChild(printFrame);
+//         const printFrame = document.createElement('iframe');
+//         printFrame.style.position = 'fixed';
+//         printFrame.style.right = '0';
+//         printFrame.style.bottom = '0';
+//         printFrame.style.width = '0';
+//         printFrame.style.height = '0';
+//         printFrame.src = pdfUrl;
+//         document.body.appendChild(printFrame);
 
-        printFrame.onload = function () {
-            printFrame.contentWindow.focus();
-            printFrame.contentWindow.print();
+//         printFrame.onload = function () {
+//             printFrame.contentWindow.focus();
+//             printFrame.contentWindow.print();
 
-            setTimeout(() => {
-                URL.revokeObjectURL(pdfUrl);
-                document.body.removeChild(printFrame);
-                document.body.removeChild(iframe);
-            }, 2000);
-        };
-    };
-}
+//             setTimeout(() => {
+//                 URL.revokeObjectURL(pdfUrl);
+//                 document.body.removeChild(printFrame);
+//                 document.body.removeChild(iframe);
+//             }, 2000);
+//         };
+//     };
+// }
 
 
-async function saveNotaAsJPG(calculatorType) {
-    const notaContent = generateNotaHTML(calculatorType);
+// async function saveNotaAsJPG(calculatorType) {
+//     const notaContent = generateNotaHTML(calculatorType);
 
-    // Buat iframe tersembunyi
-    const iframe = document.createElement('iframe');
-    iframe.style.position = 'absolute';
-    iframe.style.left = '-9999px';
-    iframe.style.top = '-9999px';
-    iframe.style.width = '400px'; // beri ukuran agar browser render penuh
-    iframe.style.height = 'auto';
-    iframe.style.border = 'none';
-    document.body.appendChild(iframe);
+//     // Buat iframe tersembunyi
+//     const iframe = document.createElement('iframe');
+//     iframe.style.position = 'absolute';
+//     iframe.style.left = '-9999px';
+//     iframe.style.top = '-9999px';
+//     iframe.style.width = '400px'; // beri ukuran agar browser render penuh
+//     iframe.style.height = 'auto';
+//     iframe.style.border = 'none';
+//     document.body.appendChild(iframe);
 
-    const html = `
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <meta charset="UTF-8">
-            <style>
-                @page { size: 80mm auto; margin: 0; }
-                * { box-sizing: border-box; }
-                body {
-                    margin: 0;
-                    padding: 12px 10px;
-                    width: 80mm;
-                    max-width: 80mm;
-                    background: white;
-                    font-family: "Arial", sans-serif;
-                    -webkit-print-color-adjust: exact !important;
-                    transform: scale(2); /* render dua kali lebih besar */
-                    transform-origin: top left;
-                }
-            </style>
-        </head>
-        <body>${notaContent}</body>
-        </html>
-    `;
+//     const html = `
+//         <!DOCTYPE html>
+//         <html>
+//         <head>
+//             <meta charset="UTF-8">
+//             <style>
+//                 @page { size: 80mm auto; margin: 0; }
+//                 * { box-sizing: border-box; }
+//                 body {
+//                     margin: 0;
+//                     padding: 12px 10px;
+//                     width: 80mm;
+//                     max-width: 80mm;
+//                     background: white;
+//                     font-family: "Arial", sans-serif;
+//                     -webkit-print-color-adjust: exact !important;
+//                     transform: scale(2); /* render dua kali lebih besar */
+//                     transform-origin: top left;
+//                 }
+//             </style>
+//         </head>
+//         <body>${notaContent}</body>
+//         </html>
+//     `;
 
-    iframe.contentDocument.open();
-    iframe.contentDocument.write(html);
-    iframe.contentDocument.close();
+//     iframe.contentDocument.open();
+//     iframe.contentDocument.write(html);
+//     iframe.contentDocument.close();
 
-    iframe.onload = async function () {
-        const iframeBody = iframe.contentDocument.body;
+//     iframe.onload = async function () {
+//         const iframeBody = iframe.contentDocument.body;
 
-        // Pastikan font dan gambar sudah ter-load
-        await new Promise(resolve => setTimeout(resolve, 600));
+//         // Pastikan font dan gambar sudah ter-load
+//         await new Promise(resolve => setTimeout(resolve, 600));
 
-        // Render dengan resolusi tinggi
-        const canvas = await html2canvas(iframeBody, {
-            scale: 6, // scale tinggi = tajam
-            useCORS: true,
-            backgroundColor: '#ffffff',
-            windowWidth: iframeBody.scrollWidth * 2,
-            windowHeight: iframeBody.scrollHeight * 2
-        });
+//         // Render dengan resolusi tinggi
+//         const canvas = await html2canvas(iframeBody, {
+//             scale: 6, // scale tinggi = tajam
+//             useCORS: true,
+//             backgroundColor: '#ffffff',
+//             windowWidth: iframeBody.scrollWidth * 2,
+//             windowHeight: iframeBody.scrollHeight * 2
+//         });
 
-        // Konversi ke JPG tajam
-        const imgData = canvas.toDataURL('image/jpeg', 1.0);
+//         // Konversi ke JPG tajam
+//         const imgData = canvas.toDataURL('image/jpeg', 1.0);
 
-        // Buat link download
-        const link = document.createElement('a');
-        link.href = imgData;
-        link.download = `nota_${new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')}.jpg`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+//         // Buat link download
+//         const link = document.createElement('a');
+//         link.href = imgData;
+//         link.download = `nota_${new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')}.jpg`;
+//         document.body.appendChild(link);
+//         link.click();
+//         document.body.removeChild(link);
 
-        // Bersihkan
-        document.body.removeChild(iframe);
-    };
-}
+//         // Bersihkan
+//         document.body.removeChild(iframe);
+//     };
+// }
 
 
 
