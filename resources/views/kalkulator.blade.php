@@ -2387,37 +2387,70 @@ async function saveNotaAsJPG(calculatorType) {
     };
 }
 
-// === FUNGSI iOS - BUKA WINDOW BARU DENGAN JPG ===
+// === FUNGSI iOS - PAKAI IFRAME YANG SAMA PERSIS ===
 async function saveNotaAsJPG_iOS(notaContent, calculatorType) {
     try {
-        // Buat container untuk render
-        const container = document.createElement('div');
-        container.style.position = 'absolute';
-        container.style.left = '-9999px';
-        container.style.top = '-9999px';
-        container.style.width = '80mm';
-        container.style.padding = '12px 10px';
-        container.style.background = 'white';
-        container.style.fontFamily = 'Arial, sans-serif';
-        container.innerHTML = notaContent;
-        document.body.appendChild(container);
+        // --- Buat iframe tersembunyi (SAMA PERSIS SEPERTI UNIVERSAL) ---
+        const iframe = document.createElement('iframe');
+        iframe.style.position = 'absolute';
+        iframe.style.left = '-9999px';
+        iframe.style.top = '-9999px';
+        iframe.style.width = '0';
+        iframe.style.height = '0';
+        iframe.style.border = 'none';
+        document.body.appendChild(iframe);
 
-        // Tunggu render
-        await new Promise(r => setTimeout(r, 300));
+        const html = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <style>
+                    @page { size: 80mm auto; margin: 0; }
+                    * { box-sizing: border-box; }
+                    body {
+                        margin: 0;
+                        padding: 12px 10px;
+                        width: 80mm;
+                        max-width: 80mm;
+                        background: white;
+                        font-family: "Arial", sans-serif;
+                        -webkit-print-color-adjust: exact !important;
+                    }
+                </style>
+            </head>
+            <body>${notaContent}</body>
+            </html>
+        `;
 
-        // Render dengan html2canvas
+        iframe.contentDocument.open();
+        iframe.contentDocument.write(html);
+        iframe.contentDocument.close();
+
+        // Tunggu iframe load
+        await new Promise(resolve => {
+            iframe.onload = resolve;
+            setTimeout(resolve, 100); // fallback
+        });
+
+        const iframeBody = iframe.contentDocument.body;
+
+        // Tunggu render selesai
+        await new Promise((r) => setTimeout(r, 300));
+
+        // === 🔍 Render tajam dengan html2canvas ===
         const scale = window.devicePixelRatio * 4;
-        const canvas = await html2canvas(container, {
+        const canvas = await html2canvas(iframeBody, {
             scale: scale,
             useCORS: true,
             backgroundColor: '#fff',
             logging: false,
         });
 
-        // Konversi ke data URL JPG
+        // Konversi ke JPG dengan kualitas maksimal
         const imgData = canvas.toDataURL('image/jpeg', 1.0);
 
-        // Buka window baru dengan gambar JPG
+        // Buka di window baru
         const newWindow = window.open('', '_blank');
         if (newWindow) {
             newWindow.document.write(`
@@ -2426,7 +2459,7 @@ async function saveNotaAsJPG_iOS(notaContent, calculatorType) {
                 <head>
                     <meta charset="UTF-8">
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <title>Nota - ${new Date().toLocaleString('id-ID')}</title>
+                    <title>Nota</title>
                     <style>
                         body {
                             margin: 0;
@@ -2455,8 +2488,8 @@ async function saveNotaAsJPG_iOS(notaContent, calculatorType) {
             alert('Pop-up diblokir! Silakan izinkan pop-up untuk situs ini.');
         }
 
-        // Bersihkan container
-        document.body.removeChild(container);
+        // Bersihkan iframe
+        document.body.removeChild(iframe);
 
     } catch (error) {
         console.error('Error saving on iOS:', error);
