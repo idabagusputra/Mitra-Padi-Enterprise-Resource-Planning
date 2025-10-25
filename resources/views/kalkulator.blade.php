@@ -2387,48 +2387,55 @@ async function saveNotaAsJPG(calculatorType) {
     };
 }
 
-// === FUNGSI BARU KHUSUS iOS (DIPERBAIKI) ===
+// === FUNGSI iOS DIPERBAIKI - AUTO DOWNLOAD ===
 async function saveNotaAsJPG_iOS(notaContent, calculatorType) {
-    // Buat container untuk render
-    const container = document.createElement('div');
-    container.style.position = 'absolute';
-    container.style.left = '-9999px';
-    container.style.top = '-9999px';
-    container.style.width = '80mm';
-    container.style.padding = '12px 10px';
-    container.style.background = 'white';
-    container.style.fontFamily = 'Arial, sans-serif';
-    container.innerHTML = notaContent;
-    document.body.appendChild(container);
+    try {
+        // Buat container untuk render
+        const container = document.createElement('div');
+        container.style.position = 'absolute';
+        container.style.left = '-9999px';
+        container.style.top = '-9999px';
+        container.style.width = '80mm';
+        container.style.padding = '12px 10px';
+        container.style.background = 'white';
+        container.style.fontFamily = 'Arial, sans-serif';
+        container.innerHTML = notaContent;
+        document.body.appendChild(container);
 
-    // Tunggu render
-    await new Promise(r => setTimeout(r, 300));
+        // Tunggu render
+        await new Promise(r => setTimeout(r, 300));
 
-    // Render dengan html2canvas
-    const scale = window.devicePixelRatio * 4;
-    const canvas = await html2canvas(container, {
-        scale: scale,
-        useCORS: true,
-        backgroundColor: '#fff',
-        logging: false,
-    });
+        // Render dengan html2canvas
+        const scale = window.devicePixelRatio * 4;
+        const canvas = await html2canvas(container, {
+            scale: scale,
+            useCORS: true,
+            backgroundColor: '#fff',
+            logging: false,
+        });
 
-    // Konversi ke blob
-    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 1.0));
+        // Konversi ke data URL (bukan blob)
+        const imgData = canvas.toDataURL('image/jpeg', 1.0);
 
-    // Buat URL dari blob
-    const url = URL.createObjectURL(blob);
+        // Buat link download seperti metode Android
+        const link = document.createElement('a');
+        link.href = imgData;
+        link.download = `nota_${new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')}.jpg`;
 
-    // Buka di tab baru
-    window.open(url, '_blank');
+        // iOS memerlukan user interaction langsung
+        document.body.appendChild(link);
+        link.click();
 
-    // Bersihkan container
-    document.body.removeChild(container);
+        // Bersihkan
+        setTimeout(() => {
+            document.body.removeChild(link);
+            document.body.removeChild(container);
+        }, 100);
 
-    // Bersihkan URL setelah beberapa saat
-    setTimeout(() => {
-        URL.revokeObjectURL(url);
-    }, 60000); // 1 menit
+    } catch (error) {
+        console.error('Error saving on iOS:', error);
+        alert('Gagal menyimpan gambar. Silakan coba lagi.');
+    }
 }
 
 
