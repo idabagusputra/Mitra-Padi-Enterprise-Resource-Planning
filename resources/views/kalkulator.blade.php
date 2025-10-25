@@ -2387,7 +2387,6 @@ async function saveNotaAsJPG(calculatorType) {
     };
 }
 
-// === FUNGSI BARU KHUSUS iOS (TAMBAHAN) ===
 // === FUNGSI BARU KHUSUS iOS (DIPERBAIKI) ===
 async function saveNotaAsJPG_iOS(notaContent, calculatorType) {
     // Buat container untuk render
@@ -2456,7 +2455,6 @@ async function saveNotaAsJPG_iOS(notaContent, calculatorType) {
     // Bersihkan container
     document.body.removeChild(container);
 }
-
 
 
 // function showNotaModal(calculatorType) {
