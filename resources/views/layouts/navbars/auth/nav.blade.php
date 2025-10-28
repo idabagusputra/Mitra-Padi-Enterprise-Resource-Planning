@@ -457,19 +457,38 @@ if (whatsappShareButton) {
             const receiptNumber = document.getElementById("pdfModalLabel").textContent.split("#")[1];
             const fileName = `receipt-${receiptNumber}.jpg`;
 
+            // DEBUGGING: Cek lokasi file PDF yang sedang ditampilkan
+            const pdfIframe = document.querySelector('#pdfModal iframe');
+            if (pdfIframe) {
+                const pdfSrc = pdfIframe.src;
+                console.log('Current PDF src:', pdfSrc);
+                alert('PDF Location: ' + pdfSrc);
+            }
+
             // Deteksi iOS
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
-            // Coba beberapa kemungkinan path
+            // Coba beberapa kemungkinan path berdasarkan lokasi PDF
+            const baseUrl = window.location.origin;
             const possiblePaths = [
-                `/receipts_jpg/${fileName}`,
+                `${baseUrl}/receipts_jpg/${fileName}`,
                 `./receipts_jpg/${fileName}`,
                 `receipts_jpg/${fileName}`,
-                `/static/receipts_jpg/${fileName}` // jika menggunakan static folder
+                `/receipts_jpg/${fileName}`,
+                `${baseUrl}/static/receipts_jpg/${fileName}`,
+                `/static/receipts_jpg/${fileName}`,
+                // Jika PDF di folder receipts, JPG mungkin di folder yang sama
+                `${baseUrl}/receipts/${fileName}`,
+                `/receipts/${fileName}`,
+                // Atau berdasarkan current page location
+                `${window.location.pathname.split('/').slice(0, -1).join('/')}/receipts_jpg/${fileName}`
             ];
+
+            console.log('Testing paths:', possiblePaths);
 
             let imageBlob = null;
             let successPath = null;
+            let errorLog = [];
 
             // Coba fetch dari setiap path
             for (const path of possiblePaths) {
@@ -477,31 +496,41 @@ if (whatsappShareButton) {
                     console.log('Trying path:', path);
                     const response = await fetch(path, {
                         method: 'GET',
-                        cache: 'no-cache',
-                        headers: {
-                            'Accept': 'image/jpeg,image/*'
-                        }
+                        cache: 'no-cache'
                     });
 
+                    console.log(`Path: ${path} - Status: ${response.status}`);
+                    errorLog.push(`${path}: ${response.status}`);
+
                     if (response.ok) {
-                        imageBlob = await response.blob();
-                        if (imageBlob.size > 1000) { // pastikan > 1KB
+                        const testBlob = await response.blob();
+                        console.log(`Blob size: ${testBlob.size}, type: ${testBlob.type}`);
+
+                        if (testBlob.size > 1000) { // pastikan > 1KB
+                            imageBlob = testBlob;
                             successPath = path;
-                            console.log('Success with path:', path, 'Size:', imageBlob.size);
+                            console.log('✓ Success with path:', path, 'Size:', imageBlob.size);
                             break;
+                        } else {
+                            errorLog.push(`${path}: too small (${testBlob.size} bytes)`);
                         }
                     }
                 } catch (err) {
-                    console.log('Failed path:', path, err);
+                    console.log('✗ Failed path:', path, err.message);
+                    errorLog.push(`${path}: ${err.message}`);
                     continue;
                 }
             }
 
             if (!imageBlob || imageBlob.size === 0) {
-                throw new Error('Could not load image from any path. Please check file location.');
+                // Tampilkan semua error untuk debugging
+                console.error('All paths failed:', errorLog);
+                alert('Debug Info:\n' + errorLog.join('\n\n'));
+                throw new Error('Could not load image. Check console for details.');
             }
 
             console.log('Final image blob size:', imageBlob.size);
+            alert('Success! Image loaded from: ' + successPath + '\nSize: ' + imageBlob.size + ' bytes');
 
             if (isIOS) {
                 // Untuk iOS: Gunakan Canvas untuk konversi yang lebih reliable
@@ -526,7 +555,7 @@ if (whatsappShareButton) {
 
         } catch (error) {
             console.error("Error in WhatsApp share process:", error);
-            alert(`Failed to prepare receipt: ${error.message}`);
+            alert(`Error: ${error.message}\n\nPlease check browser console for details.`);
         } finally {
             // Reset button state
             whatsappShareButton.disabled = false;
@@ -543,7 +572,6 @@ async function shareViaCanvas(blob, fileName, receiptNumber) {
 
         img.onload = async function() {
             try {
-                // Buat canvas
                 const canvas = document.createElement('canvas');
                 canvas.width = img.width;
                 canvas.height = img.height;
@@ -551,7 +579,6 @@ async function shareViaCanvas(blob, fileName, receiptNumber) {
                 const ctx = canvas.getContext('2d');
                 ctx.drawImage(img, 0, 0);
 
-                // Convert canvas to blob dengan kualitas tinggi
                 canvas.toBlob(async (canvasBlob) => {
                     if (!canvasBlob) {
                         reject(new Error('Failed to create image blob'));
@@ -565,7 +592,6 @@ async function shareViaCanvas(blob, fileName, receiptNumber) {
                         lastModified: Date.now()
                     });
 
-                    // Coba share
                     if (navigator.share) {
                         try {
                             await navigator.share({
@@ -576,16 +602,13 @@ async function shareViaCanvas(blob, fileName, receiptNumber) {
                             resolve();
                         } catch (shareError) {
                             if (shareError.name === 'AbortError') {
-                                // User cancelled, ini bukan error
                                 resolve();
                             } else {
-                                // Gagal share, gunakan fallback
                                 fallbackDownload(canvasBlob, fileName, receiptNumber);
                                 resolve();
                             }
                         }
                     } else {
-                        // Browser tidak support share
                         fallbackDownload(canvasBlob, fileName, receiptNumber);
                         resolve();
                     }
@@ -608,7 +631,6 @@ async function shareViaCanvas(blob, fileName, receiptNumber) {
     });
 }
 
-// Fallback: Download file
 function fallbackDownload(blob, fileName, receiptNumber) {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
