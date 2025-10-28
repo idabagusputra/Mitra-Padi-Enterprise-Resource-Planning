@@ -759,127 +759,127 @@ function fallbackDownload(blob, fileName, receiptNumber) {
 //     });
 // }
 
-// // Fungsi convert PDF ke Image menggunakan PDF.js
-// async function convertPdfToImage(pdfArrayBuffer) {
-//     const loadingTask = window.pdfjsLib.getDocument({ data: pdfArrayBuffer });
-//     const pdf = await loadingTask.promise;
+// Fungsi convert PDF ke Image menggunakan PDF.js
+async function convertPdfToImage(pdfArrayBuffer) {
+    const loadingTask = window.pdfjsLib.getDocument({ data: pdfArrayBuffer });
+    const pdf = await loadingTask.promise;
 
-//     // Ambil halaman pertama
-//     const page = await pdf.getPage(1);
+    // Ambil halaman pertama
+    const page = await pdf.getPage(1);
 
-//     // Set scale untuk kualitas tinggi (2x untuk retina display)
-//     const scale = 2.0;
-//     const viewport = page.getViewport({ scale: scale });
+    // Set scale untuk kualitas tinggi (2x untuk retina display)
+    const scale = 2.0;
+    const viewport = page.getViewport({ scale: scale });
 
-//     // Buat canvas
-//     const canvas = document.createElement('canvas');
-//     const context = canvas.getContext('2d');
-//     canvas.width = viewport.width;
-//     canvas.height = viewport.height;
+    // Buat canvas
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
 
-//     // Render PDF ke canvas
-//     const renderContext = {
-//         canvasContext: context,
-//         viewport: viewport
-//     };
+    // Render PDF ke canvas
+    const renderContext = {
+        canvasContext: context,
+        viewport: viewport
+    };
 
-//     await page.render(renderContext).promise;
+    await page.render(renderContext).promise;
 
-//     // Convert canvas ke blob
-//     return new Promise((resolve, reject) => {
-//         canvas.toBlob((blob) => {
-//             if (blob) {
-//                 resolve(blob);
-//             } else {
-//                 reject(new Error('Failed to convert canvas to blob'));
-//             }
-//         }, 'image/jpeg', 0.92); // 92% quality
-//     });
-// }
+    // Convert canvas ke blob
+    return new Promise((resolve, reject) => {
+        canvas.toBlob((blob) => {
+            if (blob) {
+                resolve(blob);
+            } else {
+                reject(new Error('Failed to convert canvas to blob'));
+            }
+        }, 'image/jpeg', 0.92); // 92% quality
+    });
+}
 
-// // Fungsi untuk share via Canvas (untuk iOS)
-// async function shareViaCanvas(blob, fileName, receiptNumber) {
-//     return new Promise((resolve, reject) => {
-//         const imageFile = new File([blob], fileName, {
-//             type: "image/jpeg",
-//             lastModified: Date.now()
-//         });
+// Fungsi untuk share via Canvas (untuk iOS)
+async function shareViaCanvas(blob, fileName, receiptNumber) {
+    return new Promise((resolve, reject) => {
+        const imageFile = new File([blob], fileName, {
+            type: "image/jpeg",
+            lastModified: Date.now()
+        });
 
-//         if (navigator.share) {
-//             navigator.share({
-//                 files: [imageFile],
-//                 title: `Receipt #${receiptNumber}`,
-//                 text: `Receipt #${receiptNumber}`
-//             })
-//             .then(() => resolve())
-//             .catch((error) => {
-//                 if (error.name === 'AbortError') {
-//                     // User cancelled
-//                     resolve();
-//                 } else {
-//                     // Share failed, use fallback
-//                     fallbackDownload(blob, fileName, receiptNumber);
-//                     resolve();
-//                 }
-//             });
-//         } else {
-//             // Browser doesn't support share
-//             fallbackDownload(blob, fileName, receiptNumber);
-//             resolve();
-//         }
-//     });
-// }
+        if (navigator.share) {
+            navigator.share({
+                files: [imageFile],
+                title: `Receipt #${receiptNumber}`,
+                text: `Receipt #${receiptNumber}`
+            })
+            .then(() => resolve())
+            .catch((error) => {
+                if (error.name === 'AbortError') {
+                    // User cancelled
+                    resolve();
+                } else {
+                    // Share failed, use fallback
+                    fallbackDownload(blob, fileName, receiptNumber);
+                    resolve();
+                }
+            });
+        } else {
+            // Browser doesn't support share
+            fallbackDownload(blob, fileName, receiptNumber);
+            resolve();
+        }
+    });
+}
 
-// // Fallback: Download file
-// function fallbackDownload(blob, fileName, receiptNumber) {
-//     const url = URL.createObjectURL(blob);
-//     const link = document.createElement('a');
-//     link.href = url;
-//     link.download = fileName;
-//     link.style.display = 'none';
+// Fallback: Download file
+function fallbackDownload(blob, fileName, receiptNumber) {
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = fileName;
+    link.style.display = 'none';
 
-//     document.body.appendChild(link);
-//     link.click();
-//     document.body.removeChild(link);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 
-//     setTimeout(() => {
-//         URL.revokeObjectURL(url);
-//         alert(`Receipt downloaded as ${fileName}\n\nTo share to WhatsApp:\n1. Open Photos/Files app\n2. Find ${fileName}\n3. Tap Share → WhatsApp`);
-//     }, 500);
-// }
+    setTimeout(() => {
+        URL.revokeObjectURL(url);
+        alert(`Receipt downloaded as ${fileName}\n\nTo share to WhatsApp:\n1. Open Photos/Files app\n2. Find ${fileName}\n3. Tap Share → WhatsApp`);
+    }, 500);
+}
 
-        // // Event listener untuk tombol Share
-        // const shareButton = document.getElementById("sharePdf");
-        // if (shareButton) {
-        //     shareButton.addEventListener("click", async function () {
-        //         try {
-        //             // Show loading state
-        //             shareButton.disabled = true;
-        //             shareButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Converting...';
+        // Event listener untuk tombol Share
+        const shareButton = document.getElementById("sharePdf");
+        if (shareButton) {
+            shareButton.addEventListener("click", async function () {
+                try {
+                    // Show loading state
+                    shareButton.disabled = true;
+                    shareButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Converting...';
 
-        //             const pdfViewer = document.getElementById("pdfViewer");
-        //             const pdfUrl = pdfViewer.src;
+                    const pdfViewer = document.getElementById("pdfViewer");
+                    const pdfUrl = pdfViewer.src;
 
-        //             // Convert PDF to JPG
-        //             const jpgBlob = await convertPdfToJpg(pdfUrl);
+                    // Convert PDF to JPG
+                    const jpgBlob = await convertPdfToJpg(pdfUrl);
 
-        //             // Get receipt number from modal title
-        //             const receiptNumber = document.getElementById("pdfModalLabel").textContent.split("#")[1];
-        //             const fileName = `receipt-${receiptNumber}.jpg`;
+                    // Get receipt number from modal title
+                    const receiptNumber = document.getElementById("pdfModalLabel").textContent.split("#")[1];
+                    const fileName = `receipt-${receiptNumber}.jpg`;
 
-        //             // Download the JPG
-        //             downloadBlob(jpgBlob, fileName);
+                    // Download the JPG
+                    downloadBlob(jpgBlob, fileName);
 
-        //         } catch (error) {
-        //             console.error("Error in share process:", error);
-        //             alert("Failed to convert PDF to JPG. Please try again.");
-        //         } finally {
-        //             // Reset button state
-        //             shareButton.disabled = false;
-        //             shareButton.innerHTML = '<i class="bi bi-floppy-fill me-1"></i> SAVED';
-        //         }
-        //     });
-        // }
+                } catch (error) {
+                    console.error("Error in share process:", error);
+                    alert("Failed to convert PDF to JPG. Please try again.");
+                } finally {
+                    // Reset button state
+                    shareButton.disabled = false;
+                    shareButton.innerHTML = '<i class="bi bi-floppy-fill me-1"></i> SAVED';
+                }
+            });
+        }
 
 
         // Event listener untuk tombol Close dan Print
