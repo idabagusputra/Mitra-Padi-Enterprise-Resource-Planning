@@ -414,7 +414,7 @@ async function convertPdfToJpg(pdfUrl) {
         return new Promise((resolve) => {
             finalCanvas.toBlob((blob) => {
                 resolve(blob);
-            }, "image/jpeg", 1);
+            }, "image/jpeg", 0.95);
         });
 
     } catch (error) {
@@ -655,7 +655,7 @@ async function convertPdfToHDImage(pdfArrayBuffer) {
             } else {
                 reject(new Error('Failed to convert canvas to blob'));
             }
-        }, 'image/jpeg', 1); // 95% quality untuk HD
+        }, 'image/jpeg', 0.95); // 95% quality untuk HD
     });
 }
 
@@ -875,7 +875,7 @@ async function convertPdfToImage(pdfArrayBuffer) {
             } else {
                 reject(new Error('Failed to convert canvas to blob'));
             }
-        }, 'image/jpeg', 1); // 95% quality untuk HD
+        }, 'image/jpeg', 0.95); // 95% quality untuk HD
     });
 }
 
