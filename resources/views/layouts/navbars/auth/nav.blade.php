@@ -385,8 +385,8 @@
 
         // Add this inside the existing DOMContentLoaded event listener
 
-        // // Event listener untuk tombol WhatsApp Share
-        // const whatsappShareButton = document.getElementById("whatsappSharePdf");
+        // Event listener untuk tombol WhatsApp Share
+        const whatsappShareButton = document.getElementById("whatsappSharePdf");
 
         if (whatsappShareButton) {
             whatsappShareButton.addEventListener("click", async function () {
