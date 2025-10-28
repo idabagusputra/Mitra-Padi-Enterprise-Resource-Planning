@@ -385,62 +385,176 @@
 
         // Add this inside the existing DOMContentLoaded event listener
 
+        // // Event listener untuk tombol WhatsApp Share
+        // const whatsappShareButton = document.getElementById("whatsappSharePdf");
+
+        // if (whatsappShareButton) {
+        //     whatsappShareButton.addEventListener("click", async function () {
+        //         try {
+        //             // Show loading state
+        //             whatsappShareButton.disabled = true;
+        //             whatsappShareButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Preparing...';
+
+        //             // Ambil nomor kuitansi dari modal title
+        //             const receiptNumber = document.getElementById("pdfModalLabel").textContent.split("#")[1];
+        //             const fileName = `receipt-${receiptNumber}.jpg`;
+
+        //             // URL gambar di server
+        //             const imageUrl = `${window.location.origin}/receipts_jpg/${fileName}`;
+
+        //             // Fetch gambar sebagai blob
+        //             const response = await fetch(imageUrl);
+        //             const imageBlob = await response.blob();
+        //             const imageFile = new File([imageBlob], fileName, { type: "image/jpeg" });
+
+        //             // Cek apakah Web Share API didukung
+        //             if (navigator.canShare && navigator.canShare({ files: [imageFile] })) {
+        //                 await navigator.share({
+        //                     title: `Receipt #${receiptNumber}`,
+        //                     files: [imageFile]
+        //                 });
+        //             } else {
+        //                 alert("Web Share API tidak didukung di perangkat ini.");
+        //             }
+        //         } catch (error) {
+        //             console.error("Error in WhatsApp share process:", error);
+        //             alert("Failed to prepare receipt for sharing. Please try again.");
+        //         } finally {
+        //             // Reset button state
+        //             whatsappShareButton.disabled = false;
+        //             whatsappShareButton.innerHTML = '<i class="bi bi-whatsapp me-1"></i> WhatsApp';
+        //         }
+        //     });
+        // }
+
+
+
+        // // Fallback WhatsApp sharing method
+        // function fallbackWhatsAppShare(file, receiptNumber) {
+        //     // Create object URL for the file
+        //     const fileUrl = URL.createObjectURL(file);
+
+        //     // Construct WhatsApp share URL
+        //     // Note: This method works on mobile devices
+        //     const whatsappUrl = `https://wa.me/?text=Receipt%20%23${receiptNumber}&file=${encodeURIComponent(fileUrl)}`;
+
+        //     // Open WhatsApp
+        //     window.open(whatsappUrl, '_blank');
+        // }
+
+
+
         // Event listener untuk tombol WhatsApp Share
-        const whatsappShareButton = document.getElementById("whatsappSharePdf");
+const whatsappShareButton = document.getElementById("whatsappSharePdf");
+if (whatsappShareButton) {
+    whatsappShareButton.addEventListener("click", async function () {
+        try {
+            // Show loading state
+            whatsappShareButton.disabled = true;
+            whatsappShareButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Preparing...';
 
-        if (whatsappShareButton) {
-            whatsappShareButton.addEventListener("click", async function () {
-                try {
-                    // Show loading state
-                    whatsappShareButton.disabled = true;
-                    whatsappShareButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Preparing...';
+            // Ambil nomor kuitansi dari modal title
+            const receiptNumber = document.getElementById("pdfModalLabel").textContent.split("#")[1];
+            const fileName = `receipt-${receiptNumber}.jpg`;
 
-                    // Ambil nomor kuitansi dari modal title
-                    const receiptNumber = document.getElementById("pdfModalLabel").textContent.split("#")[1];
-                    const fileName = `receipt-${receiptNumber}.jpg`;
+            // URL gambar di server
+            const imageUrl = `${window.location.origin}/receipts_jpg/${fileName}`;
 
-                    // URL gambar di server
-                    const imageUrl = `${window.location.origin}/receipts_jpg/${fileName}`;
+            // Fetch gambar sebagai blob
+            const response = await fetch(imageUrl);
 
-                    // Fetch gambar sebagai blob
-                    const response = await fetch(imageUrl);
-                    const imageBlob = await response.blob();
-                    const imageFile = new File([imageBlob], fileName, { type: "image/jpeg" });
+            if (!response.ok) {
+                throw new Error('Failed to fetch image');
+            }
 
-                    // Cek apakah Web Share API didukung
-                    if (navigator.canShare && navigator.canShare({ files: [imageFile] })) {
-                        await navigator.share({
-                            title: `Receipt #${receiptNumber}`,
-                            files: [imageFile]
-                        });
+            const imageBlob = await response.blob();
+
+            // Pastikan blob memiliki ukuran yang valid
+            if (imageBlob.size === 0) {
+                throw new Error('Image file is empty');
+            }
+
+            console.log('Image blob size:', imageBlob.size); // Debug log
+
+            // Deteksi iOS
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+            if (isIOS) {
+                // Untuk iOS: Buat data URL dan share sebagai URL
+                const reader = new FileReader();
+                reader.onloadend = async function() {
+                    const base64data = reader.result;
+
+                    // Buat File object dengan base64 data
+                    const imageFile = new File([imageBlob], fileName, {
+                        type: "image/jpeg",
+                        lastModified: Date.now()
+                    });
+
+                    // Coba share dengan Web Share API
+                    if (navigator.share) {
+                        try {
+                            await navigator.share({
+                                title: `Receipt #${receiptNumber}`,
+                                text: `Receipt #${receiptNumber}`,
+                                files: [imageFile]
+                            });
+                        } catch (shareError) {
+                            if (shareError.name !== 'AbortError') {
+                                // Jika share gagal, gunakan fallback: download lalu user manual share
+                                downloadAndInstructShare(base64data, fileName, receiptNumber);
+                            }
+                        }
                     } else {
-                        alert("Web Share API tidak didukung di perangkat ini.");
+                        // Fallback untuk browser yang tidak support Web Share API
+                        downloadAndInstructShare(base64data, fileName, receiptNumber);
                     }
-                } catch (error) {
-                    console.error("Error in WhatsApp share process:", error);
-                    alert("Failed to prepare receipt for sharing. Please try again.");
-                } finally {
-                    // Reset button state
-                    whatsappShareButton.disabled = false;
-                    whatsappShareButton.innerHTML = '<i class="bi bi-whatsapp me-1"></i> WhatsApp';
+                };
+                reader.readAsDataURL(imageBlob);
+            } else {
+                // Untuk Android/Desktop
+                const imageFile = new File([imageBlob], fileName, {
+                    type: "image/jpeg",
+                    lastModified: Date.now()
+                });
+
+                if (navigator.canShare && navigator.canShare({ files: [imageFile] })) {
+                    await navigator.share({
+                        title: `Receipt #${receiptNumber}`,
+                        text: `Receipt #${receiptNumber}`,
+                        files: [imageFile]
+                    });
+                } else {
+                    alert("Web Share API tidak didukung di perangkat ini.");
                 }
-            });
+            }
+
+        } catch (error) {
+            console.error("Error in WhatsApp share process:", error);
+            alert(`Failed to prepare receipt: ${error.message}. Please try again.`);
+        } finally {
+            // Reset button state
+            whatsappShareButton.disabled = false;
+            whatsappShareButton.innerHTML = '<i class="bi bi-whatsapp me-1"></i> WhatsApp';
         }
+    });
+}
 
+// Fungsi helper untuk download dan instruksi manual share (iOS fallback)
+function downloadAndInstructShare(base64data, fileName, receiptNumber) {
+    // Create download link
+    const link = document.createElement('a');
+    link.href = base64data;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 
-
-        // Fallback WhatsApp sharing method
-        function fallbackWhatsAppShare(file, receiptNumber) {
-            // Create object URL for the file
-            const fileUrl = URL.createObjectURL(file);
-
-            // Construct WhatsApp share URL
-            // Note: This method works on mobile devices
-            const whatsappUrl = `https://wa.me/?text=Receipt%20%23${receiptNumber}&file=${encodeURIComponent(fileUrl)}`;
-
-            // Open WhatsApp
-            window.open(whatsappUrl, '_blank');
-        }
+    // Show instructions
+    setTimeout(() => {
+        alert(`Image downloaded! Please:\n1. Open your Photos/Downloads\n2. Find ${fileName}\n3. Tap Share button\n4. Select WhatsApp to share`);
+    }, 500);
+}
 
         // // Event listener untuk tombol Share
         // const shareButton = document.getElementById("sharePdf");
