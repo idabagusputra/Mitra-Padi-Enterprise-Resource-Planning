@@ -414,7 +414,7 @@ async function convertPdfToJpg(pdfUrl) {
         return new Promise((resolve) => {
             finalCanvas.toBlob((blob) => {
                 resolve(blob);
-            }, "image/jpeg", 0.95);
+            }, "image/jpeg", 1);
         });
 
     } catch (error) {
