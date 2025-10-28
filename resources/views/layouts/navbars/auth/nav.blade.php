@@ -457,60 +457,55 @@ if (whatsappShareButton) {
             const receiptNumber = document.getElementById("pdfModalLabel").textContent.split("#")[1];
             const fileName = `receipt-${receiptNumber}.jpg`;
 
-            // URL gambar di server
-            const imageUrl = `${window.location.origin}/receipts_jpg/${fileName}`;
-
-            // Fetch gambar sebagai blob
-            const response = await fetch(imageUrl);
-
-            if (!response.ok) {
-                throw new Error('Failed to fetch image');
-            }
-
-            const imageBlob = await response.blob();
-
-            // Pastikan blob memiliki ukuran yang valid
-            if (imageBlob.size === 0) {
-                throw new Error('Image file is empty');
-            }
-
-            console.log('Image blob size:', imageBlob.size); // Debug log
-
             // Deteksi iOS
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
-            if (isIOS) {
-                // Untuk iOS: Buat data URL dan share sebagai URL
-                const reader = new FileReader();
-                reader.onloadend = async function() {
-                    const base64data = reader.result;
+            // Coba beberapa kemungkinan path
+            const possiblePaths = [
+                `/receipts_jpg/${fileName}`,
+                `./receipts_jpg/${fileName}`,
+                `receipts_jpg/${fileName}`,
+                `/static/receipts_jpg/${fileName}` // jika menggunakan static folder
+            ];
 
-                    // Buat File object dengan base64 data
-                    const imageFile = new File([imageBlob], fileName, {
-                        type: "image/jpeg",
-                        lastModified: Date.now()
+            let imageBlob = null;
+            let successPath = null;
+
+            // Coba fetch dari setiap path
+            for (const path of possiblePaths) {
+                try {
+                    console.log('Trying path:', path);
+                    const response = await fetch(path, {
+                        method: 'GET',
+                        cache: 'no-cache',
+                        headers: {
+                            'Accept': 'image/jpeg,image/*'
+                        }
                     });
 
-                    // Coba share dengan Web Share API
-                    if (navigator.share) {
-                        try {
-                            await navigator.share({
-                                title: `Receipt #${receiptNumber}`,
-                                text: `Receipt #${receiptNumber}`,
-                                files: [imageFile]
-                            });
-                        } catch (shareError) {
-                            if (shareError.name !== 'AbortError') {
-                                // Jika share gagal, gunakan fallback: download lalu user manual share
-                                downloadAndInstructShare(base64data, fileName, receiptNumber);
-                            }
+                    if (response.ok) {
+                        imageBlob = await response.blob();
+                        if (imageBlob.size > 1000) { // pastikan > 1KB
+                            successPath = path;
+                            console.log('Success with path:', path, 'Size:', imageBlob.size);
+                            break;
                         }
-                    } else {
-                        // Fallback untuk browser yang tidak support Web Share API
-                        downloadAndInstructShare(base64data, fileName, receiptNumber);
                     }
-                };
-                reader.readAsDataURL(imageBlob);
+                } catch (err) {
+                    console.log('Failed path:', path, err);
+                    continue;
+                }
+            }
+
+            if (!imageBlob || imageBlob.size === 0) {
+                throw new Error('Could not load image from any path. Please check file location.');
+            }
+
+            console.log('Final image blob size:', imageBlob.size);
+
+            if (isIOS) {
+                // Untuk iOS: Gunakan Canvas untuk konversi yang lebih reliable
+                await shareViaCanvas(imageBlob, fileName, receiptNumber);
             } else {
                 // Untuk Android/Desktop
                 const imageFile = new File([imageBlob], fileName, {
@@ -531,7 +526,7 @@ if (whatsappShareButton) {
 
         } catch (error) {
             console.error("Error in WhatsApp share process:", error);
-            alert(`Failed to prepare receipt: ${error.message}. Please try again.`);
+            alert(`Failed to prepare receipt: ${error.message}`);
         } finally {
             // Reset button state
             whatsappShareButton.disabled = false;
@@ -540,19 +535,94 @@ if (whatsappShareButton) {
     });
 }
 
-// Fungsi helper untuk download dan instruksi manual share (iOS fallback)
-function downloadAndInstructShare(base64data, fileName, receiptNumber) {
-    // Create download link
+// Fungsi untuk share via Canvas (lebih reliable untuk iOS)
+async function shareViaCanvas(blob, fileName, receiptNumber) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        const url = URL.createObjectURL(blob);
+
+        img.onload = async function() {
+            try {
+                // Buat canvas
+                const canvas = document.createElement('canvas');
+                canvas.width = img.width;
+                canvas.height = img.height;
+
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0);
+
+                // Convert canvas to blob dengan kualitas tinggi
+                canvas.toBlob(async (canvasBlob) => {
+                    if (!canvasBlob) {
+                        reject(new Error('Failed to create image blob'));
+                        return;
+                    }
+
+                    console.log('Canvas blob size:', canvasBlob.size);
+
+                    const imageFile = new File([canvasBlob], fileName, {
+                        type: "image/jpeg",
+                        lastModified: Date.now()
+                    });
+
+                    // Coba share
+                    if (navigator.share) {
+                        try {
+                            await navigator.share({
+                                files: [imageFile],
+                                title: `Receipt #${receiptNumber}`,
+                                text: `Receipt #${receiptNumber}`
+                            });
+                            resolve();
+                        } catch (shareError) {
+                            if (shareError.name === 'AbortError') {
+                                // User cancelled, ini bukan error
+                                resolve();
+                            } else {
+                                // Gagal share, gunakan fallback
+                                fallbackDownload(canvasBlob, fileName, receiptNumber);
+                                resolve();
+                            }
+                        }
+                    } else {
+                        // Browser tidak support share
+                        fallbackDownload(canvasBlob, fileName, receiptNumber);
+                        resolve();
+                    }
+
+                    URL.revokeObjectURL(url);
+                }, 'image/jpeg', 0.95);
+
+            } catch (error) {
+                URL.revokeObjectURL(url);
+                reject(error);
+            }
+        };
+
+        img.onerror = function() {
+            URL.revokeObjectURL(url);
+            reject(new Error('Failed to load image'));
+        };
+
+        img.src = url;
+    });
+}
+
+// Fallback: Download file
+function fallbackDownload(blob, fileName, receiptNumber) {
+    const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
-    link.href = base64data;
+    link.href = url;
     link.download = fileName;
+    link.style.display = 'none';
+
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
 
-    // Show instructions
     setTimeout(() => {
-        alert(`Image downloaded! Please:\n1. Open your Photos/Downloads\n2. Find ${fileName}\n3. Tap Share button\n4. Select WhatsApp to share`);
+        URL.revokeObjectURL(url);
+        alert(`Receipt downloaded as ${fileName}\n\nTo share to WhatsApp:\n1. Open Photos/Files app\n2. Find ${fileName}\n3. Tap Share → WhatsApp`);
     }, 500);
 }
 
