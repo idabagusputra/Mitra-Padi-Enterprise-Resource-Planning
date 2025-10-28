@@ -335,40 +335,70 @@
         async function convertPdfToJpg(pdfUrl) {
             try {
                 // Load PDF
-                const loadingTask = pdfjsLib.getDocument(pdfUrl);
-                const pdf = await loadingTask.promise;
+                const loadingTask = window.pdfjsLib.getDocument({ data: pdfArrayBuffer });
+    const pdf = await loadingTask.promise;
 
-                // Get first page
-                const page = await pdf.getPage(1);
+    // Ambil halaman pertama
+    const page = await pdf.getPage(1);
 
-                // Set scale for better resolution
-                const scale = 4;
-                const viewport = page.getViewport({ scale });
+    // Set scale untuk HD quality (3x untuk super sharp)
+    const scale = 3.0;
+    const viewport = page.getViewport({ scale: scale });
 
-                // Create an off-screen canvas
-                const canvas = document.createElement("canvas");
-                const context = canvas.getContext("2d");
-                canvas.width = viewport.width;
-                canvas.height = viewport.height;
+    // Buat canvas untuk render PDF
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
 
-                // Render PDF page to the canvas
-                const renderContext = {
-                    canvasContext: context,
-                    viewport: viewport
-                };
-                await page.render(renderContext).promise;
+    // Render PDF ke canvas
+    const renderContext = {
+        canvasContext: context,
+        viewport: viewport
+    };
 
-                // Convert canvas to Blob (JPG)
-                return new Promise((resolve) => {
-                    canvas.toBlob((blob) => {
-                        resolve(blob);
-                    }, "image/jpeg", 0.95);
-                });
+    await page.render(renderContext).promise;
 
-            } catch (error) {
-                console.error("Error converting PDF to JPG:", error);
-                throw error;
+    // Deteksi area konten (crop bagian kosong bawah)
+    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+    const contentBottom = detectContentBottom(imageData);
+
+    // Hitung dimensi baru dengan margin
+    const topMargin = 20 * scale; // 60px margin top (disesuaikan dengan scale)
+    const bottomMargin = 20 * scale; // 40px margin bottom
+    const sideMargin = 40 * scale; // 40px margin kiri-kanan
+
+    const contentHeight = contentBottom;
+    const newHeight = contentHeight + topMargin + bottomMargin;
+    const newWidth = canvas.width;
+
+    // Buat canvas baru untuk hasil akhir dengan background putih
+    const finalCanvas = document.createElement('canvas');
+    finalCanvas.width = newWidth;
+    finalCanvas.height = newHeight;
+    const finalContext = finalCanvas.getContext('2d');
+
+    // Fill background putih
+    finalContext.fillStyle = '#FFFFFF';
+    finalContext.fillRect(0, 0, finalCanvas.width, finalCanvas.height);
+
+    // Copy konten dari canvas asli ke canvas baru dengan margin
+    finalContext.drawImage(
+        canvas,
+        0, 0, canvas.width, contentHeight, // source
+        0, topMargin, newWidth, contentHeight // destination dengan margin top
+    );
+
+    // Convert canvas ke blob dengan kualitas tinggi
+    return new Promise((resolve, reject) => {
+        finalCanvas.toBlob((blob) => {
+            if (blob) {
+                resolve(blob);
+            } else {
+                reject(new Error('Failed to convert canvas to blob'));
             }
+        }, 'image/jpeg', 1); // 95% quality untuk HD
+    });
         }
 
         // Function to download the file
