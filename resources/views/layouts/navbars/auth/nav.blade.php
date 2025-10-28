@@ -399,6 +399,10 @@
             }
         }, 'image/jpeg', 1); // 95% quality untuk HD
     });
+            } catch (error) {
+                console.error("Error converting PDF to JPG:", error);
+                throw error;
+            }
         }
 
         // Function to download the file
