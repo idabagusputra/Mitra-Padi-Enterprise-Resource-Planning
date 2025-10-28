@@ -241,16 +241,16 @@
             </div>
             <div class="modal-footer d-flex justify-content-between" style="margin-bottom: 0; padding-bottom: 0;">
                 <div>
-                    <button id="printPdf" class="btn btn-primary me-2">
-                        <i class="bi bi-printer-fill me-1"></i> print
-                    </button>
-                    <button id="sharePdf" class="btn btn-info me-2">
-                        <i class="bi bi-floppy-fill me-1"></i> Save
-                    </button>
-                    {{-- <button id="whatsappSharePdf" class="btn btn-success me-2">
-                        <i class="bi bi-whatsapp me-1"></i> WhatsApp
-                    </button> --}}
-                </div>
+    <button id="printPdf" class="btn btn-primary me-2">
+        <i class="bi bi-printer-fill me-1"></i> print
+    </button>
+    <button id="sharePdf" class="btn btn-info me-2" style="display: none;">
+        <i class="bi bi-floppy-fill me-1"></i> Save
+    </button>
+    <button id="whatsappSharePdf" class="btn btn-success me-2" style="display: none;">
+        <i class="bi bi-whatsapp me-1"></i> WhatsApp
+    </button>
+</div>
                 <div>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     <i class="bi bi-x-square-fill me-1"></i> close
@@ -265,6 +265,24 @@
 <!-- Tambahkan Script -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
+
+     // Deteksi platform
+    const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
+    // Deteksi iOS
+    const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
+
+    // Deteksi Android
+    const isAndroid = /android/i.test(userAgent);
+
+    // Tampilkan tombol sesuai platform
+    if (isIOS) {
+        document.getElementById('whatsappSharePdf').style.display = 'inline-block';
+    } else if (isAndroid) {
+        document.getElementById('sharePdf').style.display = 'inline-block';
+    }
+
+
     // Initialize PDF.js worker
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
@@ -370,92 +388,92 @@
         // // Event listener untuk tombol WhatsApp Share
         // const whatsappShareButton = document.getElementById("whatsappSharePdf");
 
-        // if (whatsappShareButton) {
-        //     whatsappShareButton.addEventListener("click", async function () {
-        //         try {
-        //             // Show loading state
-        //             whatsappShareButton.disabled = true;
-        //             whatsappShareButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Preparing...';
-
-        //             // Ambil nomor kuitansi dari modal title
-        //             const receiptNumber = document.getElementById("pdfModalLabel").textContent.split("#")[1];
-        //             const fileName = `receipt-${receiptNumber}.jpg`;
-
-        //             // URL gambar di server
-        //             const imageUrl = `${window.location.origin}/receipts_jpg/${fileName}`;
-
-        //             // Fetch gambar sebagai blob
-        //             const response = await fetch(imageUrl);
-        //             const imageBlob = await response.blob();
-        //             const imageFile = new File([imageBlob], fileName, { type: "image/jpeg" });
-
-        //             // Cek apakah Web Share API didukung
-        //             if (navigator.canShare && navigator.canShare({ files: [imageFile] })) {
-        //                 await navigator.share({
-        //                     title: `Receipt #${receiptNumber}`,
-        //                     files: [imageFile]
-        //                 });
-        //             } else {
-        //                 alert("Web Share API tidak didukung di perangkat ini.");
-        //             }
-        //         } catch (error) {
-        //             console.error("Error in WhatsApp share process:", error);
-        //             alert("Failed to prepare receipt for sharing. Please try again.");
-        //         } finally {
-        //             // Reset button state
-        //             whatsappShareButton.disabled = false;
-        //             whatsappShareButton.innerHTML = '<i class="bi bi-whatsapp me-1"></i> WhatsApp';
-        //         }
-        //     });
-        // }
-
-
-
-        // // Fallback WhatsApp sharing method
-        // function fallbackWhatsAppShare(file, receiptNumber) {
-        //     // Create object URL for the file
-        //     const fileUrl = URL.createObjectURL(file);
-
-        //     // Construct WhatsApp share URL
-        //     // Note: This method works on mobile devices
-        //     const whatsappUrl = `https://wa.me/?text=Receipt%20%23${receiptNumber}&file=${encodeURIComponent(fileUrl)}`;
-
-        //     // Open WhatsApp
-        //     window.open(whatsappUrl, '_blank');
-        // }
-
-        // Event listener untuk tombol Share
-        const shareButton = document.getElementById("sharePdf");
-        if (shareButton) {
-            shareButton.addEventListener("click", async function () {
+        if (whatsappShareButton) {
+            whatsappShareButton.addEventListener("click", async function () {
                 try {
                     // Show loading state
-                    shareButton.disabled = true;
-                    shareButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Converting...';
+                    whatsappShareButton.disabled = true;
+                    whatsappShareButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Preparing...';
 
-                    const pdfViewer = document.getElementById("pdfViewer");
-                    const pdfUrl = pdfViewer.src;
-
-                    // Convert PDF to JPG
-                    const jpgBlob = await convertPdfToJpg(pdfUrl);
-
-                    // Get receipt number from modal title
+                    // Ambil nomor kuitansi dari modal title
                     const receiptNumber = document.getElementById("pdfModalLabel").textContent.split("#")[1];
                     const fileName = `receipt-${receiptNumber}.jpg`;
 
-                    // Download the JPG
-                    downloadBlob(jpgBlob, fileName);
+                    // URL gambar di server
+                    const imageUrl = `${window.location.origin}/receipts_jpg/${fileName}`;
 
+                    // Fetch gambar sebagai blob
+                    const response = await fetch(imageUrl);
+                    const imageBlob = await response.blob();
+                    const imageFile = new File([imageBlob], fileName, { type: "image/jpeg" });
+
+                    // Cek apakah Web Share API didukung
+                    if (navigator.canShare && navigator.canShare({ files: [imageFile] })) {
+                        await navigator.share({
+                            title: `Receipt #${receiptNumber}`,
+                            files: [imageFile]
+                        });
+                    } else {
+                        alert("Web Share API tidak didukung di perangkat ini.");
+                    }
                 } catch (error) {
-                    console.error("Error in share process:", error);
-                    alert("Failed to convert PDF to JPG. Please try again.");
+                    console.error("Error in WhatsApp share process:", error);
+                    alert("Failed to prepare receipt for sharing. Please try again.");
                 } finally {
                     // Reset button state
-                    shareButton.disabled = false;
-                    shareButton.innerHTML = '<i class="bi bi-floppy-fill me-1"></i> SAVED';
+                    whatsappShareButton.disabled = false;
+                    whatsappShareButton.innerHTML = '<i class="bi bi-whatsapp me-1"></i> WhatsApp';
                 }
             });
         }
+
+
+
+        // Fallback WhatsApp sharing method
+        function fallbackWhatsAppShare(file, receiptNumber) {
+            // Create object URL for the file
+            const fileUrl = URL.createObjectURL(file);
+
+            // Construct WhatsApp share URL
+            // Note: This method works on mobile devices
+            const whatsappUrl = `https://wa.me/?text=Receipt%20%23${receiptNumber}&file=${encodeURIComponent(fileUrl)}`;
+
+            // Open WhatsApp
+            window.open(whatsappUrl, '_blank');
+        }
+
+        // // Event listener untuk tombol Share
+        // const shareButton = document.getElementById("sharePdf");
+        // if (shareButton) {
+        //     shareButton.addEventListener("click", async function () {
+        //         try {
+        //             // Show loading state
+        //             shareButton.disabled = true;
+        //             shareButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Converting...';
+
+        //             const pdfViewer = document.getElementById("pdfViewer");
+        //             const pdfUrl = pdfViewer.src;
+
+        //             // Convert PDF to JPG
+        //             const jpgBlob = await convertPdfToJpg(pdfUrl);
+
+        //             // Get receipt number from modal title
+        //             const receiptNumber = document.getElementById("pdfModalLabel").textContent.split("#")[1];
+        //             const fileName = `receipt-${receiptNumber}.jpg`;
+
+        //             // Download the JPG
+        //             downloadBlob(jpgBlob, fileName);
+
+        //         } catch (error) {
+        //             console.error("Error in share process:", error);
+        //             alert("Failed to convert PDF to JPG. Please try again.");
+        //         } finally {
+        //             // Reset button state
+        //             shareButton.disabled = false;
+        //             shareButton.innerHTML = '<i class="bi bi-floppy-fill me-1"></i> SAVED';
+        //         }
+        //     });
+        // }
 
 
         // Event listener untuk tombol Close dan Print
