@@ -266,21 +266,21 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
 
-     // Deteksi platform
-    const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+    //  // Deteksi platform
+    // const userAgent = navigator.userAgent || navigator.vendor || window.opera;
 
-    // Deteksi iOS
-    const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
+    // // Deteksi iOS
+    // const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
 
-    // Deteksi Android
-    const isAndroid = /android/i.test(userAgent);
+    // // Deteksi Android
+    // const isAndroid = /android/i.test(userAgent);
 
-    // Tampilkan tombol sesuai platform
-    if (isIOS) {
-        document.getElementById('whatsappSharePdf').style.display = 'inline-block';
-    } else if (isAndroid) {
-        document.getElementById('sharePdf').style.display = 'inline-block';
-    }
+    // // Tampilkan tombol sesuai platform
+    // if (isIOS) {
+    //     document.getElementById('whatsappSharePdf').style.display = 'inline-block';
+    // } else if (isAndroid) {
+    //     document.getElementById('sharePdf').style.display = 'inline-block';
+    // }
 
 
     // Initialize PDF.js worker
