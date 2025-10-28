@@ -603,7 +603,7 @@ async function convertPdfToHDImage(pdfArrayBuffer) {
             } else {
                 reject(new Error('Failed to convert canvas to blob'));
             }
-        }, 'image/jpeg', 0.95); // 95% quality untuk HD
+        }, 'image/jpeg', 1); // 95% quality untuk HD
     });
 }
 
@@ -823,7 +823,7 @@ async function convertPdfToImage(pdfArrayBuffer) {
             } else {
                 reject(new Error('Failed to convert canvas to blob'));
             }
-        }, 'image/jpeg', 0.95); // 95% quality untuk HD
+        }, 'image/jpeg', 1); // 95% quality untuk HD
     });
 }
 
