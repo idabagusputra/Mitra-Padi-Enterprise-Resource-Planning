@@ -332,44 +332,96 @@
         });
 
         // Function to convert PDF to JPG without using canvas element
-        async function convertPdfToJpg(pdfUrl) {
-            try {
-                // Load PDF
-                const loadingTask = pdfjsLib.getDocument(pdfUrl);
-                const pdf = await loadingTask.promise;
+async function convertPdfToJpg(pdfUrl) {
+    try {
+        // Load PDF
+        const loadingTask = pdfjsLib.getDocument(pdfUrl);
+        const pdf = await loadingTask.promise;
 
-                // Get first page
-                const page = await pdf.getPage(1);
+        // Get first page
+        const page = await pdf.getPage(1);
 
-                // Set scale for better resolution
-                const scale = 4;
-                const viewport = page.getViewport({ scale });
+        // Set scale for better resolution
+        const scale = 4;
+        const viewport = page.getViewport({ scale });
 
-                // Create an off-screen canvas
-                const canvas = document.createElement("canvas");
-                const context = canvas.getContext("2d");
-                canvas.width = viewport.width;
-                canvas.height = viewport.height;
+        // Add padding
+        const paddingTop = 20 * scale; // Scale padding accordingly
+        const paddingBottom = 20 * scale;
 
-                // Render PDF page to the canvas
-                const renderContext = {
-                    canvasContext: context,
-                    viewport: viewport
-                };
-                await page.render(renderContext).promise;
+        // Create an off-screen canvas with padding
+        const canvas = document.createElement("canvas");
+        const context = canvas.getContext("2d");
+        canvas.width = viewport.width;
+        canvas.height = viewport.height + paddingTop + paddingBottom;
 
-                // Convert canvas to Blob (JPG)
-                return new Promise((resolve) => {
-                    canvas.toBlob((blob) => {
-                        resolve(blob);
-                    }, "image/jpeg", 0.95);
-                });
+        // Fill background with white
+        context.fillStyle = "white";
+        context.fillRect(0, 0, canvas.width, canvas.height);
 
-            } catch (error) {
-                console.error("Error converting PDF to JPG:", error);
-                throw error;
+        // Save context state
+        context.save();
+        context.translate(0, paddingTop);
+
+        // Render PDF page to the canvas
+        const renderContext = {
+            canvasContext: context,
+            viewport: viewport
+        };
+        await page.render(renderContext).promise;
+
+        // Restore context
+        context.restore();
+
+        // Trim bottom whitespace
+        const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+        const pixels = imageData.data;
+
+        let lastNonWhiteRow = canvas.height;
+
+        // Scan from bottom to top
+        for (let y = canvas.height - 1; y >= 0; y--) {
+            let isWhiteRow = true;
+            for (let x = 0; x < canvas.width; x++) {
+                const index = (y * canvas.width + x) * 4;
+                const r = pixels[index];
+                const g = pixels[index + 1];
+                const b = pixels[index + 2];
+
+                // Check if pixel is not white (with small tolerance)
+                if (r < 250 || g < 250 || b < 250) {
+                    isWhiteRow = false;
+                    break;
+                }
+            }
+
+            if (!isWhiteRow) {
+                lastNonWhiteRow = y + 1;
+                break;
             }
         }
+
+        // Create final canvas with trimmed height
+        const finalCanvas = document.createElement("canvas");
+        const finalContext = finalCanvas.getContext("2d");
+        finalCanvas.width = canvas.width;
+        finalCanvas.height = lastNonWhiteRow;
+
+        // Copy the trimmed content
+        finalContext.drawImage(canvas, 0, 0);
+
+        // Convert canvas to Blob (JPG)
+        return new Promise((resolve) => {
+            finalCanvas.toBlob((blob) => {
+                resolve(blob);
+            }, "image/jpeg", 0.95);
+        });
+
+    } catch (error) {
+        console.error("Error converting PDF to JPG:", error);
+        throw error;
+    }
+}
 
         // Function to download the file
         function downloadBlob(blob, fileName) {
@@ -891,7 +943,7 @@ function fallbackDownload(blob, fileName, receiptNumber) {
                     const pdfUrl = pdfViewer.src;
 
                     // Convert PDF to JPG
-                    const jpgBlob = await convertPdfToHDImage(pdfUrl);
+                    const jpgBlob = await convertPdfToJpg(pdfUrl);
 
                     // Get receipt number from modal title
                     const receiptNumber = document.getElementById("pdfModalLabel").textContent.split("#")[1];
