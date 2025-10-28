@@ -335,70 +335,36 @@
         async function convertPdfToJpg(pdfUrl) {
             try {
                 // Load PDF
-                const loadingTask = window.pdfjsLib.getDocument({ data: pdfArrayBuffer });
-    const pdf = await loadingTask.promise;
+                const loadingTask = pdfjsLib.getDocument(pdfUrl);
+                const pdf = await loadingTask.promise;
 
-    // Ambil halaman pertama
-    const page = await pdf.getPage(1);
+                // Get first page
+                const page = await pdf.getPage(1);
 
-    // Set scale untuk HD quality (3x untuk super sharp)
-    const scale = 3.0;
-    const viewport = page.getViewport({ scale: scale });
+                // Set scale for better resolution
+                const scale = 4;
+                const viewport = page.getViewport({ scale });
 
-    // Buat canvas untuk render PDF
-    const canvas = document.createElement('canvas');
-    const context = canvas.getContext('2d');
-    canvas.width = viewport.width;
-    canvas.height = viewport.height;
+                // Create an off-screen canvas
+                const canvas = document.createElement("canvas");
+                const context = canvas.getContext("2d");
+                canvas.width = viewport.width;
+                canvas.height = viewport.height;
 
-    // Render PDF ke canvas
-    const renderContext = {
-        canvasContext: context,
-        viewport: viewport
-    };
+                // Render PDF page to the canvas
+                const renderContext = {
+                    canvasContext: context,
+                    viewport: viewport
+                };
+                await page.render(renderContext).promise;
 
-    await page.render(renderContext).promise;
+                // Convert canvas to Blob (JPG)
+                return new Promise((resolve) => {
+                    canvas.toBlob((blob) => {
+                        resolve(blob);
+                    }, "image/jpeg", 0.95);
+                });
 
-    // Deteksi area konten (crop bagian kosong bawah)
-    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-    const contentBottom = detectContentBottom(imageData);
-
-    // Hitung dimensi baru dengan margin
-    const topMargin = 20 * scale; // 60px margin top (disesuaikan dengan scale)
-    const bottomMargin = 20 * scale; // 40px margin bottom
-    const sideMargin = 40 * scale; // 40px margin kiri-kanan
-
-    const contentHeight = contentBottom;
-    const newHeight = contentHeight + topMargin + bottomMargin;
-    const newWidth = canvas.width;
-
-    // Buat canvas baru untuk hasil akhir dengan background putih
-    const finalCanvas = document.createElement('canvas');
-    finalCanvas.width = newWidth;
-    finalCanvas.height = newHeight;
-    const finalContext = finalCanvas.getContext('2d');
-
-    // Fill background putih
-    finalContext.fillStyle = '#FFFFFF';
-    finalContext.fillRect(0, 0, finalCanvas.width, finalCanvas.height);
-
-    // Copy konten dari canvas asli ke canvas baru dengan margin
-    finalContext.drawImage(
-        canvas,
-        0, 0, canvas.width, contentHeight, // source
-        0, topMargin, newWidth, contentHeight // destination dengan margin top
-    );
-
-    // Convert canvas ke blob dengan kualitas tinggi
-    return new Promise((resolve, reject) => {
-        finalCanvas.toBlob((blob) => {
-            if (blob) {
-                resolve(blob);
-            } else {
-                reject(new Error('Failed to convert canvas to blob'));
-            }
-        }, 'image/jpeg', 1); // 95% quality untuk HD
-    });
             } catch (error) {
                 console.error("Error converting PDF to JPG:", error);
                 throw error;
@@ -925,7 +891,7 @@ function fallbackDownload(blob, fileName, receiptNumber) {
                     const pdfUrl = pdfViewer.src;
 
                     // Convert PDF to JPG
-                    const jpgBlob = await convertPdfToJpg(pdfUrl);
+                    const jpgBlob = await convertPdfToHDImage(pdfUrl);
 
                     // Get receipt number from modal title
                     const receiptNumber = document.getElementById("pdfModalLabel").textContent.split("#")[1];
