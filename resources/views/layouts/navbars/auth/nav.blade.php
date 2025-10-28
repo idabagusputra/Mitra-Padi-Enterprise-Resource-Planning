@@ -570,8 +570,8 @@ async function convertPdfToHDImage(pdfArrayBuffer) {
     const contentBottom = detectContentBottom(imageData);
 
     // Hitung dimensi baru dengan margin
-    const topMargin = 40 * scale; // 60px margin top (disesuaikan dengan scale)
-    const bottomMargin = 40 * scale; // 40px margin bottom
+    const topMargin = 20 * scale; // 60px margin top (disesuaikan dengan scale)
+    const bottomMargin = 20 * scale; // 40px margin bottom
     const sideMargin = 40 * scale; // 40px margin kiri-kanan
 
     const contentHeight = contentBottom;
