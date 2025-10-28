@@ -451,89 +451,64 @@ if (whatsappShareButton) {
         try {
             // Show loading state
             whatsappShareButton.disabled = true;
-            whatsappShareButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Preparing...';
+            whatsappShareButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Converting PDF...';
 
             // Ambil nomor kuitansi dari modal title
             const receiptNumber = document.getElementById("pdfModalLabel").textContent.split("#")[1];
             const fileName = `receipt-${receiptNumber}.jpg`;
 
-            // DEBUGGING: Cek lokasi file PDF yang sedang ditampilkan
+            // Ambil URL PDF dari iframe
             const pdfIframe = document.querySelector('#pdfModal iframe');
-            if (pdfIframe) {
-                const pdfSrc = pdfIframe.src;
-                console.log('Current PDF src:', pdfSrc);
-                alert('PDF Location: ' + pdfSrc);
+            if (!pdfIframe || !pdfIframe.src) {
+                throw new Error('PDF not found in modal');
             }
+
+            const pdfUrl = pdfIframe.src;
+            console.log('PDF URL:', pdfUrl);
+
+            // Update status
+            whatsappShareButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Loading PDF...';
+
+            // Fetch PDF
+            const pdfResponse = await fetch(pdfUrl);
+            if (!pdfResponse.ok) {
+                throw new Error('Failed to load PDF');
+            }
+
+            const pdfBlob = await pdfResponse.blob();
+            const pdfArrayBuffer = await pdfBlob.arrayBuffer();
+
+            // Update status
+            whatsappShareButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Converting...';
+
+            // Load PDF.js library jika belum ada
+            if (!window.pdfjsLib) {
+                const script = document.createElement('script');
+                script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+                document.head.appendChild(script);
+
+                await new Promise((resolve, reject) => {
+                    script.onload = resolve;
+                    script.onerror = reject;
+                });
+
+                // Set worker
+                window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+                    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+            }
+
+            // Convert PDF to image
+            const imageBlob = await convertPdfToImage(pdfArrayBuffer);
+
+            console.log('Converted image size:', imageBlob.size);
 
             // Deteksi iOS
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
-            // Coba beberapa kemungkinan path berdasarkan lokasi PDF
-            const baseUrl = window.location.origin;
-            const possiblePaths = [
-                `${baseUrl}/receipts_jpg/${fileName}`,
-                `./receipts_jpg/${fileName}`,
-                `receipts_jpg/${fileName}`,
-                `/receipts_jpg/${fileName}`,
-                `${baseUrl}/static/receipts_jpg/${fileName}`,
-                `/static/receipts_jpg/${fileName}`,
-                // Jika PDF di folder receipts, JPG mungkin di folder yang sama
-                `${baseUrl}/receipts/${fileName}`,
-                `/receipts/${fileName}`,
-                // Atau berdasarkan current page location
-                `${window.location.pathname.split('/').slice(0, -1).join('/')}/receipts_jpg/${fileName}`
-            ];
-
-            console.log('Testing paths:', possiblePaths);
-
-            let imageBlob = null;
-            let successPath = null;
-            let errorLog = [];
-
-            // Coba fetch dari setiap path
-            for (const path of possiblePaths) {
-                try {
-                    console.log('Trying path:', path);
-                    const response = await fetch(path, {
-                        method: 'GET',
-                        cache: 'no-cache'
-                    });
-
-                    console.log(`Path: ${path} - Status: ${response.status}`);
-                    errorLog.push(`${path}: ${response.status}`);
-
-                    if (response.ok) {
-                        const testBlob = await response.blob();
-                        console.log(`Blob size: ${testBlob.size}, type: ${testBlob.type}`);
-
-                        if (testBlob.size > 1000) { // pastikan > 1KB
-                            imageBlob = testBlob;
-                            successPath = path;
-                            console.log('✓ Success with path:', path, 'Size:', imageBlob.size);
-                            break;
-                        } else {
-                            errorLog.push(`${path}: too small (${testBlob.size} bytes)`);
-                        }
-                    }
-                } catch (err) {
-                    console.log('✗ Failed path:', path, err.message);
-                    errorLog.push(`${path}: ${err.message}`);
-                    continue;
-                }
-            }
-
-            if (!imageBlob || imageBlob.size === 0) {
-                // Tampilkan semua error untuk debugging
-                console.error('All paths failed:', errorLog);
-                alert('Debug Info:\n' + errorLog.join('\n\n'));
-                throw new Error('Could not load image. Check console for details.');
-            }
-
-            console.log('Final image blob size:', imageBlob.size);
-            alert('Success! Image loaded from: ' + successPath + '\nSize: ' + imageBlob.size + ' bytes');
+            // Update status
+            whatsappShareButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Preparing to share...';
 
             if (isIOS) {
-                // Untuk iOS: Gunakan Canvas untuk konversi yang lebih reliable
                 await shareViaCanvas(imageBlob, fileName, receiptNumber);
             } else {
                 // Untuk Android/Desktop
@@ -549,13 +524,14 @@ if (whatsappShareButton) {
                         files: [imageFile]
                     });
                 } else {
-                    alert("Web Share API tidak didukung di perangkat ini.");
+                    // Fallback: download
+                    fallbackDownload(imageBlob, fileName, receiptNumber);
                 }
             }
 
         } catch (error) {
             console.error("Error in WhatsApp share process:", error);
-            alert(`Error: ${error.message}\n\nPlease check browser console for details.`);
+            alert(`Failed to share receipt: ${error.message}`);
         } finally {
             // Reset button state
             whatsappShareButton.disabled = false;
@@ -564,73 +540,78 @@ if (whatsappShareButton) {
     });
 }
 
-// Fungsi untuk share via Canvas (lebih reliable untuk iOS)
-async function shareViaCanvas(blob, fileName, receiptNumber) {
+// Fungsi convert PDF ke Image menggunakan PDF.js
+async function convertPdfToImage(pdfArrayBuffer) {
+    const loadingTask = window.pdfjsLib.getDocument({ data: pdfArrayBuffer });
+    const pdf = await loadingTask.promise;
+
+    // Ambil halaman pertama
+    const page = await pdf.getPage(1);
+
+    // Set scale untuk kualitas tinggi (2x untuk retina display)
+    const scale = 2.0;
+    const viewport = page.getViewport({ scale: scale });
+
+    // Buat canvas
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
+
+    // Render PDF ke canvas
+    const renderContext = {
+        canvasContext: context,
+        viewport: viewport
+    };
+
+    await page.render(renderContext).promise;
+
+    // Convert canvas ke blob
     return new Promise((resolve, reject) => {
-        const img = new Image();
-        const url = URL.createObjectURL(blob);
-
-        img.onload = async function() {
-            try {
-                const canvas = document.createElement('canvas');
-                canvas.width = img.width;
-                canvas.height = img.height;
-
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0);
-
-                canvas.toBlob(async (canvasBlob) => {
-                    if (!canvasBlob) {
-                        reject(new Error('Failed to create image blob'));
-                        return;
-                    }
-
-                    console.log('Canvas blob size:', canvasBlob.size);
-
-                    const imageFile = new File([canvasBlob], fileName, {
-                        type: "image/jpeg",
-                        lastModified: Date.now()
-                    });
-
-                    if (navigator.share) {
-                        try {
-                            await navigator.share({
-                                files: [imageFile],
-                                title: `Receipt #${receiptNumber}`,
-                                text: `Receipt #${receiptNumber}`
-                            });
-                            resolve();
-                        } catch (shareError) {
-                            if (shareError.name === 'AbortError') {
-                                resolve();
-                            } else {
-                                fallbackDownload(canvasBlob, fileName, receiptNumber);
-                                resolve();
-                            }
-                        }
-                    } else {
-                        fallbackDownload(canvasBlob, fileName, receiptNumber);
-                        resolve();
-                    }
-
-                    URL.revokeObjectURL(url);
-                }, 'image/jpeg', 0.95);
-
-            } catch (error) {
-                URL.revokeObjectURL(url);
-                reject(error);
+        canvas.toBlob((blob) => {
+            if (blob) {
+                resolve(blob);
+            } else {
+                reject(new Error('Failed to convert canvas to blob'));
             }
-        };
-
-        img.onerror = function() {
-            URL.revokeObjectURL(url);
-            reject(new Error('Failed to load image'));
-        };
-
-        img.src = url;
+        }, 'image/jpeg', 0.92); // 92% quality
     });
 }
 
+// Fungsi untuk share via Canvas (untuk iOS)
+async function shareViaCanvas(blob, fileName, receiptNumber) {
+    return new Promise((resolve, reject) => {
+        const imageFile = new File([blob], fileName, {
+            type: "image/jpeg",
+            lastModified: Date.now()
+        });
+
+        if (navigator.share) {
+            navigator.share({
+                files: [imageFile],
+                title: `Receipt #${receiptNumber}`,
+                text: `Receipt #${receiptNumber}`
+            })
+            .then(() => resolve())
+            .catch((error) => {
+                if (error.name === 'AbortError') {
+                    // User cancelled
+                    resolve();
+                } else {
+                    // Share failed, use fallback
+                    fallbackDownload(blob, fileName, receiptNumber);
+                    resolve();
+                }
+            });
+        } else {
+            // Browser doesn't support share
+            fallbackDownload(blob, fileName, receiptNumber);
+            resolve();
+        }
+    });
+}
+
+// Fallback: Download file
 function fallbackDownload(blob, fileName, receiptNumber) {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
