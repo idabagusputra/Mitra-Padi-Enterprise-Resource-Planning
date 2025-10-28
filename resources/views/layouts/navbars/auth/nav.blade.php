@@ -444,7 +444,7 @@
 
 
 
-        // Event listener untuk tombol WhatsApp Share
+// Event listener untuk tombol WhatsApp Share
 const whatsappShareButton = document.getElementById("whatsappSharePdf");
 if (whatsappShareButton) {
     whatsappShareButton.addEventListener("click", async function () {
@@ -479,7 +479,7 @@ if (whatsappShareButton) {
             const pdfArrayBuffer = await pdfBlob.arrayBuffer();
 
             // Update status
-            whatsappShareButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Converting...';
+            whatsappShareButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Converting to HD...';
 
             // Load PDF.js library jika belum ada
             if (!window.pdfjsLib) {
@@ -497,41 +497,40 @@ if (whatsappShareButton) {
                     'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
             }
 
-            // Convert PDF to image
-            const imageBlob = await convertPdfToImage(pdfArrayBuffer);
+            // Convert PDF to HD image dengan crop dan margin
+            const imageBlob = await convertPdfToHDImage(pdfArrayBuffer);
 
-            console.log('Converted image size:', imageBlob.size);
+            console.log('Converted HD image size:', imageBlob.size);
 
             // Deteksi iOS
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
             // Update status
-            whatsappShareButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Preparing to share...';
+            whatsappShareButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Opening WhatsApp...';
 
-            if (isIOS) {
-                await shareViaCanvas(imageBlob, fileName, receiptNumber);
-            } else {
-                // Untuk Android/Desktop
-                const imageFile = new File([imageBlob], fileName, {
-                    type: "image/jpeg",
-                    lastModified: Date.now()
+            // Langsung share tanpa konfirmasi
+            const imageFile = new File([imageBlob], fileName, {
+                type: "image/jpeg",
+                lastModified: Date.now()
+            });
+
+            if (navigator.canShare && navigator.canShare({ files: [imageFile] })) {
+                // Langsung trigger share
+                await navigator.share({
+                    files: [imageFile]
                 });
-
-                if (navigator.canShare && navigator.canShare({ files: [imageFile] })) {
-                    await navigator.share({
-                        title: `Receipt #${receiptNumber}`,
-                        text: `Receipt #${receiptNumber}`,
-                        files: [imageFile]
-                    });
-                } else {
-                    // Fallback: download
-                    fallbackDownload(imageBlob, fileName, receiptNumber);
-                }
+            } else if (isIOS) {
+                // iOS fallback
+                fallbackDownload(imageBlob, fileName, receiptNumber);
+            } else {
+                alert("Web Share API tidak didukung di perangkat ini.");
             }
 
         } catch (error) {
             console.error("Error in WhatsApp share process:", error);
-            alert(`Failed to share receipt: ${error.message}`);
+            if (error.name !== 'AbortError') {
+                alert(`Failed to share receipt: ${error.message}`);
+            }
         } finally {
             // Reset button state
             whatsappShareButton.disabled = false;
@@ -540,19 +539,19 @@ if (whatsappShareButton) {
     });
 }
 
-// Fungsi convert PDF ke Image menggunakan PDF.js
-async function convertPdfToImage(pdfArrayBuffer) {
+// Fungsi convert PDF ke HD Image dengan crop dan margin
+async function convertPdfToHDImage(pdfArrayBuffer) {
     const loadingTask = window.pdfjsLib.getDocument({ data: pdfArrayBuffer });
     const pdf = await loadingTask.promise;
 
     // Ambil halaman pertama
     const page = await pdf.getPage(1);
 
-    // Set scale untuk kualitas tinggi (2x untuk retina display)
-    const scale = 2.0;
+    // Set scale untuk HD quality (3x untuk super sharp)
+    const scale = 3.0;
     const viewport = page.getViewport({ scale: scale });
 
-    // Buat canvas
+    // Buat canvas untuk render PDF
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
     canvas.width = viewport.width;
@@ -566,49 +565,83 @@ async function convertPdfToImage(pdfArrayBuffer) {
 
     await page.render(renderContext).promise;
 
-    // Convert canvas ke blob
+    // Deteksi area konten (crop bagian kosong bawah)
+    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+    const contentBottom = detectContentBottom(imageData);
+
+    // Hitung dimensi baru dengan margin
+    const topMargin = 60 * scale; // 60px margin top (disesuaikan dengan scale)
+    const bottomMargin = 40 * scale; // 40px margin bottom
+    const sideMargin = 40 * scale; // 40px margin kiri-kanan
+
+    const contentHeight = contentBottom;
+    const newHeight = contentHeight + topMargin + bottomMargin;
+    const newWidth = canvas.width;
+
+    // Buat canvas baru untuk hasil akhir dengan background putih
+    const finalCanvas = document.createElement('canvas');
+    finalCanvas.width = newWidth;
+    finalCanvas.height = newHeight;
+    const finalContext = finalCanvas.getContext('2d');
+
+    // Fill background putih
+    finalContext.fillStyle = '#FFFFFF';
+    finalContext.fillRect(0, 0, finalCanvas.width, finalCanvas.height);
+
+    // Copy konten dari canvas asli ke canvas baru dengan margin
+    finalContext.drawImage(
+        canvas,
+        0, 0, canvas.width, contentHeight, // source
+        0, topMargin, newWidth, contentHeight // destination dengan margin top
+    );
+
+    // Convert canvas ke blob dengan kualitas tinggi
     return new Promise((resolve, reject) => {
-        canvas.toBlob((blob) => {
+        finalCanvas.toBlob((blob) => {
             if (blob) {
                 resolve(blob);
             } else {
                 reject(new Error('Failed to convert canvas to blob'));
             }
-        }, 'image/jpeg', 0.92); // 92% quality
+        }, 'image/jpeg', 0.95); // 95% quality untuk HD
     });
 }
 
-// Fungsi untuk share via Canvas (untuk iOS)
-async function shareViaCanvas(blob, fileName, receiptNumber) {
-    return new Promise((resolve, reject) => {
-        const imageFile = new File([blob], fileName, {
-            type: "image/jpeg",
-            lastModified: Date.now()
-        });
+// Fungsi untuk deteksi batas bawah konten (menghindari area kosong)
+function detectContentBottom(imageData) {
+    const data = imageData.data;
+    const width = imageData.width;
+    const height = imageData.height;
 
-        if (navigator.share) {
-            navigator.share({
-                files: [imageFile],
-                title: `Receipt #${receiptNumber}`,
-                text: `Receipt #${receiptNumber}`
-            })
-            .then(() => resolve())
-            .catch((error) => {
-                if (error.name === 'AbortError') {
-                    // User cancelled
-                    resolve();
-                } else {
-                    // Share failed, use fallback
-                    fallbackDownload(blob, fileName, receiptNumber);
-                    resolve();
-                }
-            });
-        } else {
-            // Browser doesn't support share
-            fallbackDownload(blob, fileName, receiptNumber);
-            resolve();
+    // Threshold untuk mendeteksi "kosong" (hampir putih)
+    const threshold = 250;
+    const minContentPixels = width * 0.05; // minimal 5% dari lebar harus ada konten
+
+    // Scan dari bawah ke atas
+    for (let y = height - 1; y >= 0; y--) {
+        let contentPixels = 0;
+
+        // Cek setiap pixel di baris ini
+        for (let x = 0; x < width; x++) {
+            const index = (y * width + x) * 4;
+            const r = data[index];
+            const g = data[index + 1];
+            const b = data[index + 2];
+
+            // Jika pixel bukan putih (ada konten)
+            if (r < threshold || g < threshold || b < threshold) {
+                contentPixels++;
+            }
         }
-    });
+
+        // Jika ada cukup konten di baris ini, ini adalah batas bawah
+        if (contentPixels > minContentPixels) {
+            return y + 1; // +1 untuk sedikit padding
+        }
+    }
+
+    // Jika tidak ketemu, kembalikan tinggi penuh
+    return height;
 }
 
 // Fallback: Download file
@@ -628,6 +661,192 @@ function fallbackDownload(blob, fileName, receiptNumber) {
         alert(`Receipt downloaded as ${fileName}\n\nTo share to WhatsApp:\n1. Open Photos/Files app\n2. Find ${fileName}\n3. Tap Share → WhatsApp`);
     }, 500);
 }
+
+
+        // Event listener untuk tombol WhatsApp Share SUDAH BISA UNTUK IOS
+// const whatsappShareButton = document.getElementById("whatsappSharePdf");
+// if (whatsappShareButton) {
+//     whatsappShareButton.addEventListener("click", async function () {
+//         try {
+//             // Show loading state
+//             whatsappShareButton.disabled = true;
+//             whatsappShareButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Converting PDF...';
+
+//             // Ambil nomor kuitansi dari modal title
+//             const receiptNumber = document.getElementById("pdfModalLabel").textContent.split("#")[1];
+//             const fileName = `receipt-${receiptNumber}.jpg`;
+
+//             // Ambil URL PDF dari iframe
+//             const pdfIframe = document.querySelector('#pdfModal iframe');
+//             if (!pdfIframe || !pdfIframe.src) {
+//                 throw new Error('PDF not found in modal');
+//             }
+
+//             const pdfUrl = pdfIframe.src;
+//             console.log('PDF URL:', pdfUrl);
+
+//             // Update status
+//             whatsappShareButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Loading PDF...';
+
+//             // Fetch PDF
+//             const pdfResponse = await fetch(pdfUrl);
+//             if (!pdfResponse.ok) {
+//                 throw new Error('Failed to load PDF');
+//             }
+
+//             const pdfBlob = await pdfResponse.blob();
+//             const pdfArrayBuffer = await pdfBlob.arrayBuffer();
+
+//             // Update status
+//             whatsappShareButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Converting...';
+
+//             // Load PDF.js library jika belum ada
+//             if (!window.pdfjsLib) {
+//                 const script = document.createElement('script');
+//                 script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+//                 document.head.appendChild(script);
+
+//                 await new Promise((resolve, reject) => {
+//                     script.onload = resolve;
+//                     script.onerror = reject;
+//                 });
+
+//                 // Set worker
+//                 window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+//                     'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+//             }
+
+//             // Convert PDF to image
+//             const imageBlob = await convertPdfToImage(pdfArrayBuffer);
+
+//             console.log('Converted image size:', imageBlob.size);
+
+//             // Deteksi iOS
+//             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+//             // Update status
+//             whatsappShareButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Preparing to share...';
+
+//             if (isIOS) {
+//                 await shareViaCanvas(imageBlob, fileName, receiptNumber);
+//             } else {
+//                 // Untuk Android/Desktop
+//                 const imageFile = new File([imageBlob], fileName, {
+//                     type: "image/jpeg",
+//                     lastModified: Date.now()
+//                 });
+
+//                 if (navigator.canShare && navigator.canShare({ files: [imageFile] })) {
+//                     await navigator.share({
+//                         title: `Receipt #${receiptNumber}`,
+//                         text: `Receipt #${receiptNumber}`,
+//                         files: [imageFile]
+//                     });
+//                 } else {
+//                     // Fallback: download
+//                     fallbackDownload(imageBlob, fileName, receiptNumber);
+//                 }
+//             }
+
+//         } catch (error) {
+//             console.error("Error in WhatsApp share process:", error);
+//             alert(`Failed to share receipt: ${error.message}`);
+//         } finally {
+//             // Reset button state
+//             whatsappShareButton.disabled = false;
+//             whatsappShareButton.innerHTML = '<i class="bi bi-whatsapp me-1"></i> WhatsApp';
+//         }
+//     });
+// }
+
+// // Fungsi convert PDF ke Image menggunakan PDF.js
+// async function convertPdfToImage(pdfArrayBuffer) {
+//     const loadingTask = window.pdfjsLib.getDocument({ data: pdfArrayBuffer });
+//     const pdf = await loadingTask.promise;
+
+//     // Ambil halaman pertama
+//     const page = await pdf.getPage(1);
+
+//     // Set scale untuk kualitas tinggi (2x untuk retina display)
+//     const scale = 2.0;
+//     const viewport = page.getViewport({ scale: scale });
+
+//     // Buat canvas
+//     const canvas = document.createElement('canvas');
+//     const context = canvas.getContext('2d');
+//     canvas.width = viewport.width;
+//     canvas.height = viewport.height;
+
+//     // Render PDF ke canvas
+//     const renderContext = {
+//         canvasContext: context,
+//         viewport: viewport
+//     };
+
+//     await page.render(renderContext).promise;
+
+//     // Convert canvas ke blob
+//     return new Promise((resolve, reject) => {
+//         canvas.toBlob((blob) => {
+//             if (blob) {
+//                 resolve(blob);
+//             } else {
+//                 reject(new Error('Failed to convert canvas to blob'));
+//             }
+//         }, 'image/jpeg', 0.92); // 92% quality
+//     });
+// }
+
+// // Fungsi untuk share via Canvas (untuk iOS)
+// async function shareViaCanvas(blob, fileName, receiptNumber) {
+//     return new Promise((resolve, reject) => {
+//         const imageFile = new File([blob], fileName, {
+//             type: "image/jpeg",
+//             lastModified: Date.now()
+//         });
+
+//         if (navigator.share) {
+//             navigator.share({
+//                 files: [imageFile],
+//                 title: `Receipt #${receiptNumber}`,
+//                 text: `Receipt #${receiptNumber}`
+//             })
+//             .then(() => resolve())
+//             .catch((error) => {
+//                 if (error.name === 'AbortError') {
+//                     // User cancelled
+//                     resolve();
+//                 } else {
+//                     // Share failed, use fallback
+//                     fallbackDownload(blob, fileName, receiptNumber);
+//                     resolve();
+//                 }
+//             });
+//         } else {
+//             // Browser doesn't support share
+//             fallbackDownload(blob, fileName, receiptNumber);
+//             resolve();
+//         }
+//     });
+// }
+
+// // Fallback: Download file
+// function fallbackDownload(blob, fileName, receiptNumber) {
+//     const url = URL.createObjectURL(blob);
+//     const link = document.createElement('a');
+//     link.href = url;
+//     link.download = fileName;
+//     link.style.display = 'none';
+
+//     document.body.appendChild(link);
+//     link.click();
+//     document.body.removeChild(link);
+
+//     setTimeout(() => {
+//         URL.revokeObjectURL(url);
+//         alert(`Receipt downloaded as ${fileName}\n\nTo share to WhatsApp:\n1. Open Photos/Files app\n2. Find ${fileName}\n3. Tap Share → WhatsApp`);
+//     }, 500);
+// }
 
         // // Event listener untuk tombol Share
         // const shareButton = document.getElementById("sharePdf");
