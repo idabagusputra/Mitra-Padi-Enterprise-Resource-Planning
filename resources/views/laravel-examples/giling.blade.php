@@ -476,45 +476,94 @@
     box-shadow: 0 2px 4px #cc0c9c;
 `;
 
+        // searchInput.addEventListener('input', function() {
+        //     const searchTerm = this.value.trim();
+        //     if (searchTerm.length > 0) {
+        //         fetch(`/search-petani?term=${searchTerm}`)
+        //             .then(response => response.json())
+        //             .then(data => {
+        //                 searchResults.innerHTML = '';
+        //                 searchResults.style.display = 'block';
+        //                 data.forEach(petani => {
+        //                     const div = document.createElement('div');
+        //                     div.classList.add('dropdown-item');
+
+        //                     // Buat container untuk nama
+        //                     const nameSpan = document.createElement('span');
+        //                     nameSpan.style.fontWeight = 'bold';
+        //                     nameSpan.style.color = '#cc0c9c';
+        //                     nameSpan.textContent = petani.nama;
+
+        //                     // Buat container untuk alamat dan hutang
+        //                     const infoSpan = document.createElement('span');
+        //                     infoSpan.style.color = '#666';
+        //                     infoSpan.textContent = ` - ${petani.alamat} - (Hutang: Rp ${petani.total_hutang.toLocaleString('id-ID')})`;
+
+        //                     // Gabungkan semua elemen
+        //                     div.appendChild(nameSpan);
+        //                     div.appendChild(infoSpan);
+
+        //                     div.addEventListener('click', function() {
+        //                         searchInput.value = petani.nama;
+        //                         petaniIdInput.value = petani.id;
+        //                         searchResults.style.display = 'none';
+        //                     });
+        //                     searchResults.appendChild(div);
+        //                 });
+        //             });
+        //     } else {
+        //         searchResults.style.display = 'none';
+        //     }
+        // });
+
         searchInput.addEventListener('input', function() {
-            const searchTerm = this.value.trim();
-            if (searchTerm.length > 0) {
-                fetch(`/search-petani?term=${searchTerm}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        searchResults.innerHTML = '';
-                        searchResults.style.display = 'block';
-                        data.forEach(petani => {
-                            const div = document.createElement('div');
-                            div.classList.add('dropdown-item');
+    const searchTerm = this.value.trim();
+    if (searchTerm.length > 0) {
+        fetch(`/search-petani?term=${searchTerm}`)
+            .then(response => response.json())
+            .then(data => {
+                searchResults.innerHTML = '';
+                searchResults.style.display = 'block';
+                data.forEach(petani => {
+                    const div = document.createElement('div');
+                    div.classList.add('dropdown-item');
 
-                            // Buat container untuk nama
-                            const nameSpan = document.createElement('span');
-                            nameSpan.style.fontWeight = 'bold';
-                            nameSpan.style.color = '#cc0c9c';
-                            nameSpan.textContent = petani.nama;
+                    // Buat container untuk nama
+                    const nameSpan = document.createElement('span');
+                    nameSpan.style.fontWeight = 'bold';
+                    nameSpan.style.color = '#cc0c9c';
+                    nameSpan.textContent = petani.nama;
 
-                            // Buat container untuk alamat dan hutang
-                            const infoSpan = document.createElement('span');
-                            infoSpan.style.color = '#666';
-                            infoSpan.textContent = ` - ${petani.alamat} - (Hutang: Rp ${petani.total_hutang.toLocaleString('id-ID')})`;
+                    // Format tanggal
+                    let tanggalText = '';
+                    if (petani.tanggal_hutang) {
+                        const tanggal = new Date(petani.tanggal_hutang);
+                        const options = { day: '2-digit', month: 'short', year: 'numeric' };
+                        tanggalText = ` - ${tanggal.toLocaleDateString('id-ID', options)}`;
+                    }
 
-                            // Gabungkan semua elemen
-                            div.appendChild(nameSpan);
-                            div.appendChild(infoSpan);
+                    // Buat container untuk alamat, hutang, dan tanggal
+                    const infoSpan = document.createElement('span');
+                    infoSpan.style.color = '#666';
+                    infoSpan.textContent = ` - ${petani.alamat} - (Hutang: Rp ${petani.total_hutang.toLocaleString('id-ID')}${tanggalText})`;
 
-                            div.addEventListener('click', function() {
-                                searchInput.value = petani.nama;
-                                petaniIdInput.value = petani.id;
-                                searchResults.style.display = 'none';
-                            });
-                            searchResults.appendChild(div);
-                        });
+                    // Gabungkan semua elemen
+                    div.appendChild(nameSpan);
+                    div.appendChild(infoSpan);
+
+                    div.addEventListener('click', function() {
+                        searchInput.value = petani.nama;
+                        petaniIdInput.value = petani.id;
+                        searchResults.style.display = 'none';
                     });
-            } else {
-                searchResults.style.display = 'none';
-            }
-        });
+                    searchResults.appendChild(div);
+                });
+            });
+    } else {
+        searchResults.style.display = 'none';
+    }
+});
+
 
         document.addEventListener('click', function(e) {
             if (e.target !== searchInput && e.target !== searchResults) {

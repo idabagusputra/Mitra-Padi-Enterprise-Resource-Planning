@@ -47,11 +47,13 @@ class GilingController extends Controller
             ->get()
             ->map(function ($petani) {
                 $totalHutang = $petani->kredits->sum('jumlah');
+                $tanggal_hutang = $petani->kredits->first()?->tanggal;
                 return [
                     'id' => $petani->id,
                     'nama' => $petani->nama,
                     'alamat' => $petani->alamat,
-                    'total_hutang' => $totalHutang
+                    'total_hutang' => $totalHutang,
+                    'tanggal_hutang' => $tanggal_hutang
                 ];
             });
 

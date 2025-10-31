@@ -624,63 +624,119 @@
         box-shadow: 0 2px 4px #cc0c9c;
     `;
 
+                    // input.addEventListener('input', function() {
+                    //     const searchTerm = this.value.trim();
+                    //     if (searchTerm.length > 0) {
+                    //         fetch(`${url}?term=${searchTerm}`)
+                    //             .then(response => response.json())
+                    //             .then(data => {
+                    //                 results.innerHTML = '';
+                    //                 results.style.display = 'block';
+
+                    //                 data.forEach(item => {
+                    //                     const div = document.createElement('div');
+                    //                     div.classList.add('dropdown-item');
+
+                    //                     // Buat container untuk nama dan alamat
+                    //                     const nameSpan = document.createElement('span');
+                    //                     nameSpan.style.fontWeight = 'bold';
+                    //                     nameSpan.style.color = '#cc0c9c'; // Menambahkan warna ungu (#890f82)
+                    //                     nameSpan.textContent = item.nama;
+
+                    //                     const addressSpan = document.createElement('span');
+                    //                     addressSpan.style.color = '#666';
+                    //                     addressSpan.style.fontSize = '0.9em';
+                    //                     addressSpan.textContent = ` - ${item.alamat}`;
+
+                    //                     // Gabungkan nama dan alamat
+                    //                     div.appendChild(nameSpan);
+                    //                     div.appendChild(addressSpan);
+
+                    //                     // Styling untuk item dropdown
+                    //                     div.style.cssText = `
+                    //         padding: 8px 12px;
+                    //         cursor: pointer;
+                    //         border-bottom: 1px solid #eee;
+                    //     `;
+
+                    //                     // Hover effect
+                    //                     div.addEventListener('mouseover', () => {
+                    //                         div.style.backgroundColor = '#f5f5f5';
+                    //                     });
+                    //                     div.addEventListener('mouseout', () => {
+                    //                         div.style.backgroundColor = 'white';
+                    //                     });
+
+                    //                     div.addEventListener('click', function() {
+                    //                         // Update input dengan nama saja
+                    //                         input.value = item.nama;
+                    //                         results.style.display = 'none';
+                    //                         if (onSelectCallback) onSelectCallback(item);
+                    //                     });
+
+                    //                     results.appendChild(div);
+                    //                 });
+                    //             });
+                    //     } else {
+                    //         results.style.display = 'none';
+                    //     }
+                    // });
+
                     input.addEventListener('input', function() {
-                        const searchTerm = this.value.trim();
-                        if (searchTerm.length > 0) {
-                            fetch(`${url}?term=${searchTerm}`)
-                                .then(response => response.json())
-                                .then(data => {
-                                    results.innerHTML = '';
-                                    results.style.display = 'block';
+    const searchTerm = this.value.trim();
+    if (searchTerm.length > 0) {
+        fetch(`/search-petani?term=${searchTerm}`)
+            .then(response => response.json())
+            .then(data => {
+                results.innerHTML = '';
+                results.style.display = 'block';
+                data.forEach(petani => {
+                    const div = document.createElement('div');
+                    div.classList.add('dropdown-item');
 
-                                    data.forEach(item => {
-                                        const div = document.createElement('div');
-                                        div.classList.add('dropdown-item');
+                    // Buat container untuk nama
+                    const nameSpan = document.createElement('span');
+                    nameSpan.style.fontWeight = 'bold';
+                    nameSpan.style.color = '#cc0c9c';
+                    nameSpan.textContent = petani.nama;
 
-                                        // Buat container untuk nama dan alamat
-                                        const nameSpan = document.createElement('span');
-                                        nameSpan.style.fontWeight = 'bold';
-                                        nameSpan.style.color = '#cc0c9c'; // Menambahkan warna ungu (#890f82)
-                                        nameSpan.textContent = item.nama;
+                    // Buat container untuk alamat dan hutang
+                    const infoSpan = document.createElement('span');
+                    infoSpan.style.color = '#666';
+                    infoSpan.textContent = ` - ${petani.alamat} - (Hutang: Rp ${petani.total_hutang.toLocaleString('id-ID')})`;
 
-                                        const addressSpan = document.createElement('span');
-                                        addressSpan.style.color = '#666';
-                                        addressSpan.style.fontSize = '0.9em';
-                                        addressSpan.textContent = ` - ${item.alamat}`;
+                    // Gabungkan semua elemen
+                    div.appendChild(nameSpan);
+                    div.appendChild(infoSpan);
 
-                                        // Gabungkan nama dan alamat
-                                        div.appendChild(nameSpan);
-                                        div.appendChild(addressSpan);
+                    // Styling untuk item dropdown
+                    div.style.cssText = `
+                        padding: 8px 12px;
+                        cursor: pointer;
+                        border-bottom: 1px solid #eee;
+                    `;
 
-                                        // Styling untuk item dropdown
-                                        div.style.cssText = `
-                            padding: 8px 12px;
-                            cursor: pointer;
-                            border-bottom: 1px solid #eee;
-                        `;
-
-                                        // Hover effect
-                                        div.addEventListener('mouseover', () => {
-                                            div.style.backgroundColor = '#f5f5f5';
-                                        });
-                                        div.addEventListener('mouseout', () => {
-                                            div.style.backgroundColor = 'white';
-                                        });
-
-                                        div.addEventListener('click', function() {
-                                            // Update input dengan nama saja
-                                            input.value = item.nama;
-                                            results.style.display = 'none';
-                                            if (onSelectCallback) onSelectCallback(item);
-                                        });
-
-                                        results.appendChild(div);
-                                    });
-                                });
-                        } else {
-                            results.style.display = 'none';
-                        }
+                    // Hover effect
+                    div.addEventListener('mouseover', () => {
+                        div.style.backgroundColor = '#f5f5f5';
                     });
+                    div.addEventListener('mouseout', () => {
+                        div.style.backgroundColor = 'white';
+                    });
+
+                    div.addEventListener('click', function() {
+                        input.value = petani.nama;
+                        results.style.display = 'none';
+                        if (onSelectCallback) onSelectCallback(petani);
+                    });
+
+                    results.appendChild(div);
+                });
+            });
+    } else {
+        results.style.display = 'none';
+    }
+});
 
                     // Close dropdown when clicking outside
                     document.addEventListener('click', function(e) {
