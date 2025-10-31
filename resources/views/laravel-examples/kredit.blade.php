@@ -700,10 +700,19 @@
                     nameSpan.style.color = '#cc0c9c';
                     nameSpan.textContent = petani.nama;
 
+                    // Format tanggal
+                    let tanggalText = '';
+                    if (petani.tanggal_hutang) {
+                        const tanggal = new Date(petani.tanggal_hutang);
+                        const options = { day: '2-digit', month: 'short', year: 'numeric' };
+                        tanggalText = ` - ${tanggal.toLocaleDateString('id-ID', options)}`;
+                    }
+
                     // Buat container untuk alamat dan hutang
                     const infoSpan = document.createElement('span');
                     infoSpan.style.color = '#666';
-                    infoSpan.textContent = ` - ${petani.alamat} - (Hutang: Rp ${petani.total_hutang.toLocaleString('id-ID')})`;
+                    // infoSpan.textContent = ` - ${petani.alamat} - (Hutang: Rp ${petani.total_hutang.toLocaleString('id-ID')})`;
+infoSpan.textContent = ` - ${petani.alamat} - (Hutang: Rp ${petani.total_hutang.toLocaleString('id-ID')}${tanggalText})`;
 
                     // Gabungkan semua elemen
                     div.appendChild(nameSpan);
