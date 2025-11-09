@@ -255,7 +255,7 @@
                                     @elseif ($totalkreditsNasabahPaluBelumLunas >= 1_000)
                                     Ribu
                                     @else
-                                    Tidak ada label khusus
+                                    Rupiah
                                     @endif
                                 </span>
                             </h5>
@@ -288,7 +288,7 @@
                                     @elseif ($totalkreditsTitipanPetaniBelumLunas >= 1_000)
                                     Ribu
                                     @else
-                                    Tidak ada label khusus
+                                    Rupiah
                                     @endif
                                 </span>
                             </h5>
@@ -321,7 +321,7 @@
                                     @elseif ($totalkreditsOperatorBelumLunas >= 1_000)
                                     Ribu
                                     @else
-                                    Tidak ada label khusus
+                                    Rupiah
                                     @endif
                                 </span>
                             </h5>
