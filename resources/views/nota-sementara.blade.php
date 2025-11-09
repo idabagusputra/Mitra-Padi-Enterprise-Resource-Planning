@@ -498,14 +498,14 @@
                                     <div class="form-group">
                                         <label for="harga_konga" class="form-label">Harga Konga (Rp)</label>
                                         <input class="form-control number-format" type="text" name="harga_konga" id="harga_konga"
-                                               inputmode="numeric" placeholder="" value="160000" required>
+                                               inputmode="numeric" placeholder="" value="200000" required>
                                     </div>
                                 </div>
                                 <div class="col-md-3 col-sm-6">
                                     <div class="form-group">
                                         <label for="harga_menir" class="form-label">Harga Menir (Rp)</label>
                                         <input class="form-control number-format" type="text" name="harga_menir" id="harga_menir"
-                                               inputmode="numeric" placeholder="" value="5000" required>
+                                               inputmode="numeric" placeholder="" value="4000" required>
                                     </div>
                                 </div>
                             </div>
