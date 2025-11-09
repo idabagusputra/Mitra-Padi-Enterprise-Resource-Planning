@@ -222,7 +222,7 @@
                                     @elseif ($totalKreditBelumLunas >= 1_000)
                                     Ribu
                                     @else
-                                    Tidak ada label khusus
+                                    Rupiah
                                     @endif
                                 </span>
                             </h5>
