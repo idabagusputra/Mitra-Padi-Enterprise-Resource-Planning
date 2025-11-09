@@ -1999,6 +1999,7 @@ notaHTML += `
                 <td class="text-left">:</td>
                 <td class="text-right">Rp ${formatRibuan(totalHargaBeras.toFixed(0))}</td>
             </tr>
+            ${totalDanaDibayar !== 0 ? `
             <tr class="total-row">
                 <td class="text-left">Terbayar</td>
                 <td class="text-left">:</td>
@@ -2009,6 +2010,7 @@ notaHTML += `
                 <td class="text-left">:</td>
                 <td class="text-right">Rp ${formatRibuan(selisih.toFixed(0))}</td>
             </tr>
+            ` : ''}
         </table>
     </div>
     <div class="footer-info">

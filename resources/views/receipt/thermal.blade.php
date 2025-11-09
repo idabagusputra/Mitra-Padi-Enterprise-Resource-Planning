@@ -406,13 +406,13 @@
             <tr class="total">
                 <td>Total Ambil</td>
                 <td>:</td>
-                <td>Rp {{ number_format($daftar->total_pengambilan, 2) }}</td>
+                <td>Rp {{ number_format($daftar->total_pengambilan) }}</td>
             </tr>
 
             <tr class="total">
                 <td>Total Hutang</td>
                 <td>:</td>
-                <td>Rp {{ number_format($daftar->total_hutang, 2) }}</td>
+                <td>Rp {{ number_format($daftar->total_hutang) }}</td>
             </tr>
 
             <!-- <tr class="total">
@@ -425,7 +425,7 @@
             <tr class="total">
                 <td>Sisa Dana</td>
                 <td>:</td>
-                <td>Rp {{ number_format($daftar->dana_penerima, 2) }}</td>
+                <td>Rp {{ number_format($daftar->dana_penerima) }}</td>
             </tr>
             @endforeach
         </table>
