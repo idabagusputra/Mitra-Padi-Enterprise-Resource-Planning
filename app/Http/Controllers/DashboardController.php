@@ -100,6 +100,12 @@ class DashboardController extends Controller
         $currentDate = Carbon::create(2025, 4, 1);
         $endDate = Carbon::now();
 
+
+        // $months = [];
+        // $currentDate = Carbon::create(2024, 10, 1);
+        // $endDate = Carbon::now();
+
+
         // Collect the last 12 months
         while (count($months) < 12) {
             $months[] = $currentDate->copy();
