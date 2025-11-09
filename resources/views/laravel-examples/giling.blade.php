@@ -278,7 +278,7 @@
                 </div>
                 <div class="d-flex">
                     <button
-                        class="btn alert bg-gradient-info shadow-info px-4 me-2 view-pdf-btn"
+                        class="btn alert bg-gradient-info shadow-info px-4 ms-2 me-2 view-pdf-btn"
                         data-id="{{ $latestGiling->id }}">
                         <i class="bi bi-printer-fill me-2"></i>
                         Print Receipt
@@ -286,7 +286,7 @@
  <button
     class="btn alert bg-gradient-secondary shadow-secondary px-4"
     onclick="window.location.href='/daftar-giling'">
-    <i class="bi bi-card-list ms-2 me-2"></i>
+    <i class="bi bi-card-list me-2"></i>
     Daftar Giling
 </button>
                 </div>
