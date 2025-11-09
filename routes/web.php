@@ -35,7 +35,7 @@ use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 Route::group(['middleware' => 'auth'], function () {
 
-    Route::get('/kallog', function () {
+    Route::get('/kalkulatorr', function () {
         return view('kalkulator');
     });
 
@@ -251,14 +251,25 @@ Route::group(['middleware' => 'auth'], function () {
     });
 });
 
-Route::group(['middleware' => 'guest'], function () {
-    Route::get('/kalkulator', function () {
-        return view('kalkulator');
-    });
+// ✅ PINDAHKAN route /kalkulator ke LUAR group guest
+Route::get('/kalkulator', function (Request $request) {
+    if ($request->user()) {
+        return redirect('/kalkulatorr');
+    }
+    return view('kalkulator');
+});
 
-    Route::get('/nota', function () {
-        return view('nota-sementara');
-    });
+Route::get('/nota', function (Request $request) {
+    if ($request->user()) {
+        return redirect('/notaa');
+    }
+    return view('nota-sementara');
+});
+
+Route::group(['middleware' => 'guest'], function () {
+
+
+
 
     Route::get('/', [HomeController::class, 'home']);
     Route::get('/register', [RegisterController::class, 'create']);
