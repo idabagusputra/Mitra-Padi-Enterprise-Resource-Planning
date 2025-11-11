@@ -295,6 +295,7 @@
             color: var(--dark-color);
             position: relative;
             box-shadow: 0 -4px 10px rgba(108, 92, 231, 0.05);
+            /* border-bottom-left-radius: var(--border-radius) !important; */
         }
 
         .total-row td {
@@ -467,11 +468,25 @@
 
         #TableSelisih, #sakTableSelisih {
             margin: 0 0 11px 0;
-            border-radius: var(--border-radius);
+            /* border-radius: var(--border-radius); */
+            border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+
             overflow: hidden;
             box-shadow: var(--card-shadow);
             background: white;
             border: 1px solid rgba(108, 92, 231, 0.1);
+        }
+
+        #jumlahTable {
+
+            /* border-radius: var(--border-radius); */
+            border-top-left-radius: var(--border-radius);
+    border-top-right-radius: var(--border-radius);
+    border-bottom-left-radius: var(--border-radius);
+    border-bottom-right-radius: var(--border-radius);
         }
 
 
@@ -865,6 +880,7 @@
         <!-- Kalkulator Jumlah -->
         <div id="jumlahCalculator" class="calculator active">
             <div class="table-container">
+                <div class="table-container-inside">
                 <table id="jumlahTable">
                     <thead>
                         <tr>
@@ -893,6 +909,7 @@
                         </tr>
                     </tbody>
                 </table>
+            </div>
             </div>
 
 <div class="table-container2">
@@ -1736,7 +1753,7 @@ function generateNotaHTML(calculatorType) {
         }
 
         .title2 {
-            font-size: 16px;
+            font-size: 12px;
             font-weight: bold;
             margin-bottom: 3mm;
             letter-spacing: 0.5px;
