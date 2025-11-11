@@ -1753,7 +1753,7 @@ function generateNotaHTML(calculatorType) {
         }
 
         .title2 {
-            font-size: 12px;
+            font-size: 15px;
             font-weight: bold;
             margin-bottom: 3mm;
             letter-spacing: 0.5px;
