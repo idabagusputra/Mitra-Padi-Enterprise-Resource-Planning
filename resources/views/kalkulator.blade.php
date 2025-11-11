@@ -1944,6 +1944,7 @@ padding-top: 6mm;
                         });
                     }
                 });
+                totalJumlah = parseFloat(document.getElementById('totalJumlah').textContent.replace(/ Kg/g, "").replace(/,/g, "")) || 0;
                 totalHargaBeras = parseFloat(document.getElementById('totalHasilJumlah').textContent.replace(/Rp /g, "").replace(/,/g, "")) || 0;
                 totalDanaDibayar = parseFloat(document.getElementById('totalDana').textContent.replace(/Rp /g, "").replace(/,/g, "")) || 0;
                 selisih = parseFloat(document.getElementById('totalSelisih').textContent.replace(/Rp /g, "").replace(/,/g, "")) || 0;
@@ -1962,6 +1963,7 @@ padding-top: 6mm;
                         });
                     }
                 });
+                totalJumlah = parseFloat(document.getElementById('totalJumlahSak').textContent.replace(/ Kg/g, "").replace(/,/g, "")) || 0;
                 totalHargaBeras = parseFloat(document.getElementById('totalHasilSak').textContent.replace(/Rp /g, "").replace(/,/g, "")) || 0;
                 totalDanaDibayar = parseFloat(document.getElementById('totalDanaSak').textContent.replace(/Rp /g, "").replace(/,/g, "")) || 0;
                 selisih = parseFloat(document.getElementById('totalSelisihSak').textContent.replace(/Rp /g, "").replace(/,/g, "")) || 0;
@@ -1994,6 +1996,11 @@ notaHTML += `
     </table>
     <div class="total-section">
         <table>
+            <tr class="total-row">
+                <td class="text-left">Jumlah</td>
+                <td class="text-left">:</td>
+                <td class="text-right">${formatRibuan(totalJumlah.toFixed(0))} Kg</td>
+            </tr>
             <tr class="total-row">
                 <td class="text-left">Total</td>
                 <td class="text-left">:</td>
