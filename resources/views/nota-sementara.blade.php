@@ -847,22 +847,6 @@
                     });
                 };
 
-                 const formatDatee = (dateString) => {
-        const date = new Date(dateString);
-        const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-        const months = [
-            'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-            'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
-        ];
-
-        const dayName = days[date.getDay()];
-        const day = date.getDate();
-        const monthName = months[date.getMonth()];
-        const year = date.getFullYear();
-
-        return `${day} ${monthName} ${year}`;
-    };
-
                const formatTime = (dateString) => {
     const date = new Date(dateString);
     const hours = String(date.getHours()).padStart(2, '0');
@@ -1177,12 +1161,7 @@
                             <tr class="calculation-row">
                                 <td>Tanggal Nota </td>
                                 <td>:</td>
-                                <td>${formatDatee(currentDateTime)}     </td>
-                            </tr>
-                            <tr class="calculation-row">
-                                <td>Waktu Nota </td>
-                                <td>:</td>
-                                <td>${formatTime(currentDateTime)}</td>
+                                <td>${formatDate(currentDateTime)} (${formatTime(currentDateTime)})</td>
                             </tr>
                         </table>
 
