@@ -847,14 +847,15 @@
                     });
                 };
 
-                const formatTime = (dateString) => {
-                    const date = new Date(dateString);
-                    return date.toLocaleTimeString('id-ID', {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        second: '2-digit'
-                    });
-                };
+               const formatTime = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleTimeString('id-ID', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+    });
+};
 
                 let pengambilanRows = '';
                 if (pengambilanData.length > 0) {
