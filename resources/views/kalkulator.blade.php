@@ -2314,11 +2314,6 @@ async function printLangsung(calculatorType) {
         // === Print langsung dari iframe ===
         iframe.contentWindow.focus();
         iframe.contentWindow.print();
-
-        // Bersihkan iframe setelah print
-        setTimeout(() => {
-            document.body.removeChild(iframe);
-        }, 1000);
     };
 }
 
