@@ -963,7 +963,7 @@
 
         /* Tambahan untuk membuat kolom sejajar */
         td:nth-child(1) {
-            width: 35%;
+            width: 25%;
         }
 
         td:nth-child(2) {
