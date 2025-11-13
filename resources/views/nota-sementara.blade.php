@@ -1161,7 +1161,12 @@
                             <tr class="calculation-row">
                                 <td>Tanggal Nota </td>
                                 <td>:</td>
-                                <td>${formatDate(currentDateTime)} (${formatTime(currentDateTime)})</td>
+                                <td>${formatDate(currentDateTime)}</td>
+                            </tr>
+                            <tr class="calculation-row">
+                                <td>Waktu Nota </td>
+                                <td>:</td>
+                                <td>${formatTime(currentDateTime)}</td>
                             </tr>
                         </table>
 
