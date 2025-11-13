@@ -904,425 +904,431 @@
 
                 return `
                 <!DOCTYPE html>
-                <html>
-                <head>
-                    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-                    <style>
-                        body {
-                            font-family: sans-serif;
-                            font-size: 10pt;
-                            margin: 0;
-                            padding: 0;
-                        }
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <style>
+        body {
+            font-family: sans-serif;
+            font-size: 10pt;
+            margin: 0;
+            padding: 0;
+        }
 
-                         .cut-line {
-                        page-break-after: always;
-                    }
+        .cut-line {
+            page-break-after: always;
+        }
 
-                        .receipt {
-                            width: 80mm; /* Standard thermal printer width */
-                            height: 180mm;
-                            margin: 0 auto; /* Center the receipt */
-                        }
+        .receipt {
+            width: 80mm; /* Standard thermal printer width */
+            height: 180mm;
+            margin: 0 auto; /* Center the receipt */
+        }
 
-                        .header {
-                            text-align: center;
-                            margin-bottom: 10px;
-                        }
+        .header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
 
-                        .title {
-                            font-size: 17pt;
-                            font-weight: bold;\
-                            margin-bottom: 5px;
-                        }
-                            .title2 {
-                            font-size: 13pt;
-                            font-weight: bold;
-                        }
+        .title {
+            font-size: 17pt;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
 
-                        .info-item {
-                            margin-bottom: 3px;
-                        }
+        .title2 {
+            font-size: 13pt;
+            font-weight: bold;
+        }
 
-                        .info {
-                            margin-bottom: 10px;
-                        }
+        .info-item {
+            margin-bottom: 3px;
+        }
 
-                        table {
-                            width: 100%;
-                            border-collapse: collapse;
-                            margin-bottom: 10px;
-                        }
+        .info {
+            margin-bottom: 10px;
+        }
 
-                        th,
-                        td {
-                            padding: 5px 2px;
-                            text-align: left;
-                        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+        }
 
-                        .calculation-row td {
-                            border-top: 1px dashed #000;
-                            border-bottom: 1px dashed #000;
-                            padding-top: 5px;
-                            padding-bottom: 5px;
-                        }
+        th,
+        td {
+            padding: 5px 2px;
+            text-align: left;
+        }
 
-                        .calculation-row-top td {
-                            border-top: 1px dashed #000;
-                            padding-top: 5px;
-                            padding-bottom: 5px;
-                        }
+        /* Tambahan untuk membuat kolom sejajar */
+        td:nth-child(1) {
+            width: 35%;
+        }
 
-                        .total {
-                            font-size: 14pt;
-                            font-weight: bold;
-                            border-top: 1px solid #000;
-                            border-bottom: 1px solid #000;
-                            margin-bottom: 10px;
-                        }
+        td:nth-child(2) {
+            width: 5%;
+            text-align: center;
+        }
 
-                        .cut-line {
-                        border-top: 1px dashed #000;
-                        margin: 10px 0;
-                        page-break-after: always;
-                    }
+        .calculation-row td {
+            border-top: 1px dashed #000;
+            border-bottom: 1px dashed #000;
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
 
-                        .footer {
-                            text-align: center;
-                            margin-top: 10px;
-                            font-style: italic;
-                        }
+        .calculation-row-top td {
+            border-top: 1px dashed #000;
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
 
-                        .bold-border-top {
-                            border-top: 2px solid #000;
-                            font-weight: bold;
-                        }
+        .total {
+            font-size: 14pt;
+            font-weight: bold;
+            border-top: 1px solid #000;
+            border-bottom: 1px solid #000;
+            margin-bottom: 10px;
+        }
 
-                        .bold-border-top-top {
-                            border-top: 2px solid #000;
-                        }
+        .cut-line {
+            border-top: 1px dashed #000;
+            margin: 10px 0;
+            page-break-after: always;
+        }
 
-                        .bold-border-bottom {
-                            border-bottom: 2px solid #000;
-                        }
+        .footer {
+            text-align: center;
+            margin-top: 10px;
+            font-style: italic;
+        }
 
-                        .small-text {
-                            font-size: 12pt;
-                        }
+        .bold-border-top {
+            border-top: 2px solid #000;
+            font-weight: bold;
+        }
 
-                        .bold {
-                            font-weight: bold;
-                        }
+        .bold-border-top-top {
+            border-top: 2px solid #000;
+        }
 
-                        .subbold {
-                            font-size: 11pt;
-                        }
+        .bold-border-bottom {
+            border-bottom: 2px solid #000;
+        }
 
-                        .header img {
-                            max-width: 100%;
-                            height: auto;
-                        }
+        .small-text {
+            font-size: 12pt;
+        }
 
-                        .footer img {
-                            max-width: 100%;
-                            height: auto;
-                        }
+        .bold {
+            font-weight: bold;
+        }
 
-                        @media print {
-                @page {
-                    size: 80mm 180mm;
-                    margin: 0 !important;
-                    padding: 0 !important;
-                }
+        .subbold {
+            font-size: 11pt;
+        }
 
-                body {
-                    margin: 0 !important;
-                    padding: 0 !important;
-                    -webkit-print-color-adjust: exact;
-                    print-color-adjust: exact;
-                }
+        .header img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .footer img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        @media print {
+            @page {
+                size: 80mm 180mm;
+                margin: 0 !important;
+                padding: 0 !important;
             }
 
             body {
-                font-size: 12px;
-                margin: 0;
-                line-height: 1.3;
-                color: #000;
-                background: white;
+                margin: 0 !important;
+                padding: 0 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
             }
+        }
 
-            .cut-line {
-                        border-top: 1px dashed #000;
-                        margin: 10px 0;
-                        page-break-after: always;
-                    }
+        body {
+            font-size: 12px;
+            margin: 0;
+            line-height: 1.3;
+            color: #000;
+            background: white;
+        }
 
-            .receipt {
-                width: 100%;
-                max-width: 100%;
+        .cut-line {
+            border-top: 1px dashed #000;
+            margin: 10px 0;
+            page-break-after: always;
+        }
 
-            }
+        .receipt {
+            width: 100%;
+            max-width: 100%;
+        }
 
-            .header {
-                text-align: center;
-                margin-bottom: 10px;
-            }
+        .header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
 
-            .title {
-                font-size: 20px;
-                font-weight: bold;
-                margin-bottom: 3px;
-            }
+        .title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
 
-            .title2 {
-                font-size: 16px;
-                font-weight: bold;
-                margin-bottom: 3px;
-            }
+        .title2 {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
 
-            .info-item {
-                margin-bottom: 2px;
-            }
+        .info-item {
+            margin-bottom: 2px;
+        }
 
-            table {
-                width: 100%;
-                border-collapse: collapse;
-                margin-bottom: 8px;
-            }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 8px;
+        }
 
-            th, td {
-                padding: 2px 1px;
-                text-align: left;
-                font-size: 14px;
-            }
+        th, td {
+            padding: 2px 1px;
+            text-align: left;
+            font-size: 14px;
+        }
 
-            .cut-line {
-                        page-break-after: always;
-                    }
+        .cut-line {
+            page-break-after: always;
+        }
 
-            .calculation-row td {
-                border-top: 1px dashed #000;
-                border-bottom: 1px dashed #000;
-                padding-top: 3px;
-                padding-bottom: 3px;
-            }
+        .calculation-row td {
+            border-top: 1px dashed #000;
+            border-bottom: 1px dashed #000;
+            padding-top: 3px;
+            padding-bottom: 3px;
+        }
 
-            .calculation-row-top td {
-                border-top: 1px dashed #000;
-                padding-top: 3px;
-                padding-bottom: 3px;
-            }
+        .calculation-row-top td {
+            border-top: 1px dashed #000;
+            padding-top: 3px;
+            padding-bottom: 3px;
+        }
 
-            .total {
-                font-size: 13px;
-                font-weight: bold;
-                border-top: 2px solid #000;
-                border-bottom: 2px solid #000;
-                margin-bottom: 8px;
-            }
+        .total {
+            font-size: 13px;
+            font-weight: bold;
+            border-top: 2px solid #000;
+            border-bottom: 2px solid #000;
+            margin-bottom: 8px;
+        }
 
-            .footer {
-                text-align: center;
-                margin-top: 10px;
-                font-style: italic;
-                font-size: 10px;
-            }
+        .footer {
+            text-align: center;
+            margin-top: 10px;
+            font-style: italic;
+            font-size: 10px;
+        }
 
-            .bold-border-top {
-                border-top: 2px solid #000;
-                font-weight: bold;
-            }
+        .bold-border-top {
+            border-top: 2px solid #000;
+            font-weight: bold;
+        }
 
-            .bold-border-top-top {
-                border-top: 2px solid #000;
-            }
+        .bold-border-top-top {
+            border-top: 2px solid #000;
+        }
 
-            .small-text {
-                font-size: 14px;
-            }
+        .small-text {
+            font-size: 14px;
+        }
 
-            .bold {
-                font-weight: bold;
-            }
-                    </style>
-                </head>
-                <body>
-                    <div class="receipt">
-                        <div class="header-container">
-                            <div class="header">
-                                <!-- Placeholder for logo, as asset() won't work directly in client-side HTML -->
-                                <!-- <img src="{{ asset('logo_gilingan.png') }}" alt="Putra Manuaba" class="header-logo"> -->
-                                <div class="header-text">
-                                    <div class="title">NOTA GILING SEMENTARA</div>
-                                    <div class="title2">GILINGAN PADI PUTRA MANUABA</div>
-                                    <div>DUS. BABAHAN, DES. TOLAI, KAB. PARIGI</div>
-                                    <div>Telp: 0811-451-486 / 0822-6077-3867</div>
-                                </div>
-                            </div>
-                        </div>
+        .bold {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="receipt">
+        <div class="header-container">
+            <div class="header">
+                <!-- Placeholder for logo, as asset() won't work directly in client-side HTML -->
+                <!-- <img src="{{ asset('logo_gilingan.png') }}" alt="Putra Manuaba" class="header-logo"> -->
+                <div class="header-text">
+                    <div class="title">NOTA GILING SEMENTARA</div>
+                    <div class="title2">GILINGAN PADI PUTRA MANUABA</div>
+                    <div>DUS. BABAHAN, DES. TOLAI, KAB. PARIGI</div>
+                    <div>Telp: 0811-451-486 / 0822-6077-3867</div>
+                </div>
+            </div>
+        </div>
 
-                        <table>
-                            <tr class="bold-border-top">
-                                <td>Informasi</td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr class="bold-border-top-top calculation-row">
-                                <td class="small-text">Nama Petani</td>
-                                <td>:</td>
-                                <td>${formData.namaPetani}</td>
-                            </tr>
-
-
-                            <tr class="calculation-row">
-                                <td>Tanggal Nota </td>
-                                <td>:</td>
-                                <td>${formatDatee(currentDateTime)}     </td>
-                            </tr>
-                            <tr class="calculation-row">
-                                <td>Waktu Nota </td>
-                                <td>:</td>
-                                <td>${formatTime(currentDateTime)}</td>
-                            </tr>
-                        </table>
-
-                        <table>
-                            <div></div>
-                        </table>
-
-                        <table>
-                            <tr class="bold-border-top">
-                                <td>Kalkulasi</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr class="bold-border-top-top calculation-row">
-                                <td class="small-text"> Giling Kotor</td>
-                                <td>:</td>
-                                <td>${formatCurrency(formData.gilingKotor, getDecimalPlaces(formData.gilingKotor))} Kg</td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr class="calculation-row">
-                                <td class="small-text">Ongkos Giling</td>
-                                <td>:</td>
-                                <td>${formatCurrency(formData.gilingKotor, getDecimalPlaces(formData.gilingKotor))} × ${formatCurrency(formData.biayaGiling, getDecimalPlaces(formData.biayaGiling))}%</td>
-                                <td>=</td>
-                                <td>${formatCurrency(calculations.ongkosGiling, 2)} Kg</td>
-                            </tr>
-                            <tr class="calculation-row">
-                                <td class="small-text">Pinjam</td>
-                                <td>:</td>
-                                <td>${formatCurrency(formData.pinjam, getDecimalPlaces(formData.pinjam))} Kg</td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr class="calculation-row">
-                                <td class="small-text">Beras Bersih</td>
-                                <td>:</td>
-                                <td>${formatCurrency(calculations.berasBersih, getDecimalPlaces(calculations.berasBersih))} Kg</td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr class="calculation-row">
-                                <td class="small-text">Pulang</td>
-                                <td>:</td>
-                                <td>${formatCurrency(formData.pulang, getDecimalPlaces(formData.pulang))} Kg</td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr class="calculation-row">
-                                <td class="small-text">Beras Jual</td>
-                                <td>:</td>
-                                <td>${formatCurrency(calculations.berasJual, getDecimalPlaces(calculations.berasJual))} Kg</td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr class="calculation-row">
-                                <td class="small-text">Buruh Giling</td>
-                                <td>:</td>
-                                <td>${formatCurrency(formData.gilingKotor, getDecimalPlaces(formData.gilingKotor))} × Rp ${formatCurrency(formData.biayaBuruhGiling, getDecimalPlaces(formData.biayaBuruhGiling))}</td>
-                                <td>=</td>
-                                <td class="bold">Rp ${formatCurrency(calculations.buruhGiling, getDecimalPlaces(formData.buruhGiling))}</td>
-                            </tr>
-                            <tr class="calculation-row">
-                                <td class="small-text">Buruh Jemur</td>
-                                <td>:</td>
-                                <td>${formatCurrency(formData.jemur, getDecimalPlaces(formData.jemur))} × Rp ${formatCurrency(formData.biayaBuruhJemur, getDecimalPlaces(formData.biayaBuruhJemur))}</td>
-                                <td>=</td>
-                                <td class="bold">Rp ${formatCurrency(calculations.buruhJemur, getDecimalPlaces(formData.buruhJemur))}</td>
-                            </tr>
-                            <tr class="calculation-row">
-                                <td class="small-text">Jual Konga</td>
-                                <td>:</td>
-                                <td>${formatCurrency(formData.jumlahKonga, getDecimalPlaces(formData.jumlahKonga))} × Rp ${formatCurrency(formData.hargaKonga, getDecimalPlaces(formData.hargaKonga))}</td>
-                                <td>=</td>
-                                <td class="bold">Rp ${formatCurrency(calculations.danaKonga, getDecimalPlaces(formData.danaKonga))}</td>
-                            </tr>
-                            <tr class="calculation-row">
-                                <td class="small-text">Jual Menir</td>
-                                <td>:</td>
-                                <td>${formatCurrency(formData.jumlahMenir, getDecimalPlaces(formData.jumlahMenir))} × Rp ${formatCurrency(formData.hargaMenir, getDecimalPlaces(formData.hargaMenir))}</td>
-                                <td>=</td>
-                                <td class="bold">Rp ${formatCurrency(calculations.danaMenir, getDecimalPlaces(formData.danaMenir))}</td>
-                            </tr>
-                        </table>
-
-                        <table>
-                            <div></div>
-                        </table>
-
-                        <table>
-                            <tr class="bold-border-top">
-                                <th>Pengambilan</th>
-                                <th>Jumlah</th>
-                                <th>Harga</th>
-                                <th>Total</th>
-                            </tr>
-                            ${pengambilanRows}
-                        </table>
-
-                        <table>
-                            <div></div>
-                        </table>
+        <table>
+            <tr class="bold-border-top">
+                <td>Informasi</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr class="bold-border-top-top calculation-row">
+                <td class="small-text">Nama Petani</td>
+                <td>:</td>
+                <td>${formData.namaPetani}</td>
+            </tr>
 
 
+            <tr class="calculation-row">
+                <td>Tanggal Nota </td>
+                <td>:</td>
+                <td>${formatDatee(currentDateTime)}     </td>
+            </tr>
+            <tr class="calculation-row">
+                <td>Waktu Nota </td>
+                <td>:</td>
+                <td>${formatTime(currentDateTime)}</td>
+            </tr>
+        </table>
 
-                        <div class="footer">
-                            <!-- Placeholder for footer image -->
-                            <!-- <img src="{{ asset('footer.png') }}" alt="Putra Manuaba" class="header-logo cut-line"> -->
-                            <div class="header-text">
-                                <div>TERIMA KASIH TELAH GILING DISINI</div>
-                                <div>SUKSES SELALU</div>
-<div style="display: flex; justify-content: space-between;">
-    <div>.</div>
-    <div>.</div>
-</div>
-<div style="display: flex; justify-content: space-between;">
-    <div>.</div>
-    <div>.</div>
-</div>
-<div style="display: flex; justify-content: space-between;">
-    <div>.</div>
-    <div>.</div>
-</div>
-<div style="display: flex; justify-content: space-between;">
-    <div>.</div>
-    <div>.</div>
-</div>
-<div style="display: flex; justify-content: space-between;">
-    <div>.</div>
-    <div>.</div>
-</div>
+        <table>
+            <div></div>
+        </table>
 
-                            </div>
-                        </div>
+        <table>
+            <tr class="bold-border-top">
+                <td>Kalkulasi</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr class="bold-border-top-top calculation-row">
+                <td class="small-text"> Giling Kotor</td>
+                <td>:</td>
+                <td>${formatCurrency(formData.gilingKotor, getDecimalPlaces(formData.gilingKotor))} Kg</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr class="calculation-row">
+                <td class="small-text">Ongkos Giling</td>
+                <td>:</td>
+                <td>${formatCurrency(formData.gilingKotor, getDecimalPlaces(formData.gilingKotor))} × ${formatCurrency(formData.biayaGiling, getDecimalPlaces(formData.biayaGiling))}%</td>
+                <td>=</td>
+                <td>${formatCurrency(calculations.ongkosGiling, 2)} Kg</td>
+            </tr>
+            <tr class="calculation-row">
+                <td class="small-text">Pinjam</td>
+                <td>:</td>
+                <td>${formatCurrency(formData.pinjam, getDecimalPlaces(formData.pinjam))} Kg</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr class="calculation-row">
+                <td class="small-text">Beras Bersih</td>
+                <td>:</td>
+                <td>${formatCurrency(calculations.berasBersih, getDecimalPlaces(calculations.berasBersih))} Kg</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr class="calculation-row">
+                <td class="small-text">Pulang</td>
+                <td>:</td>
+                <td>${formatCurrency(formData.pulang, getDecimalPlaces(formData.pulang))} Kg</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr class="calculation-row">
+                <td class="small-text">Beras Jual</td>
+                <td>:</td>
+                <td>${formatCurrency(calculations.berasJual, getDecimalPlaces(calculations.berasJual))} Kg</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr class="calculation-row">
+                <td class="small-text">Buruh Giling</td>
+                <td>:</td>
+                <td>${formatCurrency(formData.gilingKotor, getDecimalPlaces(formData.gilingKotor))} × Rp ${formatCurrency(formData.biayaBuruhGiling, getDecimalPlaces(formData.biayaBuruhGiling))}</td>
+                <td>=</td>
+                <td class="bold">Rp ${formatCurrency(calculations.buruhGiling, getDecimalPlaces(formData.buruhGiling))}</td>
+            </tr>
+            <tr class="calculation-row">
+                <td class="small-text">Buruh Jemur</td>
+                <td>:</td>
+                <td>${formatCurrency(formData.jemur, getDecimalPlaces(formData.jemur))} × Rp ${formatCurrency(formData.biayaBuruhJemur, getDecimalPlaces(formData.biayaBuruhJemur))}</td>
+                <td>=</td>
+                <td class="bold">Rp ${formatCurrency(calculations.buruhJemur, getDecimalPlaces(formData.buruhJemur))}</td>
+            </tr>
+            <tr class="calculation-row">
+                <td class="small-text">Jual Konga</td>
+                <td>:</td>
+                <td>${formatCurrency(formData.jumlahKonga, getDecimalPlaces(formData.jumlahKonga))} × Rp ${formatCurrency(formData.hargaKonga, getDecimalPlaces(formData.hargaKonga))}</td>
+                <td>=</td>
+                <td class="bold">Rp ${formatCurrency(calculations.danaKonga, getDecimalPlaces(formData.danaKonga))}</td>
+            </tr>
+            <tr class="calculation-row">
+                <td class="small-text">Jual Menir</td>
+                <td>:</td>
+                <td>${formatCurrency(formData.jumlahMenir, getDecimalPlaces(formData.jumlahMenir))} × Rp ${formatCurrency(formData.hargaMenir, getDecimalPlaces(formData.hargaMenir))}</td>
+                <td>=</td>
+                <td class="bold">Rp ${formatCurrency(calculations.danaMenir, getDecimalPlaces(formData.danaMenir))}</td>
+            </tr>
+        </table>
 
-                    </div>
-                </body>
-                </html>
+        <table>
+            <div></div>
+        </table>
+
+        <table>
+            <tr class="bold-border-top">
+                <th>Pengambilan</th>
+                <th>Jumlah</th>
+                <th>Harga</th>
+                <th>Total</th>
+            </tr>
+            ${pengambilanRows}
+        </table>
+
+        <table>
+            <div></div>
+        </table>
+
+        <div class="footer">
+            <!-- Placeholder for footer image -->
+            <!-- <img src="{{ asset('footer.png') }}" alt="Putra Manuaba" class="header-logo cut-line"> -->
+            <div class="header-text">
+                <div>TERIMA KASIH TELAH GILING DISINI</div>
+                <div>SUKSES SELALU</div>
+                <div style="display: flex; justify-content: space-between;">
+                    <div>.</div>
+                    <div>.</div>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <div>.</div>
+                    <div>.</div>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <div>.</div>
+                    <div>.</div>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <div>.</div>
+                    <div>.</div>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <div>.</div>
+                    <div>.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
                 `;
             }
         });
