@@ -51,6 +51,8 @@
             align-items: center;
         }
 
+        #pulang::placeholder { color: #32cd32 !important; opacity: 1; font-weight: 500; }
+
         .card-title i {
             margin-right: 0.5rem;
         }
@@ -1304,6 +1306,20 @@
                 `;
             }
         });
+
+
+        document.getElementById('giling_kotor').addEventListener('input', function() {
+    let gilingKotor = parseFloat(this.value.replace(/,/g, '')) || 0;
+    let hasilPerhitungan = gilingKotor - (gilingKotor * 0.09);
+
+    // Format angka dengan pemisah ribuan jika diperlukan
+    let formatted = hasilPerhitungan.toLocaleString('id-ID', {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 2
+    });
+
+    document.getElementById('pulang').placeholder = formatted;
+});
 
         // Reset form dulu
         document.getElementById('gilingForm').reset();
