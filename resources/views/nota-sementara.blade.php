@@ -860,7 +860,7 @@
         const monthName = months[date.getMonth()];
         const year = date.getFullYear();
 
-        return `${dayName}, ${day} ${monthName} ${year}`;
+        return `${day} ${monthName} ${year}`;
     };
 
                const formatTime = (dateString) => {
