@@ -960,7 +960,7 @@
         <button class="btn btn-print half" onclick="saveNotaAsJPG('jumlah')">
             <i class="fas fa-download"></i> SAVE GAMBAR
         </button>
-        <button class="btn btnn btn-save half" onclick="showNotaModal('jumlah')"
+        <button class="btn btnn btn-save half" onclick="printLangsung('jumlah')"
         {{-- style="width: 178px; text-align: center;"> --}}
         style="text-align: center; margin: 0 !important;">
             <i class="fas fa-print"></i>
@@ -1055,7 +1055,7 @@
         <i class="fas fa-download"></i> SAVE GAMBAR
     </button>
 
-      <button class="btn btnn btn-save half" onclick="showNotaModal('sak')"
+      <button class="btn btnn btn-save half" onclick="printLangsung('sak')"
         {{-- style="width: 178px; text-align: center;"> --}}
         style=" text-align: center; padding: 0 !important;">
         <i class="fas fa-print"></i>
@@ -2076,6 +2076,7 @@ notaHTML += `
 
 
 
+
 // function showNotaModal(calculatorType) {
 //     const notaContent = generateNotaHTML(calculatorType);
 
@@ -2262,6 +2263,62 @@ async function showNotaModal(calculatorType) {
                 document.body.removeChild(iframe);
             }, 2000);
         };
+    };
+}
+
+async function printLangsung(calculatorType) {
+    const notaContent = generateNotaHTML(calculatorType);
+
+    // --- buat iframe tersembunyi ---
+    const iframe = document.createElement('iframe');
+    iframe.style.position = 'absolute';
+    iframe.style.left = '-9999px';
+    iframe.style.top = '-9999px';
+    iframe.style.width = '0';
+    iframe.style.height = '0';
+    iframe.style.border = 'none';
+    document.body.appendChild(iframe);
+
+    const html = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <style>
+                @page { size: 80mm auto; margin: 0; }
+                * { box-sizing: border-box; }
+                body {
+                    margin: 0;
+                    padding: 12px 10px;
+                    width: 80mm;
+                    max-width: 80mm;
+                    background: white;
+                    font-family: "Arial", sans-serif;
+                    -webkit-print-color-adjust: exact !important;
+                    print-color-adjust: exact !important;
+                }
+            </style>
+        </head>
+        <body>${notaContent}</body>
+        </html>
+    `;
+
+    iframe.contentDocument.open();
+    iframe.contentDocument.write(html);
+    iframe.contentDocument.close();
+
+    iframe.onload = async function () {
+        // Tunggu render selesai
+        await new Promise((r) => setTimeout(r, 50));
+
+        // === Print langsung dari iframe ===
+        iframe.contentWindow.focus();
+        iframe.contentWindow.print();
+
+        // Bersihkan iframe setelah print
+        setTimeout(() => {
+            document.body.removeChild(iframe);
+        }, 1000);
     };
 }
 
