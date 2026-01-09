@@ -7,6 +7,8 @@ use App\Models\DaftarGiling;
 use App\Models\PembayaranKredit;
 use App\Models\Kredit;
 use App\Models\Petani;
+use App\Models\BukuStokBeras;
+use App\Models\BukuStokKongaMenir;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -34,6 +36,68 @@ class GilingController extends Controller
         }
 
         return view('laravel-examples.giling', compact('gilings', 'petanis', 'latestGiling'));
+    }
+
+    /**
+     * Get stok terakhir untuk autocomplete form giling
+     */
+    public function getStokTerakhir($petaniId)
+    {
+        $beras = BukuStokBeras::where('petani_id', $petaniId)
+            ->where('status', false)
+            ->orderByDesc('tanggal')
+            ->orderByDesc('id')
+            ->first();
+
+        $totalKonga = BukuStokKongaMenir::where('petani_id', $petaniId)
+            ->where('status', false)
+            ->sum('konga_jual');
+
+        $totalMenir = BukuStokKongaMenir::where('petani_id', $petaniId)
+            ->where('status', false)
+            ->sum('menir_jual');
+
+        $totalKarungKonga = BukuStokKongaMenir::where('petani_id', $petaniId)
+            ->where('status', false)
+            ->sum('karung_konga');
+
+        return response()->json([
+            'beras' => $beras ? [
+                'id' => $beras->id,
+                'giling_kotor' => $beras->giling_kotor,
+                'jemur' => $beras->jemur ?? 0,
+                'pinjaman_beras' => $beras->pinjaman_beras,
+                'beras_pulang' => $beras->beras_pulang,
+                'harga' => $beras->harga ?? '',
+            ] : null,
+            'konga_menir' => [
+                'total_konga' => $totalKonga,
+                'total_menir' => $totalMenir,
+                'total_karung_konga' => $totalKarungKonga,
+            ]
+        ]);
+    }
+
+    /**
+     * Update status buku stok menjadi true dan set giling_id
+     */
+    private function updateBukuStokStatus($petaniId, $gilingId)
+    {
+        BukuStokBeras::where('petani_id', $petaniId)
+            ->where('status', false)
+            ->update([
+                'status' => true,
+                'giling_id' => $gilingId
+            ]);
+
+        BukuStokKongaMenir::where('petani_id', $petaniId)
+            ->where('status', false)
+            ->update([
+                'status' => true,
+                'giling_id' => $gilingId
+            ]);
+
+        Log::info("Updated BukuStok status for petani_id: {$petaniId}, giling_id: {$gilingId}");
     }
 
     public function searchPetani(Request $request)
@@ -176,8 +240,7 @@ class GilingController extends Controller
             // Fetch unpaid kredits before generating PDF
             $unpaidKredits = $giling->petani->kredits()->where('status', false)->get();
 
-
-
+            $berasJual = $validatedData['giling_kotor'] - ($validatedData['giling_kotor'] * $validatedData['biaya_giling'] / 100) - $validatedData['pinjam'] - $validatedData['pulang'];
 
             $daftarGiling = DaftarGiling::create([
                 'giling_id' => $giling->id,
@@ -207,10 +270,15 @@ class GilingController extends Controller
                 'bunga' => $validatedData['bunga']
             ]);
 
+            // Setelah baris $daftarGiling = DaftarGiling::create([...]);
+            // Tambahkan ini:
+            $this->updateBukuStokStatus($petani->id, $giling->id);
+
 
             // Generate the PDF before updating kredit status
             $receiptController = new ReceiptController();
             $receiptController->generatePdf($daftarGiling->id, $unpaidKredits);
+
 
 
 

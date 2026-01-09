@@ -23,6 +23,7 @@ use App\Http\Controllers\KreditTrashController;
 use App\Http\Controllers\RekapDanaController;
 use App\Http\Controllers\KreditNasabahPaluController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\BukuStokController;
 use App\Http\Controllers\KreditTitipanPetaniController;
 use App\Http\Controllers\JPGR2Controller;
 use App\Http\Controllers\CarController;
@@ -249,7 +250,114 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/notaa', function () {
         return view('nota-sementara');
     });
+
+
+
+    /*
+|--------------------------------------------------------------------------
+| BUKU STOK – HALAMAN UTAMA
+|--------------------------------------------------------------------------
+*/
+
+    Route::get('/buku-gilingan', [BukuStokController::class, 'index'])->name('buku-gilingan.index');
+
+
+    Route::get('/buku-stok', [BukuStokController::class, 'index'])
+        ->name('buku-stok.index');
+
+    /*
+|--------------------------------------------------------------------------
+| BUKU STOK BERAS
+|--------------------------------------------------------------------------
+*/
+    Route::post('/buku-stok-beras', [BukuStokController::class, 'storeBukuBeras'])
+        ->name('buku-stok-beras.store');
+
+    Route::get('/buku-stok-beras/{id}/edit', [BukuStokController::class, 'editBukuBeras'])
+        ->name('buku-stok-beras.edit');
+
+    Route::put('/buku-stok-beras/{id}', [BukuStokController::class, 'updateBukuBeras'])
+        ->name('buku-stok-beras.update');
+
+    Route::delete('/buku-stok-beras/{id}', [BukuStokController::class, 'destroyBukuBeras'])
+        ->name('buku-stok-beras.destroy');
+
+    /*
+|--------------------------------------------------------------------------
+| PINJAMAN BERAS
+|--------------------------------------------------------------------------
+*/
+    Route::post('/pinjaman-beras', [BukuStokController::class, 'storePinjamanBeras'])
+        ->name('pinjaman-beras.store');
+
+    Route::get('/pinjaman-beras/{id}/edit', [BukuStokController::class, 'editPinjamanBeras'])
+        ->name('pinjaman-beras.edit');
+
+    Route::put('/pinjaman-beras/{id}', [BukuStokController::class, 'updatePinjamanBeras'])
+        ->name('pinjaman-beras.update');
+
+    Route::delete('/pinjaman-beras/{id}', [BukuStokController::class, 'destroyPinjamanBeras'])
+        ->name('pinjaman-beras.destroy');
+
+    /*
+|--------------------------------------------------------------------------
+| BUKU STOK KONGA & MENIR
+|--------------------------------------------------------------------------
+*/
+    Route::post('/buku-stok-konga-menir', [BukuStokController::class, 'storeKongaMenir'])
+        ->name('buku-stok-konga-menir.store');
+
+    Route::delete('/buku-stok-konga-menir/{id}', [BukuStokController::class, 'destroyKongaMenir'])
+        ->name('buku-stok-konga-menir.destroy');
+
+    /*
+|--------------------------------------------------------------------------
+| PENJUALAN BERAS
+|--------------------------------------------------------------------------
+*/
+    Route::post('/penjualan-beras', [BukuStokController::class, 'storePenjualanBeras'])
+        ->name('penjualan-beras.store');
+
+    Route::delete('/penjualan-beras/{id}', [BukuStokController::class, 'destroyPenjualanBeras'])
+        ->name('penjualan-beras.destroy');
+
+    /*
+|--------------------------------------------------------------------------
+| PENJUALAN KONGA & MENIR
+|--------------------------------------------------------------------------
+*/
+    Route::post('/penjualan-konga-menir', [BukuStokController::class, 'storePenjualanKongaMenir'])
+        ->name('penjualan-konga-menir.store');
+
+    Route::delete('/penjualan-konga-menir/{id}', [BukuStokController::class, 'destroyPenjualanKongaMenir'])
+        ->name('penjualan-konga-menir.destroy');
 });
+
+
+// Pinjaman Konga
+Route::post('/pinjaman-konga/store', [BukuStokController::class, 'storePinjamanKonga'])
+    ->name('pinjaman-konga.store');
+Route::delete('/pinjaman-konga/{id}', [BukuStokController::class, 'destroyPinjamanKonga'])
+    ->name('pinjaman-konga.destroy');
+
+// Buku Stok Konga Menir
+Route::post('/buku-stok-konga-menir/store', [BukuStokController::class, 'storeBukuKongaMenir'])
+    ->name('buku-stok-konga-menir.store');
+Route::delete('/buku-stok-konga-menir/{id}', [BukuStokController::class, 'destroyBukuKongaMenir'])
+    ->name('buku-stok-konga-menir.destroy');
+
+// Penjualan Konga Menir
+Route::post('/penjualan-konga-menir/store', [BukuStokController::class, 'storePenjualanKongaMenir'])
+    ->name('penjualan-konga-menir.store');
+Route::delete('/penjualan-konga-menir/{id}', [BukuStokController::class, 'destroyPenjualanKongaMenir'])
+    ->name('penjualan-konga-menir.destroy');
+
+
+Route::get('/petani/{id}/stok-terakhir', [PetaniController::class, 'stokTerakhir']);
+
+
+Route::get('/petani/{id}/stok-terakhir', [GilingController::class, 'getStokTerakhir']);
+
 
 // ✅ PINDAHKAN route /kalkulator ke LUAR group guest
 Route::get('/kalkulator', function (Request $request) {
@@ -258,6 +366,7 @@ Route::get('/kalkulator', function (Request $request) {
     }
     return view('kalkulator');
 });
+
 
 Route::get('/nota', function (Request $request) {
     if ($request->user()) {

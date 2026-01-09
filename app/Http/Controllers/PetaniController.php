@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Petani;
+use App\Models\BukuStokBeras;
+use App\Models\BukuStokKongaMenir;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -158,5 +160,53 @@ class PetaniController extends Controller
             ->get();
 
         return response()->json($petanis);
+    }
+
+    public function stokTerakhir($id)
+    {
+        // Ambil beras belum lunas pertama
+        $beras = BukuStokBeras::where('petani_id', $id)
+            ->where('status', 0) // 0 = belum lunas
+            ->orderBy('tanggal', 'asc')
+            ->first();
+
+        // Ambil data jemur konga+menir sesuai ID & belum lunas
+        $kongaMenir = BukuStokKongaMenir::where('petani_id', $id)
+            ->where('status', 0)
+            ->orderBy('tanggal', 'asc')
+            ->get();
+
+        // Hitung total konga (jemur - jual tapi hanya yg belum lunas)
+        $totalKonga = $kongaMenir->sum(function ($item) {
+            return max(($item->pinjam_konga - $item->kembalikan_konga), 0);
+        });
+
+        // Hitung total menir (menir - menir_jual status belum lunas)
+        $totalMenir = $kongaMenir->sum(function ($item) {
+            return max(($item->menir - $item->menir_jual), 0);
+        });
+
+        // SUM karung_konga seluruh data (tidak tergantung status)
+        $totalKarungKonga = BukuStokKongaMenir::where('petani_id', $id)
+            ->sum('karung_konga');
+
+        // SUM jual konga secara keseluruhan
+        $totalKongaJual = BukuStokKongaMenir::where('petani_id', $id)
+            ->sum('konga_jual');
+
+        // SUM jual menir secara keseluruhan
+        $totalMenirJual = BukuStokKongaMenir::where('petani_id', $id)
+            ->sum('menir_jual');
+
+        return response()->json([
+            'beras' => $beras,
+            'konga_menir' => [
+                'total_konga' => $totalKongaJual,
+                'total_menir' => $totalMenirJual,
+                'total_karung_konga' => $totalKarungKonga,
+                'total_konga_jual' => $totalKongaJual,
+                'total_menir_jual' => $totalMenirJual,
+            ],
+        ]);
     }
 }

@@ -7,6 +7,8 @@ use App\Models\Kredit;
 use App\Models\Petani;
 use App\Models\PembayaranKredit;
 use App\Models\Giling;
+use App\Models\BukuStokBeras;
+use App\Models\BukuStokKongaMenir;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB; // Tambahkan ini
@@ -70,6 +72,26 @@ class DaftarGilingController extends Controller
 
         // Pass data to the view, including the alamatList
         return view('laravel-examples.daftar-giling', compact('daftarGilings', 'search', 'sortOrder', 'alamatList'));
+    }
+
+    /**
+     * Rollback status buku stok menjadi false berdasarkan giling_id
+     */
+    private function rollbackBukuStokStatus($gilingId)
+    {
+        BukuStokBeras::where('giling_id', $gilingId)
+            ->update([
+                'status' => false,
+                'giling_id' => null
+            ]);
+
+        BukuStokKongaMenir::where('giling_id', $gilingId)
+            ->update([
+                'status' => false,
+                'giling_id' => null
+            ]);
+
+        Log::info("Rollback BukuStok status for giling_id: {$gilingId}");
     }
 
     public function findPdf(Request $request)
@@ -230,6 +252,9 @@ class DaftarGilingController extends Controller
 
                 if ($giling) {
                     // Reverse perubahan pada kredit hanya jika giling ditemukan
+                    // Sebelum baris $this->reverseKreditChanges($giling);
+                    // Tambahkan ini:
+                    $this->rollbackBukuStokStatus($giling->id);
                     $this->reverseKreditChanges($giling);
 
                     // Soft delete pada Giling dan DaftarGiling

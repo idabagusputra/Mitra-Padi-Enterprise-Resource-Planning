@@ -555,6 +555,12 @@
                         searchInput.value = petani.nama;
                         petaniIdInput.value = petani.id;
                         searchResults.style.display = 'none';
+ fetch(`/petani/${petani.id}/stok-terakhir`)
+        .then(res => res.json())
+        .then(data => {
+            autoFillBeras(data.beras);
+            autoFillKongaMenir(data.konga_menir);
+        });
                     });
                     searchResults.appendChild(div);
                 });
@@ -563,6 +569,163 @@
         searchResults.style.display = 'none';
     }
 });
+
+
+// function autoFillBeras(beras) {
+//     if (!beras) return;
+
+//     document.getElementById('giling_kotor').value = beras.giling_kotor ?? '';
+//     document.getElementById('jemur').value = beras.jemur ?? 0;
+//     document.getElementById('pinjam').value = beras.pinjaman_beras ?? '';
+//     document.getElementById('pulang').value = beras.beras_pulang ?? '';
+
+
+
+//     // Jika ada harga jual di tabel kamu bisa maping
+//     document.getElementById('harga_jual').value = beras.harga ?? '';
+// }
+
+function autoFillBeras(beras) {
+    if (!beras) return;
+
+    const fields = {
+        'giling_kotor': beras.giling_kotor ?? '',
+        'jemur': beras.jemur ?? 0,
+        'pinjam': beras.pinjaman_beras ?? '',
+        'pulang': beras.beras_pulang ?? '',
+        'harga_jual': beras.harga ?? ''
+    };
+
+    for (const [id, value] of Object.entries(fields)) {
+        const input = document.getElementById(id);
+        if (input) {
+            input.value = value;
+            input.dataset.rawValue = value;
+            formatNumber(input);
+        }
+    }
+}
+
+
+// function autoFillKongaMenir(konga_menir) {
+//     if (!konga_menir) return;
+
+//     document.getElementById('jumlah_konga').value = konga_menir.total_konga ?? '';
+//     document.getElementById('harga_konga').value = '';
+
+//     document.getElementById('jumlah_menir').value = konga_menir.total_menir ?? '';
+//     document.getElementById('harga_menir').value = '';
+
+//     // Auto tambah pengambilan karung konga jika ada
+//     const totalKarungKonga = konga_menir.total_karung_konga ?? 0;
+//     if (totalKarungKonga > 0) {
+//         addPengambilanKarungKonga(totalKarungKonga);
+//     }
+// }
+
+function autoFillKongaMenir(konga_menir) {
+    if (!konga_menir) return;
+
+    const fields = {
+        'jumlah_konga': konga_menir.total_konga ?? '',
+        'harga_konga': '',
+        'jumlah_menir': konga_menir.total_menir ?? '',
+        'harga_menir': ''
+    };
+
+    for (const [id, value] of Object.entries(fields)) {
+        const input = document.getElementById(id);
+        if (input) {
+            input.value = value;
+            input.dataset.rawValue = value;
+            formatNumber(input);
+        }
+    }
+
+    // Auto tambah pengambilan karung konga jika ada
+    const totalKarungKonga = konga_menir.total_karung_konga ?? 0;
+    if (totalKarungKonga > 0) {
+        addPengambilanKarungKonga(totalKarungKonga);
+    }
+}
+
+// function addPengambilanKarungKonga(jumlah) {
+//     pengambilanCount++;
+//     const newPengambilan = `
+//         <div class="pengambilan-item row mb-2">
+//             <div class="col-md-4">
+//                 <div class="form-group mb-0">
+//                     <input type="text" name="pengambilans[${pengambilanCount}][keterangan]" class="form-control pengambilan keterangan-input w-100" placeholder="Keterangan" list="keterangan-list" value="Karung Konga">
+//                 </div>
+//             </div>
+//             <div class="col-md-3">
+//                 <div class="form-group mb-0">
+//                     <input type="text" name="pengambilans[${pengambilanCount}][jumlah]" class="form-control number-format pengambilan-w" placeholder="Jumlah" inputmode="numeric" data-raw-value="${jumlah}" value="${jumlah}">
+//                 </div>
+//             </div>
+//             <div class="col-md-3">
+//                 <div class="form-group mb-0">
+//                     <input type="text" name="pengambilans[${pengambilanCount}][harga]" class="form-control number-format pengambilan-w" placeholder="Harga" inputmode="numeric" data-raw-value="4000" value="4,000">
+//                 </div>
+//             </div>
+//             <div class="col-md-2">
+//                 <button type="button" class="btn pengambilan btn-danger delete-pengambilan w-100 bi">
+//                     <i class="bi bi-trash3-fill me-2"></i>
+//                     <span>DEL</span>
+//                 </button>
+//             </div>
+//         </div>
+//     `;
+//     pengambilansContainer.insertAdjacentHTML('beforeend', newPengambilan);
+
+//     const newItem = pengambilansContainer.lastElementChild;
+//     addDeleteButtonListener(newItem.querySelector('.delete-pengambilan'));
+//     updateDeleteButtons();
+// }
+
+function addPengambilanKarungKonga(jumlah) {
+    pengambilanCount++;
+    const newPengambilan = `
+        <div class="pengambilan-item row mb-2">
+            <div class="col-md-4">
+                <div class="form-group mb-0">
+                    <input type="text" name="pengambilans[${pengambilanCount}][keterangan]" class="form-control pengambilan keterangan-input w-100" placeholder="Keterangan" list="keterangan-list" value="Karung Konga">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group mb-0">
+                    <input type="text" name="pengambilans[${pengambilanCount}][jumlah]" class="form-control number-format pengambilan-w" placeholder="Jumlah" inputmode="numeric" data-raw-value="${jumlah}" value="${jumlah}">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group mb-0">
+                    <input type="text" name="pengambilans[${pengambilanCount}][harga]" class="form-control number-format pengambilan-w" placeholder="Harga" inputmode="numeric" data-raw-value="4000" value="4000">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <button type="button" class="btn pengambilan btn-danger delete-pengambilan w-100 bi">
+                    <i class="bi bi-trash3-fill me-2"></i>
+                    <span>DEL</span>
+                </button>
+            </div>
+        </div>
+    `;
+    pengambilansContainer.insertAdjacentHTML('beforeend', newPengambilan);
+
+    const newItem = pengambilansContainer.lastElementChild;
+    addDeleteButtonListener(newItem.querySelector('.delete-pengambilan'));
+
+    // Format number untuk input yang baru ditambahkan
+    newItem.querySelectorAll('.number-format').forEach(input => {
+        formatNumber(input);
+        input.addEventListener('input', function() {
+            this.dataset.rawValue = this.value;
+            formatNumber(this);
+        });
+    });
+
+    updateDeleteButtons();
+}
 
 
         document.addEventListener('click', function(e) {
