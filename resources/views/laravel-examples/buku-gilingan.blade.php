@@ -1034,9 +1034,9 @@
     </div>
 </td>
                                             <td><input type="date" class="form-control form-control-sm" name="rows[0][tanggal]" value="{{ date('Y-m-d') }}" required></td>
-                                            <td><input type="text" class="form-control form-control-sm number-format" name="rows[0][jemur]" placeholder="0" required></td>
-                                            <td><input type="text" class="form-control form-control-sm number-format" name="rows[0][giling_kotor]" placeholder="0" required></td>
-                                            <td><input type="text" class="form-control form-control-sm number-format" name="rows[0][beras_pulang]" placeholder="0"></td>
+                                            <td><input type="text" class="form-control form-control-sm number-format" name="rows[0][jemur]" placeholder="0" inputmode="decimal" required></td>
+                                            <td><input type="text" class="form-control form-control-sm number-format" name="rows[0][giling_kotor]" placeholder="0" inputmode="decimal" required></td>
+                                            <td><input type="text" class="form-control form-control-sm number-format" name="rows[0][beras_pulang]" placeholder="0" inputmode="decimal"></td>
                                             <td>
                                                 <select class="form-select form-select-sm" name="rows[0][status]" required>
                                                     <option value="0">BELUM LUNAS</option>
@@ -1142,7 +1142,7 @@
                                                 </div>
                                             </td>
                                             <td><input type="date" class="form-control form-control-sm" name="rows[0][tanggal]" value="{{ date('Y-m-d') }}" required></td>
-                                            <td><input type="text" class="form-control form-control-sm number-format" name="rows[0][jumlah]" placeholder="0" required></td>
+                                            <td><input type="text" class="form-control form-control-sm number-format" name="rows[0][jumlah]" placeholder="0" inputmode="decimal" required></td>
                                             <td class="text-center">
                                                 <button type="button" class="remove-row-btn" onclick="removeRow(this)" style="visibility: hidden;">
                                                     <i class="bi bi-x-lg"></i>
@@ -1219,7 +1219,7 @@
                                         <tr class="input-row dynamic-row" data-row="0">
                                             <td><input type="text" class="form-control form-control-sm" name="rows[0][keterangan]" placeholder="Keterangan..." required></td>
                                             <td><input type="date" class="form-control form-control-sm" name="rows[0][tanggal]" value="{{ date('Y-m-d') }}" required></td>
-                                            <td><input type="text" class="form-control form-control-sm number-format" name="rows[0][jumlah_beras]" placeholder="0" required></td>
+                                            <td><input type="text" class="form-control form-control-sm number-format" name="rows[0][jumlah_beras]" placeholder="0" inputmode="decimal" required></td>
                                             <td class="text-center">
                                                 <button type="button" class="remove-row-btn" onclick="removeRow(this)" style="visibility: hidden;">
                                                     <i class="bi bi-x-lg"></i>
@@ -1303,13 +1303,13 @@
                                                 </div>
                                             </td>
                                             <td><input type="date" class="form-control form-control-sm" name="rows[0][tanggal]" value="{{ date('Y-m-d') }}" required></td>
-                                            <td><input type="text" class="form-control form-control-sm number-format" name="rows[0][karung_konga]" placeholder="0"></td>
-                                            <td><input type="text" class="form-control form-control-sm number-format" name="rows[0][konga_giling]" placeholder="0"></td>
-                                            <td><input type="text" class="form-control form-control-sm number-format" name="rows[0][konga_jual]" placeholder="0"></td>
-                                            {{-- <td><input type="text" class="form-control form-control-sm number-format" name="rows[0][pinjam_konga]" placeholder="0"></td> --}}
-                                            {{-- <td><input type="text" class="form-control form-control-sm number-format" name="rows[0][kembalikan_konga]" placeholder="0"></td> --}}
-                                            {{-- <td><input type="text" class="form-control form-control-sm number-format" name="rows[0][menir]" placeholder="0"></td> --}}
-                                            <td><input type="text" class="form-control form-control-sm number-format" name="rows[0][menir_jual]" placeholder="0"></td>
+                                            <td><input type="text" class="form-control form-control-sm number-format" name="rows[0][karung_konga]" placeholder="0" inputmode="decimal"></td>
+                                            <td><input type="text" class="form-control form-control-sm number-format" name="rows[0][konga_giling]" placeholder="0" inputmode="decimal"></td>
+                                            <td><input type="text" class="form-control form-control-sm number-format" name="rows[0][konga_jual]" placeholder="0" inputmode="decimal"></td>
+                                            {{-- <td><input type="text" class="form-control form-control-sm number-format" name="rows[0][pinjam_konga]" placeholder="0" inputmode="decimal"></td> --}}
+                                            {{-- <td><input type="text" class="form-control form-control-sm number-format" name="rows[0][kembalikan_konga]" placeholder="0" inputmode="decimal"></td> --}}
+                                            {{-- <td><input type="text" class="form-control form-control-sm number-format" name="rows[0][menir]" placeholder="0" inputmode="decimal"></td> --}}
+                                            <td><input type="text" class="form-control form-control-sm number-format" name="rows[0][menir_jual]" placeholder="0" inputmode="decimal"></td>
                                             <td class="text-center">
                                                 <button type="button" class="remove-row-btn" onclick="removeRow(this)" style="visibility: hidden;">
                                                     <i class="bi bi-x-lg"></i>
@@ -1409,7 +1409,7 @@
                                                 </div>
                                             </td>
                                             <td><input type="date" class="form-control form-control-sm" name="rows[0][tanggal]" value="{{ date('Y-m-d') }}" required></td>
-                                            <td><input type="text" class="form-control form-control-sm number-format" name="rows[0][jumlah]" placeholder="0" required></td>
+                                            <td><input type="text" class="form-control form-control-sm number-format" name="rows[0][jumlah]" placeholder="0" inputmode="decimal" required></td>
                                             <td class="text-center">
                                                 <button type="button" class="remove-row-btn" onclick="removeRow(this)" style="visibility: hidden;">
                                                     <i class="bi bi-x-lg"></i>
@@ -1487,8 +1487,8 @@
                                         <tr class="input-row dynamic-row" data-row="0">
                                             <td><input type="text" class="form-control form-control-sm" name="rows[0][keterangan]" placeholder="Keterangan..." required></td>
                                             <td><input type="date" class="form-control form-control-sm" name="rows[0][tanggal]" value="{{ date('Y-m-d') }}" required></td>
-                                            <td><input type="text" class="form-control form-control-sm number-format" name="rows[0][jumlah_konga]" placeholder="0"></td>
-                                            <td><input type="text" class="form-control form-control-sm number-format" name="rows[0][jumlah_menir]" placeholder="0"></td>
+                                            <td><input type="text" class="form-control form-control-sm number-format" name="rows[0][jumlah_konga]" placeholder="0" inputmode="decimal"></td>
+                                            <td><input type="text" class="form-control form-control-sm number-format" name="rows[0][jumlah_menir]" placeholder="0" inputmode="decimal"></td>
                                             <td class="text-center">
                                                 <button type="button" class="remove-row-btn" onclick="removeRow(this)" style="visibility: hidden;">
                                                     <i class="bi bi-x-lg"></i>
