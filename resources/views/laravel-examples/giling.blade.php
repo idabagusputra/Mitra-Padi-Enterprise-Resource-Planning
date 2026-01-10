@@ -752,33 +752,71 @@ function addPengambilanKarungKonga(jumlah) {
             });
         });
 
+        // function formatNumber(input) {
+        //     let value = input.value;
+
+        //     // Menyimpan nilai mentah tanpa format
+        //     input.dataset.rawValue = value;
+
+        //     // Pisahkan bagian integer dan desimal
+        //     let [integer, decimal] = value.split('.');
+
+        //     // Hapus semua karakter yang tidak valid dari bagian integer (kecuali angka)
+        //     integer = integer.replace(/[^\d]/g, '');
+
+        //     // Format bagian integer dengan koma sebagai pemisah ribuan
+        //     if (integer) {
+        //         integer = integer.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        //     }
+
+        //     // Gabungkan kembali bagian integer dan desimal jika ada
+        //     if (decimal !== undefined) {
+        //         value = integer + '.' + decimal;
+        //     } else {
+        //         value = integer;
+        //     }
+
+        //     // Mengatur nilai input field dengan format yang benar
+        //     input.value = value;
+        // }
+
         function formatNumber(input) {
-            let value = input.value;
+    let value = input.value;
 
-            // Menyimpan nilai mentah tanpa format
-            input.dataset.rawValue = value;
+    // Menyimpan nilai mentah tanpa format
+    input.dataset.rawValue = value;
 
-            // Pisahkan bagian integer dan desimal
-            let [integer, decimal] = value.split('.');
+    // Pisahkan bagian integer dan desimal
+    let [integer, decimal] = value.split('.');
 
-            // Hapus semua karakter yang tidak valid dari bagian integer (kecuali angka)
-            integer = integer.replace(/[^\d]/g, '');
+    // Hapus semua karakter yang tidak valid dari bagian integer (kecuali angka)
+    integer = integer.replace(/[^\d]/g, '');
 
-            // Format bagian integer dengan koma sebagai pemisah ribuan
-            if (integer) {
-                integer = integer.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-            }
+    // Format bagian integer dengan koma sebagai pemisah ribuan
+    if (integer) {
+        integer = integer.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    }
 
-            // Gabungkan kembali bagian integer dan desimal jika ada
-            if (decimal !== undefined) {
-                value = integer + '.' + decimal;
-            } else {
-                value = integer;
-            }
+    // ============================================
+    // SMART DECIMAL FORMATTING
+    // ============================================
+    if (decimal !== undefined) {
+        // Hilangkan trailing zeros dari desimal
+        decimal = decimal.replace(/0+$/, '');
 
-            // Mengatur nilai input field dengan format yang benar
-            input.value = value;
+        // Jika desimal kosong setelah dihapus trailing zeros, tidak perlu tampilkan
+        if (decimal === '') {
+            value = integer;
+        } else {
+            value = integer + '.' + decimal;
         }
+    } else {
+        value = integer;
+    }
+
+    // Mengatur nilai input field dengan format yang benar
+    input.value = value;
+}
 
 
 
