@@ -20,6 +20,8 @@ class BukuStokKongaMenir extends Model
         'konga_giling',
         'karung_konga',
         'konga_jual',
+        'harga_menir',
+        'harga_konga',
         'pinjam_konga',
         'kembalikan_konga',
         'menir',
