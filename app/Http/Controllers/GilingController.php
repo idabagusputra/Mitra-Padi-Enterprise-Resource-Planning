@@ -87,6 +87,7 @@ class GilingController extends Controller
             ->where('status', false)
             ->update([
                 'status' => true,
+                'harga' => Giling::find($gilingId)->harga_jual,
                 'giling_id' => $gilingId
             ]);
 
