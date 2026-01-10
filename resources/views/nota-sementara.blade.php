@@ -1232,7 +1232,7 @@
             <tr class="calculation-row">
                 <td class="small-text">Beras Bersih</td>
                 <td>:</td>
-                <td>${formatCurrency(calculations.berasBersih, getDecimalPlaces(calculations.berasBersih))} Kg</td>
+                <td>${formatCurrency(calculations.berasBersih, getDecimalPlaces(calculations.berasBersih), 2)} Kg</td>
                 <td></td>
                 <td></td>
             </tr>
