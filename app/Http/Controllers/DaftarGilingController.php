@@ -77,22 +77,48 @@ class DaftarGilingController extends Controller
     /**
      * Rollback status buku stok menjadi false berdasarkan giling_id
      */
-    private function rollbackBukuStokStatus($gilingId)
+    // private function rollbackBukuStokStatus($gilingId)
+    // {
+    //     BukuStokBeras::where('giling_id', $gilingId)
+    //         ->update([
+    //             'status' => false,
+    //             'giling_id' => null
+    //         ]);
+
+    //     BukuStokKongaMenir::where('giling_id', $gilingId)
+    //         ->update([
+    //             'status' => false,
+    //             'giling_id' => null
+    //         ]);
+
+    //     Log::info("Rollback BukuStok status for giling_id: {$gilingId}");
+    // }
+
+    private function rollbackBukuStokStatus($petaniId, $gilingId)
     {
-        BukuStokBeras::where('giling_id', $gilingId)
+        // Ambil data giling sekali (opsional, tapi konsisten dengan update)
+        $giling = Giling::find($gilingId);
+
+        BukuStokBeras::where('petani_id', $petaniId)
+            ->where('giling_id', $gilingId)
             ->update([
                 'status' => false,
+                'harga' => null,
                 'giling_id' => null
             ]);
 
-        BukuStokKongaMenir::where('giling_id', $gilingId)
+        BukuStokKongaMenir::where('petani_id', $petaniId)
+            ->where('giling_id', $gilingId)
             ->update([
                 'status' => false,
+                'harga_konga' => null,
+                'harga_menir' => null,
                 'giling_id' => null
             ]);
 
-        Log::info("Rollback BukuStok status for giling_id: {$gilingId}");
+        Log::info("Rollback BukuStok status for petani_id: {$petaniId}, giling_id: {$gilingId}");
     }
+
 
     public function findPdf(Request $request)
     {
