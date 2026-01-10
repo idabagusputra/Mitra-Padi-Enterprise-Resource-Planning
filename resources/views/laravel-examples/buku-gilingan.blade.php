@@ -1357,12 +1357,12 @@
                                         <td class="text-center"><span class="text-xs">{{ number_format($item->karung_konga ?? 0, 2, ',', '.') }}</span></td>
                                         <td class="text-center"><span class="text-xs">{{ number_format($item->konga_giling ?? 0, 2, ',', '.') }}</span></td>
                                         <td class="text-center"><span class="text-xs">{{ number_format($item->konga_jual ?? 0, 2, ',', '.') }}</span></td>
-                                        <td class="text-center"><span class="text-xs">{{ number_format($item->harga_konga ?? 0, 2, ',', '.') }}</span></td>
+                                        <td class="text-center"><span class="text-xs">Rp {{ number_format($item->harga_konga ?? 0, 2, ',', '.') }}</span></td>
                                         <td class="text-center"><span class="text-xs">{{ number_format($item->pinjam_konga ?? 0, 2, ',', '.') }}</span></td>
                                         {{-- <td class="text-center"><span class="text-xs">{{ number_format($item->kembalikan_konga ?? 0, 2, ',', '.') }}</span></td> --}}
                                         {{-- <td class="text-center"><span class="text-xs">{{ number_format($item->menir ?? 0, 2, ',', '.') }}</span></td> --}}
                                         <td class="text-center"><span class="text-xs">{{ number_format($item->menir_jual ?? 0, 2, ',', '.') }}</span></td>
-                                        <td class="text-center"><span class="text-xs">{{ number_format($item->harga_menir ?? 0, 2, ',', '.') }}</span></td>
+                                        <td class="text-center"><span class="text-xs">Rp {{ number_format($item->harga_menir ?? 0, 2, ',', '.') }}</span></td>
                                         <td class="text-center">
                                             <span class="badge bg-gradient-{{ $item->status ? 'success' : 'warning' }}">
                                                 {{ $item->status ? 'LUNAS' : 'BELUM LUNAS' }}
