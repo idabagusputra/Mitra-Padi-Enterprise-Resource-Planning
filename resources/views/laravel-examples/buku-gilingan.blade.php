@@ -1640,6 +1640,63 @@ if (searchGlobalInput) {
     });
 }
 
+// ============================================
+// CLEAR ALL FORMS ON PAGE LOAD
+// ============================================
+document.querySelectorAll('form[id^="form-"]').forEach(form => {
+    clearForm(form);
+});
+
+// ============================================
+// SMART NUMBER FORMATTING
+// ============================================
+function smartFormatNumber(value) {
+    const num = parseFloat(value) || 0;
+
+    if (num % 1 === 0) {
+        return num.toLocaleString('id-ID', {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        });
+    }
+
+    const formatted = num.toLocaleString('id-ID', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
+
+    return formatted.replace(/,(\d)0$/, ',$1');
+}
+
+document.querySelectorAll('.data-table .text-xs').forEach(cell => {
+    const text = cell.textContent.trim();
+
+    if (text.startsWith('Rp')) {
+        const numberPart = text.replace(/[^\d,.]/g, '').replace(/\./g, '').replace(',', '.');
+        cell.textContent = 'Rp ' + smartFormatNumber(numberPart);
+        return;
+    }
+
+    if (text.includes('-') || text.length < 3 || isNaN(text.replace(/[,.]/g, ''))) {
+        return;
+    }
+
+    const numberValue = text.replace(/\./g, '').replace(',', '.');
+    if (!isNaN(numberValue)) {
+        cell.textContent = smartFormatNumber(numberValue);
+    }
+});
+
+document.querySelectorAll('.stok-value').forEach(elem => {
+    const text = elem.childNodes[0]?.textContent?.trim();
+    if (text) {
+        const numberValue = text.replace(/\./g, '').replace(',', '.');
+        if (!isNaN(numberValue)) {
+            elem.childNodes[0].textContent = smartFormatNumber(numberValue) + ' ';
+        }
+    }
+});
+
 
 
     // ============================================
@@ -1982,6 +2039,68 @@ function applyAllFilters() {
         }
     }, { passive: false, capture: true });
 })();
+
+// ============================================
+// SMART NUMBER FORMATTING - Add after DOMContentLoaded
+// ============================================
+function smartFormatNumber(value) {
+    // Convert to number and handle null/undefined
+    const num = parseFloat(value) || 0;
+
+    // Check if it's a whole number
+    if (num % 1 === 0) {
+        // Format tanpa desimal
+        return num.toLocaleString('id-ID', {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        });
+    }
+
+    // Has decimal, format and remove trailing zeros
+    const formatted = num.toLocaleString('id-ID', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
+
+    // Remove trailing zero after decimal (e.g., "10,50" becomes "10,5")
+    return formatted.replace(/,(\d)0$/, ',$1');
+}
+
+// Apply to all number displays on page load
+document.querySelectorAll('.data-table .text-xs').forEach(cell => {
+    const text = cell.textContent.trim();
+
+    // Skip if it starts with "Rp" (price fields)
+    if (text.startsWith('Rp')) {
+        const numberPart = text.replace(/[^\d,.]/g, '').replace(/\./g, '').replace(',', '.');
+        const formatted = smartFormatNumber(numberPart);
+        cell.textContent = 'Rp ' + formatted;
+        return;
+    }
+
+    // Skip if it's a date or ID or text
+    if (text.includes('-') || text.length < 3 || isNaN(text.replace(/[,.]/g, ''))) {
+        return;
+    }
+
+    // Format regular numbers
+    const numberValue = text.replace(/\./g, '').replace(',', '.');
+    if (!isNaN(numberValue)) {
+        cell.textContent = smartFormatNumber(numberValue);
+    }
+});
+
+// Also apply to stok cards
+document.querySelectorAll('.stok-value').forEach(elem => {
+    const text = elem.childNodes[0]?.textContent?.trim();
+    if (text) {
+        const numberValue = text.replace(/\./g, '').replace(',', '.');
+        if (!isNaN(numberValue)) {
+            const formatted = smartFormatNumber(numberValue);
+            elem.childNodes[0].textContent = formatted + ' ';
+        }
+    }
+});
 </script>
 
 @endsection
