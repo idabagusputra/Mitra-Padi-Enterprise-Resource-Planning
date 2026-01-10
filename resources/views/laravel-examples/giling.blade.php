@@ -585,26 +585,26 @@
 //     document.getElementById('harga_jual').value = beras.harga ?? '';
 // }
 
-function autoFillBeras(beras) {
-    if (!beras) return;
+// function autoFillBeras(beras) {
+//     if (!beras) return;
 
-    const fields = {
-        'giling_kotor': beras.giling_kotor ?? '',
-        'jemur': beras.jemur ?? 0,
-        'pinjam': beras.pinjaman_beras ?? '',
-        'pulang': beras.beras_pulang ?? '',
-        'harga_jual': beras.harga ?? ''
-    };
+//     const fields = {
+//         'giling_kotor': beras.giling_kotor ?? '',
+//         'jemur': beras.jemur ?? 0,
+//         'pinjam': beras.pinjaman_beras ?? '',
+//         'pulang': beras.beras_pulang ?? '',
+//         'harga_jual': beras.harga ?? ''
+//     };
 
-    for (const [id, value] of Object.entries(fields)) {
-        const input = document.getElementById(id);
-        if (input) {
-            input.value = value;
-            input.dataset.rawValue = value;
-            formatNumber(input);
-        }
-    }
-}
+//     for (const [id, value] of Object.entries(fields)) {
+//         const input = document.getElementById(id);
+//         if (input) {
+//             input.value = value;
+//             input.dataset.rawValue = value;
+//             formatNumber(input);
+//         }
+//     }
+// }
 
 
 // function autoFillKongaMenir(konga_menir) {
@@ -623,31 +623,31 @@ function autoFillBeras(beras) {
 //     }
 // }
 
-function autoFillKongaMenir(konga_menir) {
-    if (!konga_menir) return;
+// function autoFillKongaMenir(konga_menir) {
+//     if (!konga_menir) return;
 
-    const fields = {
-        'jumlah_konga': konga_menir.total_konga ?? '',
-        'harga_konga': '',
-        'jumlah_menir': konga_menir.total_menir ?? '',
-        'harga_menir': ''
-    };
+//     const fields = {
+//         'jumlah_konga': konga_menir.total_konga ?? '',
+//         'harga_konga': '',
+//         'jumlah_menir': konga_menir.total_menir ?? '',
+//         'harga_menir': ''
+//     };
 
-    for (const [id, value] of Object.entries(fields)) {
-        const input = document.getElementById(id);
-        if (input) {
-            input.value = value;
-            input.dataset.rawValue = value;
-            formatNumber(input);
-        }
-    }
+//     for (const [id, value] of Object.entries(fields)) {
+//         const input = document.getElementById(id);
+//         if (input) {
+//             input.value = value;
+//             input.dataset.rawValue = value;
+//             formatNumber(input);
+//         }
+//     }
 
-    // Auto tambah pengambilan karung konga jika ada
-    const totalKarungKonga = konga_menir.total_karung_konga ?? 0;
-    if (totalKarungKonga > 0) {
-        addPengambilanKarungKonga(totalKarungKonga);
-    }
-}
+//     // Auto tambah pengambilan karung konga jika ada
+//     const totalKarungKonga = konga_menir.total_karung_konga ?? 0;
+//     if (totalKarungKonga > 0) {
+//         addPengambilanKarungKonga(totalKarungKonga);
+//     }
+// }
 
 // function addPengambilanKarungKonga(jumlah) {
 //     pengambilanCount++;
@@ -683,8 +683,118 @@ function autoFillKongaMenir(konga_menir) {
 //     updateDeleteButtons();
 // }
 
+// function addPengambilanKarungKonga(jumlah) {
+//     pengambilanCount++;
+//     const newPengambilan = `
+//         <div class="pengambilan-item row mb-2">
+//             <div class="col-md-4">
+//                 <div class="form-group mb-0">
+//                     <input type="text" name="pengambilans[${pengambilanCount}][keterangan]" class="form-control pengambilan keterangan-input w-100" placeholder="Keterangan" list="keterangan-list" value="Karung Konga">
+//                 </div>
+//             </div>
+//             <div class="col-md-3">
+//                 <div class="form-group mb-0">
+//                     <input type="text" name="pengambilans[${pengambilanCount}][jumlah]" class="form-control number-format pengambilan-w" placeholder="Jumlah" inputmode="numeric" data-raw-value="${jumlah}" value="${jumlah}">
+//                 </div>
+//             </div>
+//             <div class="col-md-3">
+//                 <div class="form-group mb-0">
+//                     <input type="text" name="pengambilans[${pengambilanCount}][harga]" class="form-control number-format pengambilan-w" placeholder="Harga" inputmode="numeric" data-raw-value="4000" value="4000">
+//                 </div>
+//             </div>
+//             <div class="col-md-2">
+//                 <button type="button" class="btn pengambilan btn-danger delete-pengambilan w-100 bi">
+//                     <i class="bi bi-trash3-fill me-2"></i>
+//                     <span>DEL</span>
+//                 </button>
+//             </div>
+//         </div>
+//     `;
+//     pengambilansContainer.insertAdjacentHTML('beforeend', newPengambilan);
+
+//     const newItem = pengambilansContainer.lastElementChild;
+//     addDeleteButtonListener(newItem.querySelector('.delete-pengambilan'));
+
+//     // Format number untuk input yang baru ditambahkan
+//     newItem.querySelectorAll('.number-format').forEach(input => {
+//         formatNumber(input);
+//         input.addEventListener('input', function() {
+//             this.dataset.rawValue = this.value;
+//             formatNumber(this);
+//         });
+//     });
+
+//     updateDeleteButtons();
+// }
+
+
+// ============================================
+// HELPER: Clean Database Value
+// ============================================
+function cleanDBValue(value) {
+    if (value === null || value === undefined || value === '') return '';
+
+    const num = parseFloat(value);
+    if (isNaN(num)) return value;
+
+    // Jika bulat (.00), kembalikan tanpa desimal
+    if (num % 1 === 0) {
+        return num.toString();
+    }
+
+    // Jika ada desimal, hilangkan trailing zeros
+    // 10.50 -> 10.5, 10.25 -> 10.25
+    return num.toString().replace(/(\.\d*?)0+$/, '$1').replace(/\.$/, '');
+}
+
+// ============================================
+// AUTO FILL FUNCTIONS (Updated)
+// ============================================
+function autoFillBeras(beras) {
+    if (!beras) return;
+    const fields = {
+        'giling_kotor': cleanDBValue(beras.giling_kotor),
+        'jemur': cleanDBValue(beras.jemur) || '0',
+        'pinjam': cleanDBValue(beras.pinjaman_beras),
+        'pulang': cleanDBValue(beras.beras_pulang),
+        'harga_jual': cleanDBValue(beras.harga)
+    };
+    for (const [id, value] of Object.entries(fields)) {
+        const input = document.getElementById(id);
+        if (input) {
+            input.value = value;
+            input.dataset.rawValue = value;
+            formatNumber(input);
+        }
+    }
+}
+
+function autoFillKongaMenir(konga_menir) {
+    if (!konga_menir) return;
+    const fields = {
+        'jumlah_konga': cleanDBValue(konga_menir.total_konga),
+        'harga_konga': '',
+        'jumlah_menir': cleanDBValue(konga_menir.total_menir),
+        'harga_menir': ''
+    };
+    for (const [id, value] of Object.entries(fields)) {
+        const input = document.getElementById(id);
+        if (input) {
+            input.value = value;
+            input.dataset.rawValue = value;
+            formatNumber(input);
+        }
+    }
+    // Auto tambah pengambilan karung konga jika ada
+    const totalKarungKonga = parseFloat(konga_menir.total_karung_konga) || 0;
+    if (totalKarungKonga > 0) {
+        addPengambilanKarungKonga(totalKarungKonga);
+    }
+}
+
 function addPengambilanKarungKonga(jumlah) {
     pengambilanCount++;
+    const cleanJumlah = cleanDBValue(jumlah);
     const newPengambilan = `
         <div class="pengambilan-item row mb-2">
             <div class="col-md-4">
@@ -694,7 +804,7 @@ function addPengambilanKarungKonga(jumlah) {
             </div>
             <div class="col-md-3">
                 <div class="form-group mb-0">
-                    <input type="text" name="pengambilans[${pengambilanCount}][jumlah]" class="form-control number-format pengambilan-w" placeholder="Jumlah" inputmode="numeric" data-raw-value="${jumlah}" value="${jumlah}">
+                    <input type="text" name="pengambilans[${pengambilanCount}][jumlah]" class="form-control number-format pengambilan-w" placeholder="Jumlah" inputmode="numeric" data-raw-value="${cleanJumlah}" value="${cleanJumlah}">
                 </div>
             </div>
             <div class="col-md-3">
@@ -711,10 +821,8 @@ function addPengambilanKarungKonga(jumlah) {
         </div>
     `;
     pengambilansContainer.insertAdjacentHTML('beforeend', newPengambilan);
-
     const newItem = pengambilansContainer.lastElementChild;
     addDeleteButtonListener(newItem.querySelector('.delete-pengambilan'));
-
     // Format number untuk input yang baru ditambahkan
     newItem.querySelectorAll('.number-format').forEach(input => {
         formatNumber(input);
@@ -723,7 +831,6 @@ function addPengambilanKarungKonga(jumlah) {
             formatNumber(this);
         });
     });
-
     updateDeleteButtons();
 }
 
@@ -752,71 +859,33 @@ function addPengambilanKarungKonga(jumlah) {
             });
         });
 
-        // function formatNumber(input) {
-        //     let value = input.value;
-
-        //     // Menyimpan nilai mentah tanpa format
-        //     input.dataset.rawValue = value;
-
-        //     // Pisahkan bagian integer dan desimal
-        //     let [integer, decimal] = value.split('.');
-
-        //     // Hapus semua karakter yang tidak valid dari bagian integer (kecuali angka)
-        //     integer = integer.replace(/[^\d]/g, '');
-
-        //     // Format bagian integer dengan koma sebagai pemisah ribuan
-        //     if (integer) {
-        //         integer = integer.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-        //     }
-
-        //     // Gabungkan kembali bagian integer dan desimal jika ada
-        //     if (decimal !== undefined) {
-        //         value = integer + '.' + decimal;
-        //     } else {
-        //         value = integer;
-        //     }
-
-        //     // Mengatur nilai input field dengan format yang benar
-        //     input.value = value;
-        // }
-
         function formatNumber(input) {
-    let value = input.value;
+            let value = input.value;
 
-    // Menyimpan nilai mentah tanpa format
-    input.dataset.rawValue = value;
+            // Menyimpan nilai mentah tanpa format
+            input.dataset.rawValue = value;
 
-    // Pisahkan bagian integer dan desimal
-    let [integer, decimal] = value.split('.');
+            // Pisahkan bagian integer dan desimal
+            let [integer, decimal] = value.split('.');
 
-    // Hapus semua karakter yang tidak valid dari bagian integer (kecuali angka)
-    integer = integer.replace(/[^\d]/g, '');
+            // Hapus semua karakter yang tidak valid dari bagian integer (kecuali angka)
+            integer = integer.replace(/[^\d]/g, '');
 
-    // Format bagian integer dengan koma sebagai pemisah ribuan
-    if (integer) {
-        integer = integer.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    }
+            // Format bagian integer dengan koma sebagai pemisah ribuan
+            if (integer) {
+                integer = integer.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            }
 
-    // ============================================
-    // SMART DECIMAL FORMATTING
-    // ============================================
-    if (decimal !== undefined) {
-        // Hilangkan trailing zeros dari desimal
-        decimal = decimal.replace(/0+$/, '');
+            // Gabungkan kembali bagian integer dan desimal jika ada
+            if (decimal !== undefined) {
+                value = integer + '.' + decimal;
+            } else {
+                value = integer;
+            }
 
-        // Jika desimal kosong setelah dihapus trailing zeros, tidak perlu tampilkan
-        if (decimal === '') {
-            value = integer;
-        } else {
-            value = integer + '.' + decimal;
+            // Mengatur nilai input field dengan format yang benar
+            input.value = value;
         }
-    } else {
-        value = integer;
-    }
-
-    // Mengatur nilai input field dengan format yang benar
-    input.value = value;
-}
 
 
 
