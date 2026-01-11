@@ -685,7 +685,7 @@
                             <!-- Data Produk Sampingan -->
                             <div class="section-title">
                                 <i class="bi bi-box-seam"></i>
-                                Data Produk Sampingan
+                                Penjualan Konga dan Menir
                             </div>
 
                             <div class="row">
