@@ -797,7 +797,7 @@
                             </div>
 
                             <!-- Submit Section -->
-                            <div class="submit-section">
+                            <div class=" mt-4">
                                 <button type="submit" class="btn btn-submit">
                                     <i class="bi bi-file-earmark-text"></i>
                                     BUAT NOTA SEMENTARA
