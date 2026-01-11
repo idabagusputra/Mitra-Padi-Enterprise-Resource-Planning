@@ -696,6 +696,16 @@
                                                inputmode="numeric" placeholder="0" required>
                                     </div>
                                 </div>
+
+                                <div class="col-md-3 col-6">
+                                    <div class="form-group">
+                                        <label for="harga_konga" class="form-label">Harga Konga (Rp)</label>
+                                        <input class="form-control number-format" type="text" name="harga_konga" id="harga_konga"
+                                               inputmode="numeric" placeholder="" value="250,000" required>
+                                    </div>
+                                </div>
+
+
                                 <div class="col-md-3 col-6">
                                     <div class="form-group">
                                         <label for="jumlah_menir" class="form-label">Jumlah Menir (Kg)</label>
@@ -703,13 +713,7 @@
                                                inputmode="numeric" placeholder="0" required>
                                     </div>
                                 </div>
-                                <div class="col-md-3 col-6">
-                                    <div class="form-group">
-                                        <label for="harga_konga" class="form-label">Harga Konga (Rp)</label>
-                                        <input class="form-control number-format" type="text" name="harga_konga" id="harga_konga"
-                                               inputmode="numeric" placeholder="" value="200,000" required>
-                                    </div>
-                                </div>
+
                                 <div class="col-md-3 col-6">
                                     <div class="form-group">
                                         <label for="harga_menir" class="form-label">Harga Menir (Rp)</label>
