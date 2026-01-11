@@ -404,7 +404,7 @@
             padding: 1rem 1.5rem;
             background: #ffffff;
             border-top: 1px solid var(--border-color);
-            gap: 1rem;
+            gap: 0.75rem;
         }
 
         .modal-footer .btn {
@@ -414,7 +414,7 @@
 
         @media (max-width: 576px) {
             .modal-footer {
-
+                /* flex-direction: column; */
             }
             .modal-footer .btn {
                 max-width: 100%;
@@ -845,11 +845,11 @@
                     </button> --}}
                     <button type="button" class="btn btn-info-gradient" id="downloadPng">
                         <i class="bi bi-download me-1"></i>
-                        Simpan
+                        SIMPAN
                     </button>
                     <button type="button" class="btn btn-primary-gradient" id="printPdf">
                         <i class="bi bi-printer me-1"></i>
-                        Cetak
+                        CETAK
                     </button>
                 </div>
             </div>
