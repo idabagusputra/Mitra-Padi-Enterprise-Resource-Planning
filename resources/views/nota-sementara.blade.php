@@ -165,12 +165,11 @@
         .form-control::placeholder {
             color: #adb5bd;
         }
-
-        #pulang::placeholder {
-            color: var(--success-color) !important;
-            opacity: 1;
-            font-weight: 500;
-        }
+#pulang::placeholder {
+    color: var(--primary-color) !important;
+    opacity: 1;
+    font-weight: 500;
+}
 
         .input-group-text {
             background: var(--bg-light);
@@ -797,7 +796,7 @@
                             </div>
 
                             <!-- Submit Section -->
-                            <div class=" mt-4">
+                            <div class=" mt-4 mb-2">
                                 <button type="submit" class="btn btn-submit">
                                     <i class="bi bi-file-earmark-text"></i>
                                     BUAT NOTA SEMENTARA
@@ -840,10 +839,10 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary-outline" data-bs-dismiss="modal">
+                    {{-- <button type="button" class="btn btn-secondary-outline" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle me-1"></i>
                         Tutup
-                    </button>
+                    </button> --}}
                     <button type="button" class="btn btn-info-gradient" id="downloadPng">
                         <i class="bi bi-download me-1"></i>
                         Download PNG
