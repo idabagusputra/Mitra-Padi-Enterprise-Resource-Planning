@@ -404,7 +404,7 @@
             padding: 1rem 1.5rem;
             background: #ffffff;
             border-top: 1px solid var(--border-color);
-            gap: 0.75rem;
+            gap: 1rem;
         }
 
         .modal-footer .btn {
