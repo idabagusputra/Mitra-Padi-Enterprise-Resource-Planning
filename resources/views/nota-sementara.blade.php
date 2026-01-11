@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kalkulasi Penggilingan Beras</title>
+    <title>Nota Giling Sementara</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <!-- html2canvas for PNG export -->
@@ -583,12 +583,12 @@
                     <div class="card-header-custom">
                         <h1 class="card-title">
                             <div class="icon-wrapper">
-                                <i class="bi bi-calculator-fill"></i>
+                                <i class="bi bi-receipt-cutoff"></i>
                             </div>
                             <div>
-                                <span>Kalkulasi Penggilingan Beras</span>
+                                <span>Nota Giling Sementara</span>
                                 <div style="font-size: 0.75rem; font-weight: 400; opacity: 0.9; margin-top: 2px;">
-                                    Nota Sementara - Data tidak tersimpan
+                                    Penggilingan Padi Putra Manuaba
                                 </div>
                             </div>
                         </h1>
