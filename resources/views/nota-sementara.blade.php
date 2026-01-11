@@ -6,231 +6,369 @@
     <title>Kalkulasi Penggilingan Beras</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- html2canvas for PNG export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
+        /* ============================================
+           ROOT VARIABLES - Matching buku-gilingan theme
+        ============================================ */
         :root {
-            --primary-color: #2563eb;
-            --secondary-color: #64748b;
-            --success-color: #10b981;
-            --warning-color: #f59e0b;
-            --danger-color: #ef4444;
-            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-            --border-radius: 12px;
+            --primary-gradient: linear-gradient(135deg, #cb0c9f 0%, #e91e8c 100%);
+            --primary-color: #cb0c9f;
+            --primary-light: rgba(203, 12, 159, 0.1);
+            --primary-lighter: rgba(203, 12, 159, 0.04);
+            --secondary-color: #8392ab;
+            --success-gradient: linear-gradient(135deg, #17ad37 0%, #98ec2d 100%);
+            --success-color: #17ad37;
+            --warning-gradient: linear-gradient(135deg, #f5365c 0%, #f56036 100%);
+            --warning-color: #f5365c;
+            --info-gradient: linear-gradient(135deg, #2152ff 0%, #21d4fd 100%);
+            --info-color: #2152ff;
+            --text-dark: #344767;
+            --text-muted: #8392ab;
+            --border-color: #e9ecef;
+            --bg-light: #f8f9fa;
+            --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --border-radius: 16px;
+            --border-radius-sm: 12px;
+            --border-radius-xs: 8px;
+        }
+
+        /* ============================================
+           BASE STYLES
+        ============================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
-            background: var(--bg-gradient);
+            background: var(--bg-light);
             min-height: 100vh;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            color: var(--text-dark);
+            overflow-x: hidden;
         }
 
+        html, body {
+            width: 100%;
+        }
+
+        /* ============================================
+           MAIN CONTAINER
+        ============================================ */
         .main-container {
-            padding: 2rem 1rem;
+            padding: 1.5rem 1rem;
+            max-width: 900px;
+            margin: 0 auto;
         }
 
+        /* ============================================
+           CARD STYLES - Matching buku-gilingan
+        ============================================ */
         .form-card {
-            background: white;
+            background: #ffffff;
             border-radius: var(--border-radius);
             box-shadow: var(--card-shadow);
             border: none;
             overflow: hidden;
         }
 
-        .card-header {
-            background: linear-gradient(135deg, var(--primary-color), #1e40af);
+        .card-header-custom {
+            background: var(--primary-gradient);
             color: white;
-            padding: 1.5rem;
+            padding: 1.25rem 1.5rem;
             border: none;
         }
 
         .card-title {
-            font-size: 1.5rem;
-            font-weight: 600;
+            font-size: 1.25rem;
+            font-weight: 700;
             margin: 0;
             display: flex;
             align-items: center;
+            gap: 0.75rem;
         }
 
-        #pulang::placeholder { color: #32cd32 !important; opacity: 1; font-weight: 500; }
+        .card-title .icon-wrapper {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
         .card-title i {
-            margin-right: 0.5rem;
+            font-size: 1.25rem;
         }
 
         .card-body {
-            padding: 2rem;
+            padding: 1.5rem;
         }
 
+        /* ============================================
+           SECTION TITLE - Matching buku-gilingan tabs
+        ============================================ */
         .section-title {
             color: var(--primary-color);
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid #e2e8f0;
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-bottom: 1.25rem;
+            padding: 0.75rem 1rem;
+            background: var(--primary-lighter);
+            border-radius: var(--border-radius-xs);
             display: flex;
             align-items: center;
+            gap: 0.5rem;
+            border-left: 4px solid var(--primary-color);
         }
 
         .section-title i {
-            margin-right: 0.5rem;
+            font-size: 1rem;
         }
 
+        /* ============================================
+           FORM STYLES
+        ============================================ */
         .form-group {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.25rem;
         }
 
-.form-label {
-    font-weight: 600; /* Sedikit lebih tegas */
-    color: #000; /* Abu gelap lebih lembut dari hitam */
-    font-size: 1rem; /* Sedikit lebih kecil dari default agar ringan */
-    margin-bottom: 0.5rem;
-    display: inline-block;
-    letter-spacing: 0.3px;
-    transition: color 0.3s ease;
-}
-
+        .form-label {
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+            display: block;
+            letter-spacing: 0.3px;
+        }
 
         .form-control {
-            border-radius: 8px;
-            border: 2px solid #e2e8f0;
-            padding: 0.75rem 1rem;
-            transition: all 0.3s ease;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius-xs);
+            padding: 0.625rem 0.875rem;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+            background: #ffffff;
+            color: var(--text-dark);
         }
 
         .form-control:focus {
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+            box-shadow: 0 0 0 3px var(--primary-light);
+            outline: none;
+        }
+
+        .form-control::placeholder {
+            color: #adb5bd;
+        }
+
+        #pulang::placeholder {
+            color: var(--success-color) !important;
+            opacity: 1;
+            font-weight: 500;
         }
 
         .input-group-text {
-            background: #f8fafc;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px 0 0 8px;
+            background: var(--bg-light);
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius-xs) 0 0 var(--border-radius-xs);
             color: var(--secondary-color);
+            border-right: none;
         }
 
         .input-group .form-control {
             border-left: none;
-            border-radius: 0 8px 8px 0;
+            border-radius: 0 var(--border-radius-xs) var(--border-radius-xs) 0;
         }
 
+        /* ============================================
+           BUTTONS - Matching buku-gilingan
+        ============================================ */
         .btn {
-            border-radius: 8px;
+            border-radius: var(--border-radius-xs);
             padding: 0.75rem 1.5rem;
-            font-weight: 500;
+            font-weight: 600;
+            font-size: 0.875rem;
             transition: all 0.3s ease;
-        }
-
-        .btn-primary {
-            background: var(--primary-color);
             border: none;
         }
 
-        .btn-primary:hover {
-            background: #1d4ed8;
+        .btn-primary-gradient {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: 0 4px 15px rgba(203, 12, 159, 0.3);
+        }
+
+        .btn-primary-gradient:hover {
             transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(203, 12, 159, 0.4);
+            color: white;
         }
 
-        .btn-success {
-            background: var(--success-color);
-            border: none;
+        .btn-success-gradient {
+            background: var(--success-gradient);
+            color: white;
+            box-shadow: 0 4px 15px rgba(23, 173, 55, 0.3);
         }
 
-        .btn-success:hover {
-            background: #059669;
+        .btn-success-gradient:hover {
             transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(23, 173, 55, 0.4);
+            color: white;
         }
 
-        .btn-danger {
-            background: var(--danger-color);
-            border: none;
+        .btn-info-gradient {
+            background: var(--info-gradient);
+            color: white;
+            box-shadow: 0 4px 15px rgba(33, 82, 255, 0.3);
         }
 
-        .btn-danger:hover {
-            background: #dc2626;
+        .btn-info-gradient:hover {
             transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(33, 82, 255, 0.4);
+            color: white;
         }
 
-        .alert {
-            border: none;
-            border-radius: 8px;
-            padding: 1rem 1.5rem;
+        .btn-danger-gradient {
+            background: var(--warning-gradient);
+            color: white;
+            box-shadow: 0 4px 15px rgba(245, 54, 92, 0.3);
         }
 
-        .alert-info {
-            background: #dbeafe;
-            color: #1e40af;
+        .btn-danger-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(245, 54, 92, 0.4);
+            color: white;
         }
 
-        /* .pengambilan-item {
-            background: #f8fafc;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
+        .btn-secondary-outline {
+            background: transparent;
+            color: var(--secondary-color);
+            border: 2px solid var(--border-color);
+        }
+
+        .btn-secondary-outline:hover {
+            background: var(--bg-light);
+            color: var(--text-dark);
+        }
+
+        /* ============================================
+           PENGAMBILAN SECTION
+        ============================================ */
+        .pengambilan-item {
+            background: var(--bg-light);
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
             padding: 1rem;
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
             transition: all 0.3s ease;
-        } */
+        }
 
-        /* .pengambilan-item:hover {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        } */
+        .pengambilan-item:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 12px var(--primary-light);
+        }
 
         .delete-btn {
             width: 100%;
             height: 100%;
-            min-height: 50px;
+            min-height: 42px;
         }
 
+        /* ============================================
+           SUBMIT SECTION
+        ============================================ */
         .submit-section {
-            background: #f8fafc;
-            border-radius: var(--border-radius);
-            text-align: center;
-
+            padding: 1rem;
+            background: var(--bg-light);
+            border-radius: var(--border-radius-sm);
+            margin-top: 1rem;
         }
 
+        .btn-submit {
+            background: var(--primary-gradient);
+            border: none;
+            color: white;
+            padding: 0.875rem 2rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border-radius: var(--border-radius-xs);
+            width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(203, 12, 159, 0.3);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(203, 12, 159, 0.4);
+            color: white;
+        }
+
+        /* ============================================
+           MODAL STYLES - Matching theme
+        ============================================ */
         .modal-content {
             border-radius: var(--border-radius);
             border: none;
-            box-shadow: var(--card-shadow);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
         }
 
         .modal-header {
-            background: linear-gradient(135deg, var(--primary-color), #1e40af);
+            background: var(--primary-gradient);
             color: white;
-            border-radius: var(--border-radius) var(--border-radius) 0 0;
-            padding: 0.6rem;
-            padding-right: 1rem;
+            padding: 1rem 1.5rem;
+            border: none;
         }
 
         .modal-title {
-            font-weight: 600;
+            font-weight: 700;
+            font-size: 1rem;
             display: flex;
             align-items: center;
+            gap: 0.5rem;
         }
 
         .modal-title i {
-            margin-right: 0.5rem;
+            font-size: 1.1rem;
         }
 
         .btn-close {
-            background: white;
+            background: rgba(255, 255, 255, 0.9);
             border-radius: 50%;
-            opacity: 0.8;
+            opacity: 1;
+            padding: 0.5rem;
+            transition: all 0.2s ease;
         }
 
         .btn-close:hover {
+            transform: scale(1.1);
             opacity: 1;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+            background: var(--bg-light);
         }
 
         .iframe-container {
             position: relative;
             width: 100%;
-            height: 70vh;
-            border-radius: 8px;
+            height: 65vh;
+            border-radius: var(--border-radius-sm);
             overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            margin-top: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            background: white;
         }
 
         .iframe-container iframe {
@@ -239,68 +377,78 @@
             border: none;
         }
 
-        .cut-line {
-                        border-top: 1px dashed #000;
-                        margin: 10px 0;
-                        page-break-after: always;
-                    }
-
         .loading-spinner {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             z-index: 2;
+            text-align: center;
         }
-    .modal-footer {
-        display: flex; /* aktifkan flex */
-        justify-content: space-between; /* biar kiri-kanan */
-        align-items: center; /* vertikal rata tengah (opsional) */
-        padding: 1.5rem;
-        background: #f8fafc;
-        border-top: 1px solid #e2e8f0;
-    }
 
-    html, body {
-    overflow-x: hidden; /* Hindari scroll horizontal */
-    width: 100%;         /* Pastikan body tidak lebih dari viewport */
-}
+        .loading-spinner .spinner-border {
+            color: var(--primary-color);
+            width: 3rem;
+            height: 3rem;
+        }
 
+        .loading-spinner p {
+            color: var(--text-muted);
+            margin-top: 0.75rem;
+            font-size: 0.875rem;
+        }
 
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .main-container {
-                padding: 1rem 0.5rem;
+        .modal-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            background: #ffffff;
+            border-top: 1px solid var(--border-color);
+            gap: 0.75rem;
+        }
+
+        .modal-footer .btn {
+            flex: 1;
+            max-width: 200px;
+        }
+
+        @media (max-width: 576px) {
+            .modal-footer {
+                flex-direction: column;
             }
-
-            .card-body {
-                padding: 1.5rem;
-            }
-
-            /* .pengambilan-item {
-                padding: 1rem 0.5rem;
-            } */
-
-            .delete-btn {
-                margin-top: 1rem;
-            }
-
-            .cut-line {
-                        border-top: 1px dashed #000;
-                        margin: 10px 0;
-                        page-break-after: always;
-                    }
-
-            .modal-lg {
-                max-width: 95%;
-            }
-
-            .iframe-container {
-                height: 60vh;
+            .modal-footer .btn {
+                max-width: 100%;
+                width: 100%;
             }
         }
 
-        /* Animation */
+        /* ============================================
+           ALERT STYLES
+        ============================================ */
+        .alert-info-custom {
+            background: linear-gradient(135deg, rgba(33, 82, 255, 0.1) 0%, rgba(33, 212, 253, 0.1) 100%);
+            border: none;
+            border-radius: var(--border-radius-xs);
+            color: var(--info-color);
+            padding: 1rem 1.25rem;
+            border-left: 4px solid var(--info-color);
+        }
+
+        .alert-info-custom i {
+            font-size: 1.1rem;
+        }
+
+        /* ============================================
+           ROW GRID IMPROVEMENTS
+        ============================================ */
+        .row {
+            --bs-gutter-x: 1rem;
+        }
+
+        /* ============================================
+           ANIMATIONS
+        ============================================ */
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -313,10 +461,58 @@
         }
 
         .fade-in {
-            animation: fadeIn 0.6s ease-out;
+            animation: fadeIn 0.5s ease-out;
         }
 
-        /* Print Styles */
+        /* ============================================
+           RESPONSIVE STYLES
+        ============================================ */
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 1rem 0.75rem;
+            }
+
+            .card-body {
+                padding: 1.25rem;
+            }
+
+            .section-title {
+                font-size: 0.85rem;
+                padding: 0.625rem 0.875rem;
+            }
+
+            .form-label {
+                font-size: 0.8rem;
+            }
+
+            .modal-lg {
+                max-width: 95%;
+                margin: 1rem auto;
+            }
+
+            .iframe-container {
+                height: 55vh;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .card-title {
+                font-size: 1.1rem;
+            }
+
+            .card-title .icon-wrapper {
+                width: 36px;
+                height: 36px;
+            }
+
+            .card-title i {
+                font-size: 1rem;
+            }
+        }
+
+        /* ============================================
+           PRINT STYLES
+        ============================================ */
         @media print {
             body {
                 background: white !important;
@@ -327,64 +523,78 @@
             }
         }
 
-        /* Thermal Print Styles - Tambahkan ini di bagian CSS */
-@media print {
-    @page {
-        size: 80mm 180mm;
-        margin: 0;
-        padding: 0;
-    }
+        /* ============================================
+           SCROLLBAR STYLING
+        ============================================ */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
 
-    body {
-        background: white !important;
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
-    }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-light);
+            border-radius: 4px;
+        }
 
-    .no-print {
-        display: none !important;
-    }
-}
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-gradient);
+            border-radius: 4px;
+        }
 
-/* Hide blob URL in mobile browsers */
-.modal-body::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: white;
-    z-index: 1;
-    pointer-events: none;
-}
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-color);
+        }
 
-.iframe-container iframe {
-    position: relative;
-    z-index: 2;
-}
+        /* ============================================
+           NOTA PREVIEW CONTAINER (for PNG export)
+        ============================================ */
+        #nota-preview-container {
+            position: fixed;
+            left: -9999px;
+            top: 0;
+            background: white;
+            z-index: -1;
+        }
+
+        /* ============================================
+           DOWNLOAD PROGRESS
+        ============================================ */
+        .download-progress {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .download-progress.active {
+            display: block;
+        }
+
+        .download-progress .spinner-border {
+            color: var(--primary-color);
+        }
     </style>
 </head>
 <body>
     <div class="container-fluid main-container">
         <div class="row justify-content-center">
-            <div class="col-xl-10 col-lg-11">
+            <div class="col-12">
                 <div class="card form-card fade-in">
-                    {{-- <div class="card-header">
+                    <!-- Card Header -->
+                    <div class="card-header-custom">
                         <h1 class="card-title">
-                            <i class="bi bi-calculator"></i>
-                            Kalkulasi Penggilingan Beras
+                            <div class="icon-wrapper">
+                                <i class="bi bi-calculator-fill"></i>
+                            </div>
+                            <div>
+                                <span>Kalkulasi Penggilingan Beras</span>
+                                <div style="font-size: 0.75rem; font-weight: 400; opacity: 0.9; margin-top: 2px;">
+                                    Nota Sementara - Data tidak tersimpan
+                                </div>
+                            </div>
                         </h1>
-                    </div> --}}
+                    </div>
 
                     <div class="card-body">
-                        {{-- <div class="alert alert-info d-flex align-items-center" role="alert">
-                            <i class="bi bi-info-circle me-2"></i>
-                            <div>
-                                <strong>Form Temporary:</strong> Data tidak akan disimpan ke database
-                            </div>
-                        </div> --}}
-
                         <form id="gilingForm">
                             <!-- Informasi Petani -->
                             <div class="section-title">
@@ -397,21 +607,20 @@
                                     <div class="form-group">
                                         <label for="nama_petani" class="form-label">Nama Petani</label>
                                         <input type="text" id="nama_petani" name="nama_petani" class="form-control"
-                                               placeholder="" required>
+                                               placeholder="Masukkan nama petani..." required>
                                     </div>
                                 </div>
                                 <div class="col-md-6 d-none">
-    <div class="form-group">
-        <label for="tanggal_nota" class="form-label">Tanggal Nota</label>
-        <div class="input-group">
-            <span class="input-group-text">
-                <i class="bi bi-calendar3"></i>
-            </span>
-            <input type="date" class="form-control" id="tanggal_nota" name="tanggal_nota" required>
-        </div>
-    </div>
-</div>
-
+                                    <div class="form-group">
+                                        <label for="tanggal_nota" class="form-label">Tanggal Nota</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">
+                                                <i class="bi bi-calendar3"></i>
+                                            </span>
+                                            <input type="date" class="form-control" id="tanggal_nota" name="tanggal_nota" >
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
                             <!-- Data Penggilingan -->
@@ -421,45 +630,44 @@
                             </div>
 
                             <div class="row">
-                                <div class="col-md-4 col-sm-6">
+                                <div class="col-md-3 col-6">
                                     <div class="form-group">
                                         <label for="giling_kotor" class="form-label">Giling Kotor (Kg)</label>
                                         <input class="form-control number-format" type="text" name="giling_kotor" id="giling_kotor"
-                                               inputmode="numeric" placeholder="" required>
+                                               inputmode="numeric" placeholder="0" required>
                                     </div>
                                 </div>
-                                <div class="col-md-4 col-sm-6">
+                                <div class="col-md-3 col-6">
                                     <div class="form-group">
                                         <label for="pulang" class="form-label">Beras Pulang (Kg)</label>
                                         <input class="form-control number-format" type="text" name="pulang" id="pulang"
-                                               inputmode="numeric" placeholder="" >
+                                               inputmode="numeric" placeholder="">
                                     </div>
                                 </div>
-                                <div class="col-md-4 col-sm-6">
+                                <div class="col-md-3 col-6">
                                     <div class="form-group">
                                         <label for="pinjam" class="form-label">Pinjaman Beras (Kg)</label>
                                         <input class="form-control number-format" type="text" name="pinjam" id="pinjam"
-                                               inputmode="numeric" placeholder="" required>
+                                               inputmode="numeric" placeholder="0" required>
                                     </div>
                                 </div>
-                                <div class="col-md-4 col-sm-6">
+                                <div class="col-md-3 col-6">
                                     <div class="form-group">
                                         <label for="jemur" class="form-label">Jemur (Karung)</label>
                                         <input class="form-control number-format" type="text" name="jemur" id="jemur"
-                                               inputmode="numeric" placeholder="" required>
+                                               inputmode="numeric" placeholder="0" required>
                                     </div>
                                 </div>
                                 <div class="col-md-4 col-sm-6" style="display: none;">
-    <div class="form-group">
-        <label for="harga_jual" class="form-label">Harga Beras Laku (Rp)</label>
-        <input class="form-control number-format" type="text" name="harga_jual" id="harga_jual"
-               inputmode="numeric" placeholder="" value="0" required>
-    </div>
-</div>
-
+                                    <div class="form-group">
+                                        <label for="harga_jual" class="form-label">Harga Beras Laku (Rp)</label>
+                                        <input class="form-control number-format" type="text" name="harga_jual" id="harga_jual"
+                                               inputmode="numeric" placeholder="" value="0" required>
+                                    </div>
+                                </div>
                             </div>
 
-                             <!-- Pengambilan -->
+                            {{-- <!-- Pengambilan -->
                             <div class="section-title">
                                 <i class="bi bi-cart-dash"></i>
                                 Pengambilan Karung Konga
@@ -467,13 +675,12 @@
 
                             <div id="pengambilans"></div>
 
-                            <div class="submit-section d-flex justify-content-between">
-    <button type="button" class="btn btn-success btn-lg mb-4 w-100 add-pengambilan d-none"
-        style="background: var(--bg-gradient); border: none; color: white;">
-        <i class="bi bi-plus-circle me-2"></i>
-        Tambah Pengambilan
-    </button>
-</div>
+                            <div class="submit-section d-flex justify-content-between d-none">
+                                <button type="button" class="btn btn-success-gradient w-100 add-pengambilan">
+                                    <i class="bi bi-plus-circle me-2"></i>
+                                    Tambah Pengambilan
+                                </button>
+                            </div> --}}
 
                             <!-- Data Produk Sampingan -->
                             <div class="section-title">
@@ -482,42 +689,84 @@
                             </div>
 
                             <div class="row">
-                                <div class="col-md-3 col-sm-6">
+                                <div class="col-md-3 col-6">
                                     <div class="form-group">
                                         <label for="jumlah_konga" class="form-label">Jumlah Konga (Karung)</label>
                                         <input class="form-control number-format" type="text" name="jumlah_konga" id="jumlah_konga"
-                                               inputmode="numeric" placeholder="" required>
+                                               inputmode="numeric" placeholder="0" required>
                                     </div>
                                 </div>
-                                <div class="col-md-3 col-sm-6">
+                                <div class="col-md-3 col-6">
                                     <div class="form-group">
                                         <label for="jumlah_menir" class="form-label">Jumlah Menir (Kg)</label>
                                         <input class="form-control number-format" type="text" name="jumlah_menir" id="jumlah_menir"
-                                        inputmode="numeric" placeholder="" required>
+                                               inputmode="numeric" placeholder="0" required>
                                     </div>
                                 </div>
-                                <div class="col-md-3 col-sm-6">
+                                <div class="col-md-3 col-6">
                                     <div class="form-group">
                                         <label for="harga_konga" class="form-label">Harga Konga (Rp)</label>
                                         <input class="form-control number-format" type="text" name="harga_konga" id="harga_konga"
-                                               inputmode="numeric" placeholder="" value="200000" required>
+                                               inputmode="numeric" placeholder="" value="200,000" required>
                                     </div>
                                 </div>
-                                <div class="col-md-3 col-sm-6">
+                                <div class="col-md-3 col-6">
                                     <div class="form-group">
                                         <label for="harga_menir" class="form-label">Harga Menir (Rp)</label>
                                         <input class="form-control number-format" type="text" name="harga_menir" id="harga_menir"
-                                               inputmode="numeric" placeholder="" value="4000" required>
+                                               inputmode="numeric" placeholder="" value="4,000" required>
                                     </div>
                                 </div>
                             </div>
 
-
-                            <!-- Konstanta -->
+                            {{-- <!-- Konstanta -->
                             <div class="section-title">
                                 <i class="bi bi-sliders"></i>
                                 Biaya Buruh Giling
+                            </div> --}}
+
+
+                            <div class="row">
+    <div class="col-6">
+        <div class="section-title">
+            <i class="bi bi-sliders"></i>
+            Buruh Giling
+        </div>
+    </div>
+
+    <div class="col-6 text-end">
+        <div class="section-title">
+            <i class="bi bi-cart-dash"></i>
+            Pengambilan
+        </div>
+    </div>
+</div>
+
+
+                            <div class="row">
+    <div class="col-6">
+        <div class="form-group mb-0 ">
+            <label class="form-label d-none">Biaya Buruh Giling (Rp)</label>
+             <input class="form-control number-format" type="text" name="biaya_buruh_giling"
+                                               id="biaya_buruh_giling" value="80" inputmode="numeric" required>
+
+        </div>
+    </div>
+
+    <div class="col-6">
+        <div id="pengambilans"></div>
+    </div>
+
+    <div class="submit-section d-flex justify-content-between d-none">
+                                <button type="button" class="btn btn-success-gradient w-100 add-pengambilan">
+                                    <i class="bi bi-plus-circle me-2"></i>
+                                    Tambah Pengambilan
+                                </button>
                             </div>
+</div>
+
+
+
 
                             <div class="row">
                                 <div class="col-md-3 col-sm-6 d-none">
@@ -527,13 +776,13 @@
                                                id="biaya_giling" value="9" inputmode="numeric" required>
                                     </div>
                                 </div>
-                                <div class="col-md-3 col-sm-6">
+                                {{-- <div class="col-md-3 col-6">
                                     <div class="form-group">
                                         <label for="biaya_buruh_giling" class="form-label d-none">Biaya Buruh Giling (Rp)</label>
                                         <input class="form-control number-format" type="text" name="biaya_buruh_giling"
                                                id="biaya_buruh_giling" value="80" inputmode="numeric" required>
                                     </div>
-                                </div>
+                                </div> --}}
                                 <div class="col-md-3 col-sm-6 d-none">
                                     <div class="form-group">
                                         <label for="biaya_buruh_jemur" class="form-label">Biaya Buruh Jemur (Rp)</label>
@@ -551,14 +800,12 @@
                             </div>
 
                             <!-- Submit Section -->
-                            <div class="submit-section d-flex justify-content-between" style="height: 120px;">
-
-    <button type="submit" class="btn btn-success btn-lg w-100" style="background: var(--bg-gradient); border: none; color: white; margin-top: 1rem; margin-bottom: 1rem;">
-
-        <i class="bi  bi-file-earmark-text me-2"></i>
-        BUAT NOTA SEMENTARA
-    </button>
-</div>
+                            <div class="submit-section">
+                                <button type="submit" class="btn btn-submit">
+                                    <i class="bi bi-file-earmark-text"></i>
+                                    BUAT NOTA SEMENTARA
+                                </button>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -568,47 +815,64 @@
 
     <!-- Modal for displaying nota -->
     <div class="modal fade" id="pdfModal" tabindex="-1" aria-labelledby="pdfModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
-                <div class="modal-header justify-content-center position-relative">
-        <h5 class="modal-title text-center" id="pdfModalLabel">
-            {{-- <i class="bi bi-file-earmark-text"></i> --}}
-            FORMAT NOTA
-        </h5>
-                    {{-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> --}}
+                <div class="modal-header">
+                    <h5 class="modal-title" id="pdfModalLabel">
+                        <i class="bi bi-file-earmark-text"></i>
+                        Preview Nota Sementara
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body px-4">
+                <div class="modal-body">
                     <div class="iframe-container">
-                        <div class="loading-spinner text-center">
-                            <div class="spinner-border text-primary" role="status">
+                        <div class="loading-spinner">
+                            <div class="spinner-border" role="status">
                                 <span class="visually-hidden">Loading...</span>
                             </div>
-                            <p class="mt-2">Memuat nota...</p>
+                            <p>Memuat nota...</p>
                         </div>
                         <iframe id="pdfViewer" src="" style="display: none;"></iframe>
                     </div>
+                    <!-- Download Progress -->
+                    <div class="download-progress" id="downloadProgress">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-3 text-muted">Sedang membuat gambar...</p>
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        <i class="bi bi-x-circle me-2"></i>
+                    <button type="button" class="btn btn-secondary-outline" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-1"></i>
                         Tutup
                     </button>
-                    <button type="button" class="btn btn-primary" id="printPdf">
-                        <i class="bi bi-printer me-2"></i>
-                        Cetak Nota
+                    <button type="button" class="btn btn-info-gradient" id="downloadPng">
+                        <i class="bi bi-download me-1"></i>
+                        Download PNG
+                    </button>
+                    <button type="button" class="btn btn-primary-gradient" id="printPdf">
+                        <i class="bi bi-printer me-1"></i>
+                        Cetak
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Hidden container for PNG rendering -->
+    <div id="nota-preview-container"></div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Set today's date
-
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('tanggal_nota').value = today;
+
+            // Store nota HTML globally for PNG export
+            let currentNotaHtml = '';
+            let currentFormData = null;
 
             // Format number inputs
             const numberInputs = document.querySelectorAll('.number-format');
@@ -666,35 +930,33 @@
             function addPengambilanItem() {
                 pengambilanCount++;
                 const newPengambilan = `
-                    <div class="pengambilan-item">
-                        <div class="row">
-                            <div class="col-md-4 col-sm-6">
-                                <div class="form-group" hidden>
+                    <div class="">
+                        <div class="row align-items-end">
+                            <div class="col-md-4 col-sm-6" hidden>
+                                <div class="form-group mb-0">
                                     <label class="form-label">Keterangan</label>
                                     <input type="text" name="pengambilans[${pengambilanCount}][keterangan]"
                                            class="form-control" placeholder="" value="Karung Konga">
                                 </div>
                             </div>
-                            <div class="col-md-3 col-sm-6">
-                                <div class="form-group">
+                            <div class="">
+                                <div class="form-group mb-0">
                                     <label class="form-label d-none">Jumlah</label>
                                     <input type="text" name="pengambilans[${pengambilanCount}][jumlah]"
-                                           class="form-control number-format" placeholder="Jumlah Karung" inputmode="numeric" data-raw-value="">
+                                           class="form-control number-format" placeholder="Jumlah Karung Konga" inputmode="numeric" data-raw-value="">
                                 </div>
                             </div>
-                            <div class="col-md-3 col-sm-6">
-                                <div class="form-group" hidden>
+                            <div class="col-md-3 col-sm-6" hidden>
+                                <div class="form-group mb-0">
                                     <label class="form-label">Harga</label>
                                     <input type="text" name="pengambilans[${pengambilanCount}][harga]"
                                            class="form-control number-format" placeholder="Harga" inputmode="numeric" data-raw-value="" value="4,000">
                                 </div>
                             </div>
-                            <div class="col-md-2 col-sm-6 d-none">
-                                <div class="form-group">
-                                    <label class="form-label d-none d-md-block">&nbsp;</label>
-                                    <button type="button" class="btn btn-danger delete-pengambilan delete-btn d-none">
+                            <div class="col-md-2 col-4 d-none">
+                                <div class="form-group mb-0">
+                                    <button type="button" class="btn btn-danger-gradient delete-pengambilan delete-btn d-none">
                                         <i class="bi bi-trash3"></i>
-                                        <span class="d-none d-md-inline ms-1">Hapus</span>
                                     </button>
                                 </div>
                             </div>
@@ -722,6 +984,7 @@
 
             addPengambilanBtn.addEventListener('click', addPengambilanItem);
 
+            // Add initial pengambilan item
             addPengambilanItem();
 
             // Form submission
@@ -731,7 +994,7 @@
             });
 
             function getRawValue(input) {
-                return parseFloat(input.dataset.rawValue?.replace(/,/g, '') || '0') || 0;
+                return parseFloat(input.dataset.rawValue?.replace(/,/g, '') || input.value?.replace(/,/g, '') || '0') || 0;
             }
 
             function formatCurrency(number, decimalPlaces = 0) {
@@ -742,13 +1005,21 @@
             }
 
             function capitalizeWords(str) {
-    return str.replace(/\b\w/g, char => char.toUpperCase());
-}
+                return str.replace(/\b\w/g, char => char.toUpperCase());
+            }
+
+            function getDecimalPlaces(value) {
+                const stringValue = String(value);
+                if (stringValue.includes('.')) {
+                    return stringValue.split('.')[1].length;
+                }
+                return 0;
+            }
 
             function generateNota() {
                 // Get form values
                 const formData = {
-                     namaPetani: capitalizeWords(document.getElementById('nama_petani').value.trim()),
+                    namaPetani: capitalizeWords(document.getElementById('nama_petani').value.trim()),
                     tanggalNota: document.getElementById('tanggal_nota').value,
                     gilingKotor: getRawValue(document.getElementById('giling_kotor')),
                     pulang: getRawValue(document.getElementById('pulang')) || 0,
@@ -764,6 +1035,8 @@
                     biayaBuruhJemur: getRawValue(document.getElementById('biaya_buruh_jemur')),
                     bunga: getRawValue(document.getElementById('bunga'))
                 };
+
+                currentFormData = formData;
 
                 // Calculations
                 const calculations = {
@@ -804,13 +1077,12 @@
                 });
 
                 calculations.totalPengambilan = totalPengambilan;
-                // For this temporary form, we'll assume no existing debts.
-                // If you need to implement debt calculation, you'd need a way to input existing debts.
-                calculations.totalHutang = 0; // Placeholder for now
+                calculations.totalHutang = 0;
                 calculations.danaPenerima = calculations.danaKotor - totalPengambilan - calculations.totalHutang;
 
                 // Generate HTML nota
                 const notaHtml = generateNotaHtml(formData, calculations, pengambilanData);
+                currentNotaHtml = notaHtml;
 
                 // Create blob and show in modal
                 const blob = new Blob([notaHtml], { type: 'text/html' });
@@ -818,6 +1090,11 @@
 
                 const pdfViewer = document.getElementById('pdfViewer');
                 const loadingSpinner = document.querySelector('.loading-spinner');
+
+                // Reset states
+                loadingSpinner.style.display = 'block';
+                pdfViewer.style.display = 'none';
+                document.getElementById('downloadProgress').classList.remove('active');
 
                 // Show modal
                 const modal = new bootstrap.Modal(document.getElementById('pdfModal'));
@@ -835,41 +1112,139 @@
                 document.getElementById('printPdf').onclick = function() {
                     pdfViewer.contentWindow.print();
                 };
+
+                // Download PNG functionality
+                document.getElementById('downloadPng').onclick = function() {
+                    downloadAsPng(formData, calculations, pengambilanData);
+                };
             }
 
-            function generateNotaHtml(formData, calculations, pengambilanData) {
-                const formatDate = (dateString) => {
-                    const date = new Date(dateString);
-                    return date.toLocaleDateString('id-ID', {
-                        day: '2-digit',
-                        month: '2-digit',
-                        year: 'numeric'
+            // Download as PNG function
+            async function downloadAsPng(formData, calculations, pengambilanData) {
+                const downloadProgress = document.getElementById('downloadProgress');
+                const iframeContainer = document.querySelector('.iframe-container');
+
+                // Show progress
+                downloadProgress.classList.add('active');
+                iframeContainer.style.display = 'none';
+
+                try {
+                    // Create a temporary container for rendering
+                    const container = document.getElementById('nota-preview-container');
+                    container.innerHTML = generateNotaHtmlForPng(formData, calculations, pengambilanData);
+                    container.style.left = '0';
+                    container.style.position = 'absolute';
+                    container.style.zIndex = '-1';
+                    container.style.opacity = '0';
+
+                    // Wait for content to render
+                    await new Promise(resolve => setTimeout(resolve, 500));
+
+                    const notaElement = container.querySelector('.receipt');
+
+                    // Use html2canvas to capture
+                    const canvas = await html2canvas(notaElement, {
+                        scale: 3, // High resolution
+                        useCORS: true,
+                        allowTaint: true,
+                        backgroundColor: '#ffffff',
+                        width: 302, // 80mm at 96 DPI
+                        windowWidth: 302
                     });
+
+                    // Convert to PNG and download
+                    const link = document.createElement('a');
+                    const timestamp = new Date().toISOString().slice(0, 10);
+                    const sanitizedName = formData.namaPetani.replace(/[^a-zA-Z0-9]/g, '_');
+                    link.download = `Nota_${sanitizedName}_${timestamp}.png`;
+                    link.href = canvas.toDataURL('image/png', 1.0);
+                    link.click();
+
+                    // Reset container
+                    container.style.left = '-9999px';
+                    container.innerHTML = '';
+
+                } catch (error) {
+                    console.error('Error generating PNG:', error);
+                    alert('Gagal membuat gambar PNG. Silakan coba lagi.');
+                } finally {
+                    // Hide progress and show iframe
+                    downloadProgress.classList.remove('active');
+                    iframeContainer.style.display = 'block';
+                }
+            }
+
+//             // Download as PNG function INI YANG JPG
+// async function downloadAsPng(formData, calculations, pengambilanData) {
+//     const downloadProgress = document.getElementById('downloadProgress');
+//     const iframeContainer = document.querySelector('.iframe-container');
+//     // Show progress
+//     downloadProgress.classList.add('active');
+//     iframeContainer.style.display = 'none';
+//     try {
+//         // Create a temporary container for rendering
+//         const container = document.getElementById('nota-preview-container');
+//         container.innerHTML = generateNotaHtmlForPng(formData, calculations, pengambilanData);
+//         container.style.left = '0';
+//         container.style.position = 'absolute';
+//         container.style.zIndex = '-1';
+//         container.style.opacity = '0';
+//         // Wait for content to render
+//         await new Promise(resolve => setTimeout(resolve, 500));
+//         const notaElement = container.querySelector('.receipt');
+//         // Use html2canvas to capture
+//         const canvas = await html2canvas(notaElement, {
+//             scale: 3, // High resolution
+//             useCORS: true,
+//             allowTaint: true,
+//             backgroundColor: '#ffffff',
+//             width: 302, // 80mm at 96 DPI
+//             windowWidth: 302
+//         });
+//         // Convert to JPG and download
+//         const link = document.createElement('a');
+//         const timestamp = new Date().toISOString().slice(0, 10);
+//         const sanitizedName = formData.namaPetani.replace(/[^a-zA-Z0-9]/g, '_');
+//         link.download = `Nota_${sanitizedName}_${timestamp}.jpg`;
+//         link.href = canvas.toDataURL('image/jpeg', 1.0);
+//         link.click();
+//         // Reset container
+//         container.style.left = '-9999px';
+//         container.innerHTML = '';
+//     } catch (error) {
+//         console.error('Error generating JPG:', error);
+//         alert('Gagal membuat gambar JPG. Silakan coba lagi.');
+//     } finally {
+//         // Hide progress and show iframe
+//         downloadProgress.classList.remove('active');
+//         iframeContainer.style.display = 'block';
+//     }
+// }
+
+            function generateNotaHtmlForPng(formData, calculations, pengambilanData) {
+                const currentDateTime = new Date();
+
+                const formatDatee = (dateString) => {
+                    const date = new Date(dateString);
+                    const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+                    const months = [
+                        'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+                        'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+                    ];
+                    const dayName = days[date.getDay()];
+                    const day = date.getDate();
+                    const monthName = months[date.getMonth()];
+                    const year = date.getFullYear();
+                    return `${dayName}, ${day} ${monthName} ${year}`;
                 };
 
-                 const formatDatee = (dateString) => {
-        const date = new Date(dateString);
-        const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-        const months = [
-            'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-            'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
-        ];
-
-        const dayName = days[date.getDay()];
-        const day = date.getDate();
-        const monthName = months[date.getMonth()];
-        const year = date.getFullYear();
-
-        return `${dayName}, ${day} ${monthName} ${year}`;
-    };
-
-               const formatTime = (dateString) => {
-    const date = new Date(dateString);
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-    const seconds = String(date.getSeconds()).padStart(2, '0');
-    return `${hours}:${minutes}:${seconds}`;
-};
+                const formatTime = (dateString) => {
+                    const date = new Date(dateString);
+                    const hours = String(date.getHours()).padStart(2, '0');
+                    const minutes = String(date.getMinutes()).padStart(2, '0');
+                    const seconds = String(date.getSeconds()).padStart(2, '0');
+                    return `${hours}:${minutes}:${seconds}`;
+                };
 
                 let pengambilanRows = '';
                 if (pengambilanData.length > 0) {
@@ -891,464 +1266,484 @@
                     `;
                 }
 
-                // Helper to determine decimal places for formatting
-                function getDecimalPlaces(value) {
-                    const stringValue = String(value);
-                    if (stringValue.includes('.')) {
-                        return stringValue.split('.')[1].length;
-                    }
-                    return 0;
-                }
+                return `
+                    <div class="receipt" style="width: 302px; padding: 15px; font-family: 'Segoe UI', Arial, sans-serif; font-size: 11px; background: white; color: #000;">
+                        <style>
+                            .receipt * { box-sizing: border-box; }
+                            .receipt table { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
+                            .receipt th, .receipt td { padding: 4px 2px; text-align: left; font-size: 11px; }
+                            .receipt .header { text-align: center; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px dashed #333; }
+                            .receipt .title { font-size: 14px; font-weight: bold; margin-bottom: 4px; }
+                            .receipt .title2 { font-size: 12px; font-weight: bold; margin-bottom: 2px; }
+                            .receipt .calculation-row td { border-top: 1px dashed #999; border-bottom: 1px dashed #999; padding: 5px 2px; }
+                            .receipt .bold { font-weight: bold; }
+                            .receipt .bold-border-top { border-top: 2px solid #000; font-weight: bold; }
+                            .receipt .bold-border-top-top td { border-top: 2px solid #000; }
+                            .receipt .footer { text-align: center; margin-top: 15px; padding-top: 10px; border-top: 2px dashed #333; font-style: italic; font-size: 10px; }
+                            .receipt .small-text { font-size: 11px; }
+                        </style>
 
+                        <div class="header">
+                            <div class="title">NOTA GILING SEMENTARA</div>
+                            <div class="title2">GILINGAN PADI PUTRA MANUABA</div>
+                            <div style="font-size: 10px;">DUS. BABAHAN, DES. TOLAI, KAB. PARIGI</div>
+                            <div style="font-size: 10px;">Telp: 0811-451-486 / 0822-6077-3867</div>
+                        </div>
+
+                        <table>
+                            <tr class="bold-border-top">
+                                <td colspan="3"><strong>Informasi</strong></td>
+                            </tr>
+                            <tr class="bold-border-top-top calculation-row">
+                                <td class="small-text">Nama Petani</td>
+                                <td>:</td>
+                                <td>${formData.namaPetani}</td>
+                            </tr>
+                            <tr class="calculation-row">
+                                <td>Tanggal Nota</td>
+                                <td>:</td>
+                                <td>${formatDatee(currentDateTime)}</td>
+                            </tr>
+                            <tr class="calculation-row">
+                                <td>Waktu Nota</td>
+                                <td>:</td>
+                                <td>${formatTime(currentDateTime)}</td>
+                            </tr>
+                        </table>
+
+                        <table>
+                            <tr class="bold-border-top">
+                                <td colspan="5"><strong>Kalkulasi</strong></td>
+                            </tr>
+                            <tr class="bold-border-top-top calculation-row">
+                                <td class="small-text">Giling Kotor</td>
+                                <td>:</td>
+                                <td>${formatCurrency(formData.gilingKotor, getDecimalPlaces(formData.gilingKotor))} Kg</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr class="calculation-row">
+                                <td class="small-text">Ongkos Giling</td>
+                                <td>:</td>
+                                <td>${formatCurrency(formData.gilingKotor, getDecimalPlaces(formData.gilingKotor))} × ${formatCurrency(formData.biayaGiling, getDecimalPlaces(formData.biayaGiling))}%</td>
+                                <td>=</td>
+                                <td>${formatCurrency(calculations.ongkosGiling, 2)} Kg</td>
+                            </tr>
+                            <tr class="calculation-row">
+                                <td class="small-text">Pinjam</td>
+                                <td>:</td>
+                                <td>${formatCurrency(formData.pinjam, getDecimalPlaces(formData.pinjam))} Kg</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr class="calculation-row">
+    <td class="small-text">Beras Bersih</td>
+    <td>:</td>
+    <td>${calculations.berasBersih % 1 === 0 ? formatCurrency(calculations.berasBersih, 0) : formatCurrency(calculations.berasBersih, 2)} Kg</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr class="calculation-row">
+    <td class="small-text">Pulang</td>
+    <td>:</td>
+    <td>${formData.pulang % 1 === 0 ? formatCurrency(formData.pulang, 0) : formatCurrency(formData.pulang, 2)} Kg</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr class="calculation-row">
+    <td class="small-text">Beras Jual</td>
+    <td>:</td>
+    <td>${calculations.berasJual % 1 === 0 ? formatCurrency(calculations.berasJual, 0) : formatCurrency(calculations.berasJual, 2)} Kg</td>
+    <td></td>
+    <td></td>
+</tr>
+                            <tr class="calculation-row">
+                                <td class="small-text">Buruh Giling</td>
+                                <td>:</td>
+                                <td>${formatCurrency(formData.gilingKotor, getDecimalPlaces(formData.gilingKotor))} × Rp ${formatCurrency(formData.biayaBuruhGiling, getDecimalPlaces(formData.biayaBuruhGiling))}</td>
+                                <td>=</td>
+                                <td class="bold">Rp ${formatCurrency(calculations.buruhGiling, getDecimalPlaces(calculations.buruhGiling))}</td>
+                            </tr>
+                            <tr class="calculation-row">
+                                <td class="small-text">Buruh Jemur</td>
+                                <td>:</td>
+                                <td>${formatCurrency(formData.jemur, getDecimalPlaces(formData.jemur))} × Rp ${formatCurrency(formData.biayaBuruhJemur, getDecimalPlaces(formData.biayaBuruhJemur))}</td>
+                                <td>=</td>
+                                <td class="bold">Rp ${formatCurrency(calculations.buruhJemur, getDecimalPlaces(calculations.buruhJemur))}</td>
+                            </tr>
+                            <tr class="calculation-row">
+                                <td class="small-text">Jual Konga</td>
+                                <td>:</td>
+                                <td>${formatCurrency(formData.jumlahKonga, getDecimalPlaces(formData.jumlahKonga))} × Rp ${formatCurrency(formData.hargaKonga, getDecimalPlaces(formData.hargaKonga))}</td>
+                                <td>=</td>
+                                <td class="bold">Rp ${formatCurrency(calculations.danaKonga, getDecimalPlaces(calculations.danaKonga))}</td>
+                            </tr>
+                            <tr class="calculation-row">
+                                <td class="small-text">Jual Menir</td>
+                                <td>:</td>
+                                <td>${formatCurrency(formData.jumlahMenir, getDecimalPlaces(formData.jumlahMenir))} × Rp ${formatCurrency(formData.hargaMenir, getDecimalPlaces(formData.hargaMenir))}</td>
+                                <td>=</td>
+                                <td class="bold">Rp ${formatCurrency(calculations.danaMenir, getDecimalPlaces(calculations.danaMenir))}</td>
+                            </tr>
+                        </table>
+
+                        <table>
+                            <tr class="bold-border-top">
+                                <th>Pengambilan</th>
+                                <th>Jumlah</th>
+                                <th>Harga</th>
+                                <th>Total</th>
+                            </tr>
+                            ${pengambilanRows}
+                        </table>
+
+                        <div class="footer">
+                            <div>TERIMA KASIH TELAH GILING DISINI</div>
+                            <div>SUKSES SELALU</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            function generateNotaHtml(formData, calculations, pengambilanData) {
                 const currentDateTime = new Date();
+
+                const formatDatee = (dateString) => {
+                    const date = new Date(dateString);
+                    const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+                    const months = [
+                        'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+                        'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+                    ];
+                    const dayName = days[date.getDay()];
+                    const day = date.getDate();
+                    const monthName = months[date.getMonth()];
+                    const year = date.getFullYear();
+                    return `${dayName}, ${day} ${monthName} ${year}`;
+                };
+
+                const formatTime = (dateString) => {
+                    const date = new Date(dateString);
+                    const hours = String(date.getHours()).padStart(2, '0');
+                    const minutes = String(date.getMinutes()).padStart(2, '0');
+                    const seconds = String(date.getSeconds()).padStart(2, '0');
+                    return `${hours}:${minutes}:${seconds}`;
+                };
+
+                let pengambilanRows = '';
+                if (pengambilanData.length > 0) {
+                    pengambilanData.forEach((item, index) => {
+                        pengambilanRows += `
+                            <tr class="calculation-row">
+                                <td>${item.keterangan}</td>
+                                <td>${formatCurrency(item.jumlah, getDecimalPlaces(item.jumlah))}</td>
+                                <td>Rp ${formatCurrency(item.harga, getDecimalPlaces(item.harga))}</td>
+                                <td class="bold">Rp ${formatCurrency(item.subtotal, getDecimalPlaces(item.subtotal))}</td>
+                            </tr>
+                        `;
+                    });
+                } else {
+                    pengambilanRows = `
+                        <tr class="calculation-row">
+                            <td colspan="4">Tidak ada data pengambilan</td>
+                        </tr>
+                    `;
+                }
 
                 return `
                 <!DOCTYPE html>
-<html>
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <style>
-        body {
-            font-family: sans-serif;
-            font-size: 10pt;
-            margin: 0;
-            padding: 0;
-        }
+                <html>
+                <head>
+                    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+                    <style>
+                        * {
+                            margin: 0;
+                            padding: 0;
+                            box-sizing: border-box;
+                        }
 
-        .cut-line {
-            page-break-after: always;
-        }
+                        body {
+                            font-family: 'Segoe UI', Arial, sans-serif;
+                            font-size: 11px;
+                            margin: 0;
+                            padding: 0;
+                            background: white;
+                            color: #000;
+                            line-height: 1.4;
+                        }
 
-        .receipt {
-            width: 80mm; /* Standard thermal printer width */
-            height: 180mm;
-            margin: 0 auto; /* Center the receipt */
-        }
+                        .receipt {
+                            width: 80mm;
+                            max-width: 80mm;
+                            margin: 0 auto;
+                            padding: 10px;
+                            background: white;
+                        }
 
-        .header {
-            text-align: center;
-            margin-bottom: 10px;
-        }
+                        .header {
+                            text-align: center;
+                            margin-bottom: 12px;
+                            padding-bottom: 10px;
+                            border-bottom: 2px dashed #333;
+                        }
 
-        .title {
-            font-size: 17pt;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
+                        .title {
+                            font-size: 15px;
+                            font-weight: bold;
+                            margin-bottom: 4px;
+                            letter-spacing: 0.5px;
+                        }
 
-        .title2 {
-            font-size: 13pt;
-            font-weight: bold;
-        }
+                        .title2 {
+                            font-size: 12px;
+                            font-weight: bold;
+                            margin-bottom: 3px;
+                        }
 
-        .info-item {
-            margin-bottom: 3px;
-        }
+                        .header div {
+                            margin-bottom: 2px;
+                        }
 
-        .info {
-            margin-bottom: 10px;
-        }
+                        table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin-bottom: 10px;
+                        }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 10px;
-        }
+                        th, td {
+                            padding: 4px 2px;
+                            text-align: left;
+                            font-size: 11px;
+                            vertical-align: top;
+                        }
 
-        th,
-        td {
-            padding: 5px 2px;
-            text-align: left;
-        }
+                        td:nth-child(1) { width: 32%; }
+                        td:nth-child(2) { width: 5%; text-align: center; }
 
-        /* Tambahan untuk membuat kolom sejajar */
-        td:nth-child(1) {
-            width: 30%;
-        }
+                        .calculation-row td {
+                            border-top: 1px dashed #999;
+                            border-bottom: 1px dashed #999;
+                            padding-top: 5px;
+                            padding-bottom: 5px;
+                        }
 
-        td:nth-child(2) {
-            width: 5%;
-            text-align: center;
-        }
+                        .calculation-row-top td {
+                            border-top: 1px dashed #999;
+                            padding-top: 5px;
+                            padding-bottom: 5px;
+                        }
 
-        .calculation-row td {
-            border-top: 1px dashed #000;
-            border-bottom: 1px dashed #000;
-            padding-top: 5px;
-            padding-bottom: 5px;
-        }
+                        .bold {
+                            font-weight: bold;
+                        }
 
-        .calculation-row-top td {
-            border-top: 1px dashed #000;
-            padding-top: 5px;
-            padding-bottom: 5px;
-        }
+                        .bold-border-top {
+                            border-top: 2px solid #000;
+                            font-weight: bold;
+                        }
 
-        .total {
-            font-size: 14pt;
-            font-weight: bold;
-            border-top: 1px solid #000;
-            border-bottom: 1px solid #000;
-            margin-bottom: 10px;
-        }
+                        .bold-border-top td {
+                            padding-top: 8px;
+                            font-weight: bold;
+                        }
 
-        .cut-line {
-            border-top: 1px dashed #000;
-            margin: 10px 0;
-            page-break-after: always;
-        }
+                        .bold-border-top-top td {
+                            border-top: 1px solid #000;
+                        }
 
-        .footer {
-            text-align: center;
-            margin-top: 10px;
-            font-style: italic;
-        }
+                        .small-text {
+                            font-size: 11px;
+                        }
 
-        .bold-border-top {
-            border-top: 2px solid #000;
-            font-weight: bold;
-        }
+                        .footer {
+                            text-align: center;
+                            margin-top: 15px;
+                            padding-top: 10px;
+                            border-top: 2px dashed #333;
+                            font-style: italic;
+                            font-size: 10px;
+                        }
 
-        .bold-border-top-top {
-            border-top: 2px solid #000;
-        }
+                        .footer div {
+                            margin-bottom: 3px;
+                        }
 
-        .bold-border-bottom {
-            border-bottom: 2px solid #000;
-        }
+                        .spacer {
+                            height: 20px;
+                        }
 
-        .small-text {
-            font-size: 12pt;
-        }
+                        @media print {
+                            @page {
+                                size: 80mm auto;
+                                margin: 0;
+                            }
 
-        .bold {
-            font-weight: bold;
-        }
+                            body {
+                                margin: 0;
+                                padding: 0;
+                                -webkit-print-color-adjust: exact;
+                                print-color-adjust: exact;
+                            }
 
-        .subbold {
-            font-size: 11pt;
-        }
+                            .receipt {
+                                width: 100%;
+                                max-width: 100%;
+                            }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="receipt">
+                        <div class="header">
+                            <div class="title">NOTA GILING SEMENTARA</div>
+                            <div class="title2">GILINGAN PADI PUTRA MANUABA</div>
+                            <div>DUS. BABAHAN, DES. TOLAI, KAB. PARIGI</div>
+                            <div>Telp: 0811-451-486 / 0822-6077-3867</div>
+                        </div>
 
-        .header img {
-            max-width: 100%;
-            height: auto;
-        }
+                        <table>
+                            <tr class="bold-border-top">
+                                <td colspan="3"><strong>Informasi</strong></td>
+                            </tr>
+                            <tr class="bold-border-top-top calculation-row">
+                                <td class="small-text">Nama Petani</td>
+                                <td>:</td>
+                                <td>${formData.namaPetani}</td>
+                            </tr>
+                            <tr class="calculation-row">
+                                <td>Tanggal Nota</td>
+                                <td>:</td>
+                                <td>${formatDatee(currentDateTime)}</td>
+                            </tr>
+                            <tr class="calculation-row">
+                                <td>Waktu Nota</td>
+                                <td>:</td>
+                                <td>${formatTime(currentDateTime)}</td>
+                            </tr>
+                        </table>
 
-        .footer img {
-            max-width: 100%;
-            height: auto;
-        }
+                        <table>
+                            <tr class="bold-border-top">
+                                <td colspan="5"><strong>Kalkulasi</strong></td>
+                            </tr>
+                            <tr class="bold-border-top-top calculation-row">
+                                <td class="small-text">Giling Kotor</td>
+                                <td>:</td>
+                                <td>${formatCurrency(formData.gilingKotor, getDecimalPlaces(formData.gilingKotor))} Kg</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr class="calculation-row">
+                                <td class="small-text">Ongkos Giling</td>
+                                <td>:</td>
+                                <td>${formatCurrency(formData.gilingKotor, getDecimalPlaces(formData.gilingKotor))} × ${formatCurrency(formData.biayaGiling, getDecimalPlaces(formData.biayaGiling))}%</td>
+                                <td>=</td>
+                                <td>${formatCurrency(calculations.ongkosGiling, 2)} Kg</td>
+                            </tr>
+                            <tr class="calculation-row">
+                                <td class="small-text">Pinjam</td>
+                                <td>:</td>
+                                <td>${formatCurrency(formData.pinjam, getDecimalPlaces(formData.pinjam))} Kg</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr class="calculation-row">
+    <td class="small-text">Beras Bersih</td>
+    <td>:</td>
+    <td>${calculations.berasBersih % 1 === 0 ? formatCurrency(calculations.berasBersih, 0) : formatCurrency(calculations.berasBersih, 2)} Kg</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr class="calculation-row">
+    <td class="small-text">Pulang</td>
+    <td>:</td>
+    <td>${formData.pulang % 1 === 0 ? formatCurrency(formData.pulang, 0) : formatCurrency(formData.pulang, 2)} Kg</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr class="calculation-row">
+    <td class="small-text">Beras Jual</td>
+    <td>:</td>
+    <td>${calculations.berasJual % 1 === 0 ? formatCurrency(calculations.berasJual, 0) : formatCurrency(calculations.berasJual, 2)} Kg</td>
+    <td></td>
+    <td></td>
+</tr>
+                            <tr class="calculation-row">
+                                <td class="small-text">Buruh Giling</td>
+                                <td>:</td>
+                                <td>${formatCurrency(formData.gilingKotor, getDecimalPlaces(formData.gilingKotor))} × Rp ${formatCurrency(formData.biayaBuruhGiling, getDecimalPlaces(formData.biayaBuruhGiling))}</td>
+                                <td>=</td>
+                                <td class="bold">Rp ${formatCurrency(calculations.buruhGiling, getDecimalPlaces(calculations.buruhGiling))}</td>
+                            </tr>
+                            <tr class="calculation-row">
+                                <td class="small-text">Buruh Jemur</td>
+                                <td>:</td>
+                                <td>${formatCurrency(formData.jemur, getDecimalPlaces(formData.jemur))} × Rp ${formatCurrency(formData.biayaBuruhJemur, getDecimalPlaces(formData.biayaBuruhJemur))}</td>
+                                <td>=</td>
+                                <td class="bold">Rp ${formatCurrency(calculations.buruhJemur, getDecimalPlaces(calculations.buruhJemur))}</td>
+                            </tr>
+                            <tr class="calculation-row">
+                                <td class="small-text">Jual Konga</td>
+                                <td>:</td>
+                                <td>${formatCurrency(formData.jumlahKonga, getDecimalPlaces(formData.jumlahKonga))} × Rp ${formatCurrency(formData.hargaKonga, getDecimalPlaces(formData.hargaKonga))}</td>
+                                <td>=</td>
+                                <td class="bold">Rp ${formatCurrency(calculations.danaKonga, getDecimalPlaces(calculations.danaKonga))}</td>
+                            </tr>
+                            <tr class="calculation-row">
+                                <td class="small-text">Jual Menir</td>
+                                <td>:</td>
+                                <td>${formatCurrency(formData.jumlahMenir, getDecimalPlaces(formData.jumlahMenir))} × Rp ${formatCurrency(formData.hargaMenir, getDecimalPlaces(formData.hargaMenir))}</td>
+                                <td>=</td>
+                                <td class="bold">Rp ${formatCurrency(calculations.danaMenir, getDecimalPlaces(calculations.danaMenir))}</td>
+                            </tr>
+                        </table>
 
-        @media print {
-            @page {
-                size: 80mm 180mm;
-                margin: 0 !important;
-                padding: 0 !important;
-            }
+                        <table>
+                            <tr class="bold-border-top">
+                                <th>Pengambilan</th>
+                                <th>Jumlah</th>
+                                <th>Harga</th>
+                                <th>Total</th>
+                            </tr>
+                            ${pengambilanRows}
+                        </table>
 
-            body {
-                margin: 0 !important;
-                padding: 0 !important;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-            }
-        }
-
-        body {
-            font-size: 12px;
-            margin: 0;
-            line-height: 1.3;
-            color: #000;
-            background: white;
-        }
-
-        .cut-line {
-            border-top: 1px dashed #000;
-            margin: 10px 0;
-            page-break-after: always;
-        }
-
-        .receipt {
-            width: 100%;
-            max-width: 100%;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 10px;
-        }
-
-        .title {
-            font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 3px;
-        }
-
-        .title2 {
-            font-size: 16px;
-            font-weight: bold;
-            margin-bottom: 3px;
-        }
-
-        .info-item {
-            margin-bottom: 2px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 8px;
-        }
-
-        th, td {
-            padding: 2px 1px;
-            text-align: left;
-            font-size: 14px;
-        }
-
-        .cut-line {
-            page-break-after: always;
-        }
-
-        .calculation-row td {
-            border-top: 1px dashed #000;
-            border-bottom: 1px dashed #000;
-            padding-top: 3px;
-            padding-bottom: 3px;
-        }
-
-        .calculation-row-top td {
-            border-top: 1px dashed #000;
-            padding-top: 3px;
-            padding-bottom: 3px;
-        }
-
-        .total {
-            font-size: 13px;
-            font-weight: bold;
-            border-top: 2px solid #000;
-            border-bottom: 2px solid #000;
-            margin-bottom: 8px;
-        }
-
-        .footer {
-            text-align: center;
-            margin-top: 10px;
-            font-style: italic;
-            font-size: 10px;
-        }
-
-        .bold-border-top {
-            border-top: 2px solid #000;
-            font-weight: bold;
-        }
-
-        .bold-border-top-top {
-            border-top: 2px solid #000;
-        }
-
-        .small-text {
-            font-size: 14px;
-        }
-
-        .bold {
-            font-weight: bold;
-        }
-    </style>
-</head>
-<body>
-    <div class="receipt">
-        <div class="header-container">
-            <div class="header">
-                <!-- Placeholder for logo, as asset() won't work directly in client-side HTML -->
-                <!-- <img src="{{ asset('logo_gilingan.png') }}" alt="Putra Manuaba" class="header-logo"> -->
-                <div class="header-text">
-                    <div class="title">NOTA GILING SEMENTARA</div>
-                    <div class="title2">GILINGAN PADI PUTRA MANUABA</div>
-                    <div>DUS. BABAHAN, DES. TOLAI, KAB. PARIGI</div>
-                    <div>Telp: 0811-451-486 / 0822-6077-3867</div>
-                </div>
-            </div>
-        </div>
-
-        <table>
-            <tr class="bold-border-top">
-                <td>Informasi</td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr class="bold-border-top-top calculation-row">
-                <td class="small-text">Nama Petani</td>
-                <td>:</td>
-                <td>${formData.namaPetani}</td>
-            </tr>
-
-
-            <tr class="calculation-row">
-                <td>Tanggal Nota </td>
-                <td>:</td>
-                <td>${formatDatee(currentDateTime)}     </td>
-            </tr>
-            <tr class="calculation-row">
-                <td>Waktu Nota </td>
-                <td>:</td>
-                <td>${formatTime(currentDateTime)}</td>
-            </tr>
-        </table>
-
-        <table>
-            <div></div>
-        </table>
-
-        <table>
-            <tr class="bold-border-top">
-                <td>Kalkulasi</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr class="bold-border-top-top calculation-row">
-                <td class="small-text"> Giling Kotor</td>
-                <td>:</td>
-                <td>${formatCurrency(formData.gilingKotor, getDecimalPlaces(formData.gilingKotor))} Kg</td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr class="calculation-row">
-                <td class="small-text">Ongkos Giling</td>
-                <td>:</td>
-                <td>${formatCurrency(formData.gilingKotor, getDecimalPlaces(formData.gilingKotor))} × ${formatCurrency(formData.biayaGiling, getDecimalPlaces(formData.biayaGiling))}%</td>
-                <td>=</td>
-                <td>${formatCurrency(calculations.ongkosGiling, 2)} Kg</td>
-            </tr>
-            <tr class="calculation-row">
-                <td class="small-text">Pinjam</td>
-                <td>:</td>
-                <td>${formatCurrency(formData.pinjam, getDecimalPlaces(formData.pinjam))} Kg</td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr class="calculation-row">
-                <td class="small-text">Beras Bersih</td>
-                <td>:</td>
-                <td>${formatCurrency(calculations.berasBersih, getDecimalPlaces(calculations.berasBersih), 2)} Kg</td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr class="calculation-row">
-                <td class="small-text">Pulang</td>
-                <td>:</td>
-                <td>${formatCurrency(formData.pulang, getDecimalPlaces(formData.pulang))} Kg</td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr class="calculation-row">
-                <td class="small-text">Beras Jual</td>
-                <td>:</td>
-                <td>${formatCurrency(calculations.berasJual, getDecimalPlaces(calculations.berasJual))} Kg</td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr class="calculation-row">
-                <td class="small-text">Buruh Giling</td>
-                <td>:</td>
-                <td>${formatCurrency(formData.gilingKotor, getDecimalPlaces(formData.gilingKotor))} × Rp ${formatCurrency(formData.biayaBuruhGiling, getDecimalPlaces(formData.biayaBuruhGiling))}</td>
-                <td>=</td>
-                <td class="bold">Rp ${formatCurrency(calculations.buruhGiling, getDecimalPlaces(formData.buruhGiling))}</td>
-            </tr>
-            <tr class="calculation-row">
-                <td class="small-text">Buruh Jemur</td>
-                <td>:</td>
-                <td>${formatCurrency(formData.jemur, getDecimalPlaces(formData.jemur))} × Rp ${formatCurrency(formData.biayaBuruhJemur, getDecimalPlaces(formData.biayaBuruhJemur))}</td>
-                <td>=</td>
-                <td class="bold">Rp ${formatCurrency(calculations.buruhJemur, getDecimalPlaces(formData.buruhJemur))}</td>
-            </tr>
-            <tr class="calculation-row">
-                <td class="small-text">Jual Konga</td>
-                <td>:</td>
-                <td>${formatCurrency(formData.jumlahKonga, getDecimalPlaces(formData.jumlahKonga))} × Rp ${formatCurrency(formData.hargaKonga, getDecimalPlaces(formData.hargaKonga))}</td>
-                <td>=</td>
-                <td class="bold">Rp ${formatCurrency(calculations.danaKonga, getDecimalPlaces(formData.danaKonga))}</td>
-            </tr>
-            <tr class="calculation-row">
-                <td class="small-text">Jual Menir</td>
-                <td>:</td>
-                <td>${formatCurrency(formData.jumlahMenir, getDecimalPlaces(formData.jumlahMenir))} × Rp ${formatCurrency(formData.hargaMenir, getDecimalPlaces(formData.hargaMenir))}</td>
-                <td>=</td>
-                <td class="bold">Rp ${formatCurrency(calculations.danaMenir, getDecimalPlaces(formData.danaMenir))}</td>
-            </tr>
-        </table>
-
-        <table>
-            <div></div>
-        </table>
-
-        <table>
-            <tr class="bold-border-top">
-                <th>Pengambilan</th>
-                <th>Jumlah</th>
-                <th>Harga</th>
-                <th>Total</th>
-            </tr>
-            ${pengambilanRows}
-        </table>
-
-        <table>
-            <div></div>
-        </table>
-
-        <div class="footer">
-            <!-- Placeholder for footer image -->
-            <!-- <img src="{{ asset('footer.png') }}" alt="Putra Manuaba" class="header-logo cut-line"> -->
-            <div class="header-text">
-                <div>TERIMA KASIH TELAH GILING DISINI</div>
-                <div>SUKSES SELALU</div>
-                <div style="display: flex; justify-content: space-between;">
-                    <div>.</div>
-                    <div>.</div>
-                </div>
-                <div style="display: flex; justify-content: space-between;">
-                    <div>.</div>
-                    <div>.</div>
-                </div>
-                <div style="display: flex; justify-content: space-between;">
-                    <div>.</div>
-                    <div>.</div>
-                </div>
-                <div style="display: flex; justify-content: space-between;">
-                    <div>.</div>
-                    <div>.</div>
-                </div>
-                <div style="display: flex; justify-content: space-between;">
-                    <div>.</div>
-                    <div>.</div>
-                </div>
-            </div>
-        </div>
-    </div>
-</body>
-</html>
+                        <div class="footer">
+                            <div>TERIMA KASIH TELAH GILING DISINI</div>
+                            <div>SUKSES SELALU</div>
+                            <div class="spacer"></div>
+                        </div>
+                    </div>
+                </body>
+                </html>
                 `;
             }
+
+            // Update placeholder on giling_kotor input
+            document.getElementById('giling_kotor').addEventListener('input', function() {
+                let gilingKotor = parseFloat(this.value.replace(/,/g, '')) || 0;
+                let hasilPerhitungan = gilingKotor - (gilingKotor * 0.09);
+
+                let formatted = hasilPerhitungan.toLocaleString('id-ID', {
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 2
+                });
+
+                document.getElementById('pulang').placeholder = formatted;
+            });
+
+            // Reset form on load
+            document.getElementById('gilingForm').reset();
+
+            // Re-apply default values after reset
+            document.getElementById('biaya_giling').value = '9';
+            document.getElementById('biaya_buruh_giling').value = '80';
+            document.getElementById('biaya_buruh_jemur').value = '8,000';
+            document.getElementById('harga_konga').value = '200,000';
+            document.getElementById('harga_menir').value = '4,000';
+            document.getElementById('bunga').value = '2';
+            document.getElementById('harga_jual').value = '0';
         });
-
-
-        document.getElementById('giling_kotor').addEventListener('input', function() {
-    let gilingKotor = parseFloat(this.value.replace(/,/g, '')) || 0;
-    let hasilPerhitungan = gilingKotor - (gilingKotor * 0.09);
-
-    // Format angka dengan pemisah ribuan jika diperlukan
-    let formatted = hasilPerhitungan.toLocaleString('id-ID', {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 2
-    });
-
-    document.getElementById('pulang').placeholder = formatted;
-});
-
-        // Reset form dulu
-        document.getElementById('gilingForm').reset();
     </script>
 </body>
 </html>
