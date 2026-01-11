@@ -1743,7 +1743,7 @@ console.log('Total Pengambilan Data:', pengambilanData); // untuk debugging
             document.getElementById('biaya_giling').value = '9';
             document.getElementById('biaya_buruh_giling').value = '80';
             document.getElementById('biaya_buruh_jemur').value = '8,000';
-            document.getElementById('harga_konga').value = '200,000';
+            document.getElementById('harga_konga').value = '250,000';
             document.getElementById('harga_menir').value = '4,000';
             document.getElementById('bunga').value = '2';
             document.getElementById('harga_jual').value = '0';
