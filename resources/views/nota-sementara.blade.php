@@ -414,7 +414,7 @@
 
         @media (max-width: 576px) {
             .modal-footer {
-                flex-direction: column;
+
             }
             .modal-footer .btn {
                 max-width: 100%;
@@ -845,7 +845,7 @@
                     </button> --}}
                     <button type="button" class="btn btn-info-gradient" id="downloadPng">
                         <i class="bi bi-download me-1"></i>
-                        Download PNG
+                        Simpan
                     </button>
                     <button type="button" class="btn btn-primary-gradient" id="printPdf">
                         <i class="bi bi-printer me-1"></i>
