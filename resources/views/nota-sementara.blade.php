@@ -729,43 +729,36 @@
                             <div class="row">
     <div class="col-6">
         <div class="section-title">
-            <i class="bi bi-sliders"></i>
-            Buruh Giling
-        </div>
-    </div>
-
-    <div class="col-6 text-end">
-        <div class="section-title">
             <i class="bi bi-cart-dash"></i>
             Pengambilan
         </div>
     </div>
-</div>
-
-
-                            <div class="row">
-    <div class="col-6">
-        <div class="form-group mb-0 ">
-            <label class="form-label d-none">Biaya Buruh Giling (Rp)</label>
-             <input class="form-control number-format" type="text" name="biaya_buruh_giling"
-                                               id="biaya_buruh_giling" value="80" inputmode="numeric" required>
-
+    <div class="col-6 text-end">
+        <div class="section-title">
+            <i class="bi bi-sliders"></i>
+            Buruh Giling
         </div>
     </div>
+</div>
 
+<div class="row">
     <div class="col-6">
         <div id="pengambilans"></div>
     </div>
-
+    <div class="col-6">
+        <div class="form-group mb-0">
+            <label class="form-label d-none">Biaya Buruh Giling (Rp)</label>
+            <input class="form-control number-format" type="text" name="biaya_buruh_giling"
+                   id="biaya_buruh_giling" value="80" inputmode="numeric" required>
+        </div>
+    </div>
     <div class="submit-section d-flex justify-content-between d-none">
-                                <button type="button" class="btn btn-success-gradient w-100 add-pengambilan">
-                                    <i class="bi bi-plus-circle me-2"></i>
-                                    Tambah Pengambilan
-                                </button>
-                            </div>
+        <button type="button" class="btn btn-success-gradient w-100 add-pengambilan">
+            <i class="bi bi-plus-circle me-2"></i>
+            Tambah Pengambilan
+        </button>
+    </div>
 </div>
-
-
 
 
                             <div class="row">
@@ -1055,26 +1048,37 @@
                 calculations.danaKotor = calculations.totalPendapatan - calculations.totalBiaya;
 
                 // Calculate pengambilan
-                const pengambilanItems = document.querySelectorAll('.pengambilan-item');
-                let totalPengambilan = 0;
-                const pengambilanData = [];
+                // Calculate pengambilan
+const pengambilanItems = document.querySelectorAll('#pengambilans > div');
+let totalPengambilan = 0;
+const pengambilanData = [];
 
-                pengambilanItems.forEach(item => {
-                    const keterangan = item.querySelector('[name*="[keterangan]"]').value;
-                    const jumlah = getRawValue(item.querySelector('[name*="[jumlah]"]'));
-                    const harga = getRawValue(item.querySelector('[name*="[harga]"]'));
-                    const subtotal = jumlah * harga;
+pengambilanItems.forEach(item => {
+    const keteranganInput = item.querySelector('[name*="[keterangan]"]');
+    const jumlahInput = item.querySelector('[name*="[jumlah]"]');
+    const hargaInput = item.querySelector('[name*="[harga]"]');
 
-                    if (keterangan && jumlah && harga) {
-                        pengambilanData.push({
-                            keterangan: keterangan,
-                            jumlah: jumlah,
-                            harga: harga,
-                            subtotal: subtotal
-                        });
-                        totalPengambilan += subtotal;
-                    }
-                });
+    if (keteranganInput && jumlahInput && hargaInput) {
+        const keterangan = keteranganInput.value;
+        const jumlah = getRawValue(jumlahInput);
+        const harga = getRawValue(hargaInput);
+
+        console.log('Debug Pengambilan:', { keterangan, jumlah, harga }); // untuk debugging
+
+        if (keterangan && jumlah > 0) {
+            const subtotal = jumlah * harga;
+            pengambilanData.push({
+                keterangan: keterangan,
+                jumlah: jumlah,
+                harga: harga,
+                subtotal: subtotal
+            });
+            totalPengambilan += subtotal;
+        }
+    }
+});
+
+console.log('Total Pengambilan Data:', pengambilanData); // untuk debugging
 
                 calculations.totalPengambilan = totalPengambilan;
                 calculations.totalHutang = 0;
