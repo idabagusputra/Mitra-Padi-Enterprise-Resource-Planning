@@ -11,16 +11,19 @@ class Car extends Model
     use HasFactory;
 
     protected $fillable = [
-        'nama_mobil', 
-        'tanggal_servis', 
-        'kilometer', 
-        'status', 
-        'filter_oli'
+        'nama_mobil',
+        'tanggal_servis',
+        'kilometer',
+        'status',
+        'filter_oli',
+        'filter_solar',
+        'keterangan'
     ];
 
     protected $casts = [
         'tanggal_servis' => 'date',
-        'filter_oli' => 'boolean'  // Tambahan cast untuk filter_oli
+        'filter_oli' => 'boolean',
+        'filter_solar' => 'boolean'
     ];
 
     // Scope untuk mobil yang belum servis
@@ -47,6 +50,18 @@ class Car extends Model
         return $query->where('filter_oli', false);
     }
 
+    // Scope untuk mobil dengan filter solar yang sudah diganti
+    public function scopeFilterSolarSudahGanti($query)
+    {
+        return $query->where('filter_solar', true);
+    }
+
+    // Scope untuk mobil dengan filter solar yang belum diganti
+    public function scopeFilterSolarBelumGanti($query)
+    {
+        return $query->where('filter_solar', false);
+    }
+
     // Accessor untuk format tanggal Indonesia
     public function getTanggalServisFormattedAttribute()
     {
@@ -65,8 +80,20 @@ class Car extends Model
         return $this->filter_oli ? 'Sudah Ganti' : 'Belum Ganti';
     }
 
+    // Accessor untuk status filter solar dalam format readable
+    public function getFilterSolarStatusAttribute()
+    {
+        return $this->filter_solar ? 'Sudah Ganti' : 'Belum Ganti';
+    }
+
     // Method untuk cek apakah mobil perlu ganti filter oli (contoh: setiap 10.000 km)
     public function isFilterOliPerluGanti($kmTerakhirGanti = 0, $intervalKm = 10000)
+    {
+        return ($this->kilometer - $kmTerakhirGanti) >= $intervalKm;
+    }
+
+    // Method untuk cek apakah mobil perlu ganti filter solar
+    public function isFilterSolarPerluGanti($kmTerakhirGanti = 0, $intervalKm = 10000)
     {
         return ($this->kilometer - $kmTerakhirGanti) >= $intervalKm;
     }

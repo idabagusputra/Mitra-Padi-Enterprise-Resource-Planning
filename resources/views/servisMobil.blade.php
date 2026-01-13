@@ -6,6 +6,172 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 <style>
+/* Styling untuk checkbox filter yang lebih visual - Layout Vertikal */
+.filter-checkbox-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+}
+
+.filter-checkbox-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    padding: 0.75rem 1rem;
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    background: white;
+    width: 100%;
+    min-height: 50px;
+}
+
+.filter-checkbox-item:hover {
+    border-color: #adb5bd;
+    background: #f8f9fa;
+}
+
+.filter-checkbox-item input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.filter-checkbox-left {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    flex: 1;
+}
+
+.filter-checkbox-item .checkbox-icon {
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    border: 2px solid #ced4da;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    transition: all 0.3s ease;
+}
+
+.filter-checkbox-item .checkbox-label {
+    font-weight: 600;
+    font-size: 14px;
+    color: #495057;
+    user-select: none;
+    transition: all 0.3s ease;
+}
+
+/* Badge status untuk menunjukkan status */
+.filter-checkbox-item .status-badge {
+    font-size: 12px;
+    padding: 6px 16px;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    min-width: 100px;
+    text-align: center;
+}
+
+/* Status BELUM GANTI (Default/Unchecked) */
+.filter-checkbox-item .status-badge {
+    background: #e9ecef;
+    color: #6c757d;
+    border: 1px solid #dee2e6;
+}
+
+/* ===== FILTER OLI - HIJAU ===== */
+.filter-oli-item input[type="checkbox"]:checked ~ .filter-checkbox-left .checkbox-icon {
+    background: #10b981;
+    border-color: #10b981;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
+}
+
+.filter-oli-item input[type="checkbox"]:checked ~ .filter-checkbox-left .checkbox-icon::after {
+    content: "✓";
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.filter-oli-item input[type="checkbox"]:checked ~ .filter-checkbox-left .checkbox-label {
+    color: #10b981;
+    font-weight: 700;
+}
+
+.filter-oli-item input[type="checkbox"]:checked ~ .status-badge {
+    background: #10b981;
+    color: white;
+    border: 1px solid #10b981;
+    box-shadow: 0 2px 6px rgba(16, 185, 129, 0.2);
+}
+
+.filter-oli-item:has(input[type="checkbox"]:checked) {
+    border-color: #10b981;
+    background: #f0fdf4;
+}
+
+/* ===== FILTER SOLAR - BIRU ===== */
+.filter-solar-item input[type="checkbox"]:checked ~ .filter-checkbox-left .checkbox-icon {
+    background: #3b82f6;
+    border-color: #3b82f6;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.25);
+}
+
+.filter-solar-item input[type="checkbox"]:checked ~ .filter-checkbox-left .checkbox-icon::after {
+    content: "✓";
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.filter-solar-item input[type="checkbox"]:checked ~ .filter-checkbox-left .checkbox-label {
+    color: #3b82f6;
+    font-weight: 700;
+}
+
+.filter-solar-item input[type="checkbox"]:checked ~ .status-badge {
+    background: #3b82f6;
+    color: white;
+    border: 1px solid #3b82f6;
+    box-shadow: 0 2px 6px rgba(59, 130, 246, 0.2);
+}
+
+.filter-solar-item:has(input[type="checkbox"]:checked) {
+    border-color: #3b82f6;
+    background: #eff6ff;
+}
+
+/* Responsif untuk mobile */
+@media (max-width: 576px) {
+    .filter-checkbox-item {
+        padding: 0.65rem 0.875rem;
+        min-height: 46px;
+    }
+
+    .filter-checkbox-item .checkbox-label {
+        font-size: 13px;
+    }
+
+    .filter-checkbox-item .status-badge {
+        font-size: 11px;
+        padding: 5px 12px;
+        min-width: 90px;
+    }
+}
+
+
+
+
+
+
     /* Base styles */
     #search-results {
         position: absolute;
@@ -221,6 +387,8 @@
                     <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Kilometer</th>
                     <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Status</th>
                     <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Filter Oli</th>
+                    <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Filter Solar</th>
+<th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Keterangan</th>
                     <th class="text-uppercase text-primary font-weight-bolder text-center" style="font-size: 0.85rem;">Aksi</th>
                 </tr>
             </thead>
@@ -229,7 +397,7 @@
                     $currentGroup = '';
                     $showGroupHeader = false;
                 @endphp
-                
+
                 @foreach($groupedCars as $car)
                     @php
                         $groupKey = $car->nama_mobil . '_' . $car->status;
@@ -250,7 +418,7 @@
                                 {{ $car->nama_mobil }}
                             </p>
                         </td> --}}
-                    
+
                     <tr class="{{ $showGroupHeader ? '' : '' }}">
                         <td class="text-center">
                             <p class="text-xs font-weight-bold mb-0">{{ $car->nomor_urut }}</p>
@@ -280,6 +448,20 @@
                                 <span class="badge badge-sm bg-gradient-secondary">Belum Ganti</span>
                             @endif
                         </td>
+
+                        <td class="text-center">
+    @if($car->filter_solar)
+        <span class="badge badge-sm bg-gradient-info">Sudah Ganti</span>
+    @else
+        <span class="badge badge-sm bg-gradient-secondary">Belum Ganti</span>
+    @endif
+</td>
+<td class="text-center">
+    <p class="text-xs font-weight-bold mb-0" style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ $car->keterangan }}">
+        {{ $car->keterangan ?? '-' }}
+    </p>
+</td>
+
                         <td class="text-center">
                             <div class="d-flex justify-content-center align-items-center">
                                 <a href="#" class="btn btn-link text-dark px-2 mb-0" data-bs-toggle="modal" data-bs-target="#editCarModal{{ $car->id }}">
@@ -336,14 +518,33 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="filter_oli">Filter Oli</label>
-                        <div class="form-check ms-1">
-                            <input type="checkbox" class="form-check-input" id="filter_oli" name="filter_oli" value="1">
-                            <label class="form-check-label" for="filter_oli">
-                                Sudah Ganti Filter Oli
-                            </label>
-                        </div>
-                    </div>
+    <label class="form-label fw-bold mb-3">Filter</label>
+    <div class="filter-checkbox-wrapper">
+        <!-- Filter Oli -->
+        <label class="filter-checkbox-item filter-oli-item" style="margin-left: 0 !important; margin-right: 0 !important;">
+            <input type="checkbox" id="filter_oli" name="filter_oli" value="1">
+            <div class="filter-checkbox-left">
+                <span class="checkbox-icon"></span>
+                <span class="checkbox-label">Filter Oli</span>
+            </div>
+            <span class="status-badge" id="oliStatus">Belum Ganti</span>
+        </label>
+
+        <!-- Filter Solar -->
+        <label class="filter-checkbox-item filter-solar-item" style="margin-left: 0 !important; margin-right: 0 !important;">
+            <input type="checkbox" id="filter_solar" name="filter_solar" value="1">
+            <div class="filter-checkbox-left">
+                <span class="checkbox-icon"></span>
+                <span class="checkbox-label">Filter Solar</span>
+            </div>
+            <span class="status-badge" id="solarStatus">Belum Ganti</span>
+        </label>
+    </div>
+</div>
+<div class="form-group">
+    <label for="keterangan">Keterangan</label>
+    <textarea class="form-control" id="keterangan" name="keterangan" rows="3" placeholder="Masukkan keterangan (opsional)"></textarea>
+</div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
@@ -386,15 +587,34 @@
                             <option value="sudah_servis" {{ $car->status == 'sudah_servis' ? 'selected' : '' }}>Sudah Servis</option>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label for="filter_oli_{{ $car->id }}">Filter Oli</label>
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" id="filter_oli_{{ $car->id }}" name="filter_oli" value="1" {{ $car->filter_oli ? 'checked' : '' }}>
-                            <label class="form-check-label" for="filter_oli_{{ $car->id }}">
-                                Sudah Ganti Filter Oli
-                            </label>
-                        </div>
-                    </div>
+                  <div class="form-group">
+    <label class="form-label fw-bold mb-3">Filter</label>
+    <div class="filter-checkbox-wrapper">
+        <!-- Filter Oli -->
+        <label class="filter-checkbox-item filter-oli-item" style="margin-left: 0 !important; margin-right: 0 !important;">
+            <input type="checkbox" id="filter_oli_{{ $car->id }}" name="filter_oli" value="1" {{ $car->filter_oli ? 'checked' : '' }}>
+            <div class="filter-checkbox-left">
+                <span class="checkbox-icon"></span>
+                <span class="checkbox-label">Filter Oli</span>
+            </div>
+            <span class="status-badge" id="oliStatus">{{ $car->filter_oli ? 'Sudah Ganti' : 'Belum Ganti' }}</span>
+        </label>
+
+        <!-- Filter Solar -->
+        <label class="filter-checkbox-item filter-solar-item" style="margin-left: 0 !important; margin-right: 0 !important;">
+            <input type="checkbox" id="filter_solar_{{ $car->id }}" name="filter_solar" value="1" {{ $car->filter_solar ? 'checked' : '' }}>
+            <div class="filter-checkbox-left">
+                <span class="checkbox-icon"></span>
+                <span class="checkbox-label">Filter Solar</span>
+            </div>
+            <span class="status-badge" id="solarStatus">{{ $car->filter_solar ? 'Sudah Ganti' : 'Belum Ganti' }}</span>
+        </label>
+    </div>
+</div>
+<div class="form-group">
+    <label for="keterangan_{{ $car->id }}">Keterangan</label>
+    <textarea class="form-control" id="keterangan_{{ $car->id }}" name="keterangan" rows="3" placeholder="Masukkan keterangan (opsional)">{{ $car->keterangan }}</textarea>
+</div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
@@ -435,15 +655,34 @@
                         <input type="number" class="form-control" id="servis_kilometer" name="kilometer" min="0" required>
                         <small class="text-muted">Kilometer harus lebih besar dari: <span id="km-minimum">0</span> km</small>
                     </div>
-                    <div class="form-group">
-                        <label for="servis_filter_oli">Filter Oli</label>
-                        <div class="form-check ms-1">
-                            <input type="checkbox" class="form-check-input" id="servis_filter_oli" name="filter_oli" value="1">
-                            <label class="form-check-label" for="servis_filter_oli">
-                                Sudah Ganti Filter Oli
-                            </label>
-                        </div>
-                    </div>
+                 <div class="form-group">
+    <label class="form-label fw-bold mb-3">Filter</label>
+    <div class="filter-checkbox-wrapper">
+        <!-- Filter Oli -->
+        <label class="filter-checkbox-item filter-oli-item" style="margin-left: 0 !important; margin-right: 0 !important;">
+            <input type="checkbox" id="servis_filter_oli" name="filter_oli" value="1">
+            <div class="filter-checkbox-left">
+                <span class="checkbox-icon"></span>
+                <span class="checkbox-label">Filter Oli</span>
+            </div>
+            <span class="status-badge" id="oliStatus">Belum Ganti</span>
+        </label>
+
+        <!-- Filter Solar -->
+        <label class="filter-checkbox-item filter-solar-item" style="margin-left: 0 !important; margin-right: 0 !important;">
+            <input type="checkbox" id="servis_filter_solar" name="filter_solar" value="1">
+            <div class="filter-checkbox-left">
+                <span class="checkbox-icon"></span>
+                <span class="checkbox-label">Filter Solar</span>
+            </div>
+            <span class="status-badge" id="solarStatus">Belum Ganti</span>
+        </label>
+    </div>
+</div>
+<div class="form-group">
+    <label for="servis_keterangan">Keterangan</label>
+    <textarea class="form-control" id="servis_keterangan" name="keterangan" rows="3" placeholder="Masukkan keterangan (opsional)"></textarea>
+</div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
@@ -457,19 +696,53 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
 // Add New Car
+// document.getElementById('filter_oli').addEventListener('change', function () {
+//     const badge = document.getElementById('oliStatus');
+//     badge.textContent = this.checked ? 'Sudah Ganti' : 'Belum Ganti';
+// });
+
+// document.getElementById('filter_solar').addEventListener('change', function () {
+//     const badge = document.getElementById('solarStatus');
+//     badge.textContent = this.checked ? 'Sudah Ganti' : 'Belum Ganti';
+// });
+
+document.querySelectorAll('.filter-checkbox-item input[type="checkbox"]').forEach(checkbox => {
+    const badge = checkbox.closest('.filter-checkbox-item')
+                          .querySelector('.status-badge');
+
+    if (!badge) return;
+
+    const updateBadge = () => {
+        badge.textContent = checkbox.checked ? 'Sudah Ganti' : 'Belum Ganti';
+    };
+
+    // set kondisi awal (penting untuk edit & blade)
+    updateBadge();
+
+    // update saat klik
+    checkbox.addEventListener('change', updateBadge);
+});
+
+
+
+
+
+
 const addCarForm = document.getElementById('addCarForm');
 if (addCarForm) {
     addCarForm.addEventListener('submit', function(event) {
         event.preventDefault();
 
         // Ambil data form secara manual
-        const data = {
-            nama_mobil: document.getElementById('nama_mobil').value,
-            tanggal_servis: document.getElementById('tanggal_servis').value,
-            kilometer: document.getElementById('kilometer').value,
-            status: document.getElementById('status').value,
-            filter_oli: document.getElementById('filter_oli').checked // Explicit boolean
-        };
+const data = {
+    nama_mobil: document.getElementById('nama_mobil').value,
+    tanggal_servis: document.getElementById('tanggal_servis').value,
+    kilometer: document.getElementById('kilometer').value,
+    status: document.getElementById('status').value,
+    filter_oli: document.getElementById('filter_oli').checked,
+    filter_solar: document.getElementById('filter_solar').checked,
+    keterangan: document.getElementById('keterangan').value
+};
 
         console.log('Data yang dikirim:', data); // Debug
 
@@ -509,15 +782,20 @@ if (addCarForm) {
                 const carId = this.getAttribute('data-car-id');
                 const formData = new FormData(this);
                 const data = {};
-                
+
                 // Handle semua field
                 for (let [key, value] of formData.entries()) {
                     data[key] = value;
                 }
-                
+
                 // Khusus untuk checkbox filter_oli
                 const checkboxFilterOli = this.querySelector('input[name="filter_oli"]');
                 data.filter_oli = checkboxFilterOli ? checkboxFilterOli.checked : false;
+
+                const checkboxFilterSolar = this.querySelector('input[name="filter_solar"]');
+data.filter_solar = checkboxFilterSolar ? checkboxFilterSolar.checked : false;
+data.keterangan = this.querySelector('textarea[name="keterangan"]').value;
+
 
                 fetch(`/api/cars/${carId}`, {
                     method: 'PUT',
@@ -552,14 +830,16 @@ if (addCarForm) {
 
                 const formData = new FormData(this);
                 const data = {};
-                
+
                 // Handle semua field
                 for (let [key, value] of formData.entries()) {
                     data[key] = value;
                 }
-                
+
                 // Khusus untuk checkbox filter_oli
                 data.filter_oli = document.getElementById('servis_filter_oli').checked;
+                data.filter_solar = document.getElementById('servis_filter_solar').checked;
+data.keterangan = document.getElementById('servis_keterangan').value;
 
                 fetch('/api/cars/servis', {
                     method: 'POST',
@@ -592,19 +872,21 @@ if (addCarForm) {
     });
 
     // Function to open servis modal with pre-filled data
-    function openServisModal(namaMobil, currentKm) {
-        const selectElement = document.getElementById('servis_nama_mobil');
-        selectElement.value = namaMobil;
+function openServisModal(namaMobil, currentKm) {
+    const selectElement = document.getElementById('servis_nama_mobil');
+    selectElement.value = namaMobil;
 
-        document.getElementById('km-minimum').textContent = new Intl.NumberFormat('id-ID').format(currentKm);
-        document.getElementById('servis_kilometer').min = currentKm + 1;
+    document.getElementById('km-minimum').textContent = new Intl.NumberFormat('id-ID').format(currentKm);
+    document.getElementById('servis_kilometer').min = currentKm + 1;
 
-        // Reset checkbox filter oli
-        document.getElementById('servis_filter_oli').checked = false;
+    // Reset checkbox filter oli dan solar
+    document.getElementById('servis_filter_oli').checked = false;
+    document.getElementById('servis_filter_solar').checked = false;
+    document.getElementById('servis_keterangan').value = '';
 
-        const modal = new bootstrap.Modal(document.getElementById('servisModal'));
-        modal.show();
-    }
+    const modal = new bootstrap.Modal(document.getElementById('servisModal'));
+    modal.show();
+}
 </script>
 
 
