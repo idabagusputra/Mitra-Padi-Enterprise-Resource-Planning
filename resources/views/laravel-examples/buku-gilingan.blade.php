@@ -1419,7 +1419,7 @@
                             <table class="table data-table mb-0">
                                 <thead>
                                     <tr>
-                                        <th class="text-center">ID</th>
+                                        {{-- <th class="text-center">ID</th> --}}
                                         <th class="text-center">Tanggal</th>
                                         <th>Petani</th>
                                         <th class="text-center">Jemur</th>
@@ -1531,7 +1531,7 @@
                             <table class="table data-table mb-0">
                                 <thead>
                                     <tr>
-                                        <th class="text-center">ID</th>
+                                        {{-- <th class="text-center">ID</th> --}}
                                         <th class="text-center">Tanggal</th>
                                         <th>Petani</th>
                                         <th class="text-center">Jumlah</th>
@@ -1619,7 +1619,7 @@
                             <table class="table data-table mb-0">
                                 <thead>
                                     <tr>
-                                        <th class="text-center">ID</th>
+                                        {{-- <th class="text-center">ID</th> --}}
                                         <th class="text-center">Tanggal</th>
                                         <th>Keterangan</th>
                                         <th class="text-center">Jumlah Beras</th>
@@ -1717,7 +1717,7 @@
                             <table class="table data-table mb-0">
                                 <thead>
                                     <tr>
-                                        <th class="text-center">ID</th>
+                                        {{-- <th class="text-center">ID</th> --}}
                                         <th class="text-center">Tanggal</th>
                                         <th>Petani</th>
                                         <th class="text-center">Karung</th>
@@ -1831,7 +1831,7 @@
                             <table class="table data-table mb-0">
                                 <thead>
                                     <tr>
-                                        <th class="text-center">ID</th>
+                                        {{-- <th class="text-center">ID</th> --}}
                                         <th class="text-center">Tanggal</th>
                                         <th>Petani</th>
                                         <th class="text-center">Jumlah</th>
@@ -1921,7 +1921,7 @@
                             <table class="table data-table mb-0">
                                 <thead>
                                     <tr>
-                                        <th class="text-center">ID</th>
+                                        {{-- <th class="text-center">ID</th> --}}
                                         <th class="text-center">Tanggal</th>
                                         <th>Keterangan</th>
                                         <th class="text-center">Jumlah Konga</th>
