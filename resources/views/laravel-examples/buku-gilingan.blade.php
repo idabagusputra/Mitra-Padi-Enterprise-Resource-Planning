@@ -2945,8 +2945,9 @@ function openEditModal(type, data) {
 
     // Show overlay
     document.getElementById('modal-overlay').classList.add('active');
-    document.body.style.position = 'fixed';
-    document.body.style.width = '100%';
+    document.body.style.overflow = 'hidden';
+
+
 
     // Show modal
     const modal = document.getElementById(`edit-modal-${type}`);
@@ -2965,8 +2966,7 @@ function openEditModal(type, data) {
 function closeEditModal(type) {
     document.getElementById('modal-overlay').classList.remove('active');
     document.getElementById(`edit-modal-${type}`).classList.remove('active');
-    document.body.style.position = '';
-    document.body.style.width = '';
+
     document.body.style.overflow = '';
 
     // Clear form
