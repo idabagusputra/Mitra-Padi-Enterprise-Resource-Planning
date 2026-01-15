@@ -1437,8 +1437,8 @@
                                 </thead>
                                 <tbody>
                                     @foreach($bukuStokBeras as $item)
-                                    {{-- <tr data-petani-id="{{ $item->petani_id }}" data-status="{{ $item->status ? '1' : '0' }}"> --}}
-                                        <td class="text-center"><span class="text-xs fw-bold">{{ $item->id }}</span></td>
+                                    <tr data-petani-id="{{ $item->petani_id }}" data-status="{{ $item->status ? '1' : '0' }}">
+                                        {{-- <td class="text-center"><span class="text-xs fw-bold">{{ $item->id }}</span></td> --}}
                                         <td class="text-center"><span class="text-xs">{{ $item->tanggal ? $item->tanggal->format('d-m-Y') : '-' }}</span></td>
                                         <td><span class="text-xs">{{ $item->nama_petani }}</span></td>
                                         <td class="text-center"><span class="text-xs">{{ number_format($item->jemur ?? 0, 2, ',', '.') }}</span></td>
@@ -1541,8 +1541,8 @@
                                 </thead>
                                 <tbody>
                                     @foreach($pinjamanBeras as $item)
-                                    {{-- <tr data-petani-id="{{ $item->petani_id }}" data-status="{{ $item->status ? '1' : '0' }}"> --}}
-                                        <td class="text-center"><span class="text-xs fw-bold">{{ $item->id }}</span></td>
+                                    <tr data-petani-id="{{ $item->petani_id }}" data-status="{{ $item->status ? '1' : '0' }}">
+                                        {{-- <td class="text-center"><span class="text-xs fw-bold">{{ $item->id }}</span></td> --}}
                                         <td class="text-center"><span class="text-xs">{{ $item->tanggal ? $item->tanggal->format('d-m-Y') : '-' }}</span></td>
                                         <td><span class="text-xs">{{ $item->nama_petani }}</span></td>
                                         <td class="text-center"><span class="text-xs">{{ number_format($item->jumlah ?? 0, 2, ',', '.') }}</span></td>
@@ -1629,7 +1629,7 @@
                                 <tbody>
                                     @foreach($penjualanBeras as $item)
                                     <tr>
-                                        <td class="text-center"><span class="text-xs fw-bold">{{ $item->id }}</span></td>
+                                        {{-- <td class="text-center"><span class="text-xs fw-bold">{{ $item->id }}</span></td> --}}
                                         <td class="text-center"><span class="text-xs">{{ $item->tanggal ? $item->tanggal->format('d-m-Y') : '-' }}</span></td>
                                         <td><span class="text-xs">{{ $item->keterangan }}</span></td>
                                         <td class="text-center"><span class="text-xs">{{ number_format($item->jumlah_beras ?? 0, 2, ',', '.') }}</span></td>
@@ -1735,8 +1735,8 @@
                                 </thead>
                                 <tbody>
                                     @foreach($bukuStokKongaMenir as $item)
-                                    {{-- <tr data-petani-id="{{ $item->petani_id }}" data-status="{{ $item->status ? '1' : '0' }}"> --}}
-                                        <td class="text-center"><span class="text-xs fw-bold">{{ $item->id }}</span></td>
+                                    <tr data-petani-id="{{ $item->petani_id }}" data-status="{{ $item->status ? '1' : '0' }}">
+                                        {{-- <td class="text-center"><span class="text-xs fw-bold">{{ $item->id }}</span></td> --}}
                                         <td class="text-center"><span class="text-xs">{{ $item->tanggal ? $item->tanggal->format('d-m-Y') : '-' }}</span></td>
                                         <td><span class="text-xs">{{ $item->nama_petani }}</span></td>
                                         <td class="text-center"><span class="text-xs">{{ number_format($item->karung_konga ?? 0, 2, ',', '.') }}</span></td>
@@ -1841,8 +1841,8 @@
                                 </thead>
                                 <tbody>
                                     @foreach($pinjamanKonga as $item)
-                                    {{-- <tr data-petani-id="{{ $item->petani_id }}" data-status="{{ $item->status ? '1' : '0' }}"> --}}
-                                        <td class="text-center"><span class="text-xs fw-bold">{{ $item->id }}</span></td>
+                                    <tr data-petani-id="{{ $item->petani_id }}" data-status="{{ $item->status ? '1' : '0' }}">
+                                        {{-- <td class="text-center"><span class="text-xs fw-bold">{{ $item->id }}</span></td> --}}
                                         <td class="text-center"><span class="text-xs">{{ $item->tanggal ? $item->tanggal->format('d-m-Y') : '-' }}</span></td>
                                         <td><span class="text-xs">{{ $item->nama_petani }}</span></td>
                                         <td class="text-center"><span class="text-xs">{{ number_format($item->jumlah ?? 0, 2, ',', '.') }}</span></td>
@@ -1932,7 +1932,7 @@
                                 <tbody>
                                     @foreach($penjualanKongaMenir as $item)
                                     <tr>
-                                        <td class="text-center"><span class="text-xs fw-bold">{{ $item->id }}</span></td>
+                                        {{-- <td class="text-center"><span class="text-xs fw-bold">{{ $item->id }}</span></td> --}}
                                         <td class="text-center"><span class="text-xs">{{ $item->tanggal ? $item->tanggal->format('d-m-Y') : '-' }}</span></td>
                                         <td><span class="text-xs">{{ $item->keterangan }}</span></td>
                                         <td class="text-center"><span class="text-xs">{{ number_format($item->jumlah_konga ?? 0, 2, ',', '.') }}</span></td>
