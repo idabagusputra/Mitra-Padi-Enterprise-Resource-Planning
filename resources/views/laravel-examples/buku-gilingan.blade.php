@@ -1650,7 +1650,7 @@ if (searchGlobalInput) {
             <div class="petani-name">
                 ${petani.nama}
                 <span class="pinjaman-badge">
-                    Beras: ${smartFormatNumber(petani.pinjaman_beras)} Kg - Konga: ${smartFormatNumber(petani.pinjaman_konga)} Karung
+                    Beras: ${smartFormatNumber(petani.pinjaman_beras)} Kg | Konga: ${smartFormatNumber(petani.pinjaman_konga)} Karung
                 </span>
             </div>
             <div class="petani-alamat">${petani.alamat || '-'}</div>
@@ -1799,7 +1799,7 @@ document.querySelectorAll('.stok-value').forEach(elem => {
             <div class="petani-name">
                 ${petani.nama}
                 <span class="pinjaman-badge">
-                    Beras: ${smartFormatNumber(petani.pinjaman_beras)} Kg - Konga: ${smartFormatNumber(petani.pinjaman_konga)} Karung
+                    Beras: ${smartFormatNumber(petani.pinjaman_beras)} Kg | Konga: ${smartFormatNumber(petani.pinjaman_konga)} Karung
                 </span>
             </div>
             <div class="petani-alamat">${petani.alamat || '-'}</div>
