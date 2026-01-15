@@ -603,4 +603,37 @@ class BukuStokController extends Controller
             return redirect()->back()->with('error', $e->getMessage());
         }
     }
+
+    public function searchPetaniStok(Request $request)
+    {
+        $term = $request->get('term', '');
+
+        $petanis = Petani::where('nama', 'LIKE', "%{$term}%")
+            ->orWhere('alamat', 'LIKE', "%{$term}%")
+            ->limit(10)
+            ->get();
+
+        // Ambil sum semua pinjaman yang belum lunas (status = 0)
+        $result = $petanis->map(function ($petani) {
+            // Sum semua pinjaman beras yang belum lunas
+            $pinjamanBeras = BukuStokPinjamanBeras::where('petani_id', $petani->id)
+                ->where('status', 0)
+                ->sum('jumlah');
+
+            // Sum semua pinjaman konga yang belum lunas
+            $pinjamanKonga = BukuStokPinjamanKonga::where('petani_id', $petani->id)
+                ->where('status', 0)
+                ->sum('jumlah');
+
+            return [
+                'id' => $petani->id,
+                'nama' => $petani->nama,
+                'alamat' => $petani->alamat,
+                'pinjaman_beras' => (float) $pinjamanBeras,
+                'pinjaman_konga' => (float) $pinjamanKonga,
+            ];
+        });
+
+        return response()->json($result);
+    }
 }

@@ -359,6 +359,8 @@ Route::get('/petani/{id}/stok-terakhir', [PetaniController::class, 'stokTerakhir
 Route::get('/petani/{id}/stok-terakhir', [GilingController::class, 'getStokTerakhir']);
 
 
+Route::get('/search-petani', [BukuStokController::class, 'searchPetaniStok']);
+
 // ✅ PINDAHKAN route /kalkulator ke LUAR group guest
 Route::get('/kalkulator', function (Request $request) {
     if ($request->user()) {

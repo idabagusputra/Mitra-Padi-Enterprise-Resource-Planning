@@ -263,6 +263,45 @@
         gap: 0.75rem;
     }
 
+    /* Badge untuk menampilkan info pinjaman - Pink Theme */
+.petani-name .pinjaman-badge {
+    display: inline-block;
+    margin-left: 0px;
+    padding: 4px 10px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #cb0c9f;
+    background: linear-gradient(135deg, #fce7f3 0%, #fdf2f8 100%);
+    border: 1px solid rgba(203, 12, 159, 0.15);
+    border-radius: 6px;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+
+.petani-name .pinjaman-badge:hover {
+    background: linear-gradient(135deg, #fbcfe8 0%, #fce7f3 100%);
+    border-color: rgba(203, 12, 159, 0.25);
+}
+
+.petani-name {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+    line-height: 1.4;
+}
+
+/* Responsive untuk mobile */
+@media (max-width: 576px) {
+    .petani-name .pinjaman-badge {
+        display: block;
+        margin-left: 0;
+        margin-top: 4px;
+        font-size: 0.65rem;
+        width: 100%;
+    }
+}
+
     .search-petani-item:last-child {
         border-bottom: none;
     }
@@ -298,6 +337,8 @@
         overflow: hidden;
         text-overflow: ellipsis;
     }
+
+
 
     .search-petani-item .petani-alamat {
         font-size: 0.8rem;
@@ -1014,11 +1055,11 @@
                                     <thead>
                                         <tr>
                                             <th style="width: 25%;">Petani</th>
-                                            <th class="text-center" style="width: 15%;">Tanggal</th>
                                             <th class="text-center" style="width: 15%;">Jemur</th>
                                             <th class="text-center" style="width: 15%;">Giling Kotor</th>
                                             <th class="text-center" style="width: 15%;">Beras Pulang</th>
                                             <th class="text-center" style="width: 15%;">Status</th>
+                                            <th class="text-center" style="width: 15%;">Tanggal</th>
                                             <th class="text-center" style="width: 6%;">Aksi</th>
                                         </tr>
                                     </thead>
@@ -1033,16 +1074,16 @@
         <div class="petani-dropdown"></div>
     </div>
 </td>
-                                            <td><input type="date" class="form-control form-control-sm" name="rows[0][tanggal]" value="{{ date('Y-m-d') }}" required></td>
-                                            <td><input type="text" class="form-control form-control-sm number-format" name="rows[0][jemur]" placeholder="0" inputmode="decimal" required></td>
-                                            <td><input type="text" class="form-control form-control-sm number-format" name="rows[0][giling_kotor]" placeholder="0" inputmode="decimal" required></td>
-                                            <td><input type="text" class="form-control form-control-sm number-format" name="rows[0][beras_pulang]" placeholder="0" inputmode="decimal"></td>
-                                            <td>
-                                                <select class="form-select form-select-sm" name="rows[0][status]" required>
-                                                    <option value="0">BELUM LUNAS</option>
-                                                    <option value="1">LUNAS</option>
-                                                </select>
-                                            </td>
+<td><input type="text" class="form-control form-control-sm number-format" name="rows[0][jemur]" placeholder="0" inputmode="decimal" required></td>
+<td><input type="text" class="form-control form-control-sm number-format" name="rows[0][giling_kotor]" placeholder="0" inputmode="decimal" required></td>
+<td>
+    <select class="form-select form-select-sm" name="rows[0][status]" required>
+        <option value="0">BELUM LUNAS</option>
+        <option value="1">LUNAS</option>
+    </select>
+</td>
+<td><input type="text" class="form-control form-control-sm number-format" name="rows[0][beras_pulang]" placeholder="0" inputmode="decimal"></td>
+<td><input type="date" class="form-control form-control-sm" name="rows[0][tanggal]" value="{{ date('Y-m-d') }}" required></td>
                                             <td class="text-center">
                                                 <button type="button" class="remove-row-btn" onclick="removeRow(this)" style="visibility: hidden;">
                                                     <i class="bi bi-x-lg"></i>
@@ -1066,8 +1107,8 @@
                                 <thead>
                                     <tr>
                                         <th class="text-center">ID</th>
-                                        <th>Petani</th>
                                         <th class="text-center">Tanggal</th>
+                                        <th>Petani</th>
                                         <th class="text-center">Jemur</th>
                                         <th class="text-center">Giling Kotor</th>
                                         <th class="text-center">Ongkos</th>
@@ -1085,8 +1126,8 @@
                                     @foreach($bukuStokBeras as $item)
                                     <tr data-petani-id="{{ $item->petani_id }}" data-status="{{ $item->status ? '1' : '0' }}">
                                         <td class="text-center"><span class="text-xs fw-bold">{{ $item->id }}</span></td>
-                                        <td><span class="text-xs">{{ $item->nama_petani }}</span></td>
                                         <td class="text-center"><span class="text-xs">{{ $item->tanggal ? $item->tanggal->format('d-m-Y') : '-' }}</span></td>
+                                        <td><span class="text-xs">{{ $item->nama_petani }}</span></td>
                                         <td class="text-center"><span class="text-xs">{{ number_format($item->jemur ?? 0, 2, ',', '.') }}</span></td>
                                         <td class="text-center"><span class="text-xs">{{ number_format($item->giling_kotor ?? 0, 2, ',', '.') }}</span></td>
                                         <td class="text-center"><span class="text-xs">{{ number_format($item->ongkos ?? 0, 2, ',', '.') }}</span></td>
@@ -1126,8 +1167,8 @@
                                     <thead>
                                         <tr>
                                             <th style="width: 35%;">Petani</th>
-                                            <th class="text-center" style="width: 25%;">Tanggal</th>
                                             <th class="text-center" style="width: 25%;">Jumlah Pinjaman</th>
+                                            <th class="text-center" style="width: 25%;">Tanggal</th>
                                             <th class="text-center" style="width: 6%;">Aksi</th>
                                         </tr>
                                     </thead>
@@ -1141,8 +1182,8 @@
                                                     <div class="petani-dropdown" style="display:none;"></div>
                                                 </div>
                                             </td>
-                                            <td><input type="date" class="form-control form-control-sm" name="rows[0][tanggal]" value="{{ date('Y-m-d') }}" required></td>
                                             <td><input type="text" class="form-control form-control-sm number-format" name="rows[0][jumlah]" placeholder="0" inputmode="decimal" required></td>
+                                            <td><input type="date" class="form-control form-control-sm" name="rows[0][tanggal]" value="{{ date('Y-m-d') }}" required></td>
                                             <td class="text-center">
                                                 <button type="button" class="remove-row-btn" onclick="removeRow(this)" style="visibility: hidden;">
                                                     <i class="bi bi-x-lg"></i>
@@ -1166,8 +1207,8 @@
                                 <thead>
                                     <tr>
                                         <th class="text-center">ID</th>
-                                        <th>Petani</th>
                                         <th class="text-center">Tanggal</th>
+                                        <th>Petani</th>
                                         <th class="text-center">Jumlah</th>
                                         <th class="text-center">Status</th>
                                         <th class="text-center">Aksi</th>
@@ -1177,8 +1218,8 @@
                                     @foreach($pinjamanBeras as $item)
                                     <tr data-petani-id="{{ $item->petani_id }}" data-status="{{ $item->status ? '1' : '0' }}">
                                         <td class="text-center"><span class="text-xs fw-bold">{{ $item->id }}</span></td>
-                                        <td><span class="text-xs">{{ $item->nama_petani }}</span></td>
                                         <td class="text-center"><span class="text-xs">{{ $item->tanggal ? $item->tanggal->format('d-m-Y') : '-' }}</span></td>
+                                        <td><span class="text-xs">{{ $item->nama_petani }}</span></td>
                                         <td class="text-center"><span class="text-xs">{{ number_format($item->jumlah ?? 0, 2, ',', '.') }}</span></td>
                                         <td class="text-center">
                                             <span class="badge bg-gradient-{{ $item->status ? 'success' : 'warning' }}">
@@ -1210,16 +1251,16 @@
                                     <thead>
                                         <tr>
                                             <th style="width: 40%;">Keterangan</th>
-                                            <th class="text-center" style="width: 25%;">Tanggal</th>
                                             <th class="text-center" style="width: 20%;">Jumlah Beras</th>
+                                            <th class="text-center" style="width: 25%;">Tanggal</th>
                                             <th class="text-center" style="width: 6%;">Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody id="penjualan-beras-input-rows">
                                         <tr class="input-row dynamic-row" data-row="0">
                                             <td><input type="text" class="form-control form-control-sm" name="rows[0][keterangan]" placeholder="Keterangan..." required></td>
-                                            <td><input type="date" class="form-control form-control-sm" name="rows[0][tanggal]" value="{{ date('Y-m-d') }}" required></td>
                                             <td><input type="text" class="form-control form-control-sm number-format" name="rows[0][jumlah_beras]" placeholder="0" inputmode="decimal" required></td>
+                                            <td><input type="date" class="form-control form-control-sm" name="rows[0][tanggal]" value="{{ date('Y-m-d') }}" required></td>
                                             <td class="text-center">
                                                 <button type="button" class="remove-row-btn" onclick="removeRow(this)" style="visibility: hidden;">
                                                     <i class="bi bi-x-lg"></i>
@@ -1243,8 +1284,8 @@
                                 <thead>
                                     <tr>
                                         <th class="text-center">ID</th>
-                                        <th>Keterangan</th>
                                         <th class="text-center">Tanggal</th>
+                                        <th>Keterangan</th>
                                         <th class="text-center">Jumlah Beras</th>
                                         <th class="text-center">Aksi</th>
                                     </tr>
@@ -1253,8 +1294,8 @@
                                     @foreach($penjualanBeras as $item)
                                     <tr>
                                         <td class="text-center"><span class="text-xs fw-bold">{{ $item->id }}</span></td>
-                                        <td><span class="text-xs">{{ $item->keterangan }}</span></td>
                                         <td class="text-center"><span class="text-xs">{{ $item->tanggal ? $item->tanggal->format('d-m-Y') : '-' }}</span></td>
+                                        <td><span class="text-xs">{{ $item->keterangan }}</span></td>
                                         <td class="text-center"><span class="text-xs">{{ number_format($item->jumlah_beras ?? 0, 2, ',', '.') }}</span></td>
                                         <td class="text-center">
                                             <form action="{{ route('penjualan-beras.destroy', $item->id) }}" method="POST" class="d-inline delete-form">
@@ -1281,7 +1322,6 @@
                                     <thead>
                                         <tr>
                                             <th style="width: 15%;">Petani</th>
-                                            <th class="text-center" style="width: 10%;">Tanggal</th>
                                             <th class="text-center" style="width: 10%;">Karung</th>
                                             <th class="text-center" style="width: 10%;">Konga Giling</th>
                                             <th class="text-center" style="width: 10%;">Konga Jual</th>
@@ -1289,6 +1329,7 @@
                                             {{-- <th class="text-center" style="width: 10%;">Kembalikan</th> --}}
                                             {{-- <th class="text-center" style="width: 9%;">Menir</th> --}}
                                             <th class="text-center" style="width: 10%;">Menir Jual</th>
+                                            <th class="text-center" style="width: 10%;">Tanggal</th>
                                             <th class="text-center" style="width: 6%;">Aksi</th>
                                         </tr>
                                     </thead>
@@ -1302,7 +1343,6 @@
                                                     <div class="petani-dropdown" style="display:none;"></div>
                                                 </div>
                                             </td>
-                                            <td><input type="date" class="form-control form-control-sm" name="rows[0][tanggal]" value="{{ date('Y-m-d') }}" required></td>
                                             <td><input type="text" class="form-control form-control-sm number-format" name="rows[0][karung_konga]" placeholder="0" inputmode="decimal"></td>
                                             <td><input type="text" class="form-control form-control-sm number-format" name="rows[0][konga_giling]" placeholder="0" inputmode="decimal"></td>
                                             <td><input type="text" class="form-control form-control-sm number-format" name="rows[0][konga_jual]" placeholder="0" inputmode="decimal"></td>
@@ -1310,6 +1350,7 @@
                                             {{-- <td><input type="text" class="form-control form-control-sm number-format" name="rows[0][kembalikan_konga]" placeholder="0" inputmode="decimal"></td> --}}
                                             {{-- <td><input type="text" class="form-control form-control-sm number-format" name="rows[0][menir]" placeholder="0" inputmode="decimal"></td> --}}
                                             <td><input type="text" class="form-control form-control-sm number-format" name="rows[0][menir_jual]" placeholder="0" inputmode="decimal"></td>
+                                            <td><input type="date" class="form-control form-control-sm" name="rows[0][tanggal]" value="{{ date('Y-m-d') }}" required></td>
                                             <td class="text-center">
                                                 <button type="button" class="remove-row-btn" onclick="removeRow(this)" style="visibility: hidden;">
                                                     <i class="bi bi-x-lg"></i>
@@ -1333,8 +1374,8 @@
                                 <thead>
                                     <tr>
                                         <th class="text-center">ID</th>
-                                        <th>Petani</th>
                                         <th class="text-center">Tanggal</th>
+                                        <th>Petani</th>
                                         <th class="text-center">Karung</th>
                                         <th class="text-center">Konga Giling</th>
                                         <th class="text-center">Konga Jual</th>
@@ -1352,8 +1393,8 @@
                                     @foreach($bukuStokKongaMenir as $item)
                                     <tr data-petani-id="{{ $item->petani_id }}" data-status="{{ $item->status ? '1' : '0' }}">
                                         <td class="text-center"><span class="text-xs fw-bold">{{ $item->id }}</span></td>
-                                        <td><span class="text-xs">{{ $item->nama_petani }}</span></td>
                                         <td class="text-center"><span class="text-xs">{{ $item->tanggal ? $item->tanggal->format('d-m-Y') : '-' }}</span></td>
+                                        <td><span class="text-xs">{{ $item->nama_petani }}</span></td>
                                         <td class="text-center"><span class="text-xs">{{ number_format($item->karung_konga ?? 0, 2, ',', '.') }}</span></td>
                                         <td class="text-center"><span class="text-xs">{{ number_format($item->konga_giling ?? 0, 2, ',', '.') }}</span></td>
                                         <td class="text-center"><span class="text-xs">{{ number_format($item->konga_jual ?? 0, 2, ',', '.') }}</span></td>
@@ -1393,8 +1434,8 @@
                                     <thead>
                                         <tr>
                                             <th style="width: 35%;">Petani</th>
-                                            <th class="text-center" style="width: 25%;">Tanggal</th>
                                             <th class="text-center" style="width: 25%;">Jumlah Pinjaman</th>
+                                            <th class="text-center" style="width: 25%;">Tanggal</th>
                                             <th class="text-center" style="width: 6%;">Aksi</th>
                                         </tr>
                                     </thead>
@@ -1408,8 +1449,8 @@
                                                     <div class="petani-dropdown" style="display:none;"></div>
                                                 </div>
                                             </td>
-                                            <td><input type="date" class="form-control form-control-sm" name="rows[0][tanggal]" value="{{ date('Y-m-d') }}" required></td>
                                             <td><input type="text" class="form-control form-control-sm number-format" name="rows[0][jumlah]" placeholder="0" inputmode="decimal" required></td>
+                                            <td><input type="date" class="form-control form-control-sm" name="rows[0][tanggal]" value="{{ date('Y-m-d') }}" required></td>
                                             <td class="text-center">
                                                 <button type="button" class="remove-row-btn" onclick="removeRow(this)" style="visibility: hidden;">
                                                     <i class="bi bi-x-lg"></i>
@@ -1433,8 +1474,8 @@
                                 <thead>
                                     <tr>
                                         <th class="text-center">ID</th>
-                                        <th>Petani</th>
                                         <th class="text-center">Tanggal</th>
+                                        <th>Petani</th>
                                         <th class="text-center">Jumlah</th>
                                         <th class="text-center">Status</th>
                                         <th class="text-center">Aksi</th>
@@ -1444,8 +1485,8 @@
                                     @foreach($pinjamanKonga as $item)
                                     <tr data-petani-id="{{ $item->petani_id }}" data-status="{{ $item->status ? '1' : '0' }}">
                                         <td class="text-center"><span class="text-xs fw-bold">{{ $item->id }}</span></td>
-                                        <td><span class="text-xs">{{ $item->nama_petani }}</span></td>
                                         <td class="text-center"><span class="text-xs">{{ $item->tanggal ? $item->tanggal->format('d-m-Y') : '-' }}</span></td>
+                                        <td><span class="text-xs">{{ $item->nama_petani }}</span></td>
                                         <td class="text-center"><span class="text-xs">{{ number_format($item->jumlah ?? 0, 2, ',', '.') }}</span></td>
                                         <td class="text-center">
                                             <span class="badge bg-gradient-{{ $item->status ? 'success' : 'warning' }}">
@@ -1477,18 +1518,18 @@
                                     <thead>
                                         <tr>
                                             <th style="width: 35%;">Keterangan</th>
-                                            <th class="text-center" style="width: 20%;">Tanggal</th>
                                             <th class="text-center" style="width: 17%;">Jumlah Konga</th>
                                             <th class="text-center" style="width: 17%;">Jumlah Menir</th>
+                                            <th class="text-center" style="width: 20%;">Tanggal</th>
                                             <th class="text-center" style="width: 11%;">Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody id="penjualan-konga-input-rows">
                                         <tr class="input-row dynamic-row" data-row="0">
                                             <td><input type="text" class="form-control form-control-sm" name="rows[0][keterangan]" placeholder="Keterangan..." required></td>
-                                            <td><input type="date" class="form-control form-control-sm" name="rows[0][tanggal]" value="{{ date('Y-m-d') }}" required></td>
                                             <td><input type="text" class="form-control form-control-sm number-format" name="rows[0][jumlah_konga]" placeholder="0" inputmode="decimal"></td>
                                             <td><input type="text" class="form-control form-control-sm number-format" name="rows[0][jumlah_menir]" placeholder="0" inputmode="decimal"></td>
+                                            <td><input type="date" class="form-control form-control-sm" name="rows[0][tanggal]" value="{{ date('Y-m-d') }}" required></td>
                                             <td class="text-center">
                                                 <button type="button" class="remove-row-btn" onclick="removeRow(this)" style="visibility: hidden;">
                                                     <i class="bi bi-x-lg"></i>
@@ -1512,8 +1553,8 @@
                                 <thead>
                                     <tr>
                                         <th class="text-center">ID</th>
-                                        <th>Keterangan</th>
                                         <th class="text-center">Tanggal</th>
+                                        <th>Keterangan</th>
                                         <th class="text-center">Jumlah Konga</th>
                                         <th class="text-center">Jumlah Menir</th>
                                         <th class="text-center">Aksi</th>
@@ -1523,8 +1564,8 @@
                                     @foreach($penjualanKongaMenir as $item)
                                     <tr>
                                         <td class="text-center"><span class="text-xs fw-bold">{{ $item->id }}</span></td>
-                                        <td><span class="text-xs">{{ $item->keterangan }}</span></td>
                                         <td class="text-center"><span class="text-xs">{{ $item->tanggal ? $item->tanggal->format('d-m-Y') : '-' }}</span></td>
+                                        <td><span class="text-xs">{{ $item->keterangan }}</span></td>
                                         <td class="text-center"><span class="text-xs">{{ number_format($item->jumlah_konga ?? 0, 2, ',', '.') }}</span></td>
                                         <td class="text-center"><span class="text-xs">{{ number_format($item->jumlah_menir ?? 0, 2, ',', '.') }}</span></td>
                                         <td class="text-center">
@@ -1601,15 +1642,20 @@ if (searchGlobalInput) {
                     }
 
                     data.forEach(petani => {
-                        const div = document.createElement('div');
-                        div.className = 'search-petani-item';
-                        div.innerHTML = `
-                            <div class="petani-avatar">${petani.nama.charAt(0).toUpperCase()}</div>
-                            <div class="petani-info">
-                                <div class="petani-name">${petani.nama}</div>
-                                <div class="petani-alamat">${petani.alamat || '-'}</div>
-                            </div>
-                        `;
+    const div = document.createElement('div');
+    div.className = 'search-petani-item';
+    div.innerHTML = `
+        <div class="petani-avatar">${petani.nama.charAt(0).toUpperCase()}</div>
+        <div class="petani-info">
+            <div class="petani-name">
+                ${petani.nama}
+                <span class="pinjaman-badge">
+                    Beras: ${smartFormatNumber(petani.pinjaman_beras)} Kg - Konga: ${smartFormatNumber(petani.pinjaman_konga)} Karung
+                </span>
+            </div>
+            <div class="petani-alamat">${petani.alamat || '-'}</div>
+        </div>
+    `;
 
                         div.addEventListener('click', function() {
                             searchGlobalInput.value = petani.nama;
@@ -1745,12 +1791,20 @@ document.querySelectorAll('.stok-value').forEach(elem => {
                         }
 
                         data.forEach(petani => {
-                            const div = document.createElement('div');
-                            div.className = 'petani-dropdown-item';
-                            div.innerHTML = `
-                                <span class="petani-name">${petani.nama}</span>
-                                <span class="petani-info">${petani.alamat || '-'}</span>
-                            `;
+    const div = document.createElement('div');
+    div.className = 'search-petani-item';
+    div.innerHTML = `
+        <div class="petani-avatar">${petani.nama.charAt(0).toUpperCase()}</div>
+        <div class="petani-info">
+            <div class="petani-name">
+                ${petani.nama}
+                <span class="pinjaman-badge">
+                    Beras: ${smartFormatNumber(petani.pinjaman_beras)} Kg - Konga: ${smartFormatNumber(petani.pinjaman_konga)} Karung
+                </span>
+            </div>
+            <div class="petani-alamat">${petani.alamat || '-'}</div>
+        </div>
+    `;
 
                             div.addEventListener('click', function() {
                                 e.target.value = petani.nama;
