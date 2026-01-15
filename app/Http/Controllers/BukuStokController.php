@@ -33,34 +33,43 @@ class BukuStokController extends Controller
     public function index()
     {
         return view('laravel-examples/buku-gilingan', [
+            // Buku Stok Beras - urut tanggal DESC, id DESC
             'bukuStokBeras' => BukuStokBeras::with('petani')
                 ->orderByDesc('tanggal')
                 ->orderByDesc('id')
                 ->get(),
 
+            // Pinjaman Beras - urut status ASC (belum lunas dulu), tanggal DESC, id DESC
             'pinjamanBeras' => BukuStokPinjamanBeras::with('petani')
-                ->orderBy('status')
+                ->orderBy('status', 'asc')
                 ->orderByDesc('tanggal')
+                ->orderByDesc('id')
                 ->get(),
 
+            // Pinjaman Konga - urut status ASC (belum lunas dulu), tanggal DESC, id DESC
             'pinjamanKonga' => BukuStokPinjamanKonga::with('petani')
-                ->orderBy('status')
+                ->orderBy('status', 'asc')
                 ->orderByDesc('tanggal')
+                ->orderByDesc('id')
                 ->get(),
 
+            // Buku Stok Konga & Menir - urut tanggal DESC, id DESC
             'bukuStokKongaMenir' => BukuStokKongaMenir::with('petani')
                 ->orderByDesc('tanggal')
                 ->orderByDesc('id')
                 ->get(),
 
+            // Penjualan Beras - urut tanggal DESC, id DESC
             'penjualanBeras' => PenjualanBeras::orderByDesc('tanggal')
                 ->orderByDesc('id')
                 ->get(),
 
+            // Penjualan Konga & Menir - urut tanggal DESC, id DESC
             'penjualanKongaMenir' => PenjualanKongaMenir::orderByDesc('tanggal')
                 ->orderByDesc('id')
                 ->get(),
 
+            // Stok Global
             'stokGlobal' => $this->stokGlobal(),
         ]);
     }
