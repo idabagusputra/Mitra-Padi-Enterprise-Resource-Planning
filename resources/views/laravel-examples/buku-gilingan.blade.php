@@ -8,6 +8,7 @@
     <!-- ============================================
    MODAL EDIT - STYLES
 ============================================ -->
+
 /* Modal Overlay */
 .modal-overlay {
     display: none;
@@ -19,7 +20,10 @@
     background: rgba(0, 0, 0, 0.5);
     z-index: 9998;
     backdrop-filter: blur(4px);
-    overflow: hidden; /* TAMBAHKAN INI */
+}
+
+.modal-overlay.active {
+    display: block;
 }
 
 /* Modal Container */
@@ -36,53 +40,12 @@
     max-width: 600px;
     width: 90%;
     max-height: 90vh;
-    overflow: hidden; /* GANTI dari overflow-y: auto */
-    display: flex; /* TAMBAHKAN */
-    flex-direction: column; /* TAMBAHKAN */
+    overflow-y: auto;
 }
 
 .edit-modal.active {
-    display: flex; /* GANTI dari display: block */
+    display: block;
     animation: modalSlideIn 0.3s ease-out;
-}
-
-/* Modal Header - TAMBAHKAN flex-shrink */
-.edit-modal-header {
-    padding: 1.5rem;
-    border-bottom: 2px solid #f1f3f5;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%);
-    flex-shrink: 0; /* TAMBAHKAN INI */
-}
-
-/* Modal Body - PERBAIKI SCROLL */
-.edit-modal-body {
-    padding: 1.5rem;
-    overflow-y: auto; /* TAMBAHKAN */
-    flex: 1; /* TAMBAHKAN */
-    overscroll-behavior: contain; /* TAMBAHKAN - mencegah scroll chain */
-    -webkit-overflow-scrolling: touch; /* TAMBAHKAN - smooth scroll iOS */
-}
-
-/* Modal Footer - TAMBAHKAN flex-shrink */
-.edit-modal-footer {
-    padding: 1.25rem 1.5rem;
-    border-top: 2px solid #f1f3f5;
-    display: flex;
-    justify-content: flex-end;
-    gap: 0.75rem;
-    background: #fafbfc;
-    flex-shrink: 0; /* TAMBAHKAN INI */
-}
-
-/* TAMBAHKAN - Body lock class */
-body.modal-open {
-    overflow: hidden !important;
-    position: fixed;
-    width: 100%;
-    height: 100%;
 }
 
 @keyframes modalSlideIn {
@@ -226,12 +189,12 @@ body.modal-open {
     margin: 0;
     cursor: pointer;
     transition: all 0.2s ease;
-    color: #ff9966;
+    color: #e91e8c;
 }
 
 .btn-edit:hover {
     transform: scale(1.15);
-    color: #1a42cc;
+    color: #cb0c9f;
 }
 
 /* Petani Dropdown in Modal */
@@ -1493,7 +1456,7 @@ body.modal-open {
                                             </span>
                                         </td>
                                         <td class="text-center">
-    <button type="button" class="btn-edit me-2" onclick="openEditModal('buku-beras', {
+    <button type="button" class="btn-edit me-3" onclick="openEditModal('buku-beras', {
         id: {{ $item->id }},
         tanggal: '{{ $item->tanggal ? $item->tanggal->format('Y-m-d') : '' }}',
         petani_id: {{ $item->petani_id }},
@@ -1590,7 +1553,7 @@ body.modal-open {
                                         </td>
                                         <td class="text-center">
     @if($item->status == 0)
-    <button type="button" class="btn-edit me-2" onclick="openEditModal('pinjaman-beras', {
+    <button type="button" class="btn-edit me-3" onclick="openEditModal('pinjaman-beras', {
         id: {{ $item->id }},
         tanggal: '{{ $item->tanggal ? $item->tanggal->format('Y-m-d') : '' }}',
         petani_id: {{ $item->petani_id }},
@@ -1671,7 +1634,7 @@ body.modal-open {
                                         <td><span class="text-xs">{{ $item->keterangan }}</span></td>
                                         <td class="text-center"><span class="text-xs">{{ number_format($item->jumlah_beras ?? 0, 2, ',', '.') }}</span></td>
                                         <td class="text-center">
-    <button type="button" class="btn-edit me-2" onclick="openEditModal('penjualan-beras', {
+    <button type="button" class="btn-edit me-3" onclick="openEditModal('penjualan-beras', {
         id: {{ $item->id }},
         tanggal: '{{ $item->tanggal ? $item->tanggal->format('Y-m-d') : '' }}',
         keterangan: '{{ addslashes($item->keterangan) }}',
@@ -1791,7 +1754,7 @@ body.modal-open {
                                             </span>
                                         </td>
                                         <td class="text-center">
-    <button type="button" class="btn-edit me-2" onclick="openEditModal('buku-konga', {
+    <button type="button" class="btn-edit me-3" onclick="openEditModal('buku-konga', {
         id: {{ $item->id }},
         tanggal: '{{ $item->tanggal ? $item->tanggal->format('Y-m-d') : '' }}',
         petani_id: {{ $item->petani_id }},
@@ -1890,7 +1853,7 @@ body.modal-open {
                                         </td>
                                         <td class="text-center">
     @if($item->status == 0)
-    <button type="button" class="btn-edit me-2" onclick="openEditModal('pinjaman-konga', {
+    <button type="button" class="btn-edit me-3" onclick="openEditModal('pinjaman-konga', {
         id: {{ $item->id }},
         tanggal: '{{ $item->tanggal ? $item->tanggal->format('Y-m-d') : '' }}',
         petani_id: {{ $item->petani_id }},
@@ -1975,7 +1938,7 @@ body.modal-open {
                                         <td class="text-center"><span class="text-xs">{{ number_format($item->jumlah_konga ?? 0, 2, ',', '.') }}</span></td>
                                         <td class="text-center"><span class="text-xs">{{ number_format($item->jumlah_menir ?? 0, 2, ',', '.') }}</span></td>
                                         <td class="text-center">
-    <button type="button" class="btn-edit me-2" onclick="openEditModal('penjualan-konga', {
+    <button type="button" class="btn-edit me-3" onclick="openEditModal('penjualan-konga', {
         id: {{ $item->id }},
         tanggal: '{{ $item->tanggal ? $item->tanggal->format('Y-m-d') : '' }}',
         keterangan: '{{ addslashes($item->keterangan) }}',
@@ -2982,6 +2945,8 @@ function openEditModal(type, data) {
 
     // Show overlay
     document.getElementById('modal-overlay').classList.add('active');
+    document.body.style.position = 'fixed';
+    document.body.style.width = '100%';
 
     // Show modal
     const modal = document.getElementById(`edit-modal-${type}`);
@@ -3000,6 +2965,8 @@ function openEditModal(type, data) {
 function closeEditModal(type) {
     document.getElementById('modal-overlay').classList.remove('active');
     document.getElementById(`edit-modal-${type}`).classList.remove('active');
+    document.body.style.position = '';
+    document.body.style.width = '';
     document.body.style.overflow = '';
 
     // Clear form
