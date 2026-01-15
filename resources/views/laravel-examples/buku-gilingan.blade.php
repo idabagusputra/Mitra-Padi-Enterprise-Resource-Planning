@@ -1437,7 +1437,7 @@
                                 </thead>
                                 <tbody>
                                     @foreach($bukuStokBeras as $item)
-                                    <tr data-petani-id="{{ $item->petani_id }}" data-status="{{ $item->status ? '1' : '0' }}">
+                                    {{-- <tr data-petani-id="{{ $item->petani_id }}" data-status="{{ $item->status ? '1' : '0' }}"> --}}
                                         <td class="text-center"><span class="text-xs fw-bold">{{ $item->id }}</span></td>
                                         <td class="text-center"><span class="text-xs">{{ $item->tanggal ? $item->tanggal->format('d-m-Y') : '-' }}</span></td>
                                         <td><span class="text-xs">{{ $item->nama_petani }}</span></td>
@@ -1541,7 +1541,7 @@
                                 </thead>
                                 <tbody>
                                     @foreach($pinjamanBeras as $item)
-                                    <tr data-petani-id="{{ $item->petani_id }}" data-status="{{ $item->status ? '1' : '0' }}">
+                                    {{-- <tr data-petani-id="{{ $item->petani_id }}" data-status="{{ $item->status ? '1' : '0' }}"> --}}
                                         <td class="text-center"><span class="text-xs fw-bold">{{ $item->id }}</span></td>
                                         <td class="text-center"><span class="text-xs">{{ $item->tanggal ? $item->tanggal->format('d-m-Y') : '-' }}</span></td>
                                         <td><span class="text-xs">{{ $item->nama_petani }}</span></td>
@@ -1735,7 +1735,7 @@
                                 </thead>
                                 <tbody>
                                     @foreach($bukuStokKongaMenir as $item)
-                                    <tr data-petani-id="{{ $item->petani_id }}" data-status="{{ $item->status ? '1' : '0' }}">
+                                    {{-- <tr data-petani-id="{{ $item->petani_id }}" data-status="{{ $item->status ? '1' : '0' }}"> --}}
                                         <td class="text-center"><span class="text-xs fw-bold">{{ $item->id }}</span></td>
                                         <td class="text-center"><span class="text-xs">{{ $item->tanggal ? $item->tanggal->format('d-m-Y') : '-' }}</span></td>
                                         <td><span class="text-xs">{{ $item->nama_petani }}</span></td>
@@ -1841,7 +1841,7 @@
                                 </thead>
                                 <tbody>
                                     @foreach($pinjamanKonga as $item)
-                                    <tr data-petani-id="{{ $item->petani_id }}" data-status="{{ $item->status ? '1' : '0' }}">
+                                    {{-- <tr data-petani-id="{{ $item->petani_id }}" data-status="{{ $item->status ? '1' : '0' }}"> --}}
                                         <td class="text-center"><span class="text-xs fw-bold">{{ $item->id }}</span></td>
                                         <td class="text-center"><span class="text-xs">{{ $item->tanggal ? $item->tanggal->format('d-m-Y') : '-' }}</span></td>
                                         <td><span class="text-xs">{{ $item->nama_petani }}</span></td>
