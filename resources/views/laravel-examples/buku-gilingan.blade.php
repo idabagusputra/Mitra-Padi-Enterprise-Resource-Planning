@@ -4,6 +4,343 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <style>
+
+    <!-- ============================================
+   MODAL EDIT - STYLES
+============================================ -->
+/* Modal Overlay */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 9998;
+    backdrop-filter: blur(4px);
+    overflow: hidden; /* TAMBAHKAN INI */
+}
+
+/* Modal Container */
+.edit-modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    z-index: 9999;
+    max-width: 600px;
+    width: 90%;
+    max-height: 90vh;
+    overflow: hidden; /* GANTI dari overflow-y: auto */
+    display: flex; /* TAMBAHKAN */
+    flex-direction: column; /* TAMBAHKAN */
+}
+
+.edit-modal.active {
+    display: flex; /* GANTI dari display: block */
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+/* Modal Header - TAMBAHKAN flex-shrink */
+.edit-modal-header {
+    padding: 1.5rem;
+    border-bottom: 2px solid #f1f3f5;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%);
+    flex-shrink: 0; /* TAMBAHKAN INI */
+}
+
+/* Modal Body - PERBAIKI SCROLL */
+.edit-modal-body {
+    padding: 1.5rem;
+    overflow-y: auto; /* TAMBAHKAN */
+    flex: 1; /* TAMBAHKAN */
+    overscroll-behavior: contain; /* TAMBAHKAN - mencegah scroll chain */
+    -webkit-overflow-scrolling: touch; /* TAMBAHKAN - smooth scroll iOS */
+}
+
+/* Modal Footer - TAMBAHKAN flex-shrink */
+.edit-modal-footer {
+    padding: 1.25rem 1.5rem;
+    border-top: 2px solid #f1f3f5;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    background: #fafbfc;
+    flex-shrink: 0; /* TAMBAHKAN INI */
+}
+
+/* TAMBAHKAN - Body lock class */
+body.modal-open {
+    overflow: hidden !important;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -45%);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
+
+/* Modal Header */
+.edit-modal-header {
+    padding: 1.5rem;
+    border-bottom: 2px solid #f1f3f5;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%);
+}
+
+.edit-modal-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #cb0c9f;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.edit-modal-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #8392ab;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    transition: all 0.2s ease;
+    border-radius: 8px;
+}
+
+.edit-modal-close:hover {
+    background: rgba(203, 12, 159, 0.1);
+    color: #cb0c9f;
+}
+
+/* Modal Body */
+.edit-modal-body {
+    padding: 1.5rem;
+}
+
+.edit-form-group {
+    margin-bottom: 1.25rem;
+}
+
+.edit-form-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #344767;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.edit-form-control {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    background: #ffffff;
+}
+
+.edit-form-control:focus {
+    outline: none;
+    border-color: #cb0c9f;
+    box-shadow: 0 0 0 3px rgba(203, 12, 159, 0.1);
+}
+
+.edit-form-control:disabled {
+    background: #f8f9fa;
+    cursor: not-allowed;
+}
+
+/* Modal Footer */
+.edit-modal-footer {
+    padding: 1.25rem 1.5rem;
+    border-top: 2px solid #f1f3f5;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    background: #fafbfc;
+}
+
+.edit-btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.edit-btn-cancel {
+    background: #e9ecef;
+    color: #344767;
+}
+
+.edit-btn-cancel:hover {
+    background: #dee2e6;
+    transform: translateY(-1px);
+}
+
+.edit-btn-submit {
+    background: linear-gradient(135deg, #cb0c9f 0%, #e91e8c 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(203, 12, 159, 0.3);
+}
+
+.edit-btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(203, 12, 159, 0.4);
+}
+
+/* Edit Button in Table */
+.btn-edit {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #ff9966;
+}
+
+.btn-edit:hover {
+    transform: scale(1.15);
+    color: #1a42cc;
+}
+
+/* Petani Dropdown in Modal */
+.edit-petani-search-wrapper {
+    position: relative;
+}
+
+.edit-petani-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 2px solid #cb0c9f;
+    border-radius: 10px;
+    margin-top: 4px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 10000;
+    box-shadow: 0 10px 30px rgba(203, 12, 159, 0.2);
+    display: none;
+}
+
+.edit-petani-dropdown.show {
+    display: block;
+}
+
+.edit-petani-dropdown-item {
+    padding: 0.875rem 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 1px solid #f1f3f5;
+}
+
+.edit-petani-dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.edit-petani-dropdown-item:hover {
+    background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%);
+}
+
+.edit-petani-dropdown-item .petani-name {
+    font-weight: 600;
+    color: #cb0c9f;
+    font-size: 0.875rem;
+}
+
+.edit-petani-dropdown-item .petani-info {
+    color: #8392ab;
+    font-size: 0.75rem;
+}
+
+/* Scrollbar untuk modal */
+.edit-modal::-webkit-scrollbar {
+    width: 8px;
+}
+
+.edit-modal::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.edit-modal::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #cb0c9f 0%, #e91e8c 100%);
+    border-radius: 4px;
+}
+
+.edit-petani-dropdown::-webkit-scrollbar {
+    width: 6px;
+}
+
+.edit-petani-dropdown::-webkit-scrollbar-track {
+    background: #f8f9fa;
+}
+
+.edit-petani-dropdown::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #cb0c9f 0%, #e91e8c 100%);
+    border-radius: 3px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .edit-modal {
+        width: 95%;
+        max-height: 85vh;
+    }
+
+    .edit-modal-header {
+        padding: 1rem;
+    }
+
+    .edit-modal-body {
+        padding: 1rem;
+    }
+
+    .edit-modal-footer {
+        flex-direction: column;
+        padding: 1rem;
+    }
+
+    .edit-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+
+
     /* ============================================
        BASE STYLES - Modern & Clean
     ============================================ */
@@ -758,6 +1095,19 @@
         color: #344767;
     }
 
+
+
+
+
+.btn-edit i,
+.btn-link i {
+    vertical-align: middle;
+}
+
+
+
+
+
     /* ============================================
        BADGE STYLES - Matching Template
     ============================================ */
@@ -1076,13 +1426,13 @@
 </td>
 <td><input type="text" class="form-control form-control-sm number-format" name="rows[0][jemur]" placeholder="0" inputmode="decimal" required></td>
 <td><input type="text" class="form-control form-control-sm number-format" name="rows[0][giling_kotor]" placeholder="0" inputmode="decimal" required></td>
+<td><input type="text" class="form-control form-control-sm number-format" name="rows[0][beras_pulang]" placeholder="0" inputmode="decimal"></td>
 <td>
     <select class="form-select form-select-sm" name="rows[0][status]" required>
         <option value="0">BELUM LUNAS</option>
         <option value="1">LUNAS</option>
     </select>
 </td>
-<td><input type="text" class="form-control form-control-sm number-format" name="rows[0][beras_pulang]" placeholder="0" inputmode="decimal"></td>
 <td><input type="date" class="form-control form-control-sm" name="rows[0][tanggal]" value="{{ date('Y-m-d') }}" required></td>
                                             <td class="text-center">
                                                 <button type="button" class="remove-row-btn" onclick="removeRow(this)" style="visibility: hidden;">
@@ -1143,14 +1493,26 @@
                                             </span>
                                         </td>
                                         <td class="text-center">
-                                            <form action="{{ route('buku-stok-beras.destroy', $item->id) }}" method="POST" class="d-inline delete-form">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-link text-danger p-0 m-0">
-                                                    <i class="bi bi-trash3-fill fs-5"></i>
-                                                </button>
-                                            </form>
-                                        </td>
+    <button type="button" class="btn-edit me-2" onclick="openEditModal('buku-beras', {
+        id: {{ $item->id }},
+        tanggal: '{{ $item->tanggal ? $item->tanggal->format('Y-m-d') : '' }}',
+        petani_id: {{ $item->petani_id }},
+        nama_petani: '{{ addslashes($item->nama_petani) }}',
+        jemur: {{ $item->jemur ?? 0 }},
+        giling_kotor: {{ $item->giling_kotor ?? 0 }},
+        beras_pulang: {{ $item->beras_pulang ?? 0 }},
+        status: {{ $item->status ? 1 : 0 }}
+    })">
+        <i class="bi bi-pencil-square fs-5"></i>
+    </button>
+    <form action="{{ route('buku-stok-beras.destroy', $item->id) }}" method="POST" class="d-inline delete-form">
+        @csrf
+        @method('DELETE')
+        <button type="submit" class="btn btn-link text-danger p-0 m-0">
+            <i class="bi bi-trash3-fill fs-5"></i>
+        </button>
+    </form>
+</td>
                                     </tr>
                                     @endforeach
                                 </tbody>
@@ -1227,14 +1589,25 @@
                                             </span>
                                         </td>
                                         <td class="text-center">
-                                            <form action="{{ route('pinjaman-beras.destroy', $item->id) }}" method="POST" class="d-inline delete-form">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-link text-danger p-0 m-0">
-                                                    <i class="bi bi-trash3-fill fs-5"></i>
-                                                </button>
-                                            </form>
-                                        </td>
+    @if($item->status == 0)
+    <button type="button" class="btn-edit me-2" onclick="openEditModal('pinjaman-beras', {
+        id: {{ $item->id }},
+        tanggal: '{{ $item->tanggal ? $item->tanggal->format('Y-m-d') : '' }}',
+        petani_id: {{ $item->petani_id }},
+        nama_petani: '{{ addslashes($item->nama_petani) }}',
+        jumlah: {{ $item->jumlah ?? 0 }}
+    })">
+        <i class="bi bi-pencil-square fs-5"></i>
+    </button>
+    @endif
+    <form action="{{ route('pinjaman-beras.destroy', $item->id) }}" method="POST" class="d-inline delete-form">
+        @csrf
+        @method('DELETE')
+        <button type="submit" class="btn btn-link text-danger p-0 m-0">
+            <i class="bi bi-trash3-fill fs-5"></i>
+        </button>
+    </form>
+</td>
                                     </tr>
                                     @endforeach
                                 </tbody>
@@ -1298,14 +1671,22 @@
                                         <td><span class="text-xs">{{ $item->keterangan }}</span></td>
                                         <td class="text-center"><span class="text-xs">{{ number_format($item->jumlah_beras ?? 0, 2, ',', '.') }}</span></td>
                                         <td class="text-center">
-                                            <form action="{{ route('penjualan-beras.destroy', $item->id) }}" method="POST" class="d-inline delete-form">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-link text-danger p-0 m-0">
-                                                    <i class="bi bi-trash3-fill fs-5"></i>
-                                                </button>
-                                            </form>
-                                        </td>
+    <button type="button" class="btn-edit me-2" onclick="openEditModal('penjualan-beras', {
+        id: {{ $item->id }},
+        tanggal: '{{ $item->tanggal ? $item->tanggal->format('Y-m-d') : '' }}',
+        keterangan: '{{ addslashes($item->keterangan) }}',
+        jumlah_beras: {{ $item->jumlah_beras ?? 0 }}
+    })">
+        <i class="bi bi-pencil-square fs-5"></i>
+    </button>
+    <form action="{{ route('penjualan-beras.destroy', $item->id) }}" method="POST" class="d-inline delete-form">
+        @csrf
+        @method('DELETE')
+        <button type="submit" class="btn btn-link text-danger p-0 m-0">
+            <i class="bi bi-trash3-fill fs-5"></i>
+        </button>
+    </form>
+</td>
                                     </tr>
                                     @endforeach
                                 </tbody>
@@ -1410,14 +1791,28 @@
                                             </span>
                                         </td>
                                         <td class="text-center">
-                                            <form action="{{ route('buku-stok-konga-menir.destroy', $item->id) }}" method="POST" class="d-inline delete-form">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-link text-danger p-0 m-0">
-                                                    <i class="bi bi-trash3-fill fs-5"></i>
-                                                </button>
-                                            </form>
-                                        </td>
+    <button type="button" class="btn-edit me-2" onclick="openEditModal('buku-konga', {
+        id: {{ $item->id }},
+        tanggal: '{{ $item->tanggal ? $item->tanggal->format('Y-m-d') : '' }}',
+        petani_id: {{ $item->petani_id }},
+        nama_petani: '{{ addslashes($item->nama_petani) }}',
+        karung_konga: {{ $item->karung_konga ?? 0 }},
+        konga_giling: {{ $item->konga_giling ?? 0 }},
+        konga_jual: {{ $item->konga_jual ?? 0 }},
+        kembalikan_konga: {{ $item->kembalikan_konga ?? 0 }},
+        menir: {{ $item->menir ?? 0 }},
+        menir_jual: {{ $item->menir_jual ?? 0 }}
+    })">
+        <i class="bi bi-pencil-square fs-5"></i>
+    </button>
+    <form action="{{ route('buku-stok-konga-menir.destroy', $item->id) }}" method="POST" class="d-inline delete-form">
+        @csrf
+        @method('DELETE')
+        <button type="submit" class="btn btn-link text-danger p-0 m-0">
+            <i class="bi bi-trash3-fill fs-5"></i>
+        </button>
+    </form>
+</td>
                                     </tr>
                                     @endforeach
                                 </tbody>
@@ -1494,14 +1889,25 @@
                                             </span>
                                         </td>
                                         <td class="text-center">
-                                            <form action="{{ route('pinjaman-konga.destroy', $item->id) }}" method="POST" class="d-inline delete-form">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-link text-danger p-0 m-0">
-                                                    <i class="bi bi-trash3-fill fs-5"></i>
-                                                </button>
-                                            </form>
-                                        </td>
+    @if($item->status == 0)
+    <button type="button" class="btn-edit me-2" onclick="openEditModal('pinjaman-konga', {
+        id: {{ $item->id }},
+        tanggal: '{{ $item->tanggal ? $item->tanggal->format('Y-m-d') : '' }}',
+        petani_id: {{ $item->petani_id }},
+        nama_petani: '{{ addslashes($item->nama_petani) }}',
+        jumlah: {{ $item->jumlah ?? 0 }}
+    })">
+        <i class="bi bi-pencil-square fs-5"></i>
+    </button>
+    @endif
+    <form action="{{ route('pinjaman-konga.destroy', $item->id) }}" method="POST" class="d-inline delete-form">
+        @csrf
+        @method('DELETE')
+        <button type="submit" class="btn btn-link text-danger p-0 m-0">
+            <i class="bi bi-trash3-fill fs-5"></i>
+        </button>
+    </form>
+</td>
                                     </tr>
                                     @endforeach
                                 </tbody>
@@ -1569,14 +1975,24 @@
                                         <td class="text-center"><span class="text-xs">{{ number_format($item->jumlah_konga ?? 0, 2, ',', '.') }}</span></td>
                                         <td class="text-center"><span class="text-xs">{{ number_format($item->jumlah_menir ?? 0, 2, ',', '.') }}</span></td>
                                         <td class="text-center">
-                                            <form action="{{ route('penjualan-konga-menir.destroy', $item->id) }}" method="POST" class="d-inline delete-form">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-link text-danger p-0 m-0">
-                                                    <i class="bi bi-trash3-fill fs-5"></i>
-                                                </button>
-                                            </form>
-                                        </td>
+    <button type="button" class="btn-edit me-2" onclick="openEditModal('penjualan-konga', {
+        id: {{ $item->id }},
+        tanggal: '{{ $item->tanggal ? $item->tanggal->format('Y-m-d') : '' }}',
+        keterangan: '{{ addslashes($item->keterangan) }}',
+        jumlah_konga: {{ $item->jumlah_konga ?? 0 }},
+        jumlah_menir: {{ $item->jumlah_menir ?? 0 }},
+        harga: {{ $item->harga ?? 0 }}
+    })">
+        <i class="bi bi-pencil-square fs-5"></i>
+    </button>
+    <form action="{{ route('penjualan-konga-menir.destroy', $item->id) }}" method="POST" class="d-inline delete-form">
+        @csrf
+        @method('DELETE')
+        <button type="submit" class="btn btn-link text-danger p-0 m-0">
+            <i class="bi bi-trash3-fill fs-5"></i>
+        </button>
+    </form>
+</td>
                                     </tr>
                                     @endforeach
                                 </tbody>
@@ -1589,6 +2005,377 @@
         </div>
     </div>
 </div>
+
+
+
+
+
+
+
+
+
+
+<!-- ============================================
+   MODAL HTML - Buku Stok Beras
+============================================ -->
+<div class="modal-overlay" id="modal-overlay"></div>
+
+<div class="edit-modal" id="edit-modal-buku-beras">
+    <div class="edit-modal-header">
+        <h5 class="edit-modal-title">
+            <i class="bi bi-pencil-square"></i>
+            Edit Buku Stok Beras
+        </h5>
+        <button class="edit-modal-close" onclick="closeEditModal('buku-beras')">&times;</button>
+    </div>
+    <div class="edit-modal-body">
+        <form id="edit-form-buku-beras">
+            <input type="hidden" id="edit-buku-beras-id">
+
+            <div class="edit-form-group">
+                <label class="edit-form-label">Tanggal</label>
+                <input type="date" class="edit-form-control" id="edit-buku-beras-tanggal" required>
+            </div>
+
+            <div class="edit-form-group">
+                <label class="edit-form-label">Petani</label>
+                <div class="edit-petani-search-wrapper">
+                    <input type="text" class="edit-form-control" id="edit-buku-beras-petani-search"
+                           placeholder="Cari petani..." autocomplete="off">
+                    <input type="hidden" id="edit-buku-beras-petani-id">
+                    <div class="edit-petani-dropdown" id="edit-buku-beras-petani-dropdown"></div>
+                </div>
+            </div>
+
+            <div class="edit-form-group">
+                <label class="edit-form-label">Jemur</label>
+                <input type="text" class="edit-form-control number-format" id="edit-buku-beras-jemur"
+                       placeholder="0" inputmode="decimal">
+            </div>
+
+            <div class="edit-form-group">
+                <label class="edit-form-label">Giling Kotor</label>
+                <input type="text" class="edit-form-control number-format" id="edit-buku-beras-giling-kotor"
+                       placeholder="0" inputmode="decimal" required>
+            </div>
+
+            <div class="edit-form-group">
+                <label class="edit-form-label">Beras Pulang</label>
+                <input type="text" class="edit-form-control number-format" id="edit-buku-beras-beras-pulang"
+                       placeholder="0" inputmode="decimal" required>
+            </div>
+
+            <div class="edit-form-group">
+                <label class="edit-form-label">Status</label>
+                <select class="edit-form-control" id="edit-buku-beras-status">
+                    <option value="0">Belum Lunas</option>
+                    <option value="1">Lunas</option>
+                </select>
+            </div>
+        </form>
+    </div>
+    <div class="edit-modal-footer">
+        <button class="edit-btn edit-btn-cancel" onclick="closeEditModal('buku-beras')">
+            <i class="bi bi-x-circle"></i> Batal
+        </button>
+        <button class="edit-btn edit-btn-submit" onclick="submitEdit('buku-beras')">
+            <i class="bi bi-check-circle"></i> Simpan
+        </button>
+    </div>
+</div>
+
+<!-- ============================================
+   MODAL HTML - Pinjaman Beras
+============================================ -->
+<div class="edit-modal" id="edit-modal-pinjaman-beras">
+    <div class="edit-modal-header">
+        <h5 class="edit-modal-title">
+            <i class="bi bi-pencil-square"></i>
+            Edit Pinjaman Beras
+        </h5>
+        <button class="edit-modal-close" onclick="closeEditModal('pinjaman-beras')">&times;</button>
+    </div>
+    <div class="edit-modal-body">
+        <form id="edit-form-pinjaman-beras">
+            <input type="hidden" id="edit-pinjaman-beras-id">
+
+            <div class="edit-form-group">
+                <label class="edit-form-label">Tanggal</label>
+                <input type="date" class="edit-form-control" id="edit-pinjaman-beras-tanggal" required>
+            </div>
+
+            <div class="edit-form-group">
+                <label class="edit-form-label">Petani</label>
+                <div class="edit-petani-search-wrapper">
+                    <input type="text" class="edit-form-control" id="edit-pinjaman-beras-petani-search"
+                           placeholder="Cari petani..." autocomplete="off">
+                    <input type="hidden" id="edit-pinjaman-beras-petani-id">
+                    <div class="edit-petani-dropdown" id="edit-pinjaman-beras-petani-dropdown"></div>
+                </div>
+            </div>
+
+            <div class="edit-form-group">
+                <label class="edit-form-label">Jumlah Pinjaman</label>
+                <input type="text" class="edit-form-control number-format" id="edit-pinjaman-beras-jumlah"
+                       placeholder="0" inputmode="decimal" required>
+            </div>
+        </form>
+    </div>
+    <div class="edit-modal-footer">
+        <button class="edit-btn edit-btn-cancel" onclick="closeEditModal('pinjaman-beras')">
+            <i class="bi bi-x-circle"></i> Batal
+        </button>
+        <button class="edit-btn edit-btn-submit" onclick="submitEdit('pinjaman-beras')">
+            <i class="bi bi-check-circle"></i> Simpan
+        </button>
+    </div>
+</div>
+
+<!-- ============================================
+   MODAL HTML - Pinjaman Konga
+============================================ -->
+<div class="edit-modal" id="edit-modal-pinjaman-konga">
+    <div class="edit-modal-header">
+        <h5 class="edit-modal-title">
+            <i class="bi bi-pencil-square"></i>
+            Edit Pinjaman Konga
+        </h5>
+        <button class="edit-modal-close" onclick="closeEditModal('pinjaman-konga')">&times;</button>
+    </div>
+    <div class="edit-modal-body">
+        <form id="edit-form-pinjaman-konga">
+            <input type="hidden" id="edit-pinjaman-konga-id">
+
+            <div class="edit-form-group">
+                <label class="edit-form-label">Tanggal</label>
+                <input type="date" class="edit-form-control" id="edit-pinjaman-konga-tanggal" required>
+            </div>
+
+            <div class="edit-form-group">
+                <label class="edit-form-label">Petani</label>
+                <div class="edit-petani-search-wrapper">
+                    <input type="text" class="edit-form-control" id="edit-pinjaman-konga-petani-search"
+                           placeholder="Cari petani..." autocomplete="off">
+                    <input type="hidden" id="edit-pinjaman-konga-petani-id">
+                    <div class="edit-petani-dropdown" id="edit-pinjaman-konga-petani-dropdown"></div>
+                </div>
+            </div>
+
+            <div class="edit-form-group">
+                <label class="edit-form-label">Jumlah Pinjaman</label>
+                <input type="text" class="edit-form-control number-format" id="edit-pinjaman-konga-jumlah"
+                       placeholder="0" inputmode="decimal" required>
+            </div>
+        </form>
+    </div>
+    <div class="edit-modal-footer">
+        <button class="edit-btn edit-btn-cancel" onclick="closeEditModal('pinjaman-konga')">
+            <i class="bi bi-x-circle"></i> Batal
+        </button>
+        <button class="edit-btn edit-btn-submit" onclick="submitEdit('pinjaman-konga')">
+            <i class="bi bi-check-circle"></i> Simpan
+        </button>
+    </div>
+</div>
+
+<!-- ============================================
+   MODAL HTML - Buku Konga Menir
+============================================ -->
+<div class="edit-modal" id="edit-modal-buku-konga">
+    <div class="edit-modal-header">
+        <h5 class="edit-modal-title">
+            <i class="bi bi-pencil-square"></i>
+            Edit Buku Konga & Menir
+        </h5>
+        <button class="edit-modal-close" onclick="closeEditModal('buku-konga')">&times;</button>
+    </div>
+    <div class="edit-modal-body">
+        <form id="edit-form-buku-konga">
+            <input type="hidden" id="edit-buku-konga-id">
+
+            <div class="edit-form-group">
+                <label class="edit-form-label">Tanggal</label>
+                <input type="date" class="edit-form-control" id="edit-buku-konga-tanggal" required>
+            </div>
+
+            <div class="edit-form-group">
+                <label class="edit-form-label">Petani</label>
+                <div class="edit-petani-search-wrapper">
+                    <input type="text" class="edit-form-control" id="edit-buku-konga-petani-search"
+                           placeholder="Cari petani..." autocomplete="off">
+                    <input type="hidden" id="edit-buku-konga-petani-id">
+                    <div class="edit-petani-dropdown" id="edit-buku-konga-petani-dropdown"></div>
+                </div>
+            </div>
+
+            <div class="edit-form-group">
+                <label class="edit-form-label">Karung Konga</label>
+                <input type="text" class="edit-form-control number-format" id="edit-buku-konga-karung"
+                       placeholder="0" inputmode="decimal">
+            </div>
+
+            <div class="edit-form-group">
+                <label class="edit-form-label">Konga Giling</label>
+                <input type="text" class="edit-form-control number-format" id="edit-buku-konga-giling"
+                       placeholder="0" inputmode="decimal">
+            </div>
+
+            <div class="edit-form-group">
+                <label class="edit-form-label">Konga Jual</label>
+                <input type="text" class="edit-form-control number-format" id="edit-buku-konga-jual"
+                       placeholder="0" inputmode="decimal">
+            </div>
+
+            <div class="edit-form-group">
+                <label class="edit-form-label">Kembalikan Konga</label>
+                <input type="text" class="edit-form-control number-format" id="edit-buku-konga-kembalikan"
+                       placeholder="0" inputmode="decimal">
+            </div>
+
+            <div class="edit-form-group">
+                <label class="edit-form-label">Menir</label>
+                <input type="text" class="edit-form-control number-format" id="edit-buku-konga-menir"
+                       placeholder="0" inputmode="decimal">
+            </div>
+
+            <div class="edit-form-group">
+                <label class="edit-form-label">Menir Jual</label>
+                <input type="text" class="edit-form-control number-format" id="edit-buku-konga-menir-jual"
+                       placeholder="0" inputmode="decimal">
+            </div>
+        </form>
+    </div>
+    <div class="edit-modal-footer">
+        <button class="edit-btn edit-btn-cancel" onclick="closeEditModal('buku-konga')">
+            <i class="bi bi-x-circle"></i> Batal
+        </button>
+        <button class="edit-btn edit-btn-submit" onclick="submitEdit('buku-konga')">
+            <i class="bi bi-check-circle"></i> Simpan
+        </button>
+    </div>
+</div>
+
+<!-- ============================================
+   MODAL HTML - Penjualan Beras
+============================================ -->
+<div class="edit-modal" id="edit-modal-penjualan-beras">
+    <div class="edit-modal-header">
+        <h5 class="edit-modal-title">
+            <i class="bi bi-pencil-square"></i>
+            Edit Penjualan Beras
+        </h5>
+        <button class="edit-modal-close" onclick="closeEditModal('penjualan-beras')">&times;</button>
+    </div>
+    <div class="edit-modal-body">
+        <form id="edit-form-penjualan-beras">
+            <input type="hidden" id="edit-penjualan-beras-id">
+
+            <div class="edit-form-group">
+                <label class="edit-form-label">Tanggal</label>
+                <input type="date" class="edit-form-control" id="edit-penjualan-beras-tanggal" required>
+            </div>
+
+            <div class="edit-form-group">
+                <label class="edit-form-label">Keterangan</label>
+                <input type="text" class="edit-form-control" id="edit-penjualan-beras-keterangan"
+                       placeholder="Keterangan..." required>
+            </div>
+
+            <div class="edit-form-group">
+                <label class="edit-form-label">Jumlah Beras</label>
+                <input type="text" class="edit-form-control number-format" id="edit-penjualan-beras-jumlah"
+                       placeholder="0" inputmode="decimal" required>
+            </div>
+        </form>
+    </div>
+    <div class="edit-modal-footer">
+        <button class="edit-btn edit-btn-cancel" onclick="closeEditModal('penjualan-beras')">
+            <i class="bi bi-x-circle"></i> Batal
+        </button>
+        <button class="edit-btn edit-btn-submit" onclick="submitEdit('penjualan-beras')">
+            <i class="bi bi-check-circle"></i> Simpan
+        </button>
+    </div>
+</div>
+
+<!-- ============================================
+   MODAL HTML - Penjualan Konga Menir
+============================================ -->
+<div class="edit-modal" id="edit-modal-penjualan-konga">
+    <div class="edit-modal-header">
+        <h5 class="edit-modal-title">
+            <i class="bi bi-pencil-square"></i>
+            Edit Penjualan Konga & Menir
+        </h5>
+        <button class="edit-modal-close" onclick="closeEditModal('penjualan-konga')">&times;</button>
+    </div>
+    <div class="edit-modal-body">
+        <form id="edit-form-penjualan-konga">
+            <input type="hidden" id="edit-penjualan-konga-id">
+
+            <div class="edit-form-group">
+                <label class="edit-form-label">Tanggal</label>
+                <input type="date" class="edit-form-control" id="edit-penjualan-konga-tanggal" required>
+            </div>
+
+            <div class="edit-form-group">
+                <label class="edit-form-label">Keterangan</label>
+                <input type="text" class="edit-form-control" id="edit-penjualan-konga-keterangan"
+                       placeholder="Keterangan..." required>
+            </div>
+
+            <div class="edit-form-group">
+                <label class="edit-form-label">Jumlah Konga</label>
+                <input type="text" class="edit-form-control number-format" id="edit-penjualan-konga-jumlah-konga"
+                       placeholder="0" inputmode="decimal">
+            </div>
+
+            <div class="edit-form-group">
+                <label class="edit-form-label">Jumlah Menir</label>
+                <input type="text" class="edit-form-control number-format" id="edit-penjualan-konga-jumlah-menir"
+                       placeholder="0" inputmode="decimal">
+            </div>
+
+            <div class="edit-form-group">
+                <label class="edit-form-label">Harga</label>
+                <input type="text" class="edit-form-control number-format" id="edit-penjualan-konga-harga"
+                       placeholder="0" inputmode="decimal">
+            </div>
+        </form>
+    </div>
+    <div class="edit-modal-footer">
+        <button class="edit-btn edit-btn-cancel" onclick="closeEditModal('penjualan-konga')">
+            <i class="bi bi-x-circle"></i> Batal
+        </button>
+        <button class="edit-btn edit-btn-submit" onclick="submitEdit('penjualan-konga')">
+            <i class="bi bi-check-circle"></i> Simpan
+        </button>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -2155,6 +2942,397 @@ document.querySelectorAll('.stok-value').forEach(elem => {
         }
     }
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ============================================
+// GLOBAL VARIABLES
+// ============================================
+let currentEditType = '';
+let currentEditData = {};
+
+// ============================================
+// OPEN EDIT MODAL
+// ============================================
+function openEditModal(type, data) {
+    currentEditType = type;
+    currentEditData = data;
+
+    // Show overlay
+    document.getElementById('modal-overlay').classList.add('active');
+
+    // Show modal
+    const modal = document.getElementById(`edit-modal-${type}`);
+    modal.classList.add('active');
+
+    // Populate fields based on type
+    populateModalFields(type, data);
+
+    // Prevent body scroll
+    document.body.style.overflow = 'hidden';
+}
+
+// ============================================
+// CLOSE EDIT MODAL
+// ============================================
+function closeEditModal(type) {
+    document.getElementById('modal-overlay').classList.remove('active');
+    document.getElementById(`edit-modal-${type}`).classList.remove('active');
+    document.body.style.overflow = '';
+
+    // Clear form
+    document.getElementById(`edit-form-${type}`).reset();
+}
+
+// Close modal when clicking overlay
+document.getElementById('modal-overlay').addEventListener('click', function() {
+    if (currentEditType) {
+        closeEditModal(currentEditType);
+    }
+});
+
+// ============================================
+// POPULATE MODAL FIELDS
+// ============================================
+function populateModalFields(type, data) {
+    switch(type) {
+        case 'buku-beras':
+            document.getElementById('edit-buku-beras-id').value = data.id;
+            document.getElementById('edit-buku-beras-tanggal').value = data.tanggal;
+            document.getElementById('edit-buku-beras-petani-search').value = data.nama_petani;
+            document.getElementById('edit-buku-beras-petani-id').value = data.petani_id;
+            document.getElementById('edit-buku-beras-jemur').value = formatNumber(data.jemur);
+            document.getElementById('edit-buku-beras-giling-kotor').value = formatNumber(data.giling_kotor);
+            document.getElementById('edit-buku-beras-beras-pulang').value = formatNumber(data.beras_pulang);
+            document.getElementById('edit-buku-beras-status').value = data.status;
+            break;
+
+        case 'pinjaman-beras':
+            document.getElementById('edit-pinjaman-beras-id').value = data.id;
+            document.getElementById('edit-pinjaman-beras-tanggal').value = data.tanggal;
+            document.getElementById('edit-pinjaman-beras-petani-search').value = data.nama_petani;
+            document.getElementById('edit-pinjaman-beras-petani-id').value = data.petani_id;
+            document.getElementById('edit-pinjaman-beras-jumlah').value = formatNumber(data.jumlah);
+            break;
+
+        case 'pinjaman-konga':
+            document.getElementById('edit-pinjaman-konga-id').value = data.id;
+            document.getElementById('edit-pinjaman-konga-tanggal').value = data.tanggal;
+            document.getElementById('edit-pinjaman-konga-petani-search').value = data.nama_petani;
+            document.getElementById('edit-pinjaman-konga-petani-id').value = data.petani_id;
+            document.getElementById('edit-pinjaman-konga-jumlah').value = formatNumber(data.jumlah);
+            break;
+
+        case 'buku-konga':
+            document.getElementById('edit-buku-konga-id').value = data.id;
+            document.getElementById('edit-buku-konga-tanggal').value = data.tanggal;
+            document.getElementById('edit-buku-konga-petani-search').value = data.nama_petani;
+            document.getElementById('edit-buku-konga-petani-id').value = data.petani_id;
+            document.getElementById('edit-buku-konga-karung').value = formatNumber(data.karung_konga);
+            document.getElementById('edit-buku-konga-giling').value = formatNumber(data.konga_giling);
+            document.getElementById('edit-buku-konga-jual').value = formatNumber(data.konga_jual);
+            document.getElementById('edit-buku-konga-kembalikan').value = formatNumber(data.kembalikan_konga);
+            document.getElementById('edit-buku-konga-menir').value = formatNumber(data.menir);
+            document.getElementById('edit-buku-konga-menir-jual').value = formatNumber(data.menir_jual);
+            break;
+
+        case 'penjualan-beras':
+            document.getElementById('edit-penjualan-beras-id').value = data.id;
+            document.getElementById('edit-penjualan-beras-tanggal').value = data.tanggal;
+            document.getElementById('edit-penjualan-beras-keterangan').value = data.keterangan;
+            document.getElementById('edit-penjualan-beras-jumlah').value = formatNumber(data.jumlah_beras);
+            break;
+
+        case 'penjualan-konga':
+            document.getElementById('edit-penjualan-konga-id').value = data.id;
+            document.getElementById('edit-penjualan-konga-tanggal').value = data.tanggal;
+            document.getElementById('edit-penjualan-konga-keterangan').value = data.keterangan;
+            document.getElementById('edit-penjualan-konga-jumlah-konga').value = formatNumber(data.jumlah_konga);
+            document.getElementById('edit-penjualan-konga-jumlah-menir').value = formatNumber(data.jumlah_menir);
+            document.getElementById('edit-penjualan-konga-harga').value = formatNumber(data.harga);
+            break;
+    }
+
+    // Apply number formatting to all number-format inputs in the modal
+    const modal = document.getElementById(`edit-modal-${type}`);
+    modal.querySelectorAll('.number-format').forEach(input => {
+        setupNumberFormatting(input);
+    });
+}
+
+// ============================================
+// SUBMIT EDIT
+// ============================================
+function submitEdit(type) {
+    const form = document.getElementById(`edit-form-${type}`);
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
+
+    const id = document.getElementById(`edit-${type}-id`).value;
+    const routeMap = {
+        'buku-beras': 'buku-stok-beras',
+        'pinjaman-beras': 'pinjaman-beras',
+        'pinjaman-konga': 'pinjaman-konga',
+        'buku-konga': 'buku-stok-konga-menir',
+        'penjualan-beras': 'penjualan-beras',
+        'penjualan-konga': 'penjualan-konga-menir'
+    };
+
+    const deleteRoute = `/${routeMap[type]}/${id}`;
+    const storeRoute = `/${routeMap[type]}`;
+
+    // Prepare data
+    const data = prepareEditData(type);
+
+    if (!data) {
+        alert('Data tidak valid');
+        return;
+    }
+
+    // Show loading
+    const submitBtn = event.target;
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Menyimpan...';
+    submitBtn.disabled = true;
+
+    // Step 1: Delete old data
+    fetch(deleteRoute, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('[name="_token"]').value,
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+            _method: 'DELETE'
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Gagal menghapus data lama');
+        }
+
+        // Step 2: Create new data
+        return fetch(storeRoute, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('[name="_token"]').value,
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({ rows: [data] })
+        });
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            closeEditModal(type);
+            location.reload();
+        } else {
+            throw new Error(result.message || 'Terjadi kesalahan');
+        }
+    })
+    .catch(error => {
+        alert('Error: ' + error.message);
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+    });
+}
+
+// ============================================
+// PREPARE EDIT DATA
+// ============================================
+function prepareEditData(type) {
+    switch(type) {
+        case 'buku-beras':
+            return {
+                petani_id: document.getElementById('edit-buku-beras-petani-id').value,
+                tanggal: document.getElementById('edit-buku-beras-tanggal').value,
+                jemur: parseFormattedNumber(document.getElementById('edit-buku-beras-jemur').value),
+                giling_kotor: parseFormattedNumber(document.getElementById('edit-buku-beras-giling-kotor').value),
+                beras_pulang: parseFormattedNumber(document.getElementById('edit-buku-beras-beras-pulang').value),
+                status: document.getElementById('edit-buku-beras-status').value
+            };
+
+        case 'pinjaman-beras':
+            return {
+                petani_id: document.getElementById('edit-pinjaman-beras-petani-id').value,
+                tanggal: document.getElementById('edit-pinjaman-beras-tanggal').value,
+                jumlah: parseFormattedNumber(document.getElementById('edit-pinjaman-beras-jumlah').value)
+            };
+
+        case 'pinjaman-konga':
+            return {
+                petani_id: document.getElementById('edit-pinjaman-konga-petani-id').value,
+                tanggal: document.getElementById('edit-pinjaman-konga-tanggal').value,
+                jumlah: parseFormattedNumber(document.getElementById('edit-pinjaman-konga-jumlah').value)
+            };
+
+        case 'buku-konga':
+            return {
+                petani_id: document.getElementById('edit-buku-konga-petani-id').value,
+                tanggal: document.getElementById('edit-buku-konga-tanggal').value,
+                karung_konga: parseFormattedNumber(document.getElementById('edit-buku-konga-karung').value),
+                konga_giling: parseFormattedNumber(document.getElementById('edit-buku-konga-giling').value),
+                konga_jual: parseFormattedNumber(document.getElementById('edit-buku-konga-jual').value),
+                kembalikan_konga: parseFormattedNumber(document.getElementById('edit-buku-konga-kembalikan').value),
+                menir: parseFormattedNumber(document.getElementById('edit-buku-konga-menir').value),
+                menir_jual: parseFormattedNumber(document.getElementById('edit-buku-konga-menir-jual').value)
+            };
+
+        case 'penjualan-beras':
+            return {
+                tanggal: document.getElementById('edit-penjualan-beras-tanggal').value,
+                keterangan: document.getElementById('edit-penjualan-beras-keterangan').value,
+                jumlah_beras: parseFormattedNumber(document.getElementById('edit-penjualan-beras-jumlah').value)
+            };
+
+        case 'penjualan-konga':
+            return {
+                tanggal: document.getElementById('edit-penjualan-konga-tanggal').value,
+                keterangan: document.getElementById('edit-penjualan-konga-keterangan').value,
+                jumlah_konga: parseFormattedNumber(document.getElementById('edit-penjualan-konga-jumlah-konga').value),
+                jumlah_menir: parseFormattedNumber(document.getElementById('edit-penjualan-konga-jumlah-menir').value),
+                harga: parseFormattedNumber(document.getElementById('edit-penjualan-konga-harga').value)
+            };
+
+        default:
+            return null;
+    }
+}
+
+// ============================================
+// PETANI SEARCH IN MODAL
+// ============================================
+document.addEventListener('DOMContentLoaded', function() {
+    // Setup petani search for all edit modals
+    const searchConfigs = [
+        { search: 'edit-buku-beras-petani-search', dropdown: 'edit-buku-beras-petani-dropdown', hidden: 'edit-buku-beras-petani-id' },
+        { search: 'edit-pinjaman-beras-petani-search', dropdown: 'edit-pinjaman-beras-petani-dropdown', hidden: 'edit-pinjaman-beras-petani-id' },
+        { search: 'edit-pinjaman-konga-petani-search', dropdown: 'edit-pinjaman-konga-petani-dropdown', hidden: 'edit-pinjaman-konga-petani-id' },
+        { search: 'edit-buku-konga-petani-search', dropdown: 'edit-buku-konga-petani-dropdown', hidden: 'edit-buku-konga-petani-id' }
+    ];
+
+    searchConfigs.forEach(config => {
+        const searchInput = document.getElementById(config.search);
+        const dropdown = document.getElementById(config.dropdown);
+        const hiddenInput = document.getElementById(config.hidden);
+
+        if (!searchInput || !dropdown || !hiddenInput) return;
+
+        let searchTimeout;
+
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            const term = this.value.trim();
+
+            if (term.length < 2) {
+                dropdown.classList.remove('show');
+                return;
+            }
+
+            searchTimeout = setTimeout(() => {
+                fetch(`/buku-stok/search-petani?term=${encodeURIComponent(term)}`)
+                    .then(r => r.json())
+                    .then(petanis => {
+                        if (petanis.length === 0) {
+                            dropdown.innerHTML = '<div style="padding: 1rem; text-align: center; color: #8392ab;">Tidak ada hasil</div>';
+                            dropdown.classList.add('show');
+                            return;
+                        }
+
+                        dropdown.innerHTML = petanis.map(p => `
+                            <div class="edit-petani-dropdown-item" data-id="${p.id}" data-name="${p.nama}">
+                                <div class="petani-name">${p.nama}</div>
+                                <div class="petani-info">${p.alamat || ''}</div>
+                            </div>
+                        `).join('');
+
+                        dropdown.classList.add('show');
+
+                        // Add click handlers
+                        dropdown.querySelectorAll('.edit-petani-dropdown-item').forEach(item => {
+                            item.addEventListener('click', function() {
+                                searchInput.value = this.dataset.name;
+                                hiddenInput.value = this.dataset.id;
+                                dropdown.classList.remove('show');
+                            });
+                        });
+                    })
+                    .catch(err => console.error('Search error:', err));
+            }, 300);
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!searchInput.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.classList.remove('show');
+            }
+        });
+    });
+});
+
+// ============================================
+// HELPER FUNCTIONS
+// ============================================
+function formatNumber(value) {
+    if (!value && value !== 0) return '';
+    return parseFloat(value).toLocaleString('id-ID', {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 2
+    });
+}
+
+function parseFormattedNumber(value) {
+    if (!value) return 0;
+    return parseFloat(value.replace(/\./g, '').replace(',', '.')) || 0;
+}
+
+function setupNumberFormatting(input) {
+    input.addEventListener('input', function() {
+        let val = this.value.replace(/[^0-9,]/g, '');
+
+        // Split by comma
+        let parts = val.split(',');
+
+        // Format integer part
+        if (parts[0]) {
+            parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        }
+
+        // Rejoin
+        this.value = parts.join(',');
+    });
+}
+
+
+
 </script>
 
 @endsection
