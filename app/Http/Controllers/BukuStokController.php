@@ -613,6 +613,49 @@ class BukuStokController extends Controller
         }
     }
 
+
+
+    /**
+     * Update Stok Global Manual
+     */
+    public function updateStokGlobal(Request $request)
+    {
+        $request->validate([
+            'type' => 'required|in:beras,konga,menir',
+            'value' => 'required|numeric|min:0',
+        ]);
+
+        DB::beginTransaction();
+
+        try {
+            $stokGlobal = $this->stokGlobal();
+
+            // Determine field name
+            $field = 'stok_' . $request->type;
+
+            // Update stok
+            $stokGlobal->update([
+                $field => $request->value
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Stok berhasil diperbarui'
+            ]);
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+
+
     public function searchPetaniStok(Request $request)
     {
         $term = $request->get('term', '');
@@ -642,6 +685,7 @@ class BukuStokController extends Controller
                 'pinjaman_konga' => (float) $pinjamanKonga,
             ];
         });
+
 
         return response()->json($result);
     }

@@ -361,6 +361,10 @@ Route::get('/petani/{id}/stok-terakhir', [GilingController::class, 'getStokTerak
 
 Route::get('/search-petani-stok', [BukuStokController::class, 'searchPetaniStok']);
 
+
+// Tambahkan route ini di sekitar route buku-stok yang sudah ada
+Route::post('/buku-stok/update-stok-global', [BukuStokController::class, 'updateStokGlobal'])->name('buku-stok.update-stok-global');
+
 // ✅ PINDAHKAN route /kalkulator ke LUAR group guest
 Route::get('/kalkulator', function (Request $request) {
     if ($request->user()) {

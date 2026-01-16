@@ -1217,6 +1217,62 @@
             font-size: 1.25rem;
         }
     }
+
+
+
+    /* ============================================
+   STOK CARD CLICKABLE EFFECT
+============================================ */
+.stok-card[onclick] {
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.stok-card[onclick]::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(203, 12, 159, 0);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.stok-card[onclick]:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.stok-card[onclick]:hover::after {
+    background: rgba(203, 12, 159, 0.05);
+}
+
+.stok-card[onclick]:active {
+    transform: translateY(-2px);
+}
+
+.stok-card[onclick]:hover .stok-icon {
+    transform: scale(1.1);
+}
+
+/* Alert Info Style */
+.alert-info {
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 </style>
 
 <div>
@@ -1245,7 +1301,7 @@
                         <h6>Stok Global</h6>
                     </div> --}}
                     <div class="stok-cards-container">
-    <div class="stok-card beras">
+    <div class="stok-card beras" onclick="openStokGlobalModal('beras')" style="cursor: pointer; user-select: none;">
         <div class="stok-card-content">
             <div class="stok-icon">
                 <i class="bi bi-droplet-fill"></i>
@@ -1259,7 +1315,8 @@
             </div>
         </div>
     </div>
-    <div class="stok-card konga">
+
+    <div class="stok-card konga" onclick="openStokGlobalModal('konga')" style="cursor: pointer; user-select: none;">
         <div class="stok-card-content">
             <div class="stok-icon">
                 <i class="bi bi-circle-fill"></i>
@@ -1273,7 +1330,8 @@
             </div>
         </div>
     </div>
-    <div class="stok-card menir">
+
+    <div class="stok-card menir" onclick="openStokGlobalModal('menir')" style="cursor: pointer; user-select: none;">
         <div class="stok-card-content">
             <div class="stok-icon">
                 <i class="bi bi-diamond-fill"></i>
@@ -2321,6 +2379,49 @@
 
 
 
+<!-- ============================================
+   MODAL HTML - Edit Stok Global
+============================================ -->
+<div class="edit-modal" id="edit-modal-stok-global">
+    <div class="edit-modal-header">
+        <h5 class="edit-modal-title">
+            <i class="bi bi-pencil-square"></i>
+            Edit Stok Global
+        </h5>
+        <button class="edit-modal-close" onclick="closeStokGlobalModal()">&times;</button>
+    </div>
+    <div class="edit-modal-body">
+        <form id="edit-form-stok-global">
+            <input type="hidden" id="edit-stok-type">
+
+            <div class="edit-form-group">
+                <label class="edit-form-label" id="stok-label">Jumlah Stok</label>
+                <input type="text" class="edit-form-control number-format"
+                       id="edit-stok-value" placeholder="0" inputmode="decimal" required>
+                <small class="text-muted" id="stok-unit-label" style="display: block; margin-top: 0.5rem; font-size: 0.75rem;"></small>
+            </div>
+
+            <div class="alert alert-info" style="margin-top: 1rem; padding: 0.75rem; border-radius: 8px; background: #e7f3ff; border: 1px solid #b3d9ff; font-size: 0.8rem;">
+                <i class="bi bi-info-circle-fill" style="margin-right: 0.5rem;"></i>
+                <strong>Perhatian:</strong> Perubahan stok manual akan langsung tersimpan ke sistem.
+            </div>
+        </form>
+    </div>
+    <div class="edit-modal-footer">
+        <button class="edit-btn edit-btn-cancel" onclick="closeStokGlobalModal()">
+            <i class="bi bi-x-circle"></i> Batal
+        </button>
+        <button class="edit-btn edit-btn-submit" onclick="submitStokGlobal()">
+            <i class="bi bi-check-circle"></i> Simpan
+        </button>
+    </div>
+</div>
+
+
+
+
+
+
 
 
 
@@ -3299,6 +3400,188 @@ function setupNumberFormatting(input) {
 }
 
 
+
+
+
+
+
+
+
+// ============================================
+// STOK GLOBAL MODAL FUNCTIONS
+// ============================================
+function openStokGlobalModal(type) {
+    // Prevent event bubbling
+    if (event) {
+        event.stopPropagation();
+    }
+
+    const modal = document.getElementById('edit-modal-stok-global');
+    const overlay = document.getElementById('modal-overlay');
+    const typeInput = document.getElementById('edit-stok-type');
+    const valueInput = document.getElementById('edit-stok-value');
+    const label = document.getElementById('stok-label');
+    const unitLabel = document.getElementById('stok-unit-label');
+    const modalTitle = modal.querySelector('.edit-modal-title');
+
+    // Set type
+    typeInput.value = type;
+
+    // Set label and title based on type
+    const labels = {
+        'beras': {
+            title: 'Edit Stok Beras',
+            label: 'Jumlah Stok Beras',
+            unit: 'Kg',
+            icon: 'bi-droplet-fill',
+            color: '#17ad37'
+        },
+        'konga': {
+            title: 'Edit Stok Konga',
+            label: 'Jumlah Stok Konga',
+            unit: 'Karung',
+            icon: 'bi-circle-fill',
+            color: '#2152ff'
+        },
+        'menir': {
+            title: 'Edit Stok Menir',
+            label: 'Jumlah Stok Menir',
+            unit: 'Kg',
+            icon: 'bi-diamond-fill',
+            color: '#f5365c'
+        }
+    };
+
+    // Update modal title with icon
+    modalTitle.innerHTML = `
+        <i class="${labels[type].icon}" style="color: ${labels[type].color};"></i>
+        ${labels[type].title}
+    `;
+
+    // Update label and unit
+    label.textContent = labels[type].label;
+    unitLabel.innerHTML = `<i class="bi bi-info-circle"></i> Satuan: <strong>${labels[type].unit}</strong>`;
+
+    // Get current value from card
+    const card = document.querySelector(`.stok-card.${type}`);
+    const currentValue = card.querySelector('.stok-value').childNodes[0].textContent.trim();
+    valueInput.value = currentValue;
+
+    // Show modal
+    overlay.classList.add('active');
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+
+    // Focus input and select all text
+    setTimeout(() => {
+        valueInput.focus();
+        valueInput.select();
+    }, 100);
+
+    // Setup number formatting
+    setupNumberFormatting(valueInput);
+}
+
+function closeStokGlobalModal() {
+    const modal = document.getElementById('edit-modal-stok-global');
+    const overlay = document.getElementById('modal-overlay');
+
+    modal.classList.remove('active');
+    overlay.classList.remove('active');
+    document.body.style.overflow = '';
+
+    // Reset form
+    document.getElementById('edit-form-stok-global').reset();
+}
+
+function submitStokGlobal() {
+    const form = document.getElementById('edit-form-stok-global');
+
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
+
+    const type = document.getElementById('edit-stok-type').value;
+    const value = parseFormattedNumber(document.getElementById('edit-stok-value').value);
+
+    if (value < 0) {
+        alert('Jumlah stok tidak boleh negatif');
+        return;
+    }
+
+    // Confirmation dialog
+    const typeNames = {
+        'beras': 'Beras',
+        'konga': 'Konga',
+        'menir': 'Menir'
+    };
+
+    if (!confirm(`Apakah Anda yakin ingin mengubah stok ${typeNames[type]} menjadi ${document.getElementById('edit-stok-value').value}?`)) {
+        return;
+    }
+
+    // Show loading
+    const submitBtn = event.target;
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Menyimpan...';
+    submitBtn.disabled = true;
+
+    // Prepare data
+    const data = {
+        type: type,
+        value: value
+    };
+
+    // Send to server
+    fetch('/buku-stok/update-stok-global', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('[name="_token"]').value,
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            closeStokGlobalModal();
+            location.reload();
+        } else {
+            throw new Error(result.message || 'Terjadi kesalahan');
+        }
+    })
+    .catch(error => {
+        alert('Error: ' + error.message);
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+    });
+}
+
+// Close modal with ESC key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        const modal = document.getElementById('edit-modal-stok-global');
+        if (modal && modal.classList.contains('active')) {
+            closeStokGlobalModal();
+        }
+    }
+});
+
+// Handle Enter key in stok global form
+document.addEventListener('DOMContentLoaded', function() {
+    const stokForm = document.getElementById('edit-form-stok-global');
+    if (stokForm) {
+        stokForm.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                submitStokGlobal();
+            }
+        });
+    }
+});
 
 </script>
 
