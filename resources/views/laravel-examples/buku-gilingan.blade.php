@@ -1780,9 +1780,10 @@
                                         <th>Petani</th>
                                         <th class="text-center">Karung</th>
                                         <th class="text-center">Konga Giling</th>
+                                        <th class="text-center">Kembalikan</th>
                                         <th class="text-center">Konga Jual</th>
                                         <th class="text-center">Harga Konga</th>
-                                        <th class="text-center">Kembalikan</th>
+                                        <th class="text-center">Pulang</th>
                                         {{-- <th class="text-center">Kembalikan</th> --}}
                                         {{-- <th class="text-center">Menir</th> --}}
                                         <th class="text-center">Menir Jual</th>
@@ -1799,9 +1800,10 @@
                                         <td><span class="text-xs">{{ $item->nama_petani }}</span></td>
                                         <td class="text-center"><span class="text-xs">{{ number_format($item->karung_konga ?? 0, 2, ',', '.') }}</span></td>
                                         <td class="text-center"><span class="text-xs">{{ number_format($item->konga_giling ?? 0, 2, ',', '.') }}</span></td>
+                                        <td class="text-center"><span class="text-xs">{{ number_format($item->pinjam_konga ?? 0, 2, ',', '.') }}</span></td>
                                         <td class="text-center"><span class="text-xs">{{ number_format($item->konga_jual ?? 0, 2, ',', '.') }}</span></td>
                                         <td class="text-center"><span class="text-xs">Rp {{ number_format($item->harga_konga ?? 0, 2, ',', '.') }}</span></td>
-                                        <td class="text-center"><span class="text-xs">{{ number_format($item->pinjam_konga ?? 0, 2, ',', '.') }}</span></td>
+                                        <td class="text-center"><span class="text-xs">{{ number_format((($item->konga_giling ?? 0) - ($item->pinjam_konga ?? 0) - ($item->konga_jual ?? 0)), 2, ',', '.') }}</span></td>
                                         {{-- <td class="text-center"><span class="text-xs">{{ number_format($item->kembalikan_konga ?? 0, 2, ',', '.') }}</span></td> --}}
                                         {{-- <td class="text-center"><span class="text-xs">{{ number_format($item->menir ?? 0, 2, ',', '.') }}</span></td> --}}
                                         <td class="text-center"><span class="text-xs">{{ number_format($item->menir_jual ?? 0, 2, ',', '.') }}</span></td>
