@@ -2380,7 +2380,7 @@ if (searchGlobalInput) {
         const searchTerm = this.value.trim();
 
         if (searchTerm.length > 0) {
-            fetch(`/search-petani?term=${encodeURIComponent(searchTerm)}`)
+            fetch(`/search-petani-stok?term=${encodeURIComponent(searchTerm)}`)
                 .then(response => response.json())
                 .then(data => {
                     searchResults.innerHTML = '';
@@ -2529,7 +2529,7 @@ document.querySelectorAll('.stok-value').forEach(elem => {
             const hiddenInput = e.target.parentElement.querySelector('.petani-id');
 
             if (searchTerm.length > 0) {
-                fetch(`/search-petani?term=${encodeURIComponent(searchTerm)}`)
+                fetch(`/search-petani-stok?term=${encodeURIComponent(searchTerm)}`)
                     .then(response => response.json())
                     .then(data => {
                         dropdown.innerHTML = '';
@@ -3225,7 +3225,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             searchTimeout = setTimeout(() => {
-                fetch(`/buku-stok/search-petani?term=${encodeURIComponent(term)}`)
+                fetch(`/buku-stok/search-petani-stok?term=${encodeURIComponent(term)}`)
                     .then(r => r.json())
                     .then(petanis => {
                         if (petanis.length === 0) {
