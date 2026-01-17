@@ -3964,11 +3964,11 @@ function generateNotaOperator(data, keterangan, hargaRataDefault, totalGiling, t
 
         itemsHTML += `
         <tr>
-            <td style="padding: 2mm 0; border-bottom: 1px dotted #999;">${index + 1}. ${item.nama_petani}</td>
-            <td style="padding: 2mm 0; text-align: right; border-bottom: 1px dotted #999;">${smartFormatNumber(giling)}</td>
-            <td style="padding: 2mm 0; text-align: right; border-bottom: 1px dotted #999;">${smartFormatNumber(harga)}</td>
-            <td style="padding: 2mm 0; text-align: right; border-bottom: 1px dotted #999;">Rp ${smartFormatNumber(subtotal)}</td>
-        </tr>
+    <td style="padding: 2mm 0; border-bottom: 1px dotted #999;">${index + 1}. ${item.nama_petani}</td>
+    <td style="padding: 2mm 0; text-align: right; border-bottom: 1px dotted #999;">${smartFormatNumber(giling)}</td>
+    <td style="padding: 2mm 0; text-align: right; border-bottom: 1px dotted #999;">${smartFormatNumber(harga)}</td>
+    <td style="padding: 2mm 0; text-align: right; border-bottom: 1px dotted #999;">Rp ${smartFormatNumber(subtotal)}</td>
+</tr>
         `;
     });
 
@@ -3989,33 +3989,17 @@ function generateNotaOperator(data, keterangan, hargaRataDefault, totalGiling, t
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
-        }
-
-        html, body {
-            width: 80mm;
-            margin: 0;
-            padding: 0;
-            /* CRITICAL: Prevent page breaks */
-            page-break-inside: avoid;
-            page-break-after: avoid;
-            page-break-before: avoid;
         }
 
         body {
+            width: 80mm;
+            margin: 0 auto;
             padding: 4mm 3mm;
             font-family: 'Arial', sans-serif;
             font-size: 12px;
             line-height: 1.4;
             color: #000;
             background: white;
-        }
-
-        /* Prevent page breaks on all elements */
-        .header, .date-row, .keterangan, table, .summary, .grand-total, .footer {
-            page-break-inside: avoid;
-            page-break-after: avoid;
         }
 
         .header {
@@ -4025,27 +4009,27 @@ function generateNotaOperator(data, keterangan, hargaRataDefault, totalGiling, t
             border-bottom: 2px solid #000;
         }
 
-        .title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 1mm;
-            letter-spacing: 0.5px;
-        }
+.title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 1mm;
+    letter-spacing: 0.5px;
+}
 
-        .nota-label {
-            font-size: 13px;
-            font-weight: bold;
-            margin: 2mm 0;
-            padding: 1.5mm 0;
-            background: #000;
-            color: #fff;
-        }
+.nota-label {
+    font-size: 13px;
+    font-weight: bold;
+    margin: 2mm 0;
+    padding: 1.5mm 0;
+    background: #000;
+    color: #fff;
+}
 
-        .subtitle {
-            font-size: 10px;
-            line-height: 1.6;
-            margin-top: 2mm;
-        }
+.subtitle {
+    font-size: 10px;
+    line-height: 1.6;
+    margin-top: 2mm;
+}
 
         .date-row {
             display: flex;
@@ -4077,11 +4061,6 @@ function generateNotaOperator(data, keterangan, hargaRataDefault, totalGiling, t
             font-size: 11px;
         }
 
-        /* Prevent page breaks in table */
-        table, tbody, tr, td, th {
-            page-break-inside: avoid;
-        }
-
         th {
             font-weight: bold;
             padding: 2mm 0;
@@ -4111,8 +4090,8 @@ function generateNotaOperator(data, keterangan, hargaRataDefault, totalGiling, t
         }
 
         .grand-total {
-            background: #000 !important;
-            color: #fff !important;
+            background: #000;
+            color: #fff;
             padding: 3mm;
             margin-top: 3mm;
             text-align: center;
@@ -4139,14 +4118,9 @@ function generateNotaOperator(data, keterangan, hargaRataDefault, totalGiling, t
         }
 
         @media print {
-            html, body {
-                width: 80mm;
-                height: auto;
-                margin: 0;
-                padding: 0;
-            }
-
             body {
+                width: 80mm;
+                margin: 0;
                 padding: 4mm 3mm;
             }
 
@@ -4155,36 +4129,23 @@ function generateNotaOperator(data, keterangan, hargaRataDefault, totalGiling, t
                 print-color-adjust: exact !important;
             }
 
-            /* Force single page */
-            @page {
-                size: 80mm auto;
-                margin: 0;
-            }
-
             .grand-total {
                 background: #000 !important;
                 color: #fff !important;
-            }
-
-            /* Prevent any page breaks */
-            body, .header, .date-row, .keterangan, table, tbody, tr, .summary, .grand-total, .footer {
-                page-break-inside: avoid !important;
-                page-break-after: avoid !important;
-                page-break-before: avoid !important;
             }
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <div class="title">PENGGILINGAN PADI</div>
-        <div class="title">PUTRA MANUABA</div>
-        <div class="nota-label">NOTA OPERATOR</div>
-        <div class="subtitle">
-            Dus. Babahan, Des. Tolai, Kab. Parigi<br>
-            Telp: 0811-451-486 / 0822-6077-3867
-        </div>
+    <div class="title">PENGGILINGAN PADI</div>
+    <div class="title">PUTRA MANUABA</div>
+    <div class="nota-label">NOTA OPERATOR</div>
+    <div class="subtitle">
+        Dus. Babahan, Des. Tolai, Kab. Parigi<br>
+        Telp: 0811-451-486 / 0822-6077-3867
     </div>
+</div>
 
     <div class="date-row">
         <span>${tanggal}</span>
@@ -4224,6 +4185,7 @@ function generateNotaOperator(data, keterangan, hargaRataDefault, totalGiling, t
             <span>HARGA RATA-RATA</span>
             <span>Rp ${smartFormatNumber(hargaRata)}</span>
         </div>
+
     </div>
 
     <div class="grand-total">
@@ -4268,37 +4230,96 @@ async function updateOperatorStatus(keterangan, hargaRataDefault) {
     }
 }
 
-// ============================================
-// PRINT NOTA OPERATOR - Mobile Optimized
-// ============================================
 function printNotaOperator() {
     const iframe = document.getElementById('nota-iframe-operator');
 
-    // Detect if mobile
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    // Focus pada iframe
+    iframe.contentWindow.focus();
 
-    if (isMobile) {
-        // Mobile: langsung print tanpa dialog
-        iframe.contentWindow.focus();
-        iframe.contentWindow.print();
-    } else {
-        // Desktop: normal print
-        iframe.contentWindow.focus();
-        iframe.contentWindow.print();
-    }
+    // Print
+    iframe.contentWindow.print();
 }
 
 // ============================================
-// SAVE NOTA PDF - Mobile Optimized
+// SAVE NOTA PDF - Download Langsung (Android Optimized)
 // ============================================
-function saveNotaPDF() {
+async function saveNotaPDF() {
     const iframe = document.getElementById('nota-iframe-operator');
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
     if (isMobile) {
-        // Mobile: langsung trigger print (akan auto-detect PDF printer di Android)
-        iframe.contentWindow.focus();
-        iframe.contentWindow.print();
+        // Mobile: Convert HTML to image then to PDF-like download
+        const btn = document.getElementById('btn-save-nota-operator');
+        const originalHTML = btn.innerHTML;
+
+        btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Membuat PDF...';
+        btn.disabled = true;
+
+        try {
+            // Get iframe document
+            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+            const body = iframeDoc.body;
+
+            // Set temporary styles for capture
+            const originalWidth = body.style.width;
+            const originalBackground = body.style.background;
+            body.style.width = '80mm';
+            body.style.background = 'white';
+
+            // Capture as canvas using html2canvas
+            const canvas = await html2canvas(body, {
+                scale: 3, // High quality
+                useCORS: true,
+                logging: false,
+                width: 302, // 80mm in pixels (80mm * 3.78 = 302px)
+                windowWidth: 302,
+                backgroundColor: '#ffffff'
+            });
+
+            // Restore original styles
+            body.style.width = originalWidth;
+            body.style.background = originalBackground;
+
+            // Convert canvas to blob
+            canvas.toBlob(function(blob) {
+                // Create download link
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+
+                // Generate filename dengan timestamp
+                const now = new Date();
+                const timestamp = now.toISOString().slice(0,10).replace(/-/g, '');
+                const filename = `Nota_Operator_${timestamp}_${now.getHours()}${now.getMinutes()}.png`;
+
+                a.href = url;
+                a.download = filename;
+                a.style.display = 'none';
+
+                document.body.appendChild(a);
+                a.click();
+
+                // Cleanup
+                setTimeout(() => {
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }, 100);
+
+                // Show success message
+                showToast('✓ Nota berhasil disimpan sebagai gambar', 'success');
+
+                // Reset button
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+
+            }, 'image/png', 1.0);
+
+        } catch (error) {
+            console.error('Error generating PDF:', error);
+            alert('Gagal membuat PDF. Error: ' + error.message);
+            btn.innerHTML = originalHTML;
+            btn.disabled = false;
+        }
+
     } else {
         // Desktop: tampilkan instruksi
         const instructionDiv = document.createElement('div');
@@ -4347,6 +4368,63 @@ function saveNotaPDF() {
     }
 }
 
+// ============================================
+// TOAST NOTIFICATION HELPER
+// ============================================
+function showToast(message, type = 'success') {
+    const toast = document.createElement('div');
+    const bgColor = type === 'success' ? '#17ad37' : '#f5365c';
+
+    toast.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: ${bgColor};
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        z-index: 99999;
+        font-weight: 600;
+        font-size: 0.9rem;
+        animation: slideIn 0.3s ease;
+    `;
+
+    toast.textContent = message;
+    document.body.appendChild(toast);
+
+    setTimeout(() => {
+        toast.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
+// Add animation styles
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideIn {
+        from {
+            transform: translateX(400px);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    @keyframes slideOut {
+        from {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        to {
+            transform: translateX(400px);
+            opacity: 0;
+        }
+    }
+`;
+document.head.appendChild(style);
 
 
 
