@@ -3964,11 +3964,11 @@ function generateNotaOperator(data, keterangan, hargaRataDefault, totalGiling, t
 
         itemsHTML += `
         <tr>
-    <td style="padding: 2mm 0; border-bottom: 1px dotted #999;">${index + 1}. ${item.nama_petani}</td>
-    <td style="padding: 2mm 0; text-align: right; border-bottom: 1px dotted #999;">${smartFormatNumber(giling)}</td>
-    <td style="padding: 2mm 0; text-align: right; border-bottom: 1px dotted #999;">${smartFormatNumber(harga)}</td>
-    <td style="padding: 2mm 0; text-align: right; border-bottom: 1px dotted #999;">Rp ${smartFormatNumber(subtotal)}</td>
-</tr>
+            <td style="padding: 2mm 0; border-bottom: 1px dotted #999;">${index + 1}. ${item.nama_petani}</td>
+            <td style="padding: 2mm 0; text-align: right; border-bottom: 1px dotted #999;">${smartFormatNumber(giling)}</td>
+            <td style="padding: 2mm 0; text-align: right; border-bottom: 1px dotted #999;">${smartFormatNumber(harga)}</td>
+            <td style="padding: 2mm 0; text-align: right; border-bottom: 1px dotted #999;">Rp ${smartFormatNumber(subtotal)}</td>
+        </tr>
         `;
     });
 
@@ -3989,17 +3989,33 @@ function generateNotaOperator(data, keterangan, hargaRataDefault, totalGiling, t
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        html, body {
+            width: 80mm;
+            margin: 0;
+            padding: 0;
+            /* CRITICAL: Prevent page breaks */
+            page-break-inside: avoid;
+            page-break-after: avoid;
+            page-break-before: avoid;
         }
 
         body {
-            width: 80mm;
-            margin: 0 auto;
             padding: 4mm 3mm;
             font-family: 'Arial', sans-serif;
             font-size: 12px;
             line-height: 1.4;
             color: #000;
             background: white;
+        }
+
+        /* Prevent page breaks on all elements */
+        .header, .date-row, .keterangan, table, .summary, .grand-total, .footer {
+            page-break-inside: avoid;
+            page-break-after: avoid;
         }
 
         .header {
@@ -4009,27 +4025,27 @@ function generateNotaOperator(data, keterangan, hargaRataDefault, totalGiling, t
             border-bottom: 2px solid #000;
         }
 
-.title {
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 1mm;
-    letter-spacing: 0.5px;
-}
+        .title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 1mm;
+            letter-spacing: 0.5px;
+        }
 
-.nota-label {
-    font-size: 13px;
-    font-weight: bold;
-    margin: 2mm 0;
-    padding: 1.5mm 0;
-    background: #000;
-    color: #fff;
-}
+        .nota-label {
+            font-size: 13px;
+            font-weight: bold;
+            margin: 2mm 0;
+            padding: 1.5mm 0;
+            background: #000;
+            color: #fff;
+        }
 
-.subtitle {
-    font-size: 10px;
-    line-height: 1.6;
-    margin-top: 2mm;
-}
+        .subtitle {
+            font-size: 10px;
+            line-height: 1.6;
+            margin-top: 2mm;
+        }
 
         .date-row {
             display: flex;
@@ -4061,6 +4077,11 @@ function generateNotaOperator(data, keterangan, hargaRataDefault, totalGiling, t
             font-size: 11px;
         }
 
+        /* Prevent page breaks in table */
+        table, tbody, tr, td, th {
+            page-break-inside: avoid;
+        }
+
         th {
             font-weight: bold;
             padding: 2mm 0;
@@ -4090,8 +4111,8 @@ function generateNotaOperator(data, keterangan, hargaRataDefault, totalGiling, t
         }
 
         .grand-total {
-            background: #000;
-            color: #fff;
+            background: #000 !important;
+            color: #fff !important;
             padding: 3mm;
             margin-top: 3mm;
             text-align: center;
@@ -4118,9 +4139,14 @@ function generateNotaOperator(data, keterangan, hargaRataDefault, totalGiling, t
         }
 
         @media print {
-            body {
+            html, body {
                 width: 80mm;
+                height: auto;
                 margin: 0;
+                padding: 0;
+            }
+
+            body {
                 padding: 4mm 3mm;
             }
 
@@ -4129,23 +4155,36 @@ function generateNotaOperator(data, keterangan, hargaRataDefault, totalGiling, t
                 print-color-adjust: exact !important;
             }
 
+            /* Force single page */
+            @page {
+                size: 80mm auto;
+                margin: 0;
+            }
+
             .grand-total {
                 background: #000 !important;
                 color: #fff !important;
+            }
+
+            /* Prevent any page breaks */
+            body, .header, .date-row, .keterangan, table, tbody, tr, .summary, .grand-total, .footer {
+                page-break-inside: avoid !important;
+                page-break-after: avoid !important;
+                page-break-before: avoid !important;
             }
         }
     </style>
 </head>
 <body>
     <div class="header">
-    <div class="title">PENGGILINGAN PADI</div>
-    <div class="title">PUTRA MANUABA</div>
-    <div class="nota-label">NOTA OPERATOR</div>
-    <div class="subtitle">
-        Dus. Babahan, Des. Tolai, Kab. Parigi<br>
-        Telp: 0811-451-486 / 0822-6077-3867
+        <div class="title">PENGGILINGAN PADI</div>
+        <div class="title">PUTRA MANUABA</div>
+        <div class="nota-label">NOTA OPERATOR</div>
+        <div class="subtitle">
+            Dus. Babahan, Des. Tolai, Kab. Parigi<br>
+            Telp: 0811-451-486 / 0822-6077-3867
+        </div>
     </div>
-</div>
 
     <div class="date-row">
         <span>${tanggal}</span>
@@ -4185,7 +4224,6 @@ function generateNotaOperator(data, keterangan, hargaRataDefault, totalGiling, t
             <span>HARGA RATA-RATA</span>
             <span>Rp ${smartFormatNumber(hargaRata)}</span>
         </div>
-
     </div>
 
     <div class="grand-total">
@@ -4230,65 +4268,83 @@ async function updateOperatorStatus(keterangan, hargaRataDefault) {
     }
 }
 
+// ============================================
+// PRINT NOTA OPERATOR - Mobile Optimized
+// ============================================
 function printNotaOperator() {
     const iframe = document.getElementById('nota-iframe-operator');
 
-    // Focus pada iframe
-    iframe.contentWindow.focus();
+    // Detect if mobile
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
-    // Print
-    iframe.contentWindow.print();
-}
-
-
-function saveNotaPDF() {
-    const iframe = document.getElementById('nota-iframe-operator');
-
-    // Create alert untuk instruksi user
-    const instructionDiv = document.createElement('div');
-    instructionDiv.style.cssText = `
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: white;
-        padding: 2rem;
-        border-radius: 12px;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-        z-index: 99999;
-        max-width: 400px;
-        text-align: center;
-    `;
-
-    instructionDiv.innerHTML = `
-        <div style="margin-bottom: 1rem;">
-            <i class="bi bi-info-circle-fill" style="font-size: 3rem; color: #2152ff;"></i>
-        </div>
-        <h5 style="margin-bottom: 1rem; color: #344767;">Cara Menyimpan sebagai PDF</h5>
-        <ol style="text-align: left; color: #8392ab; font-size: 0.9rem; line-height: 1.6;">
-            <li>Pilih <strong>"Save as PDF"</strong> atau <strong>"Microsoft Print to PDF"</strong> di bagian Printer/Destination</li>
-            <li>Pastikan <strong>Paper size: 80mm</strong></li>
-            <li>Klik <strong>Save</strong></li>
-        </ol>
-        <button onclick="this.parentElement.remove()" style="
-            margin-top: 1rem;
-            padding: 0.75rem 2rem;
-            background: linear-gradient(135deg, #2152ff 0%, #21d4fd 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-        ">Mengerti</button>
-    `;
-
-    document.body.appendChild(instructionDiv);
-
-    // Trigger print setelah 2 detik
-    setTimeout(() => {
+    if (isMobile) {
+        // Mobile: langsung print tanpa dialog
         iframe.contentWindow.focus();
         iframe.contentWindow.print();
-    }, 2000);
+    } else {
+        // Desktop: normal print
+        iframe.contentWindow.focus();
+        iframe.contentWindow.print();
+    }
+}
+
+// ============================================
+// SAVE NOTA PDF - Mobile Optimized
+// ============================================
+function saveNotaPDF() {
+    const iframe = document.getElementById('nota-iframe-operator');
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+    if (isMobile) {
+        // Mobile: langsung trigger print (akan auto-detect PDF printer di Android)
+        iframe.contentWindow.focus();
+        iframe.contentWindow.print();
+    } else {
+        // Desktop: tampilkan instruksi
+        const instructionDiv = document.createElement('div');
+        instructionDiv.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            z-index: 99999;
+            max-width: 400px;
+            text-align: center;
+        `;
+
+        instructionDiv.innerHTML = `
+            <div style="margin-bottom: 1rem;">
+                <i class="bi bi-info-circle-fill" style="font-size: 3rem; color: #2152ff;"></i>
+            </div>
+            <h5 style="margin-bottom: 1rem; color: #344767;">Cara Menyimpan sebagai PDF</h5>
+            <ol style="text-align: left; color: #8392ab; font-size: 0.9rem; line-height: 1.6;">
+                <li>Pilih <strong>"Save as PDF"</strong> atau <strong>"Microsoft Print to PDF"</strong> di bagian Printer/Destination</li>
+                <li>Pastikan <strong>Paper size: 80mm</strong></li>
+                <li>Klik <strong>Save</strong></li>
+            </ol>
+            <button onclick="this.parentElement.remove()" style="
+                margin-top: 1rem;
+                padding: 0.75rem 2rem;
+                background: linear-gradient(135deg, #2152ff 0%, #21d4fd 100%);
+                color: white;
+                border: none;
+                border-radius: 8px;
+                font-weight: 600;
+                cursor: pointer;
+            ">Mengerti</button>
+        `;
+
+        document.body.appendChild(instructionDiv);
+
+        setTimeout(() => {
+            iframe.contentWindow.focus();
+            iframe.contentWindow.print();
+        }, 2000);
+    }
 }
 
 
