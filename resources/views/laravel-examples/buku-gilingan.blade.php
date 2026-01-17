@@ -2604,7 +2604,7 @@
                     <i class="bi bi-x-circle"></i> Tutup
                 </button>
                 <button type="button" class="btn btn-success" id="btn-save-nota-operator">
-                    <i class="bi bi-download"></i> Simpan PDF
+                    <i class="bi bi-download"></i> Simpan PNG
                 </button>
                 <button type="button" class="btn btn-primary" id="btn-print-nota-operator">
                     <i class="bi bi-printer"></i> Cetak
