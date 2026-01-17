@@ -90,6 +90,7 @@
     border-radius: 8px;
 }
 
+
 .edit-modal-close:hover {
     background: rgba(203, 12, 159, 0.1);
     color: #cb0c9f;
@@ -647,6 +648,10 @@
         overflow: hidden;
         text-overflow: ellipsis;
     }
+
+
+
+
 
     /* ============================================
    SEARCH + FILTER CONTAINER
@@ -3859,6 +3864,7 @@ async function openModalOperator() {
         document.getElementById('modal-bayar-operator').classList.add('active');
         document.body.style.overflow = 'hidden';
 
+
     } catch (error) {
         console.error('Error:', error);
         alert('Terjadi kesalahan saat mengambil data');
@@ -3960,6 +3966,7 @@ function generateNotaOperator(data, keterangan, hargaRataDefault, totalGiling, t
         <tr>
     <td style="padding: 2mm 0; border-bottom: 1px dotted #999;">${index + 1}. ${item.nama_petani}</td>
     <td style="padding: 2mm 0; text-align: right; border-bottom: 1px dotted #999;">${smartFormatNumber(giling)}</td>
+    <td style="padding: 2mm 0; text-align: right; border-bottom: 1px dotted #999;">${smartFormatNumber(harga)}</td>
     <td style="padding: 2mm 0; text-align: right; border-bottom: 1px dotted #999;">Rp ${smartFormatNumber(subtotal)}</td>
 </tr>
         `;
@@ -4155,8 +4162,9 @@ function generateNotaOperator(data, keterangan, hargaRataDefault, totalGiling, t
         <thead>
             <tr>
                 <th style="width: 40%;">Petani</th>
-                <th class="right" style="width: 25%;">Jumlah</th>
-                <th class="right" style="width: 35%;">Harga</th>
+                <th class="right" style="width: 15%;">Jumlah</th>
+                <th class="right" style="width: 15%;">Harga</th>
+                <th class="right" style="width: 30%;">Total</th>
             </tr>
         </thead>
         <tbody>
