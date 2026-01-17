@@ -2390,6 +2390,241 @@ async function printLangsung(calculatorType) {
 //     };
 // }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// async function saveNotaAsJPG(calculatorType) {
+//     const notaContent = generateNotaHTML(calculatorType);
+
+//     // === DETEKSI iOS ===
+//     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+//     if (isIOS) {
+//         // === METODE KHUSUS UNTUK iOS ===
+//         await saveNotaAsJPG_iOS(notaContent, calculatorType);
+//         return;
+//     }
+
+//     // === KODE ASLI ANDA (TIDAK DIUBAH) ===
+//     // --- Buat iframe tersembunyi ---
+//     const iframe = document.createElement('iframe');
+//     iframe.style.position = 'absolute';
+//     iframe.style.left = '-9999px';
+//     iframe.style.top = '-9999px';
+//     iframe.style.width = '0';
+//     iframe.style.height = '0';
+//     iframe.style.border = 'none';
+//     document.body.appendChild(iframe);
+//     const html = `
+//         <!DOCTYPE html>
+//         <html>
+//         <head>
+//             <meta charset="UTF-8">
+//             <style>
+//                 @page { size: 80mm auto; margin: 0; }
+//                 * { box-sizing: border-box; }
+//                 body {
+//                     margin: 0;
+//                     padding: 12px 10px;
+//                     width: 80mm;
+//                     max-width: 80mm;
+//                     background: white;
+//                     font-family: "Arial", sans-serif;
+//                     -webkit-print-color-adjust: exact !important;
+//                 }
+//             </style>
+//         </head>
+//         <body>${notaContent}</body>
+//         </html>
+//     `;
+//     iframe.contentDocument.open();
+//     iframe.contentDocument.write(html);
+//     iframe.contentDocument.close();
+//     iframe.onload = async function () {
+//         const iframeBody = iframe.contentDocument.body;
+//         // Tunggu render selesai
+//         await new Promise((r) => setTimeout(r, 300));
+//         // === 🔍 Render tajam dengan html2canvas ===
+//         const scale = window.devicePixelRatio * 4; // atau 3-6 sesuai kebutuhan
+//         const canvas = await html2canvas(iframeBody, {
+//             scale: scale,
+//             useCORS: true,
+//             backgroundColor: '#fff',
+//             logging: false,
+//         });
+//         // Konversi ke JPG dengan kualitas maksimal
+//         const imgData = canvas.toDataURL('image/jpeg', 1.0);
+//         // Buat link download
+//         const link = document.createElement('a');
+//         link.href = imgData;
+//         link.download = `nota_${new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')}.jpg`;
+//         document.body.appendChild(link);
+//         link.click();
+//         // Bersihkan setelah download
+//         setTimeout(() => {
+//             document.body.removeChild(link);
+//             document.body.removeChild(iframe);
+//         }, 100);
+//     };
+// }
+
+// // === FUNGSI iOS - PAKAI IFRAME YANG SAMA PERSIS ===
+// async function saveNotaAsJPG_iOS(notaContent, calculatorType) {
+//     try {
+//         // --- Buat iframe tersembunyi (SAMA PERSIS SEPERTI UNIVERSAL) ---
+//         const iframe = document.createElement('iframe');
+//         iframe.style.position = 'absolute';
+//         iframe.style.left = '-9999px';
+//         iframe.style.top = '-9999px';
+//         iframe.style.width = '0';
+//         iframe.style.height = '0';
+//         iframe.style.border = 'none';
+//         document.body.appendChild(iframe);
+
+//         const html = `
+//             <!DOCTYPE html>
+//             <html>
+//             <head>
+//                 <meta charset="UTF-8">
+//                 <style>
+//                     @page { size: 80mm auto; margin: 0; }
+//                     * { box-sizing: border-box; }
+//                     body {
+//                         margin: 0;
+//                         padding: 12px 10px;
+//                         width: 80mm;
+//                         max-width: 80mm;
+//                         background: white;
+//                         font-family: "Arial", sans-serif;
+//                         -webkit-print-color-adjust: exact !important;
+//                     }
+//                 </style>
+//             </head>
+//             <body>${notaContent}</body>
+//             </html>
+//         `;
+
+//         iframe.contentDocument.open();
+//         iframe.contentDocument.write(html);
+//         iframe.contentDocument.close();
+
+//         // Tunggu iframe load
+//         await new Promise(resolve => {
+//             iframe.onload = resolve;
+//             setTimeout(resolve, 100); // fallback
+//         });
+
+//         const iframeBody = iframe.contentDocument.body;
+
+//         // Tunggu render selesai
+//         await new Promise((r) => setTimeout(r, 300));
+
+//         // === 🔍 Render tajam dengan html2canvas ===
+//         const scale = window.devicePixelRatio * 4;
+//         const canvas = await html2canvas(iframeBody, {
+//             scale: scale,
+//             useCORS: true,
+//             backgroundColor: '#fff',
+//             logging: false,
+//         });
+
+//         // Konversi ke JPG dengan kualitas maksimal
+//         const imgData = canvas.toDataURL('image/jpeg', 1.0);
+
+//         // Buka di window baru
+//         const newWindow = window.open('', '_blank');
+//         if (newWindow) {
+//             newWindow.document.write(`
+//                 <!DOCTYPE html>
+//                 <html>
+//                 <head>
+//                     <meta charset="UTF-8">
+//                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+//                     <title>Nota</title>
+//                     <style>
+//                         body {
+//                             margin: 0;
+//                             padding: 0;
+//                             display: flex;
+//                             justify-content: center;
+//                             align-items: center;
+//                             min-height: 100vh;
+//                             background: #f0f0f0;
+//                         }
+//                         img {
+//                             max-width: 100%;
+//                             height: auto;
+//                             display: block;
+//                             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+//                         }
+//                     </style>
+//                 </head>
+//                 <body>
+//                     <img src="${imgData}" alt="Nota">
+//                 </body>
+//                 </html>
+//             `);
+//             newWindow.document.close();
+//         } else {
+//             alert('Pop-up diblokir! Silakan izinkan pop-up untuk situs ini.');
+//         }
+
+//         // Bersihkan iframe
+//         document.body.removeChild(iframe);
+
+//     } catch (error) {
+//         console.error('Error saving on iOS:', error);
+//         alert('Gagal membuat gambar. Silakan coba lagi.');
+//     }
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 async function saveNotaAsJPG(calculatorType) {
     const notaContent = generateNotaHTML(calculatorType);
 
@@ -2439,6 +2674,13 @@ async function saveNotaAsJPG(calculatorType) {
     iframe.contentDocument.close();
     iframe.onload = async function () {
         const iframeBody = iframe.contentDocument.body;
+
+        // === SEMBUNYIKAN header-foot SEBELUM CAPTURE ===
+        const headerFoot = iframeBody.querySelector('.header-foot');
+        if (headerFoot) {
+            headerFoot.style.display = 'none';
+        }
+
         // Tunggu render selesai
         await new Promise((r) => setTimeout(r, 300));
         // === 🔍 Render tajam dengan html2canvas ===
@@ -2513,6 +2755,12 @@ async function saveNotaAsJPG_iOS(notaContent, calculatorType) {
 
         const iframeBody = iframe.contentDocument.body;
 
+        // === SEMBUNYIKAN header-foot SEBELUM CAPTURE ===
+        const headerFoot = iframeBody.querySelector('.header-foot');
+        if (headerFoot) {
+            headerFoot.style.display = 'none';
+        }
+
         // Tunggu render selesai
         await new Promise((r) => setTimeout(r, 300));
 
@@ -2574,6 +2822,15 @@ async function saveNotaAsJPG_iOS(notaContent, calculatorType) {
         alert('Gagal membuat gambar. Silakan coba lagi.');
     }
 }
+
+
+
+
+
+
+
+
+
 
 
 // function showNotaModal(calculatorType) {
