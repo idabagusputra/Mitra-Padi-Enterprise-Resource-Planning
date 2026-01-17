@@ -61,7 +61,7 @@
 
 /* Modal Header */
 .edit-modal-header {
-    padding: 1.5rem;
+    padding: 0.75rem 1rem;
     border-bottom: 2px solid #f1f3f5;
     display: flex;
     justify-content: space-between;
@@ -73,7 +73,7 @@
     font-size: 1.25rem;
     font-weight: 700;
     color: #cb0c9f;
-    margin: 0;
+    margin: 0rem 0.75rem;
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -284,7 +284,7 @@
     }
 
     .edit-modal-header {
-        padding: 1rem;
+        padding: 0.75rem 1rem;
     }
 
     .edit-modal-body {
@@ -665,7 +665,7 @@
 
 .status-filter-wrapper {
     flex-shrink: 0;
-    min-width: 160px;
+    width: auto;
 }
 
 .status-filter-wrapper .form-select {
@@ -679,6 +679,7 @@
     background-color: #ffffff;
     cursor: pointer;
     transition: all 0.3s ease;
+    min-width: 160px;
 }
 
 .status-filter-wrapper .form-select:focus {
@@ -692,13 +693,67 @@
     font-weight: 500;
 }
 
+/* Button Gajian - Remove extra padding/margin */
+.status-filter-wrapper .btn-primary {
+    margin: 0 !important;
+    padding: 0 1.5rem !important;
+}
+
+.status-filter-wrapper .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(203, 12, 159, 0.4);
+
+
+}
+
+#btn-bayar-operator {
+    height: 48px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, #cb0c9f 0%, #e91e8c 100%);
+    border: none;
+    box-shadow: 0 4px 15px rgba(203, 12, 159, 0.3);
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+#btn-bayar-operator:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(203, 12, 159, 0.4);
+}
+
 @media (max-width: 576px) {
+
+    #btn-bayar-operator {
+    height: 48px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, #cb0c9f 0%, #e91e8c 100%);
+    border: none;
+    box-shadow: 0 4px 15px rgba(203, 12, 159, 0.3);
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+#btn-bayar-operator:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(203, 12, 159, 0.4);
+}
+
+
     .search-filter-container {
         flex-direction: column;
         gap: 0.75rem;
     }
 
     .status-filter-wrapper {
+        width: 100%;
+    }
+
+    .status-filter-wrapper .form-select,
+    .status-filter-wrapper .btn-primary {
         width: 100%;
     }
 }
@@ -1347,7 +1402,7 @@
     </div>
 </div>
 
-                <!-- Search Petani Global + Filter Status -->
+<!-- Search Petani Global + Filter Status -->
 <div class="search-petani-global">
     <div class="search-filter-container">
         <div class="search-petani-wrapper">
@@ -1362,6 +1417,11 @@
                 <option value="1">Lunas</option>
                 <option value="0">Belum Lunas</option>
             </select>
+        </div>
+        <div class="status-filter-wrapper">
+            <button type="button" id="btn-bayar-operator" class="btn btn-primary">
+                <i class="bi bi-cash-coin"></i>
+            </button>
         </div>
     </div>
 </div>
@@ -2433,6 +2493,121 @@
 
 
 
+<!-- Modal Konfirmasi Bayar Operator -->
+<div class="modal-overlay" id="modal-overlay-operator"></div>
+
+<div class="edit-modal" id="modal-bayar-operator" style="max-width: 600px;">
+    <div class="edit-modal-header">
+        <h5 class="edit-modal-title">
+            <i class="bi bi-cash-coin"></i>
+            Bayar Operator - Konfirmasi
+        </h5>
+        <button class="edit-modal-close" onclick="closeModalOperator()">&times;</button>
+    </div>
+    <div class="edit-modal-body">
+        <div class="alert alert-info" style="margin-bottom: 1rem; padding: 0.75rem; border-radius: 8px; background: #e7f3ff; border: 1px solid #b3d9ff; font-size: 0.85rem;">
+            <i class="bi bi-info-circle-fill" style="margin-right: 0.5rem;"></i>
+            <strong>Informasi:</strong> Sistem akan membuat nota untuk semua data giling yang belum dibayar operator.
+        </div>
+
+        <div id="operator-summary" style="background: #f8f9fa; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+            <table style="width: 100%; font-size: 0.9rem;">
+                <tr>
+                    <td style="padding: 0.25rem 0;"><strong>Total Data:</strong></td>
+                    <td id="summary-total-data" style="text-align: right;">-</td>
+                </tr>
+                <tr>
+                    <td style="padding: 0.25rem 0;"><strong>Total Giling Kotor:</strong></td>
+                    <td id="summary-total-giling" style="text-align: right;">-</td>
+                </tr>
+                <tr>
+                    <td style="padding: 0.25rem 0;"><strong>Data Belum Ada Harga:</strong></td>
+                    <td id="summary-no-price" style="text-align: right; color: #f5365c; font-weight: 600;">-</td>
+                </tr>
+                <tr style="border-top: 1px solid #dee2e6;">
+                    <td style="padding: 0.5rem 0;"><strong>Total Harga:</strong></td>
+                    <td id="summary-total-harga" style="text-align: right; font-weight: bold; color: #cb0c9f;">-</td>
+                </tr>
+                <tr>
+                    <td style="padding: 0.25rem 0;"><strong>Harga Rata-rata:</strong></td>
+                    <td id="summary-harga-rata" style="text-align: right; font-weight: bold; color: #17ad37;">-</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="edit-form-group">
+            <label class="edit-form-label">Harga Rata-rata untuk Data Tanpa Harga</label>
+            <input type="text" class="edit-form-control number-format" id="operator-harga-rata-default"
+                   placeholder="0" inputmode="decimal">
+            <small class="text-muted" style="display: block; margin-top: 0.5rem; font-size: 0.75rem;">
+                <i class="bi bi-info-circle"></i> Harga ini akan diterapkan untuk data yang belum memiliki harga
+            </small>
+        </div>
+
+        <div class="edit-form-group">
+            <label class="edit-form-label">Keterangan</label>
+            <textarea class="edit-form-control" id="operator-keterangan" rows="2"
+                      placeholder="Contoh: Panen Balinggi" required></textarea>
+            <small class="text-muted" style="display: block; margin-top: 0.5rem; font-size: 0.75rem;">
+                <i class="bi bi-info-circle"></i> Tanggal akan otomatis ditambahkan
+            </small>
+        </div>
+    </div>
+    <div class="edit-modal-footer">
+        <button class="edit-btn edit-btn-cancel" onclick="closeModalOperator()">
+            <i class="bi bi-x-circle"></i> Tutup
+        </button>
+        <button class="edit-btn edit-btn-submit" onclick="lanjutkanBayarOperator()">
+            <i class="bi bi-arrow-right-circle"></i> Lanjutkan ke Nota
+        </button>
+    </div>
+</div>
+
+<!-- Modal Nota Operator dengan iframe -->
+<div class="modal fade" id="modal-nota-operator" tabindex="-1" aria-labelledby="notaOperatorLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" style="max-width: 600px;">
+        <div class="modal-content">
+            <div class="edit-modal-header">
+        <h5 class="modal-title" id="notaOperatorLabel">
+                    <i class="bi bi-receipt"></i>
+                    Nota Pembayaran Operator
+                </h5>
+        <button class="edit-modal-close" onclick="closeModalOperator()">&times;</button>
+    </div>
+            <div class="modal-body p-0">
+                <div class="iframe-container" style="position: relative; width: 100%; height: 70vh;">
+                    <div class="loading-spinner text-center py-5" id="nota-loading" style="display: none;">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-3 text-muted">Memuat nota...</p>
+                    </div>
+                    <iframe id="nota-iframe-operator"
+                            style="width: 100%; height: 100%; border: none; display: none;"
+                            frameborder="0"></iframe>
+                </div>
+                <!-- Download Progress -->
+                <div class="download-progress text-center py-5" id="download-progress-operator" style="display: none;">
+                    <div class="spinner-border text-success" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-3 text-muted">Sedang membuat gambar...</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle"></i> Tutup
+                </button>
+                <button type="button" class="btn btn-success" id="btn-save-nota-operator">
+                    <i class="bi bi-download"></i> Simpan PDF
+                </button>
+                <button type="button" class="btn btn-primary" id="btn-print-nota-operator">
+                    <i class="bi bi-printer"></i> Cetak
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 
@@ -2443,6 +2618,13 @@
 
 
 
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     let rowCounters = {
@@ -3584,6 +3766,525 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+
+
+
+
+
+
+// ============================================
+// BAYAR OPERATOR FUNCTIONS - Updated
+// ============================================
+let operatorData = [];
+let notaOperatorModal;
+let konfirmasiOperatorModal;
+
+// Initialize modals saat DOM ready
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Bootstrap modals
+    notaOperatorModal = new bootstrap.Modal(document.getElementById('modal-nota-operator'));
+
+    // Button handler
+    document.getElementById('btn-bayar-operator').addEventListener('click', function() {
+        openModalOperator();
+    });
+
+    // Print button
+    document.getElementById('btn-print-nota-operator').addEventListener('click', function() {
+        printNotaOperator();
+    });
+
+    // Save PNG button
+    document.getElementById('btn-save-nota-operator').addEventListener('click', function() {
+        saveNotaPDF();
+    });
+
+    // Close modal handler - reload page
+    document.getElementById('modal-nota-operator').addEventListener('hidden.bs.modal', function() {
+        location.reload();
+    });
+});
+
+async function openModalOperator() {
+    try {
+        const response = await fetch('/buku-stok/get-unpaid-operator');
+        const data = await response.json();
+
+        if (!data.success) {
+            alert('Gagal mengambil data: ' + data.message);
+            return;
+        }
+
+        operatorData = data.data;
+
+        if (operatorData.length === 0) {
+            alert('Tidak ada data giling yang belum dibayar operator.');
+            return;
+        }
+
+        // Hitung summary
+        let totalGiling = 0;
+        let totalHarga = 0;
+        let noPrice = 0;
+
+        operatorData.forEach(item => {
+            const giling = parseFloat(item.giling_kotor) || 0;
+            const harga = parseFloat(item.harga) || 0;
+            totalGiling += giling;
+
+            if (harga > 0) {
+                totalHarga += (giling * harga);
+            } else {
+                noPrice++;
+            }
+        });
+
+        const hargaRata = totalGiling > 0 ? totalHarga / totalGiling : 0;
+
+        // Update summary display
+        document.getElementById('summary-total-data').textContent = operatorData.length + ' data';
+        document.getElementById('summary-total-giling').textContent = smartFormatNumber(totalGiling) + ' Kg';
+        document.getElementById('summary-no-price').textContent = noPrice + ' data';
+        document.getElementById('summary-total-harga').textContent = 'Rp ' + smartFormatNumber(totalHarga);
+        document.getElementById('summary-harga-rata').textContent = 'Rp ' + smartFormatNumber(hargaRata) + '/Kg';
+
+        // Setup number formatting for harga rata input
+        const hargaInput = document.getElementById('operator-harga-rata-default');
+        setupNumberFormatting(hargaInput);
+        hargaInput.value = '';
+
+        // Show modal konfirmasi (menggunakan custom modal dari kode lama)
+        document.getElementById('modal-overlay-operator').classList.add('active');
+        document.getElementById('modal-bayar-operator').classList.add('active');
+        document.body.style.overflow = 'hidden';
+
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Terjadi kesalahan saat mengambil data');
+    }
+}
+
+function closeModalOperator() {
+    document.getElementById('modal-overlay-operator').classList.remove('active');
+    document.getElementById('modal-bayar-operator').classList.remove('active');
+    document.body.style.overflow = '';
+
+    // Reset form
+    document.getElementById('operator-keterangan').value = '';
+    document.getElementById('operator-harga-rata-default').value = '';
+}
+
+async function lanjutkanBayarOperator() {
+    const keterangan = document.getElementById('operator-keterangan').value.trim();
+    const hargaRataInput = document.getElementById('operator-harga-rata-default').value;
+
+    if (!keterangan) {
+        alert('Keterangan harus diisi');
+        return;
+    }
+
+    const hargaRataDefault = parseFormattedNumber(hargaRataInput);
+
+    // Hitung ulang total dengan harga default
+    let totalGiling = 0;
+    let totalHarga = 0;
+
+    operatorData.forEach(item => {
+        const giling = parseFloat(item.giling_kotor) || 0;
+        let harga = parseFloat(item.harga) || 0;
+
+        // Jika tidak ada harga, gunakan harga default
+        if (harga === 0 && hargaRataDefault > 0) {
+            harga = hargaRataDefault;
+        }
+
+        totalGiling += giling;
+        totalHarga += (giling * harga);
+    });
+
+    // Update database dulu
+    const updateSuccess = await updateOperatorStatus(keterangan, hargaRataDefault);
+
+    if (!updateSuccess) {
+        alert('Gagal menyimpan data ke database');
+        return;
+    }
+
+    // Generate nota HTML
+    const notaHTML = generateNotaOperator(operatorData, keterangan, hargaRataDefault, totalGiling, totalHarga);
+
+    // Close konfirmasi modal
+    closeModalOperator();
+
+    // Show loading
+    document.getElementById('nota-loading').style.display = 'block';
+    document.getElementById('nota-iframe-operator').style.display = 'none';
+
+    // Show nota modal dengan Bootstrap
+    notaOperatorModal.show();
+
+    // Load nota ke iframe
+    setTimeout(() => {
+        const iframe = document.getElementById('nota-iframe-operator');
+        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+
+        iframeDoc.open();
+        iframeDoc.write(notaHTML);
+        iframeDoc.close();
+
+        // Hide loading, show iframe
+        document.getElementById('nota-loading').style.display = 'none';
+        iframe.style.display = 'block';
+    }, 300);
+}
+
+function generateNotaOperator(data, keterangan, hargaRataDefault, totalGiling, totalHarga) {
+    const hargaRata = totalGiling > 0 ? (totalHarga / totalGiling) : 0;
+    const now = new Date();
+    const tanggal = now.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    const waktu = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+
+    let itemsHTML = '';
+    data.forEach((item, index) => {
+        const giling = parseFloat(item.giling_kotor) || 0;
+        let harga = parseFloat(item.harga) || 0;
+
+        if (harga === 0 && hargaRataDefault > 0) {
+            harga = hargaRataDefault;
+        }
+
+        const subtotal = giling * harga;
+
+        itemsHTML += `
+        <tr>
+    <td style="padding: 2mm 0; border-bottom: 1px dotted #999;">${index + 1}. ${item.nama_petani}</td>
+    <td style="padding: 2mm 0; text-align: right; border-bottom: 1px dotted #999;">${smartFormatNumber(giling)}</td>
+    <td style="padding: 2mm 0; text-align: right; border-bottom: 1px dotted #999;">Rp ${smartFormatNumber(subtotal)}</td>
+</tr>
+        `;
+    });
+
+    return `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=80mm">
+    <title>Nota Operator</title>
+    <style>
+        @page {
+            size: 80mm auto;
+            margin: 0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 80mm;
+            margin: 0 auto;
+            padding: 4mm 3mm;
+            font-family: 'Arial', sans-serif;
+            font-size: 12px;
+            line-height: 1.4;
+            color: #000;
+            background: white;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3mm;
+            padding-bottom: 3mm;
+            border-bottom: 2px solid #000;
+        }
+
+.title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 1mm;
+    letter-spacing: 0.5px;
+}
+
+.nota-label {
+    font-size: 13px;
+    font-weight: bold;
+    margin: 2mm 0;
+    padding: 1.5mm 0;
+    background: #000;
+    color: #fff;
+}
+
+.subtitle {
+    font-size: 10px;
+    line-height: 1.6;
+    margin-top: 2mm;
+}
+
+        .date-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            font-weight: bold;
+            padding: 2mm 0;
+            margin-bottom: 2mm;
+            border-bottom: 1px dashed #000;
+        }
+
+        .keterangan {
+            background: #f0f0f0;
+            padding: 2mm;
+            margin-bottom: 3mm;
+            border-left: 3px solid #000;
+            font-size: 11px;
+        }
+
+        .keterangan strong {
+            display: block;
+            margin-bottom: 1mm;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 3mm;
+            font-size: 11px;
+        }
+
+        th {
+            font-weight: bold;
+            padding: 2mm 0;
+            border-top: 2px solid #000;
+            border-bottom: 2px solid #000;
+            text-align: left;
+        }
+
+        th.right {
+            text-align: right;
+        }
+
+        .summary {
+            border-top: 2px solid #000;
+            padding-top: 2mm;
+            margin-top: 2mm;
+        }
+
+        .sum-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 2mm;
+            margin: 1mm 0;
+            background: #f0f0f0;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .grand-total {
+            background: #000;
+            color: #fff;
+            padding: 3mm;
+            margin-top: 3mm;
+            text-align: center;
+        }
+
+        .grand-total .label {
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 1mm;
+        }
+
+        .grand-total .amount {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 4mm;
+            padding-top: 3mm;
+            border-top: 2px solid #000;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        @media print {
+            body {
+                width: 80mm;
+                margin: 0;
+                padding: 4mm 3mm;
+            }
+
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            .grand-total {
+                background: #000 !important;
+                color: #fff !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+    <div class="title">PENGGILINGAN PADI</div>
+    <div class="title">PUTRA MANUABA</div>
+    <div class="nota-label">NOTA OPERATOR</div>
+    <div class="subtitle">
+        Dus. Babahan, Des. Tolai, Kab. Parigi<br>
+        Telp: 0811-451-486 / 0822-6077-3867
+    </div>
+</div>
+
+    <div class="date-row">
+        <span>${tanggal}</span>
+        <span>${waktu}</span>
+    </div>
+
+    ${keterangan ? `
+    <div class="keterangan">
+        <strong>Keterangan:</strong>
+        <div>${keterangan}</div>
+    </div>` : ''}
+
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 40%;">Petani</th>
+                <th class="right" style="width: 25%;">Jumlah</th>
+                <th class="right" style="width: 35%;">Harga</th>
+            </tr>
+        </thead>
+        <tbody>
+            ${itemsHTML}
+        </tbody>
+    </table>
+
+    <div class="summary">
+        <div class="sum-row">
+            <span>TRANSAKSI</span>
+            <span>${data.length} Data</span>
+        </div>
+        <div class="sum-row">
+            <span>TOTAL GILING</span>
+            <span>${smartFormatNumber(totalGiling)} Kg</span>
+        </div>
+        <div class="sum-row">
+            <span>HARGA RATA-RATA</span>
+            <span>Rp ${smartFormatNumber(hargaRata)}</span>
+        </div>
+
+    </div>
+
+    <div class="grand-total">
+        <div class="label">TOTAL BAYAR</div>
+        <div class="amount">Rp ${smartFormatNumber(totalHarga)}</div>
+    </div>
+
+    <div class="footer">
+        Terima Kasih<br>
+        Semoga Lancar & Berkah
+    </div>
+</body>
+</html>
+    `;
+}
+
+// <div class="sum-row">
+//             <span>TOTAL HARGA</span>
+//             <span>Rp ${smartFormatNumber(totalHarga)}</span>
+//         </div>
+
+async function updateOperatorStatus(keterangan, hargaRataDefault) {
+    try {
+        const response = await fetch('/buku-stok/update-operator-status', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('[name="_token"]').value,
+            },
+            body: JSON.stringify({
+                ids: operatorData.map(item => item.id),
+                keterangan: keterangan,
+                // harga_rata_default: hargaRataDefault
+            })
+        });
+
+        const result = await response.json();
+        return result.success;
+    } catch (error) {
+        console.error('Error:', error);
+        return false;
+    }
+}
+
+function printNotaOperator() {
+    const iframe = document.getElementById('nota-iframe-operator');
+
+    // Focus pada iframe
+    iframe.contentWindow.focus();
+
+    // Print
+    iframe.contentWindow.print();
+}
+
+
+function saveNotaPDF() {
+    const iframe = document.getElementById('nota-iframe-operator');
+
+    // Create alert untuk instruksi user
+    const instructionDiv = document.createElement('div');
+    instructionDiv.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        z-index: 99999;
+        max-width: 400px;
+        text-align: center;
+    `;
+
+    instructionDiv.innerHTML = `
+        <div style="margin-bottom: 1rem;">
+            <i class="bi bi-info-circle-fill" style="font-size: 3rem; color: #2152ff;"></i>
+        </div>
+        <h5 style="margin-bottom: 1rem; color: #344767;">Cara Menyimpan sebagai PDF</h5>
+        <ol style="text-align: left; color: #8392ab; font-size: 0.9rem; line-height: 1.6;">
+            <li>Pilih <strong>"Save as PDF"</strong> atau <strong>"Microsoft Print to PDF"</strong> di bagian Printer/Destination</li>
+            <li>Pastikan <strong>Paper size: 80mm</strong></li>
+            <li>Klik <strong>Save</strong></li>
+        </ol>
+        <button onclick="this.parentElement.remove()" style="
+            margin-top: 1rem;
+            padding: 0.75rem 2rem;
+            background: linear-gradient(135deg, #2152ff 0%, #21d4fd 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        ">Mengerti</button>
+    `;
+
+    document.body.appendChild(instructionDiv);
+
+    // Trigger print setelah 2 detik
+    setTimeout(() => {
+        iframe.contentWindow.focus();
+        iframe.contentWindow.print();
+    }, 2000);
+}
+
+
+
 
 </script>
 

@@ -362,6 +362,10 @@ Route::get('/petani/{id}/stok-terakhir', [GilingController::class, 'getStokTerak
 Route::get('/search-petani-stok', [BukuStokController::class, 'searchPetaniStok']);
 
 
+Route::get('/buku-stok/get-unpaid-operator', [BukuStokController::class, 'getUnpaidOperator'])->name('buku-stok.get-unpaid-operator');
+Route::post('/buku-stok/update-operator-status', [BukuStokController::class, 'updateOperatorStatus'])->name('buku-stok.update-operator-status');
+
+
 // Tambahkan route ini di sekitar route buku-stok yang sudah ada
 Route::post('/buku-stok/update-stok-global', [BukuStokController::class, 'updateStokGlobal'])->name('buku-stok.update-stok-global');
 

@@ -656,6 +656,102 @@ class BukuStokController extends Controller
 
 
 
+
+
+
+
+
+
+    public function getUnpaidOperator()
+    {
+        try {
+            $data = BukuStokBeras::whereNull('keterangan_operator_gajian')
+                ->whereNull('deleted_at') // Tambahkan filter untuk exclude soft deleted
+                ->orderBy('tanggal', 'desc')
+                ->orderBy('id', 'desc')
+                ->get()
+                ->map(function ($item) {
+                    return [
+                        'id' => $item->id,
+                        'nama_petani' => $item->nama_petani,
+                        'tanggal' => $item->tanggal ? $item->tanggal->format('Y-m-d') : null,
+                        'giling_kotor' => $item->giling_kotor,
+                        'harga' => $item->harga ?? 0,
+                    ];
+                });
+
+            return response()->json([
+                'success' => true,
+                'data' => $data
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function updateOperatorStatus(Request $request)
+    {
+        DB::beginTransaction();
+
+        try {
+            $ids = $request->ids;
+            $keterangan = $request->keterangan;
+            $hargaRataDefault = $request->harga_rata_default ?? 0;
+            $tanggal = now()->format('Y-m-d');
+
+            $keteranganFinal = trim($keterangan) . "\n" . now()->format('d-m-Y');
+
+            // Update data yang sudah punya harga
+            BukuStokBeras::whereIn('id', $ids)
+                ->where(function ($q) {
+                    $q->whereNotNull('harga')
+                        ->where('harga', '>', 0);
+                })
+                ->update(['keterangan_operator_gajian' => $keteranganFinal]);
+
+            // Update data yang belum punya harga dengan harga rata-rata
+            if ($hargaRataDefault > 0) {
+                BukuStokBeras::whereIn('id', $ids)
+                    ->where(function ($q) {
+                        $q->whereNull('harga')
+                            ->orWhere('harga', '=', 0);
+                    })
+                    ->update([
+                        'harga' => $hargaRataDefault,
+                        'keterangan_operator_gajian' => $keteranganFinal
+                    ]);
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Status operator berhasil diupdate'
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
     public function searchPetaniStok(Request $request)
     {
         $term = $request->get('term', '');
