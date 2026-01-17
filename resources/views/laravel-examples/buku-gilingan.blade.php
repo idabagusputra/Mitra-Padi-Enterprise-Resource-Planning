@@ -2600,7 +2600,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                <button type="button" class="btn btn-secondary" onclick="closeModalOperator()">
                     <i class="bi bi-x-circle"></i> Tutup
                 </button>
                 <button type="button" class="btn btn-success" id="btn-save-nota-operator">
@@ -4230,16 +4230,107 @@ async function updateOperatorStatus(keterangan, hargaRataDefault) {
     }
 }
 
+// ============================================
+// PRINT NOTA OPERATOR - Single Long Page (No Page Break)
+// ============================================
 function printNotaOperator() {
     const iframe = document.getElementById('nota-iframe-operator');
+    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
 
-    // Focus pada iframe
-    iframe.contentWindow.focus();
+    // Inject print-specific styles before printing
+    const printStyle = iframeDoc.createElement('style');
+    printStyle.id = 'print-style-override';
+    printStyle.textContent = `
+        @media print {
+            @page {
+                size: 80mm 1000mm; /* Very long page to fit all content */
+                margin: 0;
+            }
 
-    // Print
-    iframe.contentWindow.print();
+            html, body {
+                width: 80mm !important;
+                height: auto !important;
+                overflow: visible !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            body {
+                padding: 4mm 3mm !important;
+            }
+
+            /* Force everything into single page */
+            * {
+                page-break-before: avoid !important;
+                page-break-after: avoid !important;
+                page-break-inside: avoid !important;
+                break-before: avoid !important;
+                break-after: avoid !important;
+                break-inside: avoid !important;
+            }
+
+            /* Ensure no orphans/widows */
+            p, h1, h2, h3, h4, h5, h6, div, table, tr, td, th {
+                orphans: 100;
+                widows: 100;
+            }
+        }
+    `;
+
+    // Remove old print style if exists
+    const oldPrintStyle = iframeDoc.getElementById('print-style-override');
+    if (oldPrintStyle) {
+        oldPrintStyle.remove();
+    }
+
+    // Append new print style
+    iframeDoc.head.appendChild(printStyle);
+
+    // Calculate actual content height and update @page size
+    setTimeout(() => {
+        const contentHeight = iframeDoc.body.scrollHeight;
+        const heightInMM = Math.ceil(contentHeight * 0.264583); // Convert px to mm
+
+        printStyle.textContent = `
+            @media print {
+                @page {
+                    size: 80mm ${heightInMM}mm;
+                    margin: 0;
+                }
+
+                html, body {
+                    width: 80mm !important;
+                    height: ${heightInMM}mm !important;
+                    overflow: visible !important;
+                    margin: 0 !important;
+                    padding: 0 !important;
+                }
+
+                body {
+                    padding: 4mm 3mm !important;
+                }
+
+                * {
+                    page-break-before: avoid !important;
+                    page-break-after: avoid !important;
+                    page-break-inside: avoid !important;
+                    break-before: avoid !important;
+                    break-after: avoid !important;
+                    break-inside: avoid !important;
+                }
+
+                p, h1, h2, h3, h4, h5, h6, div, table, tr, td, th {
+                    orphans: 100;
+                    widows: 100;
+                }
+            }
+        `;
+
+        // Trigger print
+        iframe.contentWindow.focus();
+        iframe.contentWindow.print();
+    }, 100);
 }
-
 // ============================================
 // SAVE NOTA PDF - Download Langsung (Android Optimized)
 // ============================================
