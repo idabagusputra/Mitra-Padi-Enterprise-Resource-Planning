@@ -4117,6 +4117,30 @@ function generateNotaOperator(data, keterangan, hargaRataDefault, totalGiling, t
             font-weight: bold;
         }
 
+        .header {
+    text-align: center;
+    margin-bottom: 3mm;
+    padding-bottom: 3mm;
+    border-bottom: 2px solid #000;
+}
+
+.header-logo {
+    width: 100%;
+    max-width: 80mm; /* Sesuaikan dengan lebar kertas minus padding */
+    height: auto;
+    display: block;
+    object-fit: contain;
+}
+
+.nota-label {
+    font-size: 13px;
+    font-weight: bold;
+    margin: 2mm 0;
+    padding: 1.5mm 0;
+    background: #000;
+    color: #fff;
+}
+
         @media print {
             body {
                 width: 80mm;
@@ -4138,8 +4162,7 @@ function generateNotaOperator(data, keterangan, hargaRataDefault, totalGiling, t
 </head>
 <body>
     <div class="header">
-    <div class="title">PENGGILINGAN PADI</div>
-    <div class="title">PUTRA MANUABA</div>
+        <img src="{{ asset('logo_gilingan.png') }}" alt="Putra Manuaba" class="header-logo">
     <div class="nota-label">REKAPAN BUKU MERAH</div>
     <div class="nota-label">PENJUALAN BERAS</div>
 
@@ -4190,6 +4213,14 @@ function generateNotaOperator(data, keterangan, hargaRataDefault, totalGiling, t
         <div class="label">TOTAL BAYAR</div>
         <div class="amount">Rp ${smartFormatNumber(totalHarga)}</div>
     </div>
+
+
+    <div class="footer">
+            <img src="{{ asset('footer.png') }}" alt="Putra Manuaba" class="header-logo">
+            <div class="header-text">
+                <div></div>
+            </div>
+        </div>
 
 
 </body>
