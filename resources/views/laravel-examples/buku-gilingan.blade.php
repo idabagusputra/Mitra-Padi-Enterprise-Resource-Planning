@@ -4010,14 +4010,14 @@ function generateNotaOperator(data, keterangan, hargaRataDefault, totalGiling, t
         }
 
 .title {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: bold;
     margin-bottom: 1mm;
     letter-spacing: 0.5px;
 }
 
 .nota-label {
-    font-size: 13px;
+    font-size: 14px;
     font-weight: bold;
     margin: 2mm 0;
     padding: 1.5mm 0;
@@ -4140,11 +4140,9 @@ function generateNotaOperator(data, keterangan, hargaRataDefault, totalGiling, t
     <div class="header">
     <div class="title">PENGGILINGAN PADI</div>
     <div class="title">PUTRA MANUABA</div>
-    <div class="nota-label">NOTA OPERATOR</div>
-    <div class="subtitle">
-        Dus. Babahan, Des. Tolai, Kab. Parigi<br>
-        Telp: 0811-451-486 / 0822-6077-3867
-    </div>
+    <div class="nota-label">REKAPAN BUKU MERAH</div>
+    <div class="nota-label">PENJUALAN BERAS</div>
+
 </div>
 
     <div class="date-row">
@@ -4193,10 +4191,7 @@ function generateNotaOperator(data, keterangan, hargaRataDefault, totalGiling, t
         <div class="amount">Rp ${smartFormatNumber(totalHarga)}</div>
     </div>
 
-    <div class="footer">
-        Terima Kasih<br>
-        Semoga Lancar & Berkah
-    </div>
+
 </body>
 </html>
     `;
