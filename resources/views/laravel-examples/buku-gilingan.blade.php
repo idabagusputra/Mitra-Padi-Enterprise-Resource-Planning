@@ -2559,12 +2559,12 @@
         </div>
     </div>
     <div class="edit-modal-footer">
-        <button class="edit-btn edit-btn-cancel" onclick="closeModalOperator()">
+        <button class="edit-btn edit-btn-cancel" onclick="closeModalNotaOperator()">
             <i class="bi bi-x-circle"></i> Tutup
         </button>
         <button class="edit-btn edit-btn-submit" onclick="lanjutkanBayarOperator()">
             <i class="bi bi-arrow-right-circle"></i> Lanjutkan ke Nota
-        </button>
+        &times;</button>
     </div>
 </div>
 
@@ -3870,6 +3870,35 @@ async function openModalOperator() {
         alert('Terjadi kesalahan saat mengambil data');
     }
 }
+
+function closeModalNotaOperator() {
+    const modalNota = document.getElementById('modal-nota-operator');
+
+    // Tutup Bootstrap modal dengan benar
+    if (modalNota) {
+        const bsModal = bootstrap.Modal.getInstance(modalNota);
+        if (bsModal) {
+            bsModal.hide();
+        }
+    }
+
+    // Kembalikan scroll halaman
+    document.body.style.overflow = '';
+    document.body.style.height = '';
+
+    // Reset iframe & state nota
+    const iframe = document.getElementById('nota-iframe-operator');
+    const loading = document.getElementById('nota-loading');
+    const progress = document.getElementById('download-progress-operator');
+
+    if (iframe) {
+        iframe.src = '';
+        iframe.style.display = 'none';
+    }
+    if (loading) loading.style.display = 'none';
+    if (progress) progress.style.display = 'none';
+}
+
 
 function closeModalOperator() {
     document.getElementById('modal-overlay-operator').classList.remove('active');
