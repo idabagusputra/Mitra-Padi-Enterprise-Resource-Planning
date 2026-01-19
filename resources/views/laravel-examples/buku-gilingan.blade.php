@@ -1437,28 +1437,28 @@
                         <li class="nav-item" role="presentation">
                             <button class="nav-link active" id="buku-beras-tab" data-bs-toggle="tab"
                                     data-bs-target="#buku-beras" type="button" role="tab">
-                                <span class="tab-icon"><i class="bi bi-droplet-fill"></i></span>
+                                <span class="tab-icon"><i class="bi bi-suit-club-fill"></i></span>
                                 <span>Buku Beras</span>
                             </button>
                         </li>
                         <li class="nav-item" role="presentation">
                             <button class="nav-link" id="pinjaman-beras-tab" data-bs-toggle="tab"
                                     data-bs-target="#pinjaman-beras" type="button" role="tab">
-                                <span class="tab-icon"><i class="bi bi-hand-index-fill"></i></span>
+                                <span class="tab-icon"><i class="bi bi-arrow-left-right"></i></span>
                                 <span>Pinjaman Beras</span>
                             </button>
                         </li>
                         <li class="nav-item" role="presentation">
                             <button class="nav-link" id="penjualan-beras-tab" data-bs-toggle="tab"
                                     data-bs-target="#penjualan-beras" type="button" role="tab">
-                                <span class="tab-icon"><i class="bi bi-cash-stack"></i></span>
+                                <span class="tab-icon"><i class="bi bi-currency-dollar"></i></span>
                                 <span>Penjualan Beras</span>
                             </button>
                         </li>
                         <li class="nav-item" role="presentation">
                             <button class="nav-link" id="buku-konga-tab" data-bs-toggle="tab"
                                     data-bs-target="#buku-konga" type="button" role="tab">
-                                <span class="tab-icon"><i class="bi bi-circle-fill"></i></span>
+                                <span class="tab-icon"><i class="bi bi-suit-spade-fill"></i></span>
                                 <span>Buku Konga & Menir</span>
                             </button>
                         </li>
