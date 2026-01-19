@@ -1364,7 +1364,7 @@
     <div class="stok-card beras" onclick="openStokGlobalModal('beras')" style="cursor: pointer; user-select: none;">
         <div class="stok-card-content">
             <div class="stok-icon">
-                <i class="bi bi-droplet-fill"></i>
+                <i class="bi bi-suit-club-fill"></i>
             </div>
             <div class="stok-info">
                 <div class="stok-label">Stok Beras</div>
@@ -1379,7 +1379,7 @@
     <div class="stok-card konga" onclick="openStokGlobalModal('konga')" style="cursor: pointer; user-select: none;">
         <div class="stok-card-content">
             <div class="stok-icon">
-                <i class="bi bi-circle-fill"></i>
+                <i class="bi bi-suit-spade-fill"></i>
             </div>
             <div class="stok-info">
                 <div class="stok-label">Stok Konga</div>
@@ -1425,7 +1425,7 @@
         </div>
         <div class="status-filter-wrapper">
             <button type="button" id="btn-bayar-operator" class="btn btn-primary">
-                <i class="bi bi-cash-coin"></i>
+                <i class="bi bi-currency-exchange"></i>
             </button>
         </div>
     </div>
