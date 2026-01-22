@@ -629,7 +629,7 @@
             <div class="col-12">
                 <div class="card form-card fade-in">
                     <!-- Card Header -->
-                    <div class="card-header-custom">
+                    {{-- <div class="card-header-custom">
                         <h1 class="card-title">
                             <div class="icon-wrapper">
                                 <i class="bi bi-receipt-cutoff"></i>
@@ -641,7 +641,7 @@
                                 </div>
                             </div>
                         </h1>
-                    </div>
+                    </div> --}}
 
                     <div class="card-body">
                         <form id="gilingForm">
