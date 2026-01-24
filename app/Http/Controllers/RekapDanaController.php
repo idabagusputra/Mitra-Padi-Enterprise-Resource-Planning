@@ -168,28 +168,36 @@ class RekapDanaController extends Controller
         $allKreditPetani = Kredit::with('petani')->get();
         $calculatedKreditPetani = $this->calculateKreditData($allKreditPetani, $now);
         $sortedKreditPetani = $this->sortKredits($calculatedKreditPetani);
-        $groupedKreditPetani = $sortedKreditPetani->groupBy(fn($k) => $k->petani->nama);
+        $groupedKreditPetani = $sortedKreditPetani->groupBy(function ($k) {
+            return $k->petani->nama;
+        });
         $summaryKreditPetani = $this->calculateSummary($calculatedKreditPetani, 'petani_id');
 
         // 2. Data Utang Ke Operator
         $allUtangOperator = UtangKeOperator::with('petani')->get();
         $calculatedUtangOperator = $this->calculateKreditData($allUtangOperator, $now);
         $sortedUtangOperator = $this->sortKredits($calculatedUtangOperator);
-        $groupedUtangOperator = $sortedUtangOperator->groupBy(fn($k) => $k->petani->nama);
+        $groupedUtangOperator = $sortedUtangOperator->groupBy(function ($k) {
+            return $k->petani->nama;
+        });
         $summaryUtangOperator = $this->calculateSummary($calculatedUtangOperator, 'petani_id');
 
         // 3. Data Titipan Petani
         $allTitipanPetani = KreditTitipanPetani::with('petani')->get();
         $calculatedTitipanPetani = $this->calculateKreditData($allTitipanPetani, $now);
         $sortedTitipanPetani = $this->sortKredits($calculatedTitipanPetani);
-        $groupedTitipanPetani = $sortedTitipanPetani->groupBy(fn($k) => $k->petani->nama);
+        $groupedTitipanPetani = $sortedTitipanPetani->groupBy(function ($k) {
+            return $k->petani->nama;
+        });
         $summaryTitipanPetani = $this->calculateSummary($calculatedTitipanPetani, 'petani_id');
 
         // 4. Data Nasabah Palu
         $allNasabahPalu = KreditNasabahPalu::get();
         $calculatedNasabahPalu = $this->calculateKreditData($allNasabahPalu, $now);
         $sortedNasabahPalu = $this->sortKredits($calculatedNasabahPalu);
-        $groupedNasabahPalu = $sortedNasabahPalu->groupBy(fn($k) => $k->nama);
+        $groupedNasabahPalu = $sortedNasabahPalu->groupBy(function ($k) {
+            return $k->nama;
+        });
         $summaryNasabahPalu = $this->calculateSummary($calculatedNasabahPalu, 'nama');
 
         return [
