@@ -1422,7 +1422,7 @@ class RekapDanaController extends Controller
     public function store(Request $request)
     {
         ini_set('max_execution_time', 0); // Tidak ada batas waktu (tidak disarankan di production)
-        ini_set('memory_limit', '1024M'); // 1GB memory limit
+        ini_set('memory_limit', '512M'); // 1GB memory limit
 
         // Validasi input
         $validator = Validator::make($request->all(), [
