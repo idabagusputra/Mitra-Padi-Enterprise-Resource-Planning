@@ -90,7 +90,9 @@ class KreditReportController extends Controller
         // Tetapkan langsung nilai 'desc' untuk sortOrder
         $sortOrder = 'desc';
 
-        $allKredits = Kredit::with('petani')->get();
+        // $allKredits = Kredit::with('petani')->get();
+
+        $allKredits = Kredit::with('petani')->where('status', false)->get();
         $now = Carbon::now();
         $calculatedKredits = $allKredits->map(function ($kredit) use ($now) {
             $kreditDate = Carbon::parse($kredit->tanggal);
