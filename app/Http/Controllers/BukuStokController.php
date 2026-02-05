@@ -666,9 +666,9 @@ class BukuStokController extends Controller
     {
         try {
             $data = BukuStokBeras::whereNull('keterangan_operator_gajian')
-                ->whereNull('deleted_at') // Tambahkan filter untuk exclude soft deleted
-                ->orderBy('tanggal', 'desc')
-                ->orderBy('id', 'desc')
+                ->whereNull('deleted_at')
+                ->where('petani_id', '!=', 330) // Tambahkan filter untuk exclude petani_id 330
+                ->orderBy('id', 'asc')
                 ->get()
                 ->map(function ($item) {
                     return [
@@ -679,7 +679,6 @@ class BukuStokController extends Controller
                         'harga' => $item->harga ?? 0,
                     ];
                 });
-
             return response()->json([
                 'success' => true,
                 'data' => $data
