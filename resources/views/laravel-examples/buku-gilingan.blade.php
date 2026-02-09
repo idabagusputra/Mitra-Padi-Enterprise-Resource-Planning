@@ -1602,7 +1602,7 @@
                                         <td class="text-center"><span class="text-xs">{{ number_format($item->jual_kotor ?? 0, 2, ',', '.') }}</span></td>
                                         <td class="text-center"><span class="text-xs">Rp {{ number_format($item->harga ?? 0, 2, ',', '.') }}</span></td>
                                         <td class="text-center">
-                                            <span class="badge bg-gradient-{{ $item->status ? 'success' : 'secondary' }}">
+                                            <span class="badge bg-gradient-{{ $item->status ? 'success' : 'warning' }}">
                                                 {{ $item->status ? 'LUNAS' : 'BELUM LUNAS' }}
                                             </span>
                                         </td>
