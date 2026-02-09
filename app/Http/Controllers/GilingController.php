@@ -45,21 +45,15 @@ class GilingController extends Controller
     {
         $beras = BukuStokBeras::where('petani_id', $petaniId)
             ->where('status', false)
-            ->orderByDesc('tanggal')
-            ->orderByDesc('id')
+            ->orderBy('tanggal')
+            ->orderBy('id')
             ->first();
 
-        $totalKonga = BukuStokKongaMenir::where('petani_id', $petaniId)
+        $kongaMenir = BukuStokKongaMenir::where('petani_id', $petaniId)
             ->where('status', false)
-            ->sum('konga_jual');
-
-        $totalMenir = BukuStokKongaMenir::where('petani_id', $petaniId)
-            ->where('status', false)
-            ->sum('menir_jual');
-
-        $totalKarungKonga = BukuStokKongaMenir::where('petani_id', $petaniId)
-            ->where('status', false)
-            ->sum('karung_konga');
+            ->orderBy('tanggal')
+            ->orderBy('id')
+            ->first();
 
         return response()->json([
             'beras' => $beras ? [
@@ -70,38 +64,60 @@ class GilingController extends Controller
                 'beras_pulang' => $beras->beras_pulang,
                 'harga' => $beras->harga ?? '',
             ] : null,
-            'konga_menir' => [
-                'total_konga' => $totalKonga,
-                'total_menir' => $totalMenir,
-                'total_karung_konga' => $totalKarungKonga,
-            ]
+            'konga_menir' => $kongaMenir ? [
+                'id' => $kongaMenir->id,
+                'total_konga' => $kongaMenir->konga_jual,
+                'total_menir' => $kongaMenir->menir_jual,
+                'total_karung_konga' => $kongaMenir->karung_konga,
+            ] : null
         ]);
     }
+
 
     /**
      * Update status buku stok menjadi true dan set giling_id
      */
+
+
     private function updateBukuStokStatus($petaniId, $gilingId)
     {
-        BukuStokBeras::where('petani_id', $petaniId)
+        // Ambil record pertama (sama seperti di getStokTerakhir)
+        $beras = BukuStokBeras::where('petani_id', $petaniId)
             ->where('status', false)
-            ->update([
-                'status' => true,
-                'harga' => Giling::find($gilingId)->harga_jual,
-                'giling_id' => $gilingId
-            ]);
+            ->orderBy('tanggal')
+            ->orderBy('id')
+            ->first();
 
-        BukuStokKongaMenir::where('petani_id', $petaniId)
+        $kongaMenir = BukuStokKongaMenir::where('petani_id', $petaniId)
             ->where('status', false)
-            ->update([
-                'status' => true,
-                'harga_konga' => Giling::find($gilingId)->harga_konga,
-                'harga_menir' => Giling::find($gilingId)->harga_menir,
-                'giling_id' => $gilingId
-            ]);
+            ->orderBy('tanggal')
+            ->orderBy('id')
+            ->first();
 
-        Log::info("Updated BukuStok status for petani_id: {$petaniId}, giling_id: {$gilingId}");
+        // Update hanya record yang diambil
+        if ($beras) {
+            BukuStokBeras::where('id', $beras->id)
+                ->update([
+                    'status' => true,
+                    'harga' => Giling::find($gilingId)->harga_jual,
+                    'giling_id' => $gilingId
+                ]);
+        }
+
+        if ($kongaMenir) {
+            BukuStokKongaMenir::where('id', $kongaMenir->id)
+                ->update([
+                    'status' => true,
+                    'harga_konga' => Giling::find($gilingId)->harga_konga,
+                    'harga_menir' => Giling::find($gilingId)->harga_menir,
+                    'giling_id' => $gilingId
+                ]);
+        }
+
+        Log::info("Updated BukuStok status for petani_id: {$petaniId}, giling_id: {$gilingId}, beras_id: {$beras?->id}, konga_id: {$kongaMenir?->id}");
     }
+
+
 
     public function searchPetani(Request $request)
     {
