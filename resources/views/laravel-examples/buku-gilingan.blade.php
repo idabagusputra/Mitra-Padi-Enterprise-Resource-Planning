@@ -5,6 +5,34 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <style>
 
+    /* ============================================
+   BUTTON LOADING STATE
+============================================ */
+.btn-loading {
+    position: relative;
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.btn-loading::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 50%;
+    left: 50%;
+    margin-left: -8px;
+    margin-top: -8px;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spinner 0.6s linear infinite;
+}
+
+@keyframes spinner {
+    to { transform: rotate(360deg); }
+}
+
     <!-- ============================================
    MODAL EDIT - STYLES
 ============================================ -->
@@ -2631,6 +2659,55 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
+
+    // ============================================
+// GLOBAL SUBMIT PROTECTION
+// ============================================
+let isSubmitting = false;
+
+function preventDoubleSubmit(button, callback) {
+    if (isSubmitting) {
+        return false;
+    }
+
+    isSubmitting = true;
+    button.disabled = true;
+    button.classList.add('btn-loading');
+
+    const originalHTML = button.innerHTML;
+
+    const result = callback();
+
+    if (result && typeof result.then === 'function') {
+        result
+            .then(() => {
+                // Success handling in callback
+            })
+            .catch((error) => {
+                console.error('Submit error:', error);
+                resetSubmitButton(button, originalHTML);
+            });
+    }
+
+    return true;
+}
+
+function resetSubmitButton(button, originalHTML) {
+    isSubmitting = false;
+    button.disabled = false;
+    button.classList.remove('btn-loading');
+    if (originalHTML) {
+        button.innerHTML = originalHTML;
+    }
+}
+
+
+</script>
+
+
+
+
+<script>
 document.addEventListener('DOMContentLoaded', function() {
     let rowCounters = {
         'beras': 0,
@@ -2977,13 +3054,17 @@ document.querySelectorAll('.stok-value').forEach(elem => {
     // ============================================
     // FORM SUBMISSIONS
     // ============================================
-    function setupFormSubmission(formId, routeName) {
-        const form = document.getElementById(formId);
-        if (!form) return;
+   function setupFormSubmission(formId, routeName) {
+    const form = document.getElementById(formId);
+    if (!form) return;
 
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
 
+        const submitBtn = this.querySelector('.btn-submit-all');
+        if (!submitBtn) return;
+
+        const success = preventDoubleSubmit(submitBtn, () => {
             const csrfToken = this.querySelector('[name="_token"]').value;
             const rows = [];
 
@@ -3006,7 +3087,7 @@ document.querySelectorAll('.stok-value').forEach(elem => {
                 rows.push(rowData);
             });
 
-            fetch(routeName, {
+            return fetch(routeName, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -3019,19 +3100,25 @@ document.querySelectorAll('.stok-value').forEach(elem => {
             .then(r => r.json())
             .then(data => {
                 if (data.success) {
-                    // Clear form before reload
                     clearForm(form);
                     location.reload();
                 } else {
                     console.error(data);
                     alert('Error: ' + (data.message ?? 'Terjadi kesalahan'));
+                    resetSubmitButton(submitBtn, '<i class="bi bi-check-circle-fill"></i> Simpan Semua Data');
                 }
             })
             .catch(err => {
                 alert('Error: ' + err.message);
+                resetSubmitButton(submitBtn, '<i class="bi bi-check-circle-fill"></i> Simpan Semua Data');
             });
         });
-    }
+
+        if (!success) {
+            e.preventDefault();
+        }
+    });
+}
 
     // Setup all forms
     setupFormSubmission('form-buku-beras', '{{ route("buku-stok-beras.store") }}');
@@ -3044,13 +3131,26 @@ document.querySelectorAll('.stok-value').forEach(elem => {
     // ============================================
     // DELETE CONFIRMATION
     // ============================================
-    document.querySelectorAll('.delete-form').forEach(form => {
-        form.addEventListener('submit', function(e) {
-            if (!confirm('Apakah Anda yakin ingin menghapus data ini?')) {
-                e.preventDefault();
-            }
-        });
+document.querySelectorAll('.delete-form').forEach(form => {
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        if (isSubmitting) {
+            return false;
+        }
+
+        if (!confirm('Apakah Anda yakin ingin menghapus data ini?')) {
+            return false;
+        }
+
+        const submitBtn = this.querySelector('button[type="submit"]');
+        if (submitBtn) {
+            isSubmitting = true;
+            submitBtn.disabled = true;
+            this.submit();
+        }
     });
+});
 
     // ============================================
     // CLEAR ALL FORMS ON PAGE LOAD
@@ -3230,6 +3330,7 @@ let currentEditData = {};
 // OPEN EDIT MODAL
 // ============================================
 function openEditModal(type, data) {
+    if (isSubmitting) return;
     currentEditType = type;
     currentEditData = data;
 
@@ -3254,13 +3355,14 @@ function openEditModal(type, data) {
 // CLOSE EDIT MODAL
 // ============================================
 function closeEditModal(type) {
+    if (isSubmitting) return;
+
     document.getElementById('modal-overlay').classList.remove('active');
     document.getElementById(`edit-modal-${type}`).classList.remove('active');
-
     document.body.style.overflow = '';
-
-    // Clear form
     document.getElementById(`edit-form-${type}`).reset();
+
+    isSubmitting = false;
 }
 
 // Close modal when clicking overlay
@@ -3349,53 +3451,33 @@ function submitEdit(type) {
         return;
     }
 
-    const id = document.getElementById(`edit-${type}-id`).value;
-    const routeMap = {
-        'buku-beras': 'buku-stok-beras',
-        'pinjaman-beras': 'pinjaman-beras',
-        'pinjaman-konga': 'pinjaman-konga',
-        'buku-konga': 'buku-stok-konga-menir',
-        'penjualan-beras': 'penjualan-beras',
-        'penjualan-konga': 'penjualan-konga-menir'
-    };
-
-    const deleteRoute = `/${routeMap[type]}/${id}`;
-    const storeRoute = `/${routeMap[type]}`;
-
-    // Prepare data
-    const data = prepareEditData(type);
-
-    if (!data) {
-        alert('Data tidak valid');
-        return;
-    }
-
-    // Show loading
     const submitBtn = event.target;
     const originalText = submitBtn.innerHTML;
-    submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Menyimpan...';
-    submitBtn.disabled = true;
 
-    // Step 1: Delete old data
-    fetch(deleteRoute, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('[name="_token"]').value,
-            'X-Requested-With': 'XMLHttpRequest',
-            'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-            _method: 'DELETE'
-        })
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Gagal menghapus data lama');
+    const success = preventDoubleSubmit(submitBtn, () => {
+        submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Menyimpan...';
+
+        const id = document.getElementById(`edit-${type}-id`).value;
+        const routeMap = {
+            'buku-beras': 'buku-stok-beras',
+            'pinjaman-beras': 'pinjaman-beras',
+            'pinjaman-konga': 'pinjaman-konga',
+            'buku-konga': 'buku-stok-konga-menir',
+            'penjualan-beras': 'penjualan-beras',
+            'penjualan-konga': 'penjualan-konga-menir'
+        };
+
+        const deleteRoute = `/${routeMap[type]}/${id}`;
+        const storeRoute = `/${routeMap[type]}`;
+        const data = prepareEditData(type);
+
+        if (!data) {
+            alert('Data tidak valid');
+            resetSubmitButton(submitBtn, originalText);
+            return Promise.reject('Invalid data');
         }
 
-        // Step 2: Create new data
-        return fetch(storeRoute, {
+        return fetch(deleteRoute, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -3403,23 +3485,37 @@ function submitEdit(type) {
                 'X-Requested-With': 'XMLHttpRequest',
                 'Accept': 'application/json'
             },
-            body: JSON.stringify({ rows: [data] })
+            body: JSON.stringify({ _method: 'DELETE' })
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('Gagal menghapus data lama');
+            return fetch(storeRoute, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('[name="_token"]').value,
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ rows: [data] })
+            });
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                closeEditModal(type);
+                location.reload();
+            } else {
+                throw new Error(result.message || 'Terjadi kesalahan');
+            }
+        })
+        .catch(error => {
+            alert('Error: ' + error.message);
+            resetSubmitButton(submitBtn, originalText);
         });
-    })
-    .then(response => response.json())
-    .then(result => {
-        if (result.success) {
-            closeEditModal(type);
-            location.reload();
-        } else {
-            throw new Error(result.message || 'Terjadi kesalahan');
-        }
-    })
-    .catch(error => {
-        alert('Error: ' + error.message);
-        submitBtn.innerHTML = originalText;
-        submitBtn.disabled = false;
     });
+
+    if (!success) return;
 }
 
 // ============================================
@@ -3600,6 +3696,7 @@ function setupNumberFormatting(input) {
 // STOK GLOBAL MODAL FUNCTIONS
 // ============================================
 function openStokGlobalModal(type) {
+    if (isSubmitting) return;
     // Prevent event bubbling
     if (event) {
         event.stopPropagation();
@@ -3672,6 +3769,7 @@ function openStokGlobalModal(type) {
 }
 
 function closeStokGlobalModal() {
+    if (isSubmitting) return;
     const modal = document.getElementById('edit-modal-stok-global');
     const overlay = document.getElementById('modal-overlay');
 
@@ -3699,54 +3797,46 @@ function submitStokGlobal() {
         return;
     }
 
-    // Confirmation dialog
-    const typeNames = {
-        'beras': 'Beras',
-        'konga': 'Konga',
-        'menir': 'Menir'
-    };
+    const typeNames = { 'beras': 'Beras', 'konga': 'Konga', 'menir': 'Menir' };
 
     if (!confirm(`Apakah Anda yakin ingin mengubah stok ${typeNames[type]} menjadi ${document.getElementById('edit-stok-value').value}?`)) {
         return;
     }
 
-    // Show loading
     const submitBtn = event.target;
     const originalText = submitBtn.innerHTML;
-    submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Menyimpan...';
-    submitBtn.disabled = true;
 
-    // Prepare data
-    const data = {
-        type: type,
-        value: value
-    };
+    const success = preventDoubleSubmit(submitBtn, () => {
+        submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Menyimpan...';
 
-    // Send to server
-    fetch('/buku-stok/update-stok-global', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('[name="_token"]').value,
-            'X-Requested-With': 'XMLHttpRequest',
-            'Accept': 'application/json'
-        },
-        body: JSON.stringify(data)
-    })
-    .then(response => response.json())
-    .then(result => {
-        if (result.success) {
-            closeStokGlobalModal();
-            location.reload();
-        } else {
-            throw new Error(result.message || 'Terjadi kesalahan');
-        }
-    })
-    .catch(error => {
-        alert('Error: ' + error.message);
-        submitBtn.innerHTML = originalText;
-        submitBtn.disabled = false;
+        const data = { type: type, value: value };
+
+        return fetch('/buku-stok/update-stok-global', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('[name="_token"]').value,
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                closeStokGlobalModal();
+                location.reload();
+            } else {
+                throw new Error(result.message || 'Terjadi kesalahan');
+            }
+        })
+        .catch(error => {
+            alert('Error: ' + error.message);
+            resetSubmitButton(submitBtn, originalText);
+        });
     });
+
+    if (!success) return;
 }
 
 // Close modal with ESC key
@@ -3812,6 +3902,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 async function openModalOperator() {
+    if (isSubmitting) return;
     try {
         const response = await fetch('/buku-stok/get-unpaid-operator');
         const data = await response.json();
@@ -3872,6 +3963,7 @@ async function openModalOperator() {
 }
 
 function closeModalOperator() {
+    if (isSubmitting) return;
     document.getElementById('modal-overlay-operator').classList.remove('active');
     document.getElementById('modal-bayar-operator').classList.remove('active');
     document.body.style.overflow = '';
@@ -4260,6 +4352,7 @@ async function updateOperatorStatus(keterangan, hargaRataDefault) {
 // PRINT NOTA OPERATOR - Single Long Page (No Page Break)
 // ============================================
 function printNotaOperator() {
+    if (isSubmitting) return;
     const iframe = document.getElementById('nota-iframe-operator');
     const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
 
@@ -4361,6 +4454,7 @@ function printNotaOperator() {
 // SAVE NOTA PDF - Download Langsung (Android Optimized)
 // ============================================
 async function saveNotaPDF() {
+    if (isSubmitting) return;
     const iframe = document.getElementById('nota-iframe-operator');
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
