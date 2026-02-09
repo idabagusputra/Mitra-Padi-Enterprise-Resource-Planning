@@ -304,10 +304,10 @@ Route::group(['middleware' => 'auth'], function () {
 | BUKU STOK KONGA & MENIR
 |--------------------------------------------------------------------------
 */
-    Route::post('/buku-stok-konga-menir', [BukuStokController::class, 'storeKongaMenir'])
+    Route::post('/buku-stok-konga-menir', [BukuStokController::class, 'storeBukuKongaMenir'])
         ->name('buku-stok-konga-menir.store');
 
-    Route::delete('/buku-stok-konga-menir/{id}', [BukuStokController::class, 'destroyKongaMenir'])
+    Route::delete('/buku-stok-konga-menir/{id}', [BukuStokController::class, 'destroyBukuKongaMenir'])
         ->name('buku-stok-konga-menir.destroy');
 
     /*
