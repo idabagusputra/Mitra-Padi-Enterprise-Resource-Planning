@@ -48,7 +48,7 @@
     flex-direction: column;
     justify-content: center;
     transition: all 0.3s ease;
-    min-width: 160px;
+    min-width: 100px;
 }
 
 .servis-counter-box:hover {
@@ -1529,7 +1529,8 @@
             <div class="servis-counter-box">
                 <div class="servis-label">Servis Oli</div>
                 <div class="servis-value" id="servis-counter-display">
-                    {{ number_format($totalGilingKotor ?? 0, 2, ',', '.') }} Kg
+                    {{ number_format($totalGilingKotor ?? 0, 0, ',', '.') }} Kg
+
                 </div>
             </div>
         </div>
@@ -4864,7 +4865,7 @@ function resetServisCounter() {
                 closeServisModal();
 
                 // Update display
-                document.getElementById('servis-counter-display').textContent = '0.00 Kg';
+                document.getElementById('servis-counter-display').textContent = '0 Kg';
 
                 // Optional: reload after 1 second to refresh all data
                 setTimeout(() => location.reload(), 1000);
