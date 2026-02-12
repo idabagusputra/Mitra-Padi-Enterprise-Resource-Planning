@@ -16,6 +16,54 @@ use App\Models\StokGlobal;
 
 class BukuStokController extends Controller
 {
+
+    public function getServisCounter()
+    {
+        try {
+            // Hitung total giling_kotor yang counted_for_servis = true
+            $total = DB::table('buku_stok_beras')
+                ->where('counted_for_servis', true)
+                ->sum('giling_kotor');
+
+            return response()->json([
+                'success' => true,
+                'total' => $total ?? 0
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function resetServisCounter(Request $request)
+    {
+        try {
+            // Set semua data yang counted_for_servis = true menjadi false
+            // dan simpan keterangan reset
+            DB::table('buku_stok_beras')
+                ->where('counted_for_servis', true)
+                ->update([
+                    'counted_for_servis' => false,
+                    'servis_reset_note' => $request->keterangan . ' (Reset: ' . now()->format('d-m-Y H:i') . ')',
+                    'updated_at' => now()
+                ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Counter servis oli berhasil direset'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+
+
     /* =====================================================
      |  HELPER STOK GLOBAL (SINGLE ROW)
      ===================================================== */
@@ -32,6 +80,10 @@ class BukuStokController extends Controller
      ===================================================== */
     public function index()
     {
+        // Hitung total giling kotor untuk servis counter (hanya yang counted_for_servis = true)
+        $totalGilingKotor = BukuStokBeras::where('counted_for_servis', true)
+            ->sum('giling_kotor') ?? 0;
+
         return view('laravel-examples/buku-gilingan', [
             // Buku Stok Beras - urut tanggal DESC, id DESC
             'bukuStokBeras' => BukuStokBeras::with('petani')
@@ -71,6 +123,8 @@ class BukuStokController extends Controller
 
             // Stok Global
             'stokGlobal' => $this->stokGlobal(),
+            // Total Giling Kotor untuk Counter Servis
+            'totalGilingKotor' => $totalGilingKotor,
         ]);
     }
 

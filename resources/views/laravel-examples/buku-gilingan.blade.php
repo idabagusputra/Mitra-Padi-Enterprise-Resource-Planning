@@ -33,6 +33,54 @@
     to { transform: rotate(360deg); }
 }
 
+
+
+/* ============================================
+   SERVIS COUNTER BOX
+============================================ */
+.servis-counter-box {
+    height: 48px;
+    border-radius: 12px;
+    border: 2px solid #e9ecef;
+    padding: 0 1rem;
+    background: linear-gradient(135deg, #fff5f5 0%, #ffe5e5 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transition: all 0.3s ease;
+    min-width: 160px;
+}
+
+.servis-counter-box:hover {
+    border-color: #f5365c;
+    background: linear-gradient(135deg, #ffebeb 0%, #ffd5d5 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(245, 54, 92, 0.2);
+}
+
+.servis-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: #f5365c;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    line-height: 1;
+}
+
+.servis-value {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #344767;
+    line-height: 1.2;
+    margin-top: 2px;
+}
+
+@media (max-width: 576px) {
+    .servis-counter-box {
+        width: 100%;
+    }
+}
+
     <!-- ============================================
    MODAL EDIT - STYLES
 ============================================ -->
@@ -1435,7 +1483,7 @@
     </div>
 </div>
 
-<!-- Search Petani Global + Filter Status -->
+{{-- <!-- Search Petani Global + Filter Status -->
 <div class="search-petani-global">
     <div class="search-filter-container">
         <div class="search-petani-wrapper">
@@ -1450,6 +1498,40 @@
                 <option value="1">Lunas</option>
                 <option value="0">Belum Lunas</option>
             </select>
+        </div>
+        <div class="status-filter-wrapper">
+            <button type="button" id="btn-bayar-operator" class="btn btn-primary">
+                <i class="bi bi-currency-exchange"></i>
+            </button>
+        </div>
+    </div>
+</div> --}}
+
+
+
+<!-- Search Petani Global + Filter Status + Servis Counter -->
+<div class="search-petani-global">
+    <div class="search-filter-container">
+        <div class="search-petani-wrapper">
+            <i class="bi bi-search search-icon"></i>
+            <input type="text" id="search-petani-global" class="form-control"
+                   placeholder="Cari petani untuk melihat data..." autocomplete="off">
+            <div class="search-petani-results" id="search-petani-results"></div>
+        </div>
+        <div class="status-filter-wrapper">
+            <select id="filter-status-global" class="form-select">
+                <option value="">Semua Status</option>
+                <option value="1">Lunas</option>
+                <option value="0">Belum Lunas</option>
+            </select>
+        </div>
+        <div class="status-filter-wrapper" style="cursor: pointer;" onclick="openServisModal()">
+            <div class="servis-counter-box">
+                <div class="servis-label">Servis Oli</div>
+                <div class="servis-value" id="servis-counter-display">
+                    {{ number_format($totalGilingKotor ?? 0, 2, ',', '.') }} Kg
+                </div>
+            </div>
         </div>
         <div class="status-filter-wrapper">
             <button type="button" id="btn-bayar-operator" class="btn btn-primary">
@@ -2641,6 +2723,68 @@
         </div>
     </div>
 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Modal Konfirmasi Reset Servis -->
+<div class="modal-overlay" id="modal-overlay-servis"></div>
+
+<div class="edit-modal" id="modal-servis-reset" style="max-width: 500px;">
+    <div class="edit-modal-header">
+        <h5 class="edit-modal-title">
+            <i class="bi bi-wrench-adjustable-circle"></i>
+            Reset Counter Servis Oli
+        </h5>
+        <button class="edit-modal-close" onclick="closeServisModal()">&times;</button>
+    </div>
+    <div class="edit-modal-body">
+        <div class="alert alert-warning" style="margin-bottom: 1rem; padding: 0.75rem; border-radius: 8px; background: #fff5e5; border: 1px solid #ffcc80; font-size: 0.85rem;">
+            <i class="bi bi-exclamation-triangle-fill" style="margin-right: 0.5rem; color: #f5365c;"></i>
+            <strong>Perhatian:</strong> Aksi ini akan mereset counter servis oli menjadi 0 Kg dan memulai perhitungan baru.
+        </div>
+
+        <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+            <table style="width: 100%; font-size: 0.9rem;">
+                <tr>
+                    <td style="padding: 0.25rem 0;"><strong>Total Giling Kotor Saat Ini:</strong></td>
+                    <td id="servis-current-value" style="text-align: right; font-weight: bold; color: #f5365c;">-</td>
+                </tr>
+                <tr>
+                    <td style="padding: 0.25rem 0;"><strong>Setelah Reset:</strong></td>
+                    <td style="text-align: right; font-weight: bold; color: #17ad37;">0.00 Kg</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="edit-form-group">
+            <label class="edit-form-label">Keterangan Reset (Opsional)</label>
+            <textarea class="edit-form-control" id="servis-keterangan" rows="2"
+                      placeholder="Contoh: Ganti oli mesin tanggal 12 Feb 2026"></textarea>
+        </div>
+    </div>
+    <div class="edit-modal-footer">
+        <button class="edit-btn edit-btn-cancel" onclick="closeServisModal()">
+            <i class="bi bi-x-circle"></i> Batal
+        </button>
+        <button class="edit-btn edit-btn-submit" onclick="resetServisCounter()" style="background: linear-gradient(135deg, #f5365c 0%, #f56036 100%);">
+            <i class="bi bi-arrow-clockwise"></i> Reset Counter
+        </button>
+    </div>
+</div>
+
+
+
 
 
 
@@ -4636,6 +4780,122 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+
+
+
+
+
+
+
+
+
+
+
+// ============================================
+// SERVIS OLI COUNTER FUNCTIONS
+// ============================================
+let currentServisTotal = 0;
+
+function openServisModal() {
+    if (isSubmitting) return;
+
+    // Fetch current total
+    fetch('/buku-stok/get-servis-counter')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                currentServisTotal = parseFloat(data.total) || 0;
+
+                // Update display in modal
+                document.getElementById('servis-current-value').textContent =
+                    smartFormatNumber(currentServisTotal) + ' Kg';
+
+                // Show modal
+                document.getElementById('modal-overlay-servis').classList.add('active');
+                document.getElementById('modal-servis-reset').classList.add('active');
+                document.body.style.overflow = 'hidden';
+            } else {
+                alert('Gagal mengambil data counter: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan saat mengambil data');
+        });
+}
+
+function closeServisModal() {
+    if (isSubmitting) return;
+    document.getElementById('modal-overlay-servis').classList.remove('active');
+    document.getElementById('modal-servis-reset').classList.remove('active');
+    document.body.style.overflow = '';
+    document.getElementById('servis-keterangan').value = '';
+}
+
+function resetServisCounter() {
+    const keterangan = document.getElementById('servis-keterangan').value.trim();
+
+    if (!confirm('Apakah Anda yakin ingin mereset counter servis oli menjadi 0 Kg?')) {
+        return;
+    }
+
+    const submitBtn = event.target;
+    const originalHTML = submitBtn.innerHTML;
+
+    const success = preventDoubleSubmit(submitBtn, () => {
+        submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Mereset...';
+
+        return fetch('/buku-stok/reset-servis-counter', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('[name="_token"]').value,
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                keterangan: keterangan
+            })
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                showToast('✓ Counter servis oli berhasil direset', 'success');
+                closeServisModal();
+
+                // Update display
+                document.getElementById('servis-counter-display').textContent = '0.00 Kg';
+
+                // Optional: reload after 1 second to refresh all data
+                setTimeout(() => location.reload(), 1000);
+            } else {
+                throw new Error(result.message || 'Gagal mereset counter');
+            }
+        })
+        .catch(error => {
+            alert('Error: ' + error.message);
+            resetSubmitButton(submitBtn, originalHTML);
+        });
+    });
+
+    if (!success) return;
+}
+
+// Close servis modal dengan ESC key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        const modal = document.getElementById('modal-servis-reset');
+        if (modal && modal.classList.contains('active')) {
+            closeServisModal();
+        }
+    }
+});
+
+
+
+
+
+
 
 
 

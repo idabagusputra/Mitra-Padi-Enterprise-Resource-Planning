@@ -366,6 +366,10 @@ Route::get('/buku-stok/get-unpaid-operator', [BukuStokController::class, 'getUnp
 Route::post('/buku-stok/update-operator-status', [BukuStokController::class, 'updateOperatorStatus'])->name('buku-stok.update-operator-status');
 
 
+Route::get('/buku-stok/get-servis-counter', [BukuStokController::class, 'getServisCounter'])->name('buku-stok.get-servis-counter');
+Route::post('/buku-stok/reset-servis-counter', [BukuStokController::class, 'resetServisCounter'])->name('buku-stok.reset-servis-counter');
+
+
 // Tambahkan route ini di sekitar route buku-stok yang sudah ada
 Route::post('/buku-stok/update-stok-global', [BukuStokController::class, 'updateStokGlobal'])->name('buku-stok.update-stok-global');
 
