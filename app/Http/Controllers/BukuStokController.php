@@ -148,12 +148,15 @@ class BukuStokController extends Controller
                 $petani = Petani::find($row['petani_id']);
                 $jumlah = (float) $row['jumlah'];
 
+                // Gunakan status dari input jika ada, jika tidak default 0
+                $status = isset($row['status']) ? (int)$row['status'] : 0;
+
                 BukuStokPinjamanBeras::create([
                     'petani_id'   => $petani->id,
                     'nama_petani' => $petani->nama,
                     'tanggal'     => $row['tanggal'],
                     'jumlah'      => $jumlah,
-                    'status'      => 0,
+                    'status'      => $status,  // Gunakan status dari input atau default 0
                 ]);
 
                 StokGlobal::where('id', 1)
