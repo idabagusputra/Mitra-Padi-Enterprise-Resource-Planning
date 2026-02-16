@@ -1691,16 +1691,16 @@
                                         </td>
                                         <td class="text-center">
     <button type="button" class="btn-edit me-3" onclick="openEditModal('buku-beras', {
-    id: {{ $item->id }},
-    tanggal: '{{ $item->tanggal ? $item->tanggal->format('Y-m-d') : '' }}',
-    petani_id: {{ $item->petani_id }},
-    nama_petani: '{{ addslashes($item->nama_petani) }}',
-    jemur: {{ $item->jemur ?? 0 }},
-    giling_kotor: {{ $item->giling_kotor ?? 0 }},
-    beras_pulang: {{ $item->beras_pulang ?? 0 }},
-    harga: {{ $item->harga ?? 0 }},
-    status: {{ $item->status ? 1 : 0 }}
-})">
+        id: {{ $item->id }},
+        tanggal: '{{ $item->tanggal ? $item->tanggal->format('Y-m-d') : '' }}',
+        petani_id: {{ $item->petani_id }},
+        nama_petani: '{{ addslashes($item->nama_petani) }}',
+        jemur: {{ $item->jemur ?? 0 }},
+        giling_kotor: {{ $item->giling_kotor ?? 0 }},
+        beras_pulang: {{ $item->beras_pulang ?? 0 }},
+        harga: {{ $item->harga ?? 0 }},
+        status: {{ $item->status ? 1 : 0 }}
+    })">
         <i class="bi bi-pencil-square fs-5"></i>
     </button>
     <form action="{{ route('buku-stok-beras.destroy', $item->id) }}" method="POST" class="d-inline delete-form">
@@ -1786,7 +1786,7 @@
                                                 {{ $item->status ? 'LUNAS' : 'BELUM LUNAS' }}
                                             </span>
                                         </td>
-                                        <td class="text-center">
+                                       <td class="text-center">
     <button type="button" class="btn-edit me-3" onclick="openEditModal('pinjaman-beras', {
         id: {{ $item->id }},
         tanggal: '{{ $item->tanggal ? $item->tanggal->format('Y-m-d') : '' }}',
@@ -1991,18 +1991,18 @@
                                         </td>
                                         <td class="text-center">
     <button type="button" class="btn-edit me-3" onclick="openEditModal('buku-konga', {
-    id: {{ $item->id }},
-    tanggal: '{{ $item->tanggal ? $item->tanggal->format('Y-m-d') : '' }}',
-    petani_id: {{ $item->petani_id }},
-    nama_petani: '{{ addslashes($item->nama_petani) }}',
-    karung_konga: {{ $item->karung_konga ?? 0 }},
-    konga_giling: {{ $item->konga_giling ?? 0 }},
-    konga_jual: {{ $item->konga_jual ?? 0 }},
-    kembalikan_konga: {{ $item->kembalikan_konga ?? 0 }},
-    menir: {{ $item->menir ?? 0 }},
-    menir_jual: {{ $item->menir_jual ?? 0 }},
-    status: {{ $item->status ? 1 : 0 }}
-})">
+        id: {{ $item->id }},
+        tanggal: '{{ $item->tanggal ? $item->tanggal->format('Y-m-d') : '' }}',
+        petani_id: {{ $item->petani_id }},
+        nama_petani: '{{ addslashes($item->nama_petani) }}',
+        karung_konga: {{ $item->karung_konga ?? 0 }},
+        konga_giling: {{ $item->konga_giling ?? 0 }},
+        konga_jual: {{ $item->konga_jual ?? 0 }},
+        kembalikan_konga: {{ $item->kembalikan_konga ?? 0 }},
+        menir: {{ $item->menir ?? 0 }},
+        menir_jual: {{ $item->menir_jual ?? 0 }},
+        status: {{ $item->status ? 1 : 0 }}
+    })">
         <i class="bi bi-pencil-square fs-5"></i>
     </button>
     <form action="{{ route('buku-stok-konga-menir.destroy', $item->id) }}" method="POST" class="d-inline delete-form">
@@ -2089,18 +2089,16 @@
                                             </span>
                                         </td>
                                         <td class="text-center">
-    @if($item->status == 0)
     <button type="button" class="btn-edit me-3" onclick="openEditModal('pinjaman-konga', {
-    id: {{ $item->id }},
-    tanggal: '{{ $item->tanggal ? $item->tanggal->format('Y-m-d') : '' }}',
-    petani_id: {{ $item->petani_id }},
-    nama_petani: '{{ addslashes($item->nama_petani) }}',
-    jumlah: {{ $item->jumlah ?? 0 }},
-    status: {{ $item->status ? 1 : 0 }}
-})">
+        id: {{ $item->id }},
+        tanggal: '{{ $item->tanggal ? $item->tanggal->format('Y-m-d') : '' }}',
+        petani_id: {{ $item->petani_id }},
+        nama_petani: '{{ addslashes($item->nama_petani) }}',
+        jumlah: {{ $item->jumlah ?? 0 }},
+        status: {{ $item->status ? 1 : 0 }}
+    })">
         <i class="bi bi-pencil-square fs-5"></i>
     </button>
-    @endif
     <form action="{{ route('pinjaman-konga.destroy', $item->id) }}" method="POST" class="d-inline delete-form">
         @csrf
         @method('DELETE')
@@ -2224,6 +2222,8 @@
 <!-- ============================================
    MODAL HTML - Buku Stok Beras
 ============================================ -->
+<div class="modal-overlay" id="modal-overlay"></div>
+
 <div class="edit-modal" id="edit-modal-buku-beras">
     <div class="edit-modal-header">
         <h5 class="edit-modal-title">
@@ -2269,7 +2269,6 @@
                        placeholder="0" inputmode="decimal" required>
             </div>
 
-            <!-- TAMBAHAN: Field Harga -->
             <div class="edit-form-group">
                 <label class="edit-form-label">Harga (Rp/Kg)</label>
                 <input type="text" class="edit-form-control number-format" id="edit-buku-beras-harga"
@@ -2334,7 +2333,6 @@
                        placeholder="0" inputmode="decimal" required>
             </div>
 
-            <!-- TAMBAHAN: Field Status -->
             <div class="edit-form-group">
                 <label class="edit-form-label">Status</label>
                 <select class="edit-form-control" id="edit-pinjaman-beras-status">
@@ -2354,9 +2352,6 @@
     </div>
 </div>
 
-<!-- ============================================
-   MODAL HTML - Pinjaman Konga
-============================================ -->
 <!-- ============================================
    MODAL HTML - Pinjaman Konga
 ============================================ -->
@@ -2393,7 +2388,6 @@
                        placeholder="0" inputmode="decimal" required>
             </div>
 
-            <!-- TAMBAHAN: Field Status -->
             <div class="edit-form-group">
                 <label class="edit-form-label">Status</label>
                 <select class="edit-form-control" id="edit-pinjaman-konga-status">
@@ -2479,7 +2473,6 @@
                        placeholder="0" inputmode="decimal">
             </div>
 
-            <!-- TAMBAHAN: Field Status -->
             <div class="edit-form-group">
                 <label class="edit-form-label">Status</label>
                 <select class="edit-form-control" id="edit-buku-konga-status">
@@ -2498,6 +2491,8 @@
         </button>
     </div>
 </div>
+
+<!-- Modal Penjualan Beras & Konga tetap sama seperti sebelumnya -->
 
 <!-- ============================================
    MODAL HTML - Penjualan Beras
@@ -3566,17 +3561,19 @@ document.getElementById('modal-overlay').addEventListener('click', function() {
 // POPULATE MODAL FIELDS
 // ============================================
 function populateModalFields(type, data) {
+    console.log('Populating modal:', type, data); // Debug log
+
     switch(type) {
         case 'buku-beras':
             document.getElementById('edit-buku-beras-id').value = data.id;
             document.getElementById('edit-buku-beras-tanggal').value = data.tanggal;
             document.getElementById('edit-buku-beras-petani-search').value = data.nama_petani;
             document.getElementById('edit-buku-beras-petani-id').value = data.petani_id;
-            document.getElementById('edit-buku-beras-jemur').value = formatNumber(data.jemur);
-            document.getElementById('edit-buku-beras-giling-kotor').value = formatNumber(data.giling_kotor);
-            document.getElementById('edit-buku-beras-beras-pulang').value = formatNumber(data.beras_pulang);
-            document.getElementById('edit-buku-beras-harga').value = formatNumber(data.harga);
-            document.getElementById('edit-buku-beras-status').value = data.status;
+            document.getElementById('edit-buku-beras-jemur').value = formatNumber(data.jemur || 0);
+            document.getElementById('edit-buku-beras-giling-kotor').value = formatNumber(data.giling_kotor || 0);
+            document.getElementById('edit-buku-beras-beras-pulang').value = formatNumber(data.beras_pulang || 0);
+            document.getElementById('edit-buku-beras-harga').value = formatNumber(data.harga || 0);
+            document.getElementById('edit-buku-beras-status').value = data.status || 0;
             break;
 
         case 'pinjaman-beras':
@@ -3584,8 +3581,8 @@ function populateModalFields(type, data) {
             document.getElementById('edit-pinjaman-beras-tanggal').value = data.tanggal;
             document.getElementById('edit-pinjaman-beras-petani-search').value = data.nama_petani;
             document.getElementById('edit-pinjaman-beras-petani-id').value = data.petani_id;
-            document.getElementById('edit-pinjaman-beras-jumlah').value = formatNumber(data.jumlah);
-            document.getElementById('edit-pinjaman-beras-status').value = data.status; // TAMBAHAN
+            document.getElementById('edit-pinjaman-beras-jumlah').value = formatNumber(data.jumlah || 0);
+            document.getElementById('edit-pinjaman-beras-status').value = data.status || 0;
             break;
 
         case 'pinjaman-konga':
@@ -3593,8 +3590,8 @@ function populateModalFields(type, data) {
             document.getElementById('edit-pinjaman-konga-tanggal').value = data.tanggal;
             document.getElementById('edit-pinjaman-konga-petani-search').value = data.nama_petani;
             document.getElementById('edit-pinjaman-konga-petani-id').value = data.petani_id;
-            document.getElementById('edit-pinjaman-konga-jumlah').value = formatNumber(data.jumlah);
-            document.getElementById('edit-pinjaman-konga-status').value = data.status;
+            document.getElementById('edit-pinjaman-konga-jumlah').value = formatNumber(data.jumlah || 0);
+            document.getElementById('edit-pinjaman-konga-status').value = data.status || 0;
             break;
 
         case 'buku-konga':
@@ -3602,37 +3599,39 @@ function populateModalFields(type, data) {
             document.getElementById('edit-buku-konga-tanggal').value = data.tanggal;
             document.getElementById('edit-buku-konga-petani-search').value = data.nama_petani;
             document.getElementById('edit-buku-konga-petani-id').value = data.petani_id;
-            document.getElementById('edit-buku-konga-karung').value = formatNumber(data.karung_konga);
-            document.getElementById('edit-buku-konga-giling').value = formatNumber(data.konga_giling);
-            document.getElementById('edit-buku-konga-jual').value = formatNumber(data.konga_jual);
-            document.getElementById('edit-buku-konga-kembalikan').value = formatNumber(data.kembalikan_konga);
-            document.getElementById('edit-buku-konga-menir').value = formatNumber(data.menir);
-            document.getElementById('edit-buku-konga-menir-jual').value = formatNumber(data.menir_jual);
-            document.getElementById('edit-buku-konga-status').value = data.status;
+            document.getElementById('edit-buku-konga-karung').value = formatNumber(data.karung_konga || 0);
+            document.getElementById('edit-buku-konga-giling').value = formatNumber(data.konga_giling || 0);
+            document.getElementById('edit-buku-konga-jual').value = formatNumber(data.konga_jual || 0);
+            document.getElementById('edit-buku-konga-kembalikan').value = formatNumber(data.kembalikan_konga || 0);
+            document.getElementById('edit-buku-konga-menir').value = formatNumber(data.menir || 0);
+            document.getElementById('edit-buku-konga-menir-jual').value = formatNumber(data.menir_jual || 0);
+            document.getElementById('edit-buku-konga-status').value = data.status || 0;
             break;
 
         case 'penjualan-beras':
             document.getElementById('edit-penjualan-beras-id').value = data.id;
             document.getElementById('edit-penjualan-beras-tanggal').value = data.tanggal;
             document.getElementById('edit-penjualan-beras-keterangan').value = data.keterangan;
-            document.getElementById('edit-penjualan-beras-jumlah').value = formatNumber(data.jumlah_beras);
+            document.getElementById('edit-penjualan-beras-jumlah').value = formatNumber(data.jumlah_beras || 0);
             break;
 
         case 'penjualan-konga':
             document.getElementById('edit-penjualan-konga-id').value = data.id;
             document.getElementById('edit-penjualan-konga-tanggal').value = data.tanggal;
             document.getElementById('edit-penjualan-konga-keterangan').value = data.keterangan;
-            document.getElementById('edit-penjualan-konga-jumlah-konga').value = formatNumber(data.jumlah_konga);
-            document.getElementById('edit-penjualan-konga-jumlah-menir').value = formatNumber(data.jumlah_menir);
-            document.getElementById('edit-penjualan-konga-harga').value = formatNumber(data.harga);
+            document.getElementById('edit-penjualan-konga-jumlah-konga').value = formatNumber(data.jumlah_konga || 0);
+            document.getElementById('edit-penjualan-konga-jumlah-menir').value = formatNumber(data.jumlah_menir || 0);
+            document.getElementById('edit-penjualan-konga-harga').value = formatNumber(data.harga || 0);
             break;
     }
 
     // Apply number formatting to all number-format inputs in the modal
     const modal = document.getElementById(`edit-modal-${type}`);
-    modal.querySelectorAll('.number-format').forEach(input => {
-        setupNumberFormatting(input);
-    });
+    if (modal) {
+        modal.querySelectorAll('.number-format').forEach(input => {
+            setupNumberFormatting(input);
+        });
+    }
 }
 
 // ============================================
@@ -3715,7 +3714,12 @@ function submitEdit(type) {
 // ============================================
 // PREPARE EDIT DATA
 // ============================================
+// ============================================
+// PREPARE EDIT DATA
+// ============================================
 function prepareEditData(type) {
+    console.log('Preparing edit data for:', type); // Debug log
+
     switch(type) {
         case 'buku-beras':
             return {
@@ -3733,7 +3737,7 @@ function prepareEditData(type) {
                 petani_id: document.getElementById('edit-pinjaman-beras-petani-id').value,
                 tanggal: document.getElementById('edit-pinjaman-beras-tanggal').value,
                 jumlah: parseFormattedNumber(document.getElementById('edit-pinjaman-beras-jumlah').value),
-                status: document.getElementById('edit-pinjaman-beras-status').value // TAMBAHAN
+                status: document.getElementById('edit-pinjaman-beras-status').value
             };
 
         case 'pinjaman-konga':
@@ -3774,6 +3778,7 @@ function prepareEditData(type) {
             };
 
         default:
+            console.error('Unknown type:', type);
             return null;
     }
 }
