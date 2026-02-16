@@ -539,6 +539,10 @@ class BukuStokController extends Controller
                 $hargaKonga = (float) ($row['harga_konga'] ?? 0);
                 $hargaMenir = (float) ($row['harga_menir'] ?? 0);
 
+
+                // Gunakan status dari input jika ada, jika tidak default 0
+                $status = isset($row['status']) ? (int)$row['status'] : 0;
+
                 $buku = BukuStokKongaMenir::create([
                     'petani_id'         => $petani->id,
                     'nama_petani'       => $petani->nama,
@@ -551,7 +555,7 @@ class BukuStokController extends Controller
                     'menir'             => $menir,
                     'menir_jual'        => $menirJual,
                     'global_menir'      => $stokGlobal->stok_menir,
-                    'status'            => 0, // ⬅️ Default pertama kali masuk
+                    'status'            => $status, // ⬅️ Default pertama kali masuk
                     'harga_konga'       => $hargaKonga,
                     'harga_menir'       => $hargaMenir,
                 ]);
