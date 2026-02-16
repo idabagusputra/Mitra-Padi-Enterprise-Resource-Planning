@@ -339,6 +339,9 @@ Route::post('/pinjaman-konga/store', [BukuStokController::class, 'storePinjamanK
     ->name('pinjaman-konga.store');
 Route::delete('/pinjaman-konga/{id}', [BukuStokController::class, 'destroyPinjamanKonga'])
     ->name('pinjaman-konga.destroy');
+// Route tanpa /store (alternatif)
+Route::post('/pinjaman-konga', [BukuStokController::class, 'storePinjamanKonga'])
+    ->name('pinjaman-konga.create');
 
 // Buku Stok Konga Menir
 Route::post('/buku-stok-konga-menir/store', [BukuStokController::class, 'storeBukuKongaMenir'])
