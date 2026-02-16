@@ -536,6 +536,8 @@ class BukuStokController extends Controller
                 $kembalikanKonga = (float) ($row['kembalikan_konga'] ?? 0);
                 $menir = (float) ($row['menir'] ?? 0);
                 $menirJual = (float) ($row['menir_jual'] ?? 0);
+                $hargaKonga = (float) ($row['harga_konga'] ?? 0);
+                $hargaMenir = (float) ($row['harga_menir'] ?? 0);
 
                 $buku = BukuStokKongaMenir::create([
                     'petani_id'         => $petani->id,
@@ -550,6 +552,8 @@ class BukuStokController extends Controller
                     'menir_jual'        => $menirJual,
                     'global_menir'      => $stokGlobal->stok_menir,
                     'status'            => 0, // ⬅️ Default pertama kali masuk
+                    'harga_konga'       => $hargaKonga,
+                    'harga_menir'       => $hargaMenir,
                 ]);
 
 

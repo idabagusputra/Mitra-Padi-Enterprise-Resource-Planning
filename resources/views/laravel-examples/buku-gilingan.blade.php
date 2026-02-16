@@ -1998,9 +1998,11 @@
         karung_konga: {{ $item->karung_konga ?? 0 }},
         konga_giling: {{ $item->konga_giling ?? 0 }},
         konga_jual: {{ $item->konga_jual ?? 0 }},
+        harga_konga: {{ $item->harga_konga ?? 0 }},
         kembalikan_konga: {{ $item->kembalikan_konga ?? 0 }},
         menir: {{ $item->menir ?? 0 }},
         menir_jual: {{ $item->menir_jual ?? 0 }},
+        harga_menir: {{ $item->harga_menir ?? 0 }},
         status: {{ $item->status ? 1 : 0 }}
     })">
         <i class="bi bi-pencil-square fs-5"></i>
@@ -2455,6 +2457,16 @@
                        placeholder="0" inputmode="decimal">
             </div>
 
+            <!-- TAMBAHAN: Harga Konga -->
+            <div class="edit-form-group">
+                <label class="edit-form-label">Harga Konga (Rp/Karung)</label>
+                <input type="text" class="edit-form-control number-format" id="edit-buku-konga-harga-konga"
+                       placeholder="0" inputmode="decimal">
+                <small class="text-muted" style="display: block; margin-top: 0.5rem; font-size: 0.75rem;">
+                    <i class="bi bi-info-circle"></i> Kosongkan jika tidak ada harga
+                </small>
+            </div>
+
             <div class="edit-form-group">
                 <label class="edit-form-label">Kembalikan Konga</label>
                 <input type="text" class="edit-form-control number-format" id="edit-buku-konga-kembalikan"
@@ -2471,6 +2483,16 @@
                 <label class="edit-form-label">Menir Jual</label>
                 <input type="text" class="edit-form-control number-format" id="edit-buku-konga-menir-jual"
                        placeholder="0" inputmode="decimal">
+            </div>
+
+            <!-- TAMBAHAN: Harga Menir -->
+            <div class="edit-form-group">
+                <label class="edit-form-label">Harga Menir (Rp/Kg)</label>
+                <input type="text" class="edit-form-control number-format" id="edit-buku-konga-harga-menir"
+                       placeholder="0" inputmode="decimal">
+                <small class="text-muted" style="display: block; margin-top: 0.5rem; font-size: 0.75rem;">
+                    <i class="bi bi-info-circle"></i> Kosongkan jika tidak ada harga
+                </small>
             </div>
 
             <div class="edit-form-group">
@@ -3594,19 +3616,21 @@ function populateModalFields(type, data) {
             document.getElementById('edit-pinjaman-konga-status').value = data.status || 0;
             break;
 
-        case 'buku-konga':
-            document.getElementById('edit-buku-konga-id').value = data.id;
-            document.getElementById('edit-buku-konga-tanggal').value = data.tanggal;
-            document.getElementById('edit-buku-konga-petani-search').value = data.nama_petani;
-            document.getElementById('edit-buku-konga-petani-id').value = data.petani_id;
-            document.getElementById('edit-buku-konga-karung').value = formatNumber(data.karung_konga || 0);
-            document.getElementById('edit-buku-konga-giling').value = formatNumber(data.konga_giling || 0);
-            document.getElementById('edit-buku-konga-jual').value = formatNumber(data.konga_jual || 0);
-            document.getElementById('edit-buku-konga-kembalikan').value = formatNumber(data.kembalikan_konga || 0);
-            document.getElementById('edit-buku-konga-menir').value = formatNumber(data.menir || 0);
-            document.getElementById('edit-buku-konga-menir-jual').value = formatNumber(data.menir_jual || 0);
-            document.getElementById('edit-buku-konga-status').value = data.status || 0;
-            break;
+case 'buku-konga':
+    document.getElementById('edit-buku-konga-id').value = data.id;
+    document.getElementById('edit-buku-konga-tanggal').value = data.tanggal;
+    document.getElementById('edit-buku-konga-petani-search').value = data.nama_petani;
+    document.getElementById('edit-buku-konga-petani-id').value = data.petani_id;
+    document.getElementById('edit-buku-konga-karung').value = formatNumber(data.karung_konga || 0);
+    document.getElementById('edit-buku-konga-giling').value = formatNumber(data.konga_giling || 0);
+    document.getElementById('edit-buku-konga-jual').value = formatNumber(data.konga_jual || 0);
+    document.getElementById('edit-buku-konga-harga-konga').value = formatNumber(data.harga_konga || 0); // TAMBAHAN
+    document.getElementById('edit-buku-konga-kembalikan').value = formatNumber(data.kembalikan_konga || 0);
+    document.getElementById('edit-buku-konga-menir').value = formatNumber(data.menir || 0);
+    document.getElementById('edit-buku-konga-menir-jual').value = formatNumber(data.menir_jual || 0);
+    document.getElementById('edit-buku-konga-harga-menir').value = formatNumber(data.harga_menir || 0); // TAMBAHAN
+    document.getElementById('edit-buku-konga-status').value = data.status || 0;
+    break;
 
         case 'penjualan-beras':
             document.getElementById('edit-penjualan-beras-id').value = data.id;
@@ -3748,18 +3772,20 @@ function prepareEditData(type) {
                 status: document.getElementById('edit-pinjaman-konga-status').value
             };
 
-        case 'buku-konga':
-            return {
-                petani_id: document.getElementById('edit-buku-konga-petani-id').value,
-                tanggal: document.getElementById('edit-buku-konga-tanggal').value,
-                karung_konga: parseFormattedNumber(document.getElementById('edit-buku-konga-karung').value),
-                konga_giling: parseFormattedNumber(document.getElementById('edit-buku-konga-giling').value),
-                konga_jual: parseFormattedNumber(document.getElementById('edit-buku-konga-jual').value),
-                kembalikan_konga: parseFormattedNumber(document.getElementById('edit-buku-konga-kembalikan').value),
-                menir: parseFormattedNumber(document.getElementById('edit-buku-konga-menir').value),
-                menir_jual: parseFormattedNumber(document.getElementById('edit-buku-konga-menir-jual').value),
-                status: document.getElementById('edit-buku-konga-status').value
-            };
+case 'buku-konga':
+    return {
+        petani_id: document.getElementById('edit-buku-konga-petani-id').value,
+        tanggal: document.getElementById('edit-buku-konga-tanggal').value,
+        karung_konga: parseFormattedNumber(document.getElementById('edit-buku-konga-karung').value),
+        konga_giling: parseFormattedNumber(document.getElementById('edit-buku-konga-giling').value),
+        konga_jual: parseFormattedNumber(document.getElementById('edit-buku-konga-jual').value),
+        harga_konga: parseFormattedNumber(document.getElementById('edit-buku-konga-harga-konga').value), // TAMBAHAN
+        kembalikan_konga: parseFormattedNumber(document.getElementById('edit-buku-konga-kembalikan').value),
+        menir: parseFormattedNumber(document.getElementById('edit-buku-konga-menir').value),
+        menir_jual: parseFormattedNumber(document.getElementById('edit-buku-konga-menir-jual').value),
+        harga_menir: parseFormattedNumber(document.getElementById('edit-buku-konga-harga-menir').value), // TAMBAHAN
+        status: document.getElementById('edit-buku-konga-status').value
+    };
 
         case 'penjualan-beras':
             return {
