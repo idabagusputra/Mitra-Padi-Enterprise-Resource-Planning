@@ -180,6 +180,9 @@ class BukuStokController extends Controller
     {
         $pinjaman = BukuStokPinjamanBeras::findOrFail($id);
 
+        // Gunakan status dari input jika ada, jika tidak default 0
+        $status = isset($row['status']) ? (int)$row['status'] : 0;
+
         if ($pinjaman->status == 1) {
             return response()->json(['message' => 'Pinjaman sudah dipakai'], 422);
         }
@@ -187,6 +190,7 @@ class BukuStokController extends Controller
         $request->validate([
             'tanggal' => 'required|date',
             'jumlah'  => 'required|numeric|min:0.01',
+            'status'      => $status,
         ]);
 
         $pinjaman->update($request->only('tanggal', 'jumlah'));
@@ -315,6 +319,9 @@ class BukuStokController extends Controller
             $jual   = max($bersih - $request->beras_pulang, 0);
             $jualK  = round($jual + $ongkos +  $pinjaman, 2);
 
+            // Gunakan status dari input jika ada, jika tidak default 0
+            $status = isset($row['status']) ? (int)$row['status'] : 0;
+
             $buku->update([
                 'tanggal'        => $request->tanggal,
                 'giling_kotor'   => $request->giling_kotor,
@@ -324,6 +331,8 @@ class BukuStokController extends Controller
                 'beras_pulang'   => $request->beras_pulang,
                 'jual'           => $jual,
                 'jual_kotor'     => $jualK,
+                'status'      => $status,
+                'harga'       => $request->harga ?? 0,
             ]);
 
             // 🔥 TAMBAHAN INI
