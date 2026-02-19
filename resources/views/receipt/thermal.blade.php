@@ -358,7 +358,7 @@
                     <th>Hutang</th>
                     <th>Jumlah</th>
                     <th>Bunga</th>
-                    <th>Total</th>
+                    <th>Hutang + Bunga</th>
                 </tr>
             </thead>
             <tbody>
