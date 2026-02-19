@@ -385,7 +385,7 @@
                 @if($loop->last && $bungaRate > 0)
     <tr>
         <td colspan="4" style="font-weight: bold; padding: 5px 2px; font-size: 9pt;">
-            BUNGA TERHITUNG SAMPAI TANGGAL GABAH MASUK: {{ $giling->created_at->addHours(0)->format('d/m/Y') }}
+            BUNGA TERHITUNG DARI TANGGAL PINJAMAN SAMPAI TANGGAL GABAH MASUK: {{ $giling->created_at->addHours(0)->format('d/m/Y') }}
         </td>
     </tr>
     @endif
