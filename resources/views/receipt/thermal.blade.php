@@ -343,7 +343,7 @@
             @endforeach
             @else
 <tr class="calculation-row">
-    <td colspan="4" style="text-align: justify; text-align-last: justify;">TIDAK ADA PENGAMBILAN (BAWA KARUNG PRIBADI)</td>
+    <td colspan="4" style="text-align: justify; text-align-last: justify;">TIDAK ADA PENGAMBILAN (KARUNG PRIBADI)</td>
 </tr>
 @endif
         </table>
@@ -358,7 +358,7 @@
                     <th>Utang</th>
                     <th>Jumlah</th>
                     <th>Bunga</th>
-                    <th>Hutang + Bunga</th>
+                    <th>Total</th>
                 </tr>
             </thead>
             <tbody>
@@ -383,10 +383,9 @@
                 </tr>
 
                 @if($loop->last && $bungaRate > 0)
-  <tr>
-    <td class="calculation-row" colspan="4" style="font-weight: bold; font-size: 9pt; text-align: justify; text-align-last: justify; word-spacing: normal;">
-        BUNGA TERHITUNG DARI TANGGAL UTANG SAMPAI TANGGAL GABAH MASUK: {{ $giling->created_at->addHours(0)->format('d/m/Y') }}
-    </td>
+
+<tr class="calculation-row">
+    <td colspan="4" style="text-align: justify; text-align-last: justify;">BUNGA TERHITUNG DARI TANGGAL UTANG SAMPAI TANGGAL GABAH MASUK: {{ $giling->created_at->addHours(0)->format('d/m/Y') }}</td>
 </tr>
     @endif
 
