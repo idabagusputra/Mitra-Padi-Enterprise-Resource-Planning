@@ -265,7 +265,7 @@ class BukuStokController extends Controller
                 $jualK  = round($jual + $ongkos + $pinjaman, 2);
 
                 // Gunakan status dari input jika ada, jika tidak default 0
-                $harga = isset($row['harga']) ? (int)$row['status'] : 0;
+                $harga = isset($row['harga']) ? (float)$row['harga'] : 0;
 
 
                 $buku = BukuStokBeras::create([
