@@ -277,7 +277,7 @@ class BukuStokController extends Controller
                     'jual'           => $jual,
                     'jual_kotor'     => $jualK,
                     'status'      => $row['status'],
-                    'harga'       => $request->harga ?? 0,
+                    'harga'        => isset($row['harga']) ? (float)$row['harga'] : 0,
 
                 ]);
 
