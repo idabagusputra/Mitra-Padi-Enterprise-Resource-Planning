@@ -391,8 +391,8 @@
 
                 @empty
                 <tr class="calculation-row">
-                    <td colspan="4">Tidak ada data hutang</td>
-                </tr>
+    <td colspan="4" style="text-align: justify; text-align-last: justify;">TIDAK ADA UTANG / PINJAMAN DANA</td>
+</tr>
                 @endforelse
             </tbody>
         </table>
