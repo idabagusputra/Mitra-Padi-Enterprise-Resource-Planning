@@ -277,6 +277,8 @@ class BukuStokController extends Controller
                     'jual'           => $jual,
                     'jual_kotor'     => $jualK,
                     'status'      => $row['status'],
+                    'harga'       => $request->harga ?? 0,
+
                 ]);
 
                 $pinjamanQuery->update([
