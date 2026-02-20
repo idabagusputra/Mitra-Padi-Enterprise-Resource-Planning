@@ -28,6 +28,7 @@ class BukuStokBeras extends Model
         'global_beras',
         'status',
         'keterangan_operator_gajian',
+        'harga',
     ];
 
 
