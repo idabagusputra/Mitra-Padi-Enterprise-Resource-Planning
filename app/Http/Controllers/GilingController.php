@@ -38,83 +38,171 @@ class GilingController extends Controller
         return view('laravel-examples.giling', compact('gilings', 'petanis', 'latestGiling'));
     }
 
+    // /**
+    //  * Get stok terakhir untuk autocomplete form giling
+    //  */
+    // public function getStokTerakhir($petaniId)
+    // {
+    //     $beras = BukuStokBeras::where('petani_id', $petaniId)
+    //         ->where('status', false)
+    //         ->orderBy('tanggal')
+    //         ->orderBy('id')
+    //         ->first();
+
+    //     $kongaMenir = BukuStokKongaMenir::where('petani_id', $petaniId)
+    //         ->where('status', false)
+    //         ->orderBy('tanggal')
+    //         ->orderBy('id')
+    //         ->first();
+
+    //     return response()->json([
+    //         'beras' => $beras ? [
+    //             'id' => $beras->id,
+    //             'giling_kotor' => $beras->giling_kotor,
+    //             'jemur' => $beras->jemur ?? 0,
+    //             'pinjaman_beras' => $beras->pinjaman_beras,
+    //             'beras_pulang' => $beras->beras_pulang,
+    //             'harga' => $beras->harga ?? '',
+    //         ] : null,
+    //         'konga_menir' => $kongaMenir ? [
+    //             'id' => $kongaMenir->id,
+    //             'total_konga' => $kongaMenir->konga_jual,
+    //             'total_menir' => $kongaMenir->menir_jual,
+    //             'total_karung_konga' => $kongaMenir->karung_konga,
+    //         ] : null
+    //     ]);
+    // }
+
+
+    // /**
+    //  * Update status buku stok menjadi true dan set giling_id
+    //  */
+
+
+    // private function updateBukuStokStatus($petaniId, $gilingId)
+    // {
+    //     // Ambil record pertama (sama seperti di getStokTerakhir)
+    //     $beras = BukuStokBeras::where('petani_id', $petaniId)
+    //         ->where('status', false)
+    //         ->orderBy('tanggal')
+    //         ->orderBy('id')
+    //         ->first();
+
+    //     $kongaMenir = BukuStokKongaMenir::where('petani_id', $petaniId)
+    //         ->where('status', false)
+    //         ->orderBy('tanggal')
+    //         ->orderBy('id')
+    //         ->first();
+
+    //     // Update hanya record yang diambil
+    //     if ($beras) {
+    //         BukuStokBeras::where('id', $beras->id)
+    //             ->update([
+    //                 'status' => true,
+    //                 'harga' => Giling::find($gilingId)->harga_jual,
+    //                 'giling_id' => $gilingId
+    //             ]);
+    //     }
+
+    //     if ($kongaMenir) {
+    //         BukuStokKongaMenir::where('id', $kongaMenir->id)
+    //             ->update([
+    //                 'status' => true,
+    //                 'harga_konga' => Giling::find($gilingId)->harga_konga,
+    //                 'harga_menir' => Giling::find($gilingId)->harga_menir,
+    //                 'giling_id' => $gilingId
+    //             ]);
+    //     }
+
+    //     Log::info("Updated BukuStok status for petani_id: {$petaniId}, giling_id: {$gilingId}, beras_id: {$beras?->id}, konga_id: {$kongaMenir?->id}");
+    // }
+
+
+
+
     /**
      * Get stok terakhir untuk autocomplete form giling
+     * Semua data status false di-SUM terlebih dahulu
      */
     public function getStokTerakhir($petaniId)
     {
         $beras = BukuStokBeras::where('petani_id', $petaniId)
             ->where('status', false)
-            ->orderBy('tanggal')
-            ->orderBy('id')
+            ->selectRaw('
+            SUM(giling_kotor) as giling_kotor,
+            SUM(jemur) as jemur,
+            SUM(pinjaman_beras) as pinjaman_beras,
+            SUM(beras_pulang) as beras_pulang
+        ')
             ->first();
 
         $kongaMenir = BukuStokKongaMenir::where('petani_id', $petaniId)
             ->where('status', false)
-            ->orderBy('tanggal')
-            ->orderBy('id')
+            ->selectRaw('
+            SUM(konga_jual) as total_konga,
+            SUM(menir_jual) as total_menir,
+            SUM(karung_konga) as total_karung_konga
+        ')
             ->first();
 
+        // Cek apakah ada data (jika semua null berarti tidak ada record)
+        $berasExists = BukuStokBeras::where('petani_id', $petaniId)->where('status', false)->exists();
+        $kongaMenirExists = BukuStokKongaMenir::where('petani_id', $petaniId)->where('status', false)->exists();
+
         return response()->json([
-            'beras' => $beras ? [
-                'id' => $beras->id,
-                'giling_kotor' => $beras->giling_kotor,
-                'jemur' => $beras->jemur ?? 0,
-                'pinjaman_beras' => $beras->pinjaman_beras,
-                'beras_pulang' => $beras->beras_pulang,
-                'harga' => $beras->harga ?? '',
+            'beras' => $berasExists ? [
+                'giling_kotor'   => $beras->giling_kotor ?? 0,
+                'jemur'          => $beras->jemur ?? 0,
+                'pinjaman_beras' => $beras->pinjaman_beras ?? 0,
+                'beras_pulang'   => $beras->beras_pulang ?? 0,
+                'harga'          => '',
             ] : null,
-            'konga_menir' => $kongaMenir ? [
-                'id' => $kongaMenir->id,
-                'total_konga' => $kongaMenir->konga_jual,
-                'total_menir' => $kongaMenir->menir_jual,
-                'total_karung_konga' => $kongaMenir->karung_konga,
+            'konga_menir' => $kongaMenirExists ? [
+                'total_konga'        => $kongaMenir->total_konga ?? 0,
+                'total_menir'        => $kongaMenir->total_menir ?? 0,
+                'total_karung_konga' => $kongaMenir->total_karung_konga ?? 0,
             ] : null
         ]);
     }
 
-
     /**
-     * Update status buku stok menjadi true dan set giling_id
+     * Update SEMUA record status false menjadi true dan set giling_id
      */
-
-
     private function updateBukuStokStatus($petaniId, $gilingId)
     {
-        // Ambil record pertama (sama seperti di getStokTerakhir)
-        $beras = BukuStokBeras::where('petani_id', $petaniId)
-            ->where('status', false)
-            ->orderBy('tanggal')
-            ->orderBy('id')
-            ->first();
+        $giling = Giling::find($gilingId);
 
-        $kongaMenir = BukuStokKongaMenir::where('petani_id', $petaniId)
+        $berasIds = BukuStokBeras::where('petani_id', $petaniId)
             ->where('status', false)
-            ->orderBy('tanggal')
-            ->orderBy('id')
-            ->first();
+            ->pluck('id');
 
-        // Update hanya record yang diambil
-        if ($beras) {
-            BukuStokBeras::where('id', $beras->id)
+        $kongaMenirIds = BukuStokKongaMenir::where('petani_id', $petaniId)
+            ->where('status', false)
+            ->pluck('id');
+
+        if ($berasIds->isNotEmpty()) {
+            BukuStokBeras::whereIn('id', $berasIds)
                 ->update([
-                    'status' => true,
-                    'harga' => Giling::find($gilingId)->harga_jual,
-                    'giling_id' => $gilingId
+                    'status'    => true,
+                    'harga'     => $giling->harga_jual,
+                    'giling_id' => $gilingId,
                 ]);
         }
 
-        if ($kongaMenir) {
-            BukuStokKongaMenir::where('id', $kongaMenir->id)
+        if ($kongaMenirIds->isNotEmpty()) {
+            BukuStokKongaMenir::whereIn('id', $kongaMenirIds)
                 ->update([
-                    'status' => true,
-                    'harga_konga' => Giling::find($gilingId)->harga_konga,
-                    'harga_menir' => Giling::find($gilingId)->harga_menir,
-                    'giling_id' => $gilingId
+                    'status'      => true,
+                    'harga_konga' => $giling->harga_konga,
+                    'harga_menir' => $giling->harga_menir,
+                    'giling_id'   => $gilingId,
                 ]);
         }
 
-        Log::info("Updated BukuStok status for petani_id: {$petaniId}, giling_id: {$gilingId}, beras_id: {$beras?->id}, konga_id: {$kongaMenir?->id}");
+        Log::info("Updated BukuStok status for petani_id: {$petaniId}, giling_id: {$gilingId}", [
+            'beras_ids'      => $berasIds->toArray(),
+            'konga_menir_ids' => $kongaMenirIds->toArray(),
+        ]);
     }
 
 
