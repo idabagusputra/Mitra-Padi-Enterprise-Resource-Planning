@@ -773,9 +773,9 @@ function autoFillKongaMenir(konga_menir) {
     if (!konga_menir) return;
     const fields = {
         'jumlah_konga': cleanDBValue(konga_menir.total_konga),
-        'harga_konga': '',
+        'harga_konga': '300000', // Asumsi harga konga default, bisa disesuaikan jika ada di DB
         'jumlah_menir': cleanDBValue(konga_menir.total_menir),
-        'harga_menir': ''
+        'harga_menir': '4000' // Asumsi harga menir default, bisa disesuaikan jika ada di DB
     };
     for (const [id, value] of Object.entries(fields)) {
         const input = document.getElementById(id);

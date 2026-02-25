@@ -142,8 +142,6 @@ class GilingController extends Controller
             SUM(konga_jual) as total_konga,
             SUM(menir_jual) as total_menir,
             SUM(karung_konga) as total_karung_konga
-            SUM(harga_konga) as total_harga_konga,
-            SUM(harga_menir) as total_harga_menir
         ')
             ->first();
 
@@ -163,8 +161,6 @@ class GilingController extends Controller
                 'total_konga'        => $kongaMenir->total_konga ?? 0,
                 'total_menir'        => $kongaMenir->total_menir ?? 0,
                 'total_karung_konga' => $kongaMenir->total_karung_konga ?? 0,
-                'harga_konga' => ($kongaMenir->total_harga_konga ?? 0) ?: 300000,
-                'harga_menir' => ($kongaMenir->total_harga_menir ?? 0) ?: 4000,
             ] : null
         ]);
     }
