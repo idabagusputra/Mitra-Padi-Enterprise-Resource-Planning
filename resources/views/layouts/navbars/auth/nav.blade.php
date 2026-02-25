@@ -595,6 +595,8 @@ if (whatsappShareButton) {
     });
 }
 
+
+
 // Fungsi convert PDF ke HD Image dengan crop dan margin
 async function convertPdfToHDImage(pdfArrayBuffer) {
     const loadingTask = window.pdfjsLib.getDocument({ data: pdfArrayBuffer });

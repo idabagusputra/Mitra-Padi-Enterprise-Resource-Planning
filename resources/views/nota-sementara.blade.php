@@ -750,7 +750,7 @@
                                     <div class="form-group">
                                         <label for="harga_konga" class="form-label">Harga Konga (Rp)</label>
                                         <input class="form-control number-format" type="text" name="harga_konga" id="harga_konga"
-                                               inputmode="numeric" placeholder="" value="250,000" required>
+                                               inputmode="numeric" placeholder="" value="300,000" required>
                                     </div>
                                 </div>
 

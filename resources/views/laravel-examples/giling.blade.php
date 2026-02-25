@@ -362,8 +362,8 @@
                     'jemur' => ['label' => 'Jemur (Karung)'],
                     'harga_jual' => ['label' => 'Harga Beras Laku (Rp)'],
                     'jumlah_konga' => ['label' => 'Jumlah Konga (Karung)'],
-                    'harga_konga' => ['label' => 'Harga Konga (Rp)'],
-                    'jumlah_menir' => ['label' => 'Jumlah Menir (Kg)'],
+                    'harga_konga' => ['label' => 'Harga Konga (Rp)', , 'default' => 300000],
+                    'jumlah_menir' => ['label' => 'Jumlah Menir (Kg)', 'default' => 4000],
                     'harga_menir' => ['label' => 'Harga Menir (Rp)'],
                     ];
                     @endphp
