@@ -205,10 +205,10 @@ class BukuStokController extends Controller
         try {
             $pinjaman = BukuStokPinjamanBeras::findOrFail($id);
 
-            if ($pinjaman->status == 1) {
-                return redirect()->back()
-                    ->with('error', 'Pinjaman sudah dipakai, tidak bisa dihapus');
-            }
+            // if ($pinjaman->status == 1) {
+            //     return redirect()->back()
+            //         ->with('error', 'Pinjaman sudah dipakai, tidak bisa dihapus');
+            // }
 
             $jumlah = (float) $pinjaman->jumlah;
 
