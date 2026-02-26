@@ -183,9 +183,9 @@ class BukuStokController extends Controller
         // Gunakan status dari input jika ada, jika tidak default 0
         $status = isset($row['status']) ? (int)$row['status'] : 0;
 
-        if ($pinjaman->status == 1) {
-            return response()->json(['message' => 'Pinjaman sudah dipakai'], 422);
-        }
+        // if ($pinjaman->status == 1) {
+        //     return response()->json(['message' => 'Pinjaman sudah dipakai'], 422);
+        // }
 
         $request->validate([
             'tanggal' => 'required|date',
