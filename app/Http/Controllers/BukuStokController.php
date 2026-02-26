@@ -193,7 +193,7 @@ class BukuStokController extends Controller
             'status'      => $status,
         ]);
 
-        $pinjaman->update($request->only('tanggal', 'jumlah'));
+        $pinjaman->update($request->only('tanggal', 'jumlah', 'status'));
 
         return response()->json(['success' => true]);
     }
