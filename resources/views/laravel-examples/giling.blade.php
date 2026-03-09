@@ -772,15 +772,11 @@ function autoFillBeras(beras) {
 function autoFillKongaMenir(konga_menir) {
     if (!konga_menir) return;
     const fields = {
-        // 'jumlah_konga': cleanDBValue(konga_menir.total_konga),
-        // 'harga_konga': '325000', // Asumsi harga konga default, bisa disesuaikan jika ada di DB
-        // 'jumlah_menir': cleanDBValue(konga_menir.total_menir),
-        // 'harga_menir': '4000' // Asumsi harga menir default, bisa disesuaikan jika ada di DB
-        'jumlah_konga' => cleanDBValue($konga_menir->total_konga ?? 0),
-'harga_konga' => '325000',
-'jumlah_menir' => cleanDBValue($konga_menir->total_menir ?? 0),
-'harga_menir' => '4000'
-    };
+    'jumlah_konga': cleanDBValue(konga_menir.total_konga ?? 0),
+    'harga_konga': '325000',
+    'jumlah_menir': cleanDBValue(konga_menir.total_menir ?? 0),
+    'harga_menir': '4000'
+};
     for (const [id, value] of Object.entries(fields)) {
         const input = document.getElementById(id);
         if (input) {
