@@ -2949,9 +2949,75 @@ document.addEventListener('DOMContentLoaded', function() {
 const searchGlobalInput = document.getElementById('search-petani-global');
 const searchResults = document.getElementById('search-petani-results');
 
+// if (searchGlobalInput) {
+//     searchGlobalInput.addEventListener('input', function() {
+//         const searchTerm = this.value.trim();
+
+//         if (searchTerm.length > 0) {
+//             fetch(`/search-petani-stok?term=${encodeURIComponent(searchTerm)}`)
+//                 .then(response => response.json())
+//                 .then(data => {
+//                     searchResults.innerHTML = '';
+//                     searchResults.style.display = 'block';
+
+//                     if (data.length === 0) {
+//                         searchResults.innerHTML = '<div class="p-3 text-center text-muted">Tidak ada petani ditemukan</div>';
+//                         return;
+//                     }
+
+//                     data.forEach(petani => {
+//     const div = document.createElement('div');
+//     div.className = 'search-petani-item';
+//     div.innerHTML = `
+//         <div class="petani-avatar">${petani.nama.charAt(0).toUpperCase()}</div>
+//         <div class="petani-info">
+//             <div class="petani-name">
+//                 ${petani.nama}
+//                 <span class="pinjaman-badge">
+//                     Beras: ${smartFormatNumber(petani.pinjaman_beras)} Kg | Konga: ${smartFormatNumber(petani.pinjaman_konga)} Karung
+//                 </span>
+//             </div>
+//             <div class="petani-alamat">${petani.alamat || '-'}</div>
+//         </div>
+//     `;
+
+//                         div.addEventListener('click', function() {
+//                             searchGlobalInput.value = petani.nama;
+//                             searchGlobalInput.setAttribute('data-selected-id', petani.id);
+//                             searchResults.style.display = 'none';
+
+//                             // Apply all filters
+//                             applyAllFilters();
+//                         });
+
+//                         searchResults.appendChild(div);
+//                     });
+//                 });
+//         } else {
+//             searchResults.style.display = 'none';
+//             // Reset selected petani
+//             searchGlobalInput.removeAttribute('data-selected-id');
+//             // Apply filters (reset petani filter)
+//             applyAllFilters();
+//         }
+//     });
+
+//     // Close dropdown when clicking outside
+//     document.addEventListener('click', function(e) {
+//         if (!e.target.closest('.search-petani-wrapper')) {
+//             searchResults.style.display = 'none';
+//         }
+//     });
+// }
+
+
 if (searchGlobalInput) {
+    // Variabel untuk menyimpan teks terakhir yang diketik (tanpa select)
+    let lastTypedValue = '';
+
     searchGlobalInput.addEventListener('input', function() {
         const searchTerm = this.value.trim();
+        lastTypedValue = searchTerm; // Simpan teks yang diketik
 
         if (searchTerm.length > 0) {
             fetch(`/search-petani-stok?term=${encodeURIComponent(searchTerm)}`)
@@ -2961,43 +3027,54 @@ if (searchGlobalInput) {
                     searchResults.style.display = 'block';
 
                     if (data.length === 0) {
-                        searchResults.innerHTML = '<div class="p-3 text-center text-muted">Tidak ada petani ditemukan</div>';
+                        searchResults.innerHTML = `
+                            <div class="p-3 text-center text-muted">
+                                <div>Tidak ada petani ditemukan</div>
+                                <div class="small mt-2" style="font-size: 0.85rem; color: #999;">
+                                    Cari berdasarkan: "${searchTerm}"
+                                </div>
+                            </div>
+                        `;
+                        // Reset selected ID karena tidak ada hasil
+                        searchGlobalInput.removeAttribute('data-selected-id');
                         return;
                     }
 
                     data.forEach(petani => {
-    const div = document.createElement('div');
-    div.className = 'search-petani-item';
-    div.innerHTML = `
-        <div class="petani-avatar">${petani.nama.charAt(0).toUpperCase()}</div>
-        <div class="petani-info">
-            <div class="petani-name">
-                ${petani.nama}
-                <span class="pinjaman-badge">
-                    Beras: ${smartFormatNumber(petani.pinjaman_beras)} Kg | Konga: ${smartFormatNumber(petani.pinjaman_konga)} Karung
-                </span>
-            </div>
-            <div class="petani-alamat">${petani.alamat || '-'}</div>
-        </div>
-    `;
+                        const div = document.createElement('div');
+                        div.className = 'search-petani-item';
+                        div.innerHTML = `
+                            <div class="petani-avatar">${petani.nama.charAt(0).toUpperCase()}</div>
+                            <div class="petani-info">
+                                <div class="petani-name">
+                                    ${petani.nama}
+                                    <span class="pinjaman-badge">
+                                        Beras: ${smartFormatNumber(petani.pinjaman_beras)} Kg | Konga: ${smartFormatNumber(petani.pinjaman_konga)} Karung
+                                    </span>
+                                </div>
+                                <div class="petani-alamat">${petani.alamat || '-'}</div>
+                            </div>
+                        `;
 
+                        // Saat item diklik, simpan ID petani yang dipilih
                         div.addEventListener('click', function() {
                             searchGlobalInput.value = petani.nama;
                             searchGlobalInput.setAttribute('data-selected-id', petani.id);
+                            lastTypedValue = petani.nama;
                             searchResults.style.display = 'none';
-
-                            // Apply all filters
                             applyAllFilters();
                         });
 
                         searchResults.appendChild(div);
                     });
+                })
+                .catch(error => {
+                    console.error('Error searching petani:', error);
+                    searchResults.innerHTML = '<div class="p-3 text-center text-danger">Terjadi kesalahan saat mencari</div>';
                 });
         } else {
             searchResults.style.display = 'none';
-            // Reset selected petani
             searchGlobalInput.removeAttribute('data-selected-id');
-            // Apply filters (reset petani filter)
             applyAllFilters();
         }
     });
@@ -3008,6 +3085,34 @@ if (searchGlobalInput) {
             searchResults.style.display = 'none';
         }
     });
+
+    // Event listener saat input kehilangan fokus
+    searchGlobalInput.addEventListener('blur', function() {
+        // Jika user tidak memilih dari dropdown, tapi tetap mengetik
+        // Sistem tetap akan memproses berdasarkan teks yang diketik
+        const selectedId = this.getAttribute('data-selected-id');
+        if (!selectedId && lastTypedValue.length > 0) {
+            // Tetap terapkan filter berdasarkan teks yang diketik
+            console.log('Pencarian berdasarkan teks: ' + lastTypedValue);
+            applyAllFilters();
+        }
+    });
+}
+
+/**
+ * Helper function untuk mengecek apakah user memilih dari dropdown atau hanya mengetik
+ * Gunakan ini di filter/search logic Anda
+ */
+function getSearchInput() {
+    const selectedId = searchGlobalInput.getAttribute('data-selected-id');
+    const searchValue = searchGlobalInput.value.trim();
+
+    return {
+        id: selectedId || null,
+        nama: searchValue,
+        isSelected: !!selectedId, // true jika dari dropdown, false jika hanya mengetik
+        isTypedOnly: !selectedId && searchValue.length > 0 // true jika hanya mengetik
+    };
 }
 
 // ============================================

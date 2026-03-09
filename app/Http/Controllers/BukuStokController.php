@@ -838,10 +838,12 @@ class BukuStokController extends Controller
     {
         $term = $request->get('term', '');
 
-        $petanis = Petani::where('nama', 'LIKE', "%{$term}%")
-            ->orWhere('alamat', 'LIKE', "%{$term}%")
-            ->limit(10)
-            ->get();
+        // $petanis = Petani::where('nama', 'LIKE', "%{$term}%")
+        //     ->orWhere('alamat', 'LIKE', "%{$term}%")
+        //     ->limit(10)
+        //     ->get();
+
+        $petanis = Petani::where('nama', 'LIKE', "%{$term}%")->get();
 
         // Ambil sum semua pinjaman yang belum lunas (status = 0)
         $result = $petanis->map(function ($petani) {
