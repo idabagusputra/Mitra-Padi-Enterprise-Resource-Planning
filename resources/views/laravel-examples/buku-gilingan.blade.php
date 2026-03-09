@@ -2943,148 +2943,272 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // ============================================
-// SEARCH PETANI GLOBAL
 // ============================================
-const searchGlobalInput = document.getElementById('search-petani-global');
-const searchResults = document.getElementById('search-petani-results');
+// IMPROVED SEARCH PETANI GLOBAL - Responsive Mode
+// ============================================
 
-// if (searchGlobalInput) {
-//     searchGlobalInput.addEventListener('input', function() {
-//         const searchTerm = this.value.trim();
+/**
+ * Fitur Utama:
+ * 1. Search dengan ketikan nama langsung - tidak perlu select dropdown
+ * 2. Filter table berdasarkan nama yang diketik
+ * 3. Dropdown hanya untuk referensi (opsional)
+ * 4. Jika ada click di dropdown, set ID untuk akses lebih detail
+ * 5. Support pencarian parsial (substring matching)
+ */
 
-//         if (searchTerm.length > 0) {
-//             fetch(`/search-petani-stok?term=${encodeURIComponent(searchTerm)}`)
-//                 .then(response => response.json())
-//                 .then(data => {
-//                     searchResults.innerHTML = '';
-//                     searchResults.style.display = 'block';
+let searchGlobalState = {
+    selectedPetaniId: null,
+    selectedPetaniName: '',
+    allPetani: [],
+    lastSearchTerm: ''
+};
 
-//                     if (data.length === 0) {
-//                         searchResults.innerHTML = '<div class="p-3 text-center text-muted">Tidak ada petani ditemukan</div>';
-//                         return;
-//                     }
+// Initialize saat DOM ready
+document.addEventListener('DOMContentLoaded', function() {
+    const searchGlobalInput = document.getElementById('search-petani-global');
+    const searchResults = document.getElementById('search-petani-results');
+    const statusFilter = document.getElementById('filter-status-global');
 
-//                     data.forEach(petani => {
-//     const div = document.createElement('div');
-//     div.className = 'search-petani-item';
-//     div.innerHTML = `
-//         <div class="petani-avatar">${petani.nama.charAt(0).toUpperCase()}</div>
-//         <div class="petani-info">
-//             <div class="petani-name">
-//                 ${petani.nama}
-//                 <span class="pinjaman-badge">
-//                     Beras: ${smartFormatNumber(petani.pinjaman_beras)} Kg | Konga: ${smartFormatNumber(petani.pinjaman_konga)} Karung
-//                 </span>
-//             </div>
-//             <div class="petani-alamat">${petani.alamat || '-'}</div>
-//         </div>
-//     `;
+    if (!searchGlobalInput) return;
 
-//                         div.addEventListener('click', function() {
-//                             searchGlobalInput.value = petani.nama;
-//                             searchGlobalInput.setAttribute('data-selected-id', petani.id);
-//                             searchResults.style.display = 'none';
+    // Load semua petani data sekali saat startup
+    loadAllPetaniData();
 
-//                             // Apply all filters
-//                             applyAllFilters();
-//                         });
-
-//                         searchResults.appendChild(div);
-//                     });
-//                 });
-//         } else {
-//             searchResults.style.display = 'none';
-//             // Reset selected petani
-//             searchGlobalInput.removeAttribute('data-selected-id');
-//             // Apply filters (reset petani filter)
-//             applyAllFilters();
-//         }
-//     });
-
-//     // Close dropdown when clicking outside
-//     document.addEventListener('click', function(e) {
-//         if (!e.target.closest('.search-petani-wrapper')) {
-//             searchResults.style.display = 'none';
-//         }
-//     });
-// }
-if (searchGlobalInput) {
+    // ============================================
+    // INPUT EVENT - Responsive Search
+    // ============================================
     searchGlobalInput.addEventListener('input', function() {
         const searchTerm = this.value.trim();
+        searchGlobalState.lastSearchTerm = searchTerm;
 
+        // Simpan term di attribute untuk filtering
         if (searchTerm.length > 0) {
-            fetch(`/search-petani-stok?term=${encodeURIComponent(searchTerm)}`)
-                .then(response => response.json())
-                .then(data => {
-                    searchResults.innerHTML = '';
-                    searchResults.style.display = 'block';
+            // Filter langsung berdasarkan nama yang diketik
+            applySearchFilter(searchTerm);
 
-                    if (data.length === 0) {
-                        searchResults.innerHTML = '<div class="p-3 text-center text-muted">Tidak ada petani ditemukan</div>';
-                        // Tetap apply filter berdasarkan nama yang diketik
-                        applyAllFilters();
-                        return;
-                    }
-
-                    data.forEach(petani => {
-                        const div = document.createElement('div');
-                        div.className = 'search-petani-item';
-                        div.innerHTML = `
-                            <div class="petani-avatar">${petani.nama.charAt(0).toUpperCase()}</div>
-                            <div class="petani-info">
-                                <div class="petani-name">
-                                    ${petani.nama}
-                                    <span class="pinjaman-badge">
-                                        Beras: ${smartFormatNumber(petani.pinjaman_beras)} Kg | Konga: ${smartFormatNumber(petani.pinjaman_konga)} Karung
-                                    </span>
-                                </div>
-                                <div class="petani-alamat">${petani.alamat || '-'}</div>
-                            </div>
-                        `;
-
-                        // Saat item diklik, set data-selected-id
-                        div.addEventListener('click', function() {
-                            searchGlobalInput.setAttribute('data-selected-id', petani.id);
-                            searchResults.style.display = 'none';
-                            // Apply filters dengan ID yang sudah dipilih
-                            applyAllFilters();
-                        });
-
-                        searchResults.appendChild(div);
-                    });
-
-                    // Setelah dropdown ditampilkan, langsung apply filter berdasarkan nama
-                    applyAllFilters();
-                })
-                .catch(error => {
-                    console.error('Error searching petani:', error);
-                    searchResults.innerHTML = '<div class="p-3 text-center text-danger">Terjadi kesalahan saat mencari</div>';
-                });
+            // Fetch petani jika belum ada cache
+            if (searchGlobalState.allPetani.length === 0) {
+                fetchAndShowDropdown(searchTerm, searchResults);
+            } else {
+                // Gunakan cache yang sudah ada
+                displayDropdownFromCache(searchTerm, searchResults);
+            }
         } else {
+            // Kosong - tampilkan semua
             searchResults.style.display = 'none';
-            searchGlobalInput.removeAttribute('data-selected-id');
+            searchGlobalState.selectedPetaniId = null;
+            searchGlobalState.selectedPetaniName = '';
             applyAllFilters();
         }
     });
 
-    // Close dropdown when clicking outside
+    // ============================================
+    // FOCUS EVENT - Show all results saat focus
+    // ============================================
+    searchGlobalInput.addEventListener('focus', function() {
+        if (this.value.trim().length > 0 && searchResults.querySelector('.search-petani-item')) {
+            searchResults.style.display = 'block';
+        }
+    });
+
+    // ============================================
+    // CLICK EVENT - Select dari dropdown
+    // ============================================
     document.addEventListener('click', function(e) {
-        if (!e.target.closest('.search-petani-wrapper')) {
+        const item = e.target.closest('.search-petani-item');
+
+        if (item) {
+            // Petani dipilih dari dropdown
+            const petaniId = item.getAttribute('data-petani-id');
+            const petaniName = item.querySelector('.petani-name-text').textContent;
+
+            searchGlobalState.selectedPetaniId = petaniId;
+            searchGlobalState.selectedPetaniName = petaniName;
+
+            searchGlobalInput.value = petaniName;
+            searchResults.style.display = 'none';
+
+            // Apply filter dengan ID yang dipilih
+            applyAllFilters();
+        }
+        // Close dropdown saat click di luar
+        else if (!e.target.closest('.search-petani-wrapper')) {
             searchResults.style.display = 'none';
         }
     });
+
+    // ============================================
+    // STATUS FILTER CHANGE
+    // ============================================
+    statusFilter.addEventListener('change', function() {
+        applyAllFilters();
+    });
+
+    // ============================================
+    // TAB CHANGE - Reset filter
+    // ============================================
+    document.querySelectorAll('#bukuStokTabs .nav-link').forEach(tab => {
+        tab.addEventListener('shown.bs.tab', function() {
+            // Reset search tapi jangan reset inputnya
+            statusFilter.value = '';
+            applyAllFilters();
+        });
+    });
+});
+
+// ============================================
+// Load semua petani data sekali (caching)
+// ============================================
+function loadAllPetaniData() {
+    fetch('/search-petani-stok?term=')
+        .then(response => response.json())
+        .then(data => {
+            searchGlobalState.allPetani = data;
+        })
+        .catch(error => console.error('Error loading petani data:', error));
 }
 
+// ============================================
+// Fetch dan display dropdown results
+// ============================================
+function fetchAndShowDropdown(searchTerm, resultsContainer) {
+    fetch(`/search-petani-stok?term=${encodeURIComponent(searchTerm)}`)
+        .then(response => response.json())
+        .then(data => {
+            searchGlobalState.allPetani = data;
+            displayDropdownFromCache(searchTerm, resultsContainer);
+        })
+        .catch(error => {
+            console.error('Error searching petani:', error);
+            resultsContainer.innerHTML = '<div class="p-3 text-center text-danger">Error searching</div>';
+            resultsContainer.style.display = 'block';
+        });
+}
 
+// ============================================
+// Display dropdown dari cache (sudah di-filter)
+// ============================================
+function displayDropdownFromCache(searchTerm, resultsContainer) {
+    const lowerTerm = searchTerm.toLowerCase();
 
+    // Filter hasil dari cache
+    const filtered = searchGlobalState.allPetani.filter(petani =>
+        petani.nama.toLowerCase().includes(lowerTerm)
+    );
 
+    resultsContainer.innerHTML = '';
 
+    if (filtered.length === 0) {
+        resultsContainer.innerHTML = `
+            <div style="padding: 1rem; text-align: center; color: #8392ab; font-size: 0.9rem;">
+                <i class="bi bi-search" style="margin-right: 0.5rem;"></i>
+                Tidak ada petani ditemukan
+            </div>
+        `;
+        resultsContainer.style.display = 'block';
+        return;
+    }
 
+    filtered.forEach(petani => {
+        const div = document.createElement('div');
+        div.className = 'search-petani-item';
+        div.setAttribute('data-petani-id', petani.id);
 
+        const berasPinjam = parseFloat(petani.pinjaman_beras) || 0;
+        const kongaPinjam = parseFloat(petani.pinjaman_konga) || 0;
 
+        div.innerHTML = `
+            <div class="petani-avatar">${petani.nama.charAt(0).toUpperCase()}</div>
+            <div class="petani-info">
+                <div class="petani-name">
+                    <span class="petani-name-text">${escapeHtml(petani.nama)}</span>
+                    <span class="pinjaman-badge">
+                        Beras: ${smartFormatNumber(berasPinjam)} Kg | Konga: ${smartFormatNumber(kongaPinjam)} Karung
+                    </span>
+                </div>
+                <div class="petani-alamat">${escapeHtml(petani.alamat || '-')}</div>
+            </div>
+        `;
 
+        resultsContainer.appendChild(div);
+    });
 
+    resultsContainer.style.display = 'block';
+}
+
+// ============================================
+// Apply search filter ke table (NAMA BASED)
+// ============================================
+function applySearchFilter(searchTerm) {
+    const lowerTerm = searchTerm.toLowerCase();
+
+    document.querySelectorAll('.data-table tbody tr').forEach(row => {
+        const petaniName = row.querySelector('td:nth-child(2)')?.textContent.toLowerCase() || '';
+        const matchesName = petaniName.includes(lowerTerm);
+
+        // Update display, tapi tahan status filter untuk di-apply nanti
+        row.setAttribute('data-search-match', matchesName ? 'true' : 'false');
+    });
+}
+
+// ============================================
+// Apply semua filter (nama + status)
+// ============================================
+function applyAllFilters() {
+    const statusFilter = document.getElementById('filter-status-global')?.value || '';
+    const searchTerm = document.getElementById('search-petani-global')?.value.trim() || '';
+    const lowerSearchTerm = searchTerm.toLowerCase();
+
+    document.querySelectorAll('.data-table tbody tr').forEach(row => {
+        let shouldShow = true;
+
+        // Filter berdasarkan nama (substring matching)
+        if (searchTerm.length > 0) {
+            const petaniName = row.querySelector('td:nth-child(2)')?.textContent.toLowerCase() || '';
+            shouldShow = petaniName.includes(lowerSearchTerm);
+        }
+
+        // Filter berdasarkan status
+        if (shouldShow && statusFilter !== '') {
+            const rowStatus = row.getAttribute('data-status');
+            shouldShow = (rowStatus === statusFilter);
+        }
+
+        row.style.display = shouldShow ? '' : 'none';
+    });
+}
+
+// ============================================
+// HELPER FUNCTIONS
+// ============================================
+
+function smartFormatNumber(value) {
+    const num = parseFloat(value) || 0;
+
+    if (num % 1 === 0) {
+        return num.toLocaleString('id-ID', {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        });
+    }
+
+    const formatted = num.toLocaleString('id-ID', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
+
+    return formatted.replace(/,(\d)0$/, ',$1');
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// Export untuk digunakan di file lain
+window.applyAllFilters = applyAllFilters;
+window.searchGlobalState = searchGlobalState;
 
 // ============================================
 // CLEAR ALL FORMS ON PAGE LOAD
