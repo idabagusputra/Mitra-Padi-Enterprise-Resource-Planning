@@ -3009,15 +3009,9 @@ const searchResults = document.getElementById('search-petani-results');
 //         }
 //     });
 // }
-
-
 if (searchGlobalInput) {
-    // Variabel untuk menyimpan teks terakhir yang diketik (tanpa select)
-    let lastTypedValue = '';
-
     searchGlobalInput.addEventListener('input', function() {
         const searchTerm = this.value.trim();
-        lastTypedValue = searchTerm; // Simpan teks yang diketik
 
         if (searchTerm.length > 0) {
             fetch(`/search-petani-stok?term=${encodeURIComponent(searchTerm)}`)
@@ -3027,16 +3021,9 @@ if (searchGlobalInput) {
                     searchResults.style.display = 'block';
 
                     if (data.length === 0) {
-                        searchResults.innerHTML = `
-                            <div class="p-3 text-center text-muted">
-                                <div>Tidak ada petani ditemukan</div>
-                                <div class="small mt-2" style="font-size: 0.85rem; color: #999;">
-                                    Cari berdasarkan: "${searchTerm}"
-                                </div>
-                            </div>
-                        `;
-                        // Reset selected ID karena tidak ada hasil
-                        searchGlobalInput.removeAttribute('data-selected-id');
+                        searchResults.innerHTML = '<div class="p-3 text-center text-muted">Tidak ada petani ditemukan</div>';
+                        // Tetap apply filter berdasarkan nama yang diketik
+                        applyAllFilters();
                         return;
                     }
 
@@ -3056,17 +3043,19 @@ if (searchGlobalInput) {
                             </div>
                         `;
 
-                        // Saat item diklik, simpan ID petani yang dipilih
+                        // Saat item diklik, set data-selected-id
                         div.addEventListener('click', function() {
-                            searchGlobalInput.value = petani.nama;
                             searchGlobalInput.setAttribute('data-selected-id', petani.id);
-                            lastTypedValue = petani.nama;
                             searchResults.style.display = 'none';
+                            // Apply filters dengan ID yang sudah dipilih
                             applyAllFilters();
                         });
 
                         searchResults.appendChild(div);
                     });
+
+                    // Setelah dropdown ditampilkan, langsung apply filter berdasarkan nama
+                    applyAllFilters();
                 })
                 .catch(error => {
                     console.error('Error searching petani:', error);
@@ -3085,35 +3074,17 @@ if (searchGlobalInput) {
             searchResults.style.display = 'none';
         }
     });
-
-    // Event listener saat input kehilangan fokus
-    searchGlobalInput.addEventListener('blur', function() {
-        // Jika user tidak memilih dari dropdown, tapi tetap mengetik
-        // Sistem tetap akan memproses berdasarkan teks yang diketik
-        const selectedId = this.getAttribute('data-selected-id');
-        if (!selectedId && lastTypedValue.length > 0) {
-            // Tetap terapkan filter berdasarkan teks yang diketik
-            console.log('Pencarian berdasarkan teks: ' + lastTypedValue);
-            applyAllFilters();
-        }
-    });
 }
 
-/**
- * Helper function untuk mengecek apakah user memilih dari dropdown atau hanya mengetik
- * Gunakan ini di filter/search logic Anda
- */
-function getSearchInput() {
-    const selectedId = searchGlobalInput.getAttribute('data-selected-id');
-    const searchValue = searchGlobalInput.value.trim();
 
-    return {
-        id: selectedId || null,
-        nama: searchValue,
-        isSelected: !!selectedId, // true jika dari dropdown, false jika hanya mengetik
-        isTypedOnly: !selectedId && searchValue.length > 0 // true jika hanya mengetik
-    };
-}
+
+
+
+
+
+
+
+
 
 // ============================================
 // CLEAR ALL FORMS ON PAGE LOAD
