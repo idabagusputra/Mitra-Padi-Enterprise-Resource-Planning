@@ -979,7 +979,7 @@
                 if (searchTerm.length > 0) {
                     // Replace with your actual API endpoint
                     // Make sure this endpoint doesn't require authentication
-                    fetch(`/api/search-petani?term=${encodeURIComponent(searchTerm)}`)
+                    fetch(`/search-petani-stok?term=${encodeURIComponent(searchTerm)}`)
                         .then(response => response.json())
                         .then(data => {
                             searchResults.innerHTML = '';
@@ -998,12 +998,9 @@
                                     <div class="petani-info">
                                         <div class="petani-name">
                                             ${petani.nama}
-                                            ${petani.pinjaman_beras || petani.pinjaman_konga ? `
-                                                <span class="pinjaman-badge">
-                                                    ${petani.pinjaman_beras ? 'Beras: ' + smartFormatNumber(petani.pinjaman_beras) + ' Kg' : ''}
-                                                    ${petani.pinjaman_konga ? '| Konga: ' + smartFormatNumber(petani.pinjaman_konga) + ' Karung' : ''}
-                                                </span>
-                                            ` : ''}
+                                            <span class="pinjaman-badge">
+                                                Beras: ${smartFormatNumber(petani.pinjaman_beras)} Kg | Konga: ${smartFormatNumber(petani.pinjaman_konga)} Karung
+                                            </span>
                                         </div>
                                         <div class="petani-alamat">${petani.alamat || '-'}</div>
                                     </div>
