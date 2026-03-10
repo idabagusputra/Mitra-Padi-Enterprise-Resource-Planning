@@ -165,11 +165,12 @@
         .form-control::placeholder {
             color: #adb5bd;
         }
-#pulang::placeholder {
-    color: var(--primary-color) !important;
-    opacity: 1;
-    font-weight: 500;
-}
+
+        #pulang::placeholder {
+            color: var(--primary-color) !important;
+            opacity: 1;
+            font-weight: 500;
+        }
 
         .input-group-text {
             background: var(--bg-light);
@@ -182,6 +183,95 @@
         .input-group .form-control {
             border-left: none;
             border-radius: 0 var(--border-radius-xs) var(--border-radius-xs) 0;
+        }
+
+        /* ============================================
+           SEARCH PETANI STYLES
+        ============================================ */
+        .search-petani-wrapper {
+            position: relative;
+        }
+
+        .search-petani-input {
+            width: 100%;
+        }
+
+        .search-petani-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 2px solid var(--border-color);
+            border-top: none;
+            border-radius: 0 0 var(--border-radius-xs) var(--border-radius-xs);
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-petani-results.active {
+            display: block;
+        }
+
+        .search-petani-item {
+            padding: 0.875rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .search-petani-item:hover {
+            background: var(--primary-lighter);
+            border-left: 4px solid var(--primary-color);
+            padding-left: calc(1rem - 4px);
+        }
+
+        .search-petani-item:last-child {
+            border-bottom: none;
+        }
+
+        .petani-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .petani-info {
+            flex: 1;
+        }
+
+        .petani-name {
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .pinjaman-badge {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--primary-color);
+            font-weight: 500;
+            margin-top: 0.25rem;
+        }
+
+        .petani-alamat {
+            font-size: 0.8rem;
+            color: var(--text-muted);
         }
 
         /* ============================================
@@ -343,16 +433,32 @@
         }
 
         .btn-close {
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 50%;
+            background-image: none !important;
             opacity: 1;
-            padding: 0.5rem;
+        }
+
+        .custom-close {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 15px;
+            height: 15px;
+            padding: 0;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
             transition: all 0.2s ease;
         }
 
-        .btn-close:hover {
+        .custom-close i {
+            font-size: 0.9rem;
+            line-height: 1;
+            color: #000;
+        }
+
+        .custom-close:hover {
             transform: scale(1.1);
-            opacity: 1;
+            background: #fff;
         }
 
         .modal-body {
@@ -413,15 +519,14 @@
         }
 
         .modal-dialog {
-    width: fit-content;
-    max-width: 95vw;
-}
+            width: fit-content;
+            max-width: 95vw;
+        }
 
-.iframe-container {
-    width: 321px; /* thermal */
-    max-width: 100%;
-}
-
+        .iframe-container {
+            width: 321px; /* thermal */
+            max-width: 100%;
+        }
 
         @media (max-width: 576px) {
             .modal-footer {
@@ -582,45 +687,6 @@
         .download-progress .spinner-border {
             color: var(--primary-color);
         }
-
-
-        /* Matikan icon default Bootstrap */
-.btn-close {
-    background-image: none !important;
-    opacity: 1;
-}
-
-/* Custom rounded close button */
-.custom-close {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    width: 15px;
-    height: 15px;
-    padding: 0;
-
-    border-radius: 50%;
-    background: #fff;
-
-
-    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-    transition: all 0.2s ease;
-}
-
-/* Icon X */
-.custom-close i {
-    font-size: 0.9rem;
-    line-height: 1;
-    color: #000;
-}
-
-/* Hover */
-.custom-close:hover {
-    transform: scale(1.1);
-    background: #fff;
-}
-
     </style>
 </head>
 <body>
@@ -655,8 +721,13 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="nama_petani" class="form-label">Nama Petani</label>
-                                        <input type="text" id="nama_petani" name="nama_petani" class="form-control"
-                                               placeholder="Masukkan nama petani..." required>
+                                        <div class="search-petani-wrapper">
+                                            <input type="text" id="nama_petani" name="nama_petani"
+                                                   class="form-control search-petani-input"
+                                                   placeholder="Cari nama petani..."
+                                                   autocomplete="off">
+                                            <div id="search-petani-results" class="search-petani-results"></div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6 d-none">
@@ -716,21 +787,6 @@
                                 </div>
                             </div>
 
-                            {{-- <!-- Pengambilan -->
-                            <div class="section-title">
-                                <i class="bi bi-cart-dash"></i>
-                                Pengambilan Karung Konga
-                            </div>
-
-                            <div id="pengambilans"></div>
-
-                            <div class="submit-section d-flex justify-content-between d-none">
-                                <button type="button" class="btn btn-success-gradient w-100 add-pengambilan">
-                                    <i class="bi bi-plus-circle me-2"></i>
-                                    Tambah Pengambilan
-                                </button>
-                            </div> --}}
-
                             <!-- Data Produk Sampingan -->
                             <div class="section-title">
                                 <i class="bi bi-box-seam"></i>
@@ -750,7 +806,7 @@
                                     <div class="form-group">
                                         <label for="harga_konga" class="form-label">Harga Konga (Rp)</label>
                                         <input class="form-control number-format" type="text" name="harga_konga" id="harga_konga"
-                                               inputmode="numeric" placeholder="" value="300,000" required>
+                                               inputmode="numeric" placeholder="" value="325,000" required>
                                     </div>
                                 </div>
 
@@ -772,47 +828,39 @@
                                 </div>
                             </div>
 
-                            {{-- <!-- Konstanta -->
-                            <div class="section-title">
-                                <i class="bi bi-sliders"></i>
-                                Biaya Buruh Giling
-                            </div> --}}
-
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="section-title">
+                                        <i class="bi bi-cart-dash"></i>
+                                        Pengambilan
+                                    </div>
+                                </div>
+                                <div class="col-6 text-end">
+                                    <div class="section-title">
+                                        <i class="bi bi-sliders"></i>
+                                        Buruh Giling
+                                    </div>
+                                </div>
+                            </div>
 
                             <div class="row">
-    <div class="col-6">
-        <div class="section-title">
-            <i class="bi bi-cart-dash"></i>
-            Pengambilan
-        </div>
-    </div>
-    <div class="col-6 text-end">
-        <div class="section-title">
-            <i class="bi bi-sliders"></i>
-            Buruh Giling
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-6">
-        <div id="pengambilans"></div>
-    </div>
-    <div class="col-6">
-        <div class="form-group mb-0">
-            <label class="form-label d-none">Biaya Buruh Giling (Rp)</label>
-            <input class="form-control number-format" type="text" name="biaya_buruh_giling"
-                   id="biaya_buruh_giling" value="80" inputmode="numeric" required>
-        </div>
-    </div>
-    <div class="submit-section d-flex justify-content-between d-none">
-        <button type="button" class="btn btn-success-gradient w-100 add-pengambilan">
-            <i class="bi bi-plus-circle me-2"></i>
-            Tambah Pengambilan
-        </button>
-    </div>
-</div>
-
+                                <div class="col-6">
+                                    <div id="pengambilans"></div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group mb-0">
+                                        <label class="form-label d-none">Biaya Buruh Giling (Rp)</label>
+                                        <input class="form-control number-format" type="text" name="biaya_buruh_giling"
+                                               id="biaya_buruh_giling" value="80" inputmode="numeric" required>
+                                    </div>
+                                </div>
+                                <div class="submit-section d-flex justify-content-between d-none">
+                                    <button type="button" class="btn btn-success-gradient w-100 add-pengambilan">
+                                        <i class="bi bi-plus-circle me-2"></i>
+                                        Tambah Pengambilan
+                                    </button>
+                                </div>
+                            </div>
 
                             <div class="row">
                                 <div class="col-md-3 col-sm-6 d-none">
@@ -822,13 +870,6 @@
                                                id="biaya_giling" value="9" inputmode="numeric" required>
                                     </div>
                                 </div>
-                                {{-- <div class="col-md-3 col-6">
-                                    <div class="form-group">
-                                        <label for="biaya_buruh_giling" class="form-label d-none">Biaya Buruh Giling (Rp)</label>
-                                        <input class="form-control number-format" type="text" name="biaya_buruh_giling"
-                                               id="biaya_buruh_giling" value="80" inputmode="numeric" required>
-                                    </div>
-                                </div> --}}
                                 <div class="col-md-3 col-sm-6 d-none">
                                     <div class="form-group">
                                         <label for="biaya_buruh_jemur" class="form-label">Biaya Buruh Jemur (Rp)</label>
@@ -868,13 +909,9 @@
                         <i class="bi bi-file-earmark-text"></i>
                         Preview Nota Sementara
                     </h5>
-                    <button type="button"
-        class="btn-close custom-close"
-        data-bs-dismiss="modal"
-        aria-label="Close">
-    <i class="bi bi-x-lg"></i>
-</button>
-
+                    <button type="button" class="btn-close custom-close" data-bs-dismiss="modal" aria-label="Close">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <div class="iframe-container">
@@ -895,10 +932,6 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    {{-- <button type="button" class="btn btn-secondary-outline" data-bs-dismiss="modal">
-                        <i class="bi bi-x-circle me-1"></i>
-                        Tutup
-                    </button> --}}
                     <button type="button" class="btn btn-info-gradient" id="downloadPng">
                         <i class="bi bi-download me-1"></i>
                         SIMPAN
@@ -925,6 +958,79 @@
             // Store nota HTML globally for PNG export
             let currentNotaHtml = '';
             let currentFormData = null;
+
+            // ============================================
+            // SEARCH PETANI FUNCTIONALITY
+            // ============================================
+            const searchGlobalInput = document.getElementById('nama_petani');
+            const searchResults = document.getElementById('search-petani-results');
+
+            function smartFormatNumber(value) {
+                if (!value || value === 0) return '0';
+                return parseFloat(value).toLocaleString('id-ID', {
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 2
+                });
+            }
+
+            searchGlobalInput.addEventListener('input', function() {
+                const searchTerm = this.value.trim();
+
+                if (searchTerm.length > 0) {
+                    // Replace with your actual API endpoint
+                    // Make sure this endpoint doesn't require authentication
+                    fetch(`/search-petani-stok?term=${encodeURIComponent(searchTerm)}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            searchResults.innerHTML = '';
+                            searchResults.classList.add('active');
+
+                            if (data.length === 0) {
+                                searchResults.innerHTML = '<div class="p-3 text-center text-muted">Tidak ada petani ditemukan</div>';
+                                return;
+                            }
+
+                            data.forEach(petani => {
+                                const div = document.createElement('div');
+                                div.className = 'search-petani-item';
+                                div.innerHTML = `
+                                    <div class="petani-avatar">${petani.nama.charAt(0).toUpperCase()}</div>
+                                    <div class="petani-info">
+                                        <div class="petani-name">
+                                            ${petani.nama}
+                                            <span class="pinjaman-badge">
+                                                Beras: ${smartFormatNumber(petani.pinjaman_beras)} Kg | Konga: ${smartFormatNumber(petani.pinjaman_konga)} Karung
+                                            </span>
+                                        </div>
+                                        <div class="petani-alamat">${petani.alamat || '-'}</div>
+                                    </div>
+                                `;
+
+                                div.addEventListener('click', function() {
+                                    searchGlobalInput.value = petani.nama;
+                                    searchGlobalInput.setAttribute('data-selected-id', petani.id);
+                                    searchResults.classList.remove('active');
+                                });
+
+                                searchResults.appendChild(div);
+                            });
+                        })
+                        .catch(error => {
+                            console.error('Error searching petani:', error);
+                            searchResults.innerHTML = '<div class="p-3 text-center text-danger">Error membaca data</div>';
+                        });
+                } else {
+                    searchResults.classList.remove('active');
+                    searchGlobalInput.removeAttribute('data-selected-id');
+                }
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.search-petani-wrapper')) {
+                    searchResults.classList.remove('active');
+                }
+            });
 
             // Format number inputs
             const numberInputs = document.querySelectorAll('.number-format');
@@ -1107,37 +1213,32 @@
                 calculations.danaKotor = calculations.totalPendapatan - calculations.totalBiaya;
 
                 // Calculate pengambilan
-                // Calculate pengambilan
-const pengambilanItems = document.querySelectorAll('#pengambilans > div');
-let totalPengambilan = 0;
-const pengambilanData = [];
+                const pengambilanItems = document.querySelectorAll('#pengambilans > div');
+                let totalPengambilan = 0;
+                const pengambilanData = [];
 
-pengambilanItems.forEach(item => {
-    const keteranganInput = item.querySelector('[name*="[keterangan]"]');
-    const jumlahInput = item.querySelector('[name*="[jumlah]"]');
-    const hargaInput = item.querySelector('[name*="[harga]"]');
+                pengambilanItems.forEach(item => {
+                    const keteranganInput = item.querySelector('[name*="[keterangan]"]');
+                    const jumlahInput = item.querySelector('[name*="[jumlah]"]');
+                    const hargaInput = item.querySelector('[name*="[harga]"]');
 
-    if (keteranganInput && jumlahInput && hargaInput) {
-        const keterangan = keteranganInput.value;
-        const jumlah = getRawValue(jumlahInput);
-        const harga = getRawValue(hargaInput);
+                    if (keteranganInput && jumlahInput && hargaInput) {
+                        const keterangan = keteranganInput.value;
+                        const jumlah = getRawValue(jumlahInput);
+                        const harga = getRawValue(hargaInput);
 
-        console.log('Debug Pengambilan:', { keterangan, jumlah, harga }); // untuk debugging
-
-        if (keterangan && jumlah > 0) {
-            const subtotal = jumlah * harga;
-            pengambilanData.push({
-                keterangan: keterangan,
-                jumlah: jumlah,
-                harga: harga,
-                subtotal: subtotal
-            });
-            totalPengambilan += subtotal;
-        }
-    }
-});
-
-console.log('Total Pengambilan Data:', pengambilanData); // untuk debugging
+                        if (keterangan && jumlah > 0) {
+                            const subtotal = jumlah * harga;
+                            pengambilanData.push({
+                                keterangan: keterangan,
+                                jumlah: jumlah,
+                                harga: harga,
+                                subtotal: subtotal
+                            });
+                            totalPengambilan += subtotal;
+                        }
+                    }
+                });
 
                 calculations.totalPengambilan = totalPengambilan;
                 calculations.totalHutang = 0;
@@ -1171,108 +1272,103 @@ console.log('Total Pengambilan Data:', pengambilanData); // untuk debugging
 
                 pdfViewer.src = url;
 
-                // // Print functionality
-                // document.getElementById('printPdf').onclick = function() {
-                //     pdfViewer.contentWindow.print();
-                // };
-
                 // Print functionality untuk thermal 80mm
-document.getElementById('printPdf').onclick = function() {
-    const iframe = pdfViewer;
-    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                document.getElementById('printPdf').onclick = function() {
+                    const iframe = pdfViewer;
+                    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
 
-    // Tambahkan HTML titik-titik di bawah nota sebelum print
-    const receipt = iframeDoc.querySelector('.receipt');
-    if (receipt) {
-        // Hapus titik-titik lama jika ada
-        const oldDots = iframeDoc.querySelector('.print-dots');
-        if (oldDots) {
-            oldDots.remove();
-        }
+                    // Tambahkan HTML titik-titik di bawah nota sebelum print
+                    const receipt = iframeDoc.querySelector('.receipt');
+                    if (receipt) {
+                        // Hapus titik-titik lama jika ada
+                        const oldDots = iframeDoc.querySelector('.print-dots');
+                        if (oldDots) {
+                            oldDots.remove();
+                        }
 
-        // Buat HTML titik-titik baru
-        const dotsHTML = `
-            <table class="print-dots" style="width: 100%; border-collapse: collapse; margin: 5px 0;">
-                <tr>
-                    <td style="width: 50%; text-align: left; padding: 1px 0;">.</td>
-                    <td style="width: 50%; text-align: right; padding: 1px 0;">.</td>
-                </tr>
-                <tr>
-                    <td style="width: 50%; text-align: left; padding: 1px 0;">.</td>
-                    <td style="width: 50%; text-align: right; padding: 1px 0;">.</td>
-                </tr>
-                <tr>
-                    <td style="width: 50%; text-align: left; padding: 1px 0;">.</td>
-                    <td style="width: 50%; text-align: right; padding: 1px 0;">.</td>
-                </tr>
-                <tr>
-                    <td style="width: 50%; text-align: left; padding: 1px 0;">.</td>
-                    <td style="width: 50%; text-align: right; padding: 1px 0;">.</td>
-                </tr>
-            </table>
-        `;
+                        // Buat HTML titik-titik baru
+                        const dotsHTML = `
+                            <table class="print-dots" style="width: 100%; border-collapse: collapse; margin: 5px 0;">
+                                <tr>
+                                    <td style="width: 50%; text-align: left; padding: 1px 0;">.</td>
+                                    <td style="width: 50%; text-align: right; padding: 1px 0;">.</td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 50%; text-align: left; padding: 1px 0;">.</td>
+                                    <td style="width: 50%; text-align: right; padding: 1px 0;">.</td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 50%; text-align: left; padding: 1px 0;">.</td>
+                                    <td style="width: 50%; text-align: right; padding: 1px 0;">.</td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 50%; text-align: left; padding: 1px 0;">.</td>
+                                    <td style="width: 50%; text-align: right; padding: 1px 0;">.</td>
+                                </tr>
+                            </table>
+                        `;
 
-        // Sisipkan titik-titik di akhir receipt
-        receipt.insertAdjacentHTML('beforeend', dotsHTML);
-    }
+                        // Sisipkan titik-titik di akhir receipt
+                        receipt.insertAdjacentHTML('beforeend', dotsHTML);
+                    }
 
-    // Tambahkan style khusus untuk print 80mm
-    const printStyle = iframeDoc.createElement('style');
-    printStyle.textContent = `
-        @media print {
-            @page {
-                size: 80mm auto;
-                margin: 0;
-            }
+                    // Tambahkan style khusus untuk print 80mm
+                    const printStyle = iframeDoc.createElement('style');
+                    printStyle.textContent = `
+                        @media print {
+                            @page {
+                                size: 80mm auto;
+                                margin: 0;
+                            }
 
-            html, body {
-                width: 80mm;
-                margin: 0;
-                padding: 0;
-            }
+                            html, body {
+                                width: 80mm;
+                                margin: 0;
+                                padding: 0;
+                            }
 
-            body {
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-            }
+                            body {
+                                -webkit-print-color-adjust: exact;
+                                print-color-adjust: exact;
+                            }
 
-            .receipt {
-                width: 80mm !important;
-                max-width: 80mm !important;
-                margin: 0 !important;
-                padding: 10px !important;
-            }
+                            .receipt {
+                                width: 80mm !important;
+                                max-width: 80mm !important;
+                                margin: 0 !important;
+                                padding: 10px !important;
+                            }
 
-            .print-dots {
-                display: table !important;
-            }
+                            .print-dots {
+                                display: table !important;
+                            }
 
-            .spacer {
-                display: none !important;
-                height: 0 !important;
-            }
-        }
+                            .spacer {
+                                display: none !important;
+                                height: 0 !important;
+                            }
+                        }
 
-        @media screen {
-            .print-dots {
-                display: none;
-            }
-        }
-    `;
+                        @media screen {
+                            .print-dots {
+                                display: none;
+                            }
+                        }
+                    `;
 
-    // Hapus style print lama jika ada
-    const oldPrintStyle = iframeDoc.querySelector('style[data-print-style]');
-    if (oldPrintStyle) {
-        oldPrintStyle.remove();
-    }
+                    // Hapus style print lama jika ada
+                    const oldPrintStyle = iframeDoc.querySelector('style[data-print-style]');
+                    if (oldPrintStyle) {
+                        oldPrintStyle.remove();
+                    }
 
-    // Tandai style baru
-    printStyle.setAttribute('data-print-style', 'true');
-    iframeDoc.head.appendChild(printStyle);
+                    // Tandai style baru
+                    printStyle.setAttribute('data-print-style', 'true');
+                    iframeDoc.head.appendChild(printStyle);
 
-    // Print
-    iframe.contentWindow.print();
-};
+                    // Print
+                    iframe.contentWindow.print();
+                };
 
                 // Download PNG functionality
                 document.getElementById('downloadPng').onclick = function() {
@@ -1281,733 +1377,679 @@ document.getElementById('printPdf').onclick = function() {
             }
 
             // Download as PNG function (FORCE 80mm)
-async function downloadAsPng(formData, calculations, pengambilanData) {
-    const downloadProgress = document.getElementById('downloadProgress');
-    const iframeContainer = document.querySelector('.iframe-container');
+            async function downloadAsPng(formData, calculations, pengambilanData) {
+                const downloadProgress = document.getElementById('downloadProgress');
+                const iframeContainer = document.querySelector('.iframe-container');
 
-    downloadProgress.classList.add('active');
-    iframeContainer.style.display = 'none';
+                downloadProgress.classList.add('active');
+                iframeContainer.style.display = 'none';
 
-    try {
-        const container = document.getElementById('nota-preview-container');
-        container.innerHTML = generateNotaHtmlForPng(formData, calculations, pengambilanData);
+                try {
+                    const container = document.getElementById('nota-preview-container');
+                    container.innerHTML = generateNotaHtmlForPng(formData, calculations, pengambilanData);
 
-        // Paksa container tersembunyi
-        container.style.position = 'absolute';
-        container.style.left = '-9999px';
-        container.style.top = '0';
+                    // Paksa container tersembunyi
+                    container.style.position = 'absolute';
+                    container.style.left = '-9999px';
+                    container.style.top = '0';
 
-        // === FORCE WIDTH 80MM ===
-        const THERMAL_WIDTH_PX = 321;
+                    // === FORCE WIDTH 80MM ===
+                    const THERMAL_WIDTH_PX = 321;
 
-        const notaElement = container.querySelector('.receipt');
+                    const notaElement = container.querySelector('.receipt');
 
-        // Paksa ukuran thermal
-        notaElement.style.width = THERMAL_WIDTH_PX + 'px';
-        notaElement.style.maxWidth = THERMAL_WIDTH_PX + 'px';
-        notaElement.style.margin = '0';
-        notaElement.style.padding = '10px';
-        notaElement.style.boxSizing = 'border-box';
-        notaElement.style.background = '#ffffff';
+                    // Paksa ukuran thermal
+                    notaElement.style.width = THERMAL_WIDTH_PX + 'px';
+                    notaElement.style.maxWidth = THERMAL_WIDTH_PX + 'px';
+                    notaElement.style.margin = '0';
+                    notaElement.style.padding = '10px';
+                    notaElement.style.boxSizing = 'border-box';
+                    notaElement.style.background = '#ffffff';
 
-        // Tunggu render + font
-        if (document.fonts) {
-            await document.fonts.ready;
-        }
-        await new Promise(resolve => setTimeout(resolve, 300));
+                    // Tunggu render + font
+                    if (document.fonts) {
+                        await document.fonts.ready;
+                    }
+                    await new Promise(resolve => setTimeout(resolve, 300));
 
-        // Capture
-        const canvas = await html2canvas(notaElement, {
-            scale: 3, // tajam saat zoom / print
-            useCORS: true,
-            allowTaint: true,
-            backgroundColor: '#ffffff',
-            width: THERMAL_WIDTH_PX,
-            windowWidth: THERMAL_WIDTH_PX
-        });
+                    // Capture
+                    const canvas = await html2canvas(notaElement, {
+                        scale: 3, // tajam saat zoom / print
+                        useCORS: true,
+                        allowTaint: true,
+                        backgroundColor: '#ffffff',
+                        width: THERMAL_WIDTH_PX,
+                        windowWidth: THERMAL_WIDTH_PX
+                    });
 
-        // Download
-        const link = document.createElement('a');
-        const timestamp = new Date().toISOString().slice(0, 10);
-        const sanitizedName = formData.namaPetani.replace(/[^a-zA-Z0-9]/g, '_');
+                    // Download
+                    const link = document.createElement('a');
+                    const timestamp = new Date().toISOString().slice(0, 10);
+                    const sanitizedName = formData.namaPetani.replace(/[^a-zA-Z0-9]/g, '_');
 
-        link.download = `Nota_${sanitizedName}_${timestamp}.png`;
-        link.href = canvas.toDataURL('image/png', 1.0);
-        link.click();
+                    link.download = `Nota_${sanitizedName}_${timestamp}.png`;
+                    link.href = canvas.toDataURL('image/png', 1.0);
+                    link.click();
 
-        // Cleanup
-        container.innerHTML = '';
+                    // Cleanup
+                    container.innerHTML = '';
 
-    } catch (error) {
-        console.error('Error generating PNG:', error);
-        alert('Gagal membuat gambar PNG. Silakan coba lagi.');
-    } finally {
-        downloadProgress.classList.remove('active');
-        iframeContainer.style.display = 'block';
-    }
-}
-
-
-//             // Download as PNG function INI YANG JPG
-// async function downloadAsPng(formData, calculations, pengambilanData) {
-//     const downloadProgress = document.getElementById('downloadProgress');
-//     const iframeContainer = document.querySelector('.iframe-container');
-//     // Show progress
-//     downloadProgress.classList.add('active');
-//     iframeContainer.style.display = 'none';
-//     try {
-//         // Create a temporary container for rendering
-//         const container = document.getElementById('nota-preview-container');
-//         container.innerHTML = generateNotaHtmlForPng(formData, calculations, pengambilanData);
-//         container.style.left = '0';
-//         container.style.position = 'absolute';
-//         container.style.zIndex = '-1';
-//         container.style.opacity = '0';
-//         // Wait for content to render
-//         await new Promise(resolve => setTimeout(resolve, 500));
-//         const notaElement = container.querySelector('.receipt');
-//         // Use html2canvas to capture
-//         const canvas = await html2canvas(notaElement, {
-//             scale: 3, // High resolution
-//             useCORS: true,
-//             allowTaint: true,
-//             backgroundColor: '#ffffff',
-//             width: 302, // 80mm at 96 DPI
-//             windowWidth: 302
-//         });
-//         // Convert to JPG and download
-//         const link = document.createElement('a');
-//         const timestamp = new Date().toISOString().slice(0, 10);
-//         const sanitizedName = formData.namaPetani.replace(/[^a-zA-Z0-9]/g, '_');
-//         link.download = `Nota_${sanitizedName}_${timestamp}.jpg`;
-//         link.href = canvas.toDataURL('image/jpeg', 1.0);
-//         link.click();
-//         // Reset container
-//         container.style.left = '-9999px';
-//         container.innerHTML = '';
-//     } catch (error) {
-//         console.error('Error generating JPG:', error);
-//         alert('Gagal membuat gambar JPG. Silakan coba lagi.');
-//     } finally {
-//         // Hide progress and show iframe
-//         downloadProgress.classList.remove('active');
-//         iframeContainer.style.display = 'block';
-//     }
-// }
+                } catch (error) {
+                    console.error('Error generating PNG:', error);
+                    alert('Gagal membuat gambar PNG. Silakan coba lagi.');
+                } finally {
+                    downloadProgress.classList.remove('active');
+                    iframeContainer.style.display = 'block';
+                }
+            }
 
             function generateNotaHtmlForPng(formData, calculations, pengambilanData) {
-    const currentDateTime = new Date();
+                const currentDateTime = new Date();
 
-    const formatDatee = (dateString) => {
-        const date = new Date(dateString);
-        const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-        const months = [
-            'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-            'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
-        ];
-        const dayName = days[date.getDay()];
-        const day = date.getDate();
-        const monthName = months[date.getMonth()];
-        const year = date.getFullYear();
-        return `${dayName}, ${day} ${monthName} ${year}`;
-    };
+                const formatDatee = (dateString) => {
+                    const date = new Date(dateString);
+                    const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+                    const months = [
+                        'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+                        'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+                    ];
+                    const dayName = days[date.getDay()];
+                    const day = date.getDate();
+                    const monthName = months[date.getMonth()];
+                    const year = date.getFullYear();
+                    return `${dayName}, ${day} ${monthName} ${year}`;
+                };
 
-    const formatTime = (dateString) => {
-        const date = new Date(dateString);
-        const hours = String(date.getHours()).padStart(2, '0');
-        const minutes = String(date.getMinutes()).padStart(2, '0');
-        const seconds = String(date.getSeconds()).padStart(2, '0');
-        return `${hours}:${minutes}:${seconds}`;
-    };
+                const formatTime = (dateString) => {
+                    const date = new Date(dateString);
+                    const hours = String(date.getHours()).padStart(2, '0');
+                    const minutes = String(date.getMinutes()).padStart(2, '0');
+                    const seconds = String(date.getSeconds()).padStart(2, '0');
+                    return `${hours}:${minutes}:${seconds}`;
+                };
 
-    const formatCurrency = (value, decimals = 0) => {
-        return parseFloat(value).toLocaleString('id-ID', {
-            minimumFractionDigits: decimals,
-            maximumFractionDigits: decimals
-        });
-    };
+                const formatCurrency = (value, decimals = 0) => {
+                    return parseFloat(value).toLocaleString('id-ID', {
+                        minimumFractionDigits: decimals,
+                        maximumFractionDigits: decimals
+                    });
+                };
 
-    const getDecimalPlaces = (value) => {
-        const valueStr = String(value);
-        if (valueStr.indexOf('.') !== -1) {
-            return valueStr.split('.')[1].length;
-        }
-        return 0;
-    };
+                const getDecimalPlaces = (value) => {
+                    const valueStr = String(value);
+                    if (valueStr.indexOf('.') !== -1) {
+                        return valueStr.split('.')[1].length;
+                    }
+                    return 0;
+                };
 
-    let pengambilanRows = '';
-    if (pengambilanData.length > 0) {
-        pengambilanData.forEach((item, index) => {
-            pengambilanRows += `
-                <tr class="calculation-row">
-                    <td>${index + 1}. ${item.keterangan}</td>
-                    <td>${formatCurrency(item.jumlah, getDecimalPlaces(item.jumlah))}</td>
-                    <td>Rp ${formatCurrency(item.harga, getDecimalPlaces(item.harga))}</td>
-                    <td class="bold">Rp ${formatCurrency(item.subtotal, getDecimalPlaces(item.subtotal))}</td>
-                </tr>
-            `;
-        });
-    } else {
-        pengambilanRows = `
-            <tr class="calculation-row">
-                <td colspan="4">Tidak ada data pengambilan</td>
-            </tr>
-        `;
-    }
-
-    return `
-        <div class="receipt" style="width: 302px; padding: 15px; font-family: sans-serif; font-size: 10pt; background: white; color: #000;">
-            <style>
-                .receipt * { box-sizing: border-box; margin: 0; padding: 0; }
-                .receipt table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
-                .receipt th, .receipt td { padding: 5px 2px; text-align: left; }
-
-                .receipt .header {
-                    text-align: center;
-                    margin-bottom: 15px;
-                    font-family: 'Courier New', monospace;
+                let pengambilanRows = '';
+                if (pengambilanData.length > 0) {
+                    pengambilanData.forEach((item, index) => {
+                        pengambilanRows += `
+                            <tr class="calculation-row">
+                                <td>${index + 1}. ${item.keterangan}</td>
+                                <td>${formatCurrency(item.jumlah, getDecimalPlaces(item.jumlah))}</td>
+                                <td>Rp ${formatCurrency(item.harga, getDecimalPlaces(item.harga))}</td>
+                                <td class="bold">Rp ${formatCurrency(item.subtotal, getDecimalPlaces(item.subtotal))}</td>
+                            </tr>
+                        `;
+                    });
+                } else {
+                    pengambilanRows = `
+                        <tr class="calculation-row">
+                            <td colspan="4">Tidak ada data pengambilan</td>
+                        </tr>
+                    `;
                 }
 
-                .receipt .title {
-                    font-size: 15pt;
-                    font-weight: bold;
-                    margin-bottom: 1px;
-                }
+                return `
+                    <div class="receipt" style="width: 302px; padding: 15px; font-family: sans-serif; font-size: 10pt; background: white; color: #000;">
+                        <style>
+                            .receipt * { box-sizing: border-box; margin: 0; padding: 0; }
+                            .receipt table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+                            .receipt th, .receipt td { padding: 5px 2px; text-align: left; }
 
-                .receipt .info-item {
-                    margin-bottom: 1px;
-                    font-size: 10pt;
-                    margin-bottom: 2px;
-                }
+                            .receipt .header {
+                                text-align: center;
+                                margin-bottom: 15px;
+                                font-family: 'Courier New', monospace;
+                            }
 
-                .receipt .subbold {
-                    font-size: 12pt;
-                    font-weight: bold;
-                    margin-bottom: 3px;
-                }
+                            .receipt .title {
+                                font-size: 15pt;
+                                font-weight: bold;
+                                margin-bottom: 1px;
+                            }
 
-                .receipt .calculation-row td {
-                    border-top: 1px dashed #000;
-                    border-bottom: 1px dashed #000;
-                    padding-top: 5px;
-                    padding-bottom: 5px;
-                }
+                            .receipt .info-item {
+                                margin-bottom: 1px;
+                                font-size: 10pt;
+                                margin-bottom: 2px;
+                            }
 
-                .receipt .calculation-row-top td {
-                    border-top: 1px dashed #000;
-                    padding-top: 5px;
-                    padding-bottom: 5px;
-                }
+                            .receipt .subbold {
+                                font-size: 12pt;
+                                font-weight: bold;
+                                margin-bottom: 3px;
+                            }
 
-                .receipt .total {
-                    font-size: 10pt;
-                    font-weight: bold;
-                    border-top: 1px solid #000;
-                    border-bottom: 1px solid #000;
-                    margin-bottom: 10px;
-                }
+                            .receipt .calculation-row td {
+                                border-top: 1px dashed #000;
+                                border-bottom: 1px dashed #000;
+                                padding-top: 5px;
+                                padding-bottom: 5px;
+                            }
 
-                .receipt .footer {
-                    text-align: center;
-                    margin-top: 10px;
-                    font-style: italic;
-                    font-family: 'Courier New', monospace;
-                }
+                            .receipt .calculation-row-top td {
+                                border-top: 1px dashed #000;
+                                padding-top: 5px;
+                                padding-bottom: 5px;
+                            }
 
-                .receipt .bold-border-top {
-                    border-top: 2px solid #000;
-                    font-weight: bold;
-                }
+                            .receipt .total {
+                                font-size: 10pt;
+                                font-weight: bold;
+                                border-top: 1px solid #000;
+                                border-bottom: 1px solid #000;
+                                margin-bottom: 10px;
+                            }
 
-                .receipt .bold-border-top-top {
-                    border-top: 2px solid #000;
-                }
+                            .receipt .footer {
+                                text-align: center;
+                                margin-top: 10px;
+                                font-style: italic;
+                                font-family: 'Courier New', monospace;
+                            }
 
-                .receipt .bold-border-bottom {
-                    border-bottom: 2px solid #000;
-                }
+                            .receipt .bold-border-top {
+                                border-top: 2px solid #000;
+                                font-weight: bold;
+                            }
 
-                .receipt .small-text {
-                    font-size: 10pt;
-                }
+                            .receipt .bold-border-top-top {
+                                border-top: 2px solid #000;
+                            }
 
-                .receipt .bold {
-                    font-weight: bold;
-                }
-            </style>
+                            .receipt .bold-border-bottom {
+                                border-bottom: 2px solid #000;
+                            }
 
-            <div class="header-container">
-                <div class="header">
-                    <div class="title">NOTA GILING SEMENTARA</div>
-                    <div class="subbold">GILINGAN PADI PUTRA MANUABA</div>
-                    <div class="info-item">DUS. BABAHAN, DES. TOLAI, KAB. PARIGI</div>
-                    <div class="info-item">Telp: 0811-451-486 / 0822-6077-3867</div>
-                </div>
-            </div>
+                            .receipt .small-text {
+                                font-size: 10pt;
+                            }
 
-            <table>
-                <tr class="bold-border-top">
-                    <td>Informasi</td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr class="bold-border-top-top calculation-row">
-                    <td class="small-text">Nama Petani</td>
-                    <td>:</td>
-                    <td>${formData.namaPetani}</td>
-                </tr>
-                <tr class="calculation-row">
-                    <td class="small-text">Tanggal Nota</td>
-                    <td>:</td>
-                    <td>${formatDatee(currentDateTime)}</td>
-                </tr>
-                <tr class="calculation-row">
-                    <td class="small-text">Waktu Nota</td>
-                    <td>:</td>
-                    <td>${formatTime(currentDateTime)}</td>
-                </tr>
-            </table>
+                            .receipt .bold {
+                                font-weight: bold;
+                            }
+                        </style>
 
-            <table>
-                <div></div>
-            </table>
+                        <div class="header-container">
+                            <div class="header">
+                                <div class="title">NOTA GILING SEMENTARA</div>
+                                <div class="subbold">GILINGAN PADI PUTRA MANUABA</div>
+                                <div class="info-item">DUS. BABAHAN, DES. TOLAI, KAB. PARIGI</div>
+                                <div class="info-item">Telp: 0811-451-486 / 0822-6077-3867</div>
+                            </div>
+                        </div>
 
-            <table>
-                <tr class="bold-border-top">
-                    <td>Kalkulasi</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr class="bold-border-top-top calculation-row">
-                    <td class="small-text">Giling Kotor</td>
-                    <td>:</td>
-                    <td>${formatCurrency(formData.gilingKotor, getDecimalPlaces(formData.gilingKotor))} Kg</td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr class="calculation-row">
-                    <td class="small-text">Ongkos Giling</td>
-                    <td>:</td>
-                    <td>${formatCurrency(formData.gilingKotor, getDecimalPlaces(formData.gilingKotor))} × ${formatCurrency(formData.biayaGiling, getDecimalPlaces(formData.biayaGiling))}%</td>
-                    <td>=</td>
-                    <td>${formatCurrency(calculations.ongkosGiling, 2)} Kg</td>
-                </tr>
-                <tr class="calculation-row">
-                    <td class="small-text">Pinjam</td>
-                    <td>:</td>
-                    <td>${formatCurrency(formData.pinjam, getDecimalPlaces(formData.pinjam))} Kg</td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr class="calculation-row">
-                    <td class="small-text">Beras Bersih</td>
-                    <td>:</td>
-                    <td>${formatCurrency(calculations.berasBersih, calculations.berasBersih % 1 === 0 ? 0 : 2)} Kg</td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr class="calculation-row">
-                    <td class="small-text">Pulang</td>
-                    <td>:</td>
-                    <td>${formatCurrency(formData.pulang, formData.pulang % 1 === 0 ? 0 : 2)} Kg</td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr class="calculation-row">
-                    <td class="small-text">Beras Jual</td>
-                    <td>:</td>
-                    <td>${formatCurrency(calculations.berasJual, calculations.berasJual % 1 === 0 ? 0 : 2)} Kg</td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr class="calculation-row">
-                    <td class="small-text">Buruh Giling</td>
-                    <td>:</td>
-                    <td>${formatCurrency(formData.gilingKotor, getDecimalPlaces(formData.gilingKotor))} × Rp ${formatCurrency(formData.biayaBuruhGiling, getDecimalPlaces(formData.biayaBuruhGiling))}</td>
-                    <td>=</td>
-                    <td class="bold">Rp ${formatCurrency(calculations.buruhGiling, getDecimalPlaces(calculations.buruhGiling))}</td>
-                </tr>
-                <tr class="calculation-row">
-                    <td class="small-text">Buruh Jemur</td>
-                    <td>:</td>
-                    <td>${formatCurrency(formData.jemur, getDecimalPlaces(formData.jemur))} × Rp ${formatCurrency(formData.biayaBuruhJemur, getDecimalPlaces(formData.biayaBuruhJemur))}</td>
-                    <td>=</td>
-                    <td class="bold">Rp ${formatCurrency(calculations.buruhJemur, getDecimalPlaces(calculations.buruhJemur))}</td>
-                </tr>
-                <tr class="calculation-row">
-                    <td class="small-text">Jual Konga</td>
-                    <td>:</td>
-                    <td>${formatCurrency(formData.jumlahKonga, getDecimalPlaces(formData.jumlahKonga))} × Rp ${formatCurrency(formData.hargaKonga, getDecimalPlaces(formData.hargaKonga))}</td>
-                    <td>=</td>
-                    <td class="bold">Rp ${formatCurrency(calculations.danaKonga, getDecimalPlaces(calculations.danaKonga))}</td>
-                </tr>
-                <tr class="calculation-row">
-                    <td class="small-text">Jual Menir</td>
-                    <td>:</td>
-                    <td>${formatCurrency(formData.jumlahMenir, getDecimalPlaces(formData.jumlahMenir))} × Rp ${formatCurrency(formData.hargaMenir, getDecimalPlaces(formData.hargaMenir))}</td>
-                    <td>=</td>
-                    <td class="bold">Rp ${formatCurrency(calculations.danaMenir, getDecimalPlaces(calculations.danaMenir))}</td>
-                </tr>
-            </table>
+                        <table>
+                            <tr class="bold-border-top">
+                                <td>Informasi</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr class="bold-border-top-top calculation-row">
+                                <td class="small-text">Nama Petani</td>
+                                <td>:</td>
+                                <td>${formData.namaPetani}</td>
+                            </tr>
+                            <tr class="calculation-row">
+                                <td class="small-text">Tanggal Nota</td>
+                                <td>:</td>
+                                <td>${formatDatee(currentDateTime)}</td>
+                            </tr>
+                            <tr class="calculation-row">
+                                <td class="small-text">Waktu Nota</td>
+                                <td>:</td>
+                                <td>${formatTime(currentDateTime)}</td>
+                            </tr>
+                        </table>
 
-            <table>
-                <div></div>
-            </table>
+                        <table>
+                            <div></div>
+                        </table>
 
-            <table>
-                <tr class="bold-border-top">
-                    <th>Ambil</th>
-                    <th>Jumlah</th>
-                    <th>Harga</th>
-                    <th>Total</th>
-                </tr>
-                ${pengambilanRows}
-            </table>
+                        <table>
+                            <tr class="bold-border-top">
+                                <td>Kalkulasi</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr class="bold-border-top-top calculation-row">
+                                <td class="small-text">Giling Kotor</td>
+                                <td>:</td>
+                                <td>${formatCurrency(formData.gilingKotor, getDecimalPlaces(formData.gilingKotor))} Kg</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr class="calculation-row">
+                                <td class="small-text">Ongkos Giling</td>
+                                <td>:</td>
+                                <td>${formatCurrency(formData.gilingKotor, getDecimalPlaces(formData.gilingKotor))} × ${formatCurrency(formData.biayaGiling, getDecimalPlaces(formData.biayaGiling))}%</td>
+                                <td>=</td>
+                                <td>${formatCurrency(calculations.ongkosGiling, 2)} Kg</td>
+                            </tr>
+                            <tr class="calculation-row">
+                                <td class="small-text">Pinjam</td>
+                                <td>:</td>
+                                <td>${formatCurrency(formData.pinjam, getDecimalPlaces(formData.pinjam))} Kg</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr class="calculation-row">
+                                <td class="small-text">Beras Bersih</td>
+                                <td>:</td>
+                                <td>${formatCurrency(calculations.berasBersih, calculations.berasBersih % 1 === 0 ? 0 : 2)} Kg</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr class="calculation-row">
+                                <td class="small-text">Pulang</td>
+                                <td>:</td>
+                                <td>${formatCurrency(formData.pulang, formData.pulang % 1 === 0 ? 0 : 2)} Kg</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr class="calculation-row">
+                                <td class="small-text">Beras Jual</td>
+                                <td>:</td>
+                                <td>${formatCurrency(calculations.berasJual, calculations.berasJual % 1 === 0 ? 0 : 2)} Kg</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr class="calculation-row">
+                                <td class="small-text">Buruh Giling</td>
+                                <td>:</td>
+                                <td>${formatCurrency(formData.gilingKotor, getDecimalPlaces(formData.gilingKotor))} × Rp ${formatCurrency(formData.biayaBuruhGiling, getDecimalPlaces(formData.biayaBuruhGiling))}</td>
+                                <td>=</td>
+                                <td class="bold">Rp ${formatCurrency(calculations.buruhGiling, getDecimalPlaces(calculations.buruhGiling))}</td>
+                            </tr>
+                            <tr class="calculation-row">
+                                <td class="small-text">Buruh Jemur</td>
+                                <td>:</td>
+                                <td>${formatCurrency(formData.jemur, getDecimalPlaces(formData.jemur))} × Rp ${formatCurrency(formData.biayaBuruhJemur, getDecimalPlaces(formData.biayaBuruhJemur))}</td>
+                                <td>=</td>
+                                <td class="bold">Rp ${formatCurrency(calculations.buruhJemur, getDecimalPlaces(calculations.buruhJemur))}</td>
+                            </tr>
+                            <tr class="calculation-row">
+                                <td class="small-text">Jual Konga</td>
+                                <td>:</td>
+                                <td>${formatCurrency(formData.jumlahKonga, getDecimalPlaces(formData.jumlahKonga))} × Rp ${formatCurrency(formData.hargaKonga, getDecimalPlaces(formData.hargaKonga))}</td>
+                                <td>=</td>
+                                <td class="bold">Rp ${formatCurrency(calculations.danaKonga, getDecimalPlaces(calculations.danaKonga))}</td>
+                            </tr>
+                            <tr class="calculation-row">
+                                <td class="small-text">Jual Menir</td>
+                                <td>:</td>
+                                <td>${formatCurrency(formData.jumlahMenir, getDecimalPlaces(formData.jumlahMenir))} × Rp ${formatCurrency(formData.hargaMenir, getDecimalPlaces(formData.hargaMenir))}</td>
+                                <td>=</td>
+                                <td class="bold">Rp ${formatCurrency(calculations.danaMenir, getDecimalPlaces(calculations.danaMenir))}</td>
+                            </tr>
+                        </table>
 
-            <table>
-                <div></div>
-            </table>
+                        <table>
+                            <div></div>
+                        </table>
 
-            <div class="footer">
-                <div style="font-weight: bold;">TERIMA KASIH TELAH GILING DISINI</div>
-                <div style="font-weight: bold;">SUKSES SELALU</div>
-            </div>
-        </div>
-    `;
-}
+                        <table>
+                            <tr class="bold-border-top">
+                                <th>Ambil</th>
+                                <th>Jumlah</th>
+                                <th>Harga</th>
+                                <th>Total</th>
+                            </tr>
+                            ${pengambilanRows}
+                        </table>
 
-           function generateNotaHtml(formData, calculations, pengambilanData) {
-    const currentDateTime = new Date();
+                        <table>
+                            <div></div>
+                        </table>
 
-    const formatDatee = (dateString) => {
-        const date = new Date(dateString);
-        const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-        const months = [
-            'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-            'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
-        ];
-        const dayName = days[date.getDay()];
-        const day = date.getDate();
-        const monthName = months[date.getMonth()];
-        const year = date.getFullYear();
-        return `${dayName}, ${day} ${monthName} ${year}`;
-    };
-
-    const formatTime = (dateString) => {
-        const date = new Date(dateString);
-        const hours = String(date.getHours()).padStart(2, '0');
-        const minutes = String(date.getMinutes()).padStart(2, '0');
-        const seconds = String(date.getSeconds()).padStart(2, '0');
-        return `${hours}:${minutes}:${seconds}`;
-    };
-
-    const formatCurrency = (value, decimals = 0) => {
-        return parseFloat(value).toLocaleString('id-ID', {
-            minimumFractionDigits: decimals,
-            maximumFractionDigits: decimals
-        });
-    };
-
-    const getDecimalPlaces = (value) => {
-        const valueStr = String(value);
-        if (valueStr.indexOf('.') !== -1) {
-            return valueStr.split('.')[1].length;
-        }
-        return 0;
-    };
-
-    let pengambilanRows = '';
-    if (pengambilanData.length > 0) {
-        pengambilanData.forEach((item, index) => {
-            pengambilanRows += `
-                <tr class="calculation-row">
-                    <td>${index + 1}. ${item.keterangan}</td>
-                    <td>${formatCurrency(item.jumlah, getDecimalPlaces(item.jumlah))}</td>
-                    <td>Rp ${formatCurrency(item.harga, getDecimalPlaces(item.harga))}</td>
-                    <td class="bold">Rp ${formatCurrency(item.subtotal, getDecimalPlaces(item.subtotal))}</td>
-                </tr>
-            `;
-        });
-    } else {
-        pengambilanRows = `
-            <tr class="calculation-row">
-                <td colspan="4">Tidak ada data pengambilan</td>
-            </tr>
-        `;
-    }
-
-    return `
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-            <style>
-                body {
-                    font-family: sans-serif;
-                    font-size: 10pt;
-                    margin: 0;
-                    padding: 0;
-                }
-
-                .receipt {
-    width: 80mm;
-    padding: 15px;
-    background: white;
-}
-
-                .header {
-    text-align: center;
-    margin-bottom: 15px;
-    font-family: 'Courier New', monospace;
-}
-
-.title {
-    font-size: 15pt;
-    font-weight: bold;
-    margin-bottom: 2px;
-}
-
-.info-item {
-    margin-bottom: 1px;
-    font-size: 10pt;
-    margin-bottom: 2px;
-}
-
-
-.subbold {
-    font-size: 13pt;
-    font-weight: bold;
-    margin-bottom: 3px;
-}
-
-                table {
-                    width: 100%;
-                    border-collapse: collapse;
-                    margin-bottom: 10px;
-                }
-
-                th,
-                td {
-                    padding: 5px 2px;
-                    text-align: left;
-                }
-
-                .calculation-row td {
-                    border-top: 1px dashed #000;
-                    border-bottom: 1px dashed #000;
-                    padding-top: 5px;
-                    padding-bottom: 5px;
-                }
-
-                .calculation-row-top td {
-                    border-top: 1px dashed #000;
-                    padding-top: 5px;
-                    padding-bottom: 5px;
-                }
-
-                .total {
-                    font-size: 14pt;
-                    font-weight: bold;
-                    border-top: 1px solid #000;
-                    border-bottom: 1px solid #000;
-                    margin-bottom: 10px;
-                }
-
-
-
-.footer {
-    text-align: center;
-    margin-top: 10px;
-    font-style: italic;
-    font-family: 'Courier New', monospace;
-}
-
-                .bold-border-top {
-                    border-top: 2px solid #000;
-                    font-weight: bold;
-                }
-
-                .bold-border-top-top {
-                    border-top: 2px solid #000;
-                }
-
-                .bold-border-bottom {
-                    border-bottom: 2px solid #000;
-                }
-
-                .small-text {
-                    font-size: 10pt;
-                }
-
-                .bold {
-                    font-weight: bold;
-                }
-
-                .subbold {
-                    font-size: 11pt;
-                }
-
-                .header img {
-                    max-width: 100%;
-                    height: auto;
-                }
-
-                .footer img {
-                    max-width: 100%;
-                    height: auto;
-                }
-            </style>
-        </head>
-
-        <body>
-            <div class="receipt">
-                <div class="header-container">
-                    <div class="header">
-                        <div class="title">NOTA GILING SEMENTARA</div>
-                        <div class="subbold">GILINGAN PADI PUTRA MANUABA</div>
-                        <div class="info-item">DUS. BABAHAN, DES. TOLAI, KAB. PARIGI</div>
-                        <div class="info-item">Telp: 0811-451-486 / 0822-6077-3867</div>
+                        <div class="footer">
+                            <div style="font-weight: bold;">TERIMA KASIH TELAH GILING DISINI</div>
+                            <div style="font-weight: bold;">SUKSES SELALU</div>
+                        </div>
                     </div>
-                </div>
+                `;
+            }
 
-                <table>
-                    <tr class="bold-border-top">
-                        <td>Informasi</td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr class="bold-border-top-top calculation-row">
-                        <td class="small-text">Nama Petani</td>
-                        <td>:</td>
-                        <td>${formData.namaPetani}</td>
-                    </tr>
-                    <tr class="calculation-row">
-                        <td class="small-text">Tanggal Nota</td>
-                        <td>:</td>
-                        <td>${formatDatee(currentDateTime)}</td>
-                    </tr>
-                    <tr class="calculation-row">
-                        <td class="small-text">Waktu Nota</td>
-                        <td>:</td>
-                        <td>${formatTime(currentDateTime)}</td>
-                    </tr>
-                </table>
+            function generateNotaHtml(formData, calculations, pengambilanData) {
+                const currentDateTime = new Date();
 
-                <table>
-                    <div></div>
-                </table>
+                const formatDatee = (dateString) => {
+                    const date = new Date(dateString);
+                    const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+                    const months = [
+                        'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+                        'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+                    ];
+                    const dayName = days[date.getDay()];
+                    const day = date.getDate();
+                    const monthName = months[date.getMonth()];
+                    const year = date.getFullYear();
+                    return `${dayName}, ${day} ${monthName} ${year}`;
+                };
 
-                <table>
-                    <tr class="bold-border-top">
-                        <td>Kalkulasi</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr class="bold-border-top-top calculation-row">
-                        <td class="small-text">Giling Kotor</td>
-                        <td>:</td>
-                        <td>${formatCurrency(formData.gilingKotor, getDecimalPlaces(formData.gilingKotor))} Kg</td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr class="calculation-row">
-                        <td class="small-text">Ongkos Giling</td>
-                        <td>:</td>
-                        <td>${formatCurrency(formData.gilingKotor, getDecimalPlaces(formData.gilingKotor))} × ${formatCurrency(formData.biayaGiling, getDecimalPlaces(formData.biayaGiling))}%</td>
-                        <td>=</td>
-                        <td>${formatCurrency(calculations.ongkosGiling, 2)} Kg</td>
-                    </tr>
-                    <tr class="calculation-row">
-                        <td class="small-text">Pinjam</td>
-                        <td>:</td>
-                        <td>${formatCurrency(formData.pinjam, getDecimalPlaces(formData.pinjam))} Kg</td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr class="calculation-row">
-                        <td class="small-text">Beras Bersih</td>
-                        <td>:</td>
-                        <td>${formatCurrency(calculations.berasBersih, calculations.berasBersih % 1 === 0 ? 0 : 2)} Kg</td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr class="calculation-row">
-                        <td class="small-text">Pulang</td>
-                        <td>:</td>
-                        <td>${formatCurrency(formData.pulang, formData.pulang % 1 === 0 ? 0 : 2)} Kg</td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr class="calculation-row">
-                        <td class="small-text">Beras Jual</td>
-                        <td>:</td>
-                        <td>${formatCurrency(calculations.berasJual, calculations.berasJual % 1 === 0 ? 0 : 2)} Kg</td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr class="calculation-row">
-                        <td class="small-text">Buruh Giling</td>
-                        <td>:</td>
-                        <td>${formatCurrency(formData.gilingKotor, getDecimalPlaces(formData.gilingKotor))} × Rp ${formatCurrency(formData.biayaBuruhGiling, getDecimalPlaces(formData.biayaBuruhGiling))}</td>
-                        <td>=</td>
-                        <td class="bold">Rp ${formatCurrency(calculations.buruhGiling, getDecimalPlaces(calculations.buruhGiling))}</td>
-                    </tr>
-                    <tr class="calculation-row">
-                        <td class="small-text">Buruh Jemur</td>
-                        <td>:</td>
-                        <td>${formatCurrency(formData.jemur, getDecimalPlaces(formData.jemur))} × Rp ${formatCurrency(formData.biayaBuruhJemur, getDecimalPlaces(formData.biayaBuruhJemur))}</td>
-                        <td>=</td>
-                        <td class="bold">Rp ${formatCurrency(calculations.buruhJemur, getDecimalPlaces(calculations.buruhJemur))}</td>
-                    </tr>
-                    <tr class="calculation-row">
-                        <td class="small-text">Jual Konga</td>
-                        <td>:</td>
-                        <td>${formatCurrency(formData.jumlahKonga, getDecimalPlaces(formData.jumlahKonga))} × Rp ${formatCurrency(formData.hargaKonga, getDecimalPlaces(formData.hargaKonga))}</td>
-                        <td>=</td>
-                        <td class="bold">Rp ${formatCurrency(calculations.danaKonga, getDecimalPlaces(calculations.danaKonga))}</td>
-                    </tr>
-                    <tr class="calculation-row">
-                        <td class="small-text">Jual Menir</td>
-                        <td>:</td>
-                        <td>${formatCurrency(formData.jumlahMenir, getDecimalPlaces(formData.jumlahMenir))} × Rp ${formatCurrency(formData.hargaMenir, getDecimalPlaces(formData.hargaMenir))}</td>
-                        <td>=</td>
-                        <td class="bold">Rp ${formatCurrency(calculations.danaMenir, getDecimalPlaces(calculations.danaMenir))}</td>
-                    </tr>
-                </table>
+                const formatTime = (dateString) => {
+                    const date = new Date(dateString);
+                    const hours = String(date.getHours()).padStart(2, '0');
+                    const minutes = String(date.getMinutes()).padStart(2, '0');
+                    const seconds = String(date.getSeconds()).padStart(2, '0');
+                    return `${hours}:${minutes}:${seconds}`;
+                };
 
-                <table>
-                    <div></div>
-                </table>
+                const formatCurrency = (value, decimals = 0) => {
+                    return parseFloat(value).toLocaleString('id-ID', {
+                        minimumFractionDigits: decimals,
+                        maximumFractionDigits: decimals
+                    });
+                };
 
-                <table>
-                    <tr class="bold-border-top">
-                        <th>Ambil</th>
-                        <th>Jumlah</th>
-                        <th>Harga</th>
-                        <th>Total</th>
-                    </tr>
-                    ${pengambilanRows}
-                </table>
+                const getDecimalPlaces = (value) => {
+                    const valueStr = String(value);
+                    if (valueStr.indexOf('.') !== -1) {
+                        return valueStr.split('.')[1].length;
+                    }
+                    return 0;
+                };
 
-                <table>
-                    <div></div>
-                </table>
+                let pengambilanRows = '';
+                if (pengambilanData.length > 0) {
+                    pengambilanData.forEach((item, index) => {
+                        pengambilanRows += `
+                            <tr class="calculation-row">
+                                <td>${index + 1}. ${item.keterangan}</td>
+                                <td>${formatCurrency(item.jumlah, getDecimalPlaces(item.jumlah))}</td>
+                                <td>Rp ${formatCurrency(item.harga, getDecimalPlaces(item.harga))}</td>
+                                <td class="bold">Rp ${formatCurrency(item.subtotal, getDecimalPlaces(item.subtotal))}</td>
+                            </tr>
+                        `;
+                    });
+                } else {
+                    pengambilanRows = `
+                        <tr class="calculation-row">
+                            <td colspan="4">Tidak ada data pengambilan</td>
+                        </tr>
+                    `;
+                }
 
-                <div class="footer">
-                    <div style="font-weight: bold;">TERIMA KASIH TELAH GILING DISINI</div>
-                    <div style="font-weight: bold;">SUKSES SELALU</div>
-                </div>
+                return `
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+                        <style>
+                            body {
+                                font-family: sans-serif;
+                                font-size: 10pt;
+                                margin: 0;
+                                padding: 0;
+                            }
 
+                            .receipt {
+                                width: 80mm;
+                                padding: 15px;
+                                background: white;
+                            }
 
-            </div>
-        </body>
-        </html>
-    `;
-}
+                            .header {
+                                text-align: center;
+                                margin-bottom: 15px;
+                                font-family: 'Courier New', monospace;
+                            }
+
+                            .title {
+                                font-size: 15pt;
+                                font-weight: bold;
+                                margin-bottom: 2px;
+                            }
+
+                            .info-item {
+                                margin-bottom: 1px;
+                                font-size: 10pt;
+                                margin-bottom: 2px;
+                            }
+
+                            .subbold {
+                                font-size: 13pt;
+                                font-weight: bold;
+                                margin-bottom: 3px;
+                            }
+
+                            table {
+                                width: 100%;
+                                border-collapse: collapse;
+                                margin-bottom: 10px;
+                            }
+
+                            th, td {
+                                padding: 5px 2px;
+                                text-align: left;
+                            }
+
+                            .calculation-row td {
+                                border-top: 1px dashed #000;
+                                border-bottom: 1px dashed #000;
+                                padding-top: 5px;
+                                padding-bottom: 5px;
+                            }
+
+                            .calculation-row-top td {
+                                border-top: 1px dashed #000;
+                                padding-top: 5px;
+                                padding-bottom: 5px;
+                            }
+
+                            .total {
+                                font-size: 14pt;
+                                font-weight: bold;
+                                border-top: 1px solid #000;
+                                border-bottom: 1px solid #000;
+                                margin-bottom: 10px;
+                            }
+
+                            .footer {
+                                text-align: center;
+                                margin-top: 10px;
+                                font-style: italic;
+                                font-family: 'Courier New', monospace;
+                            }
+
+                            .bold-border-top {
+                                border-top: 2px solid #000;
+                                font-weight: bold;
+                            }
+
+                            .bold-border-top-top {
+                                border-top: 2px solid #000;
+                            }
+
+                            .bold-border-bottom {
+                                border-bottom: 2px solid #000;
+                            }
+
+                            .small-text {
+                                font-size: 10pt;
+                            }
+
+                            .bold {
+                                font-weight: bold;
+                            }
+
+                            .subbold {
+                                font-size: 11pt;
+                            }
+
+                            .header img {
+                                max-width: 100%;
+                                height: auto;
+                            }
+
+                            .footer img {
+                                max-width: 100%;
+                                height: auto;
+                            }
+                        </style>
+                    </head>
+
+                    <body>
+                        <div class="receipt">
+                            <div class="header-container">
+                                <div class="header">
+                                    <div class="title">NOTA GILING SEMENTARA</div>
+                                    <div class="subbold">GILINGAN PADI PUTRA MANUABA</div>
+                                    <div class="info-item">DUS. BABAHAN, DES. TOLAI, KAB. PARIGI</div>
+                                    <div class="info-item">Telp: 0811-451-486 / 0822-6077-3867</div>
+                                </div>
+                            </div>
+
+                            <table>
+                                <tr class="bold-border-top">
+                                    <td>Informasi</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr class="bold-border-top-top calculation-row">
+                                    <td class="small-text">Nama Petani</td>
+                                    <td>:</td>
+                                    <td>${formData.namaPetani}</td>
+                                </tr>
+                                <tr class="calculation-row">
+                                    <td class="small-text">Tanggal Nota</td>
+                                    <td>:</td>
+                                    <td>${formatDatee(currentDateTime)}</td>
+                                </tr>
+                                <tr class="calculation-row">
+                                    <td class="small-text">Waktu Nota</td>
+                                    <td>:</td>
+                                    <td>${formatTime(currentDateTime)}</td>
+                                </tr>
+                            </table>
+
+                            <table>
+                                <div></div>
+                            </table>
+
+                            <table>
+                                <tr class="bold-border-top">
+                                    <td>Kalkulasi</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr class="bold-border-top-top calculation-row">
+                                    <td class="small-text">Giling Kotor</td>
+                                    <td>:</td>
+                                    <td>${formatCurrency(formData.gilingKotor, getDecimalPlaces(formData.gilingKotor))} Kg</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr class="calculation-row">
+                                    <td class="small-text">Ongkos Giling</td>
+                                    <td>:</td>
+                                    <td>${formatCurrency(formData.gilingKotor, getDecimalPlaces(formData.gilingKotor))} × ${formatCurrency(formData.biayaGiling, getDecimalPlaces(formData.biayaGiling))}%</td>
+                                    <td>=</td>
+                                    <td>${formatCurrency(calculations.ongkosGiling, 2)} Kg</td>
+                                </tr>
+                                <tr class="calculation-row">
+                                    <td class="small-text">Pinjam</td>
+                                    <td>:</td>
+                                    <td>${formatCurrency(formData.pinjam, getDecimalPlaces(formData.pinjam))} Kg</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr class="calculation-row">
+                                    <td class="small-text">Beras Bersih</td>
+                                    <td>:</td>
+                                    <td>${formatCurrency(calculations.berasBersih, calculations.berasBersih % 1 === 0 ? 0 : 2)} Kg</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr class="calculation-row">
+                                    <td class="small-text">Pulang</td>
+                                    <td>:</td>
+                                    <td>${formatCurrency(formData.pulang, formData.pulang % 1 === 0 ? 0 : 2)} Kg</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr class="calculation-row">
+                                    <td class="small-text">Beras Jual</td>
+                                    <td>:</td>
+                                    <td>${formatCurrency(calculations.berasJual, calculations.berasJual % 1 === 0 ? 0 : 2)} Kg</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr class="calculation-row">
+                                    <td class="small-text">Buruh Giling</td>
+                                    <td>:</td>
+                                    <td>${formatCurrency(formData.gilingKotor, getDecimalPlaces(formData.gilingKotor))} × Rp ${formatCurrency(formData.biayaBuruhGiling, getDecimalPlaces(formData.biayaBuruhGiling))}</td>
+                                    <td>=</td>
+                                    <td class="bold">Rp ${formatCurrency(calculations.buruhGiling, getDecimalPlaces(calculations.buruhGiling))}</td>
+                                </tr>
+                                <tr class="calculation-row">
+                                    <td class="small-text">Buruh Jemur</td>
+                                    <td>:</td>
+                                    <td>${formatCurrency(formData.jemur, getDecimalPlaces(formData.jemur))} × Rp ${formatCurrency(formData.biayaBuruhJemur, getDecimalPlaces(formData.biayaBuruhJemur))}</td>
+                                    <td>=</td>
+                                    <td class="bold">Rp ${formatCurrency(calculations.buruhJemur, getDecimalPlaces(calculations.buruhJemur))}</td>
+                                </tr>
+                                <tr class="calculation-row">
+                                    <td class="small-text">Jual Konga</td>
+                                    <td>:</td>
+                                    <td>${formatCurrency(formData.jumlahKonga, getDecimalPlaces(formData.jumlahKonga))} × Rp ${formatCurrency(formData.hargaKonga, getDecimalPlaces(formData.hargaKonga))}</td>
+                                    <td>=</td>
+                                    <td class="bold">Rp ${formatCurrency(calculations.danaKonga, getDecimalPlaces(calculations.danaKonga))}</td>
+                                </tr>
+                                <tr class="calculation-row">
+                                    <td class="small-text">Jual Menir</td>
+                                    <td>:</td>
+                                    <td>${formatCurrency(formData.jumlahMenir, getDecimalPlaces(formData.jumlahMenir))} × Rp ${formatCurrency(formData.hargaMenir, getDecimalPlaces(formData.hargaMenir))}</td>
+                                    <td>=</td>
+                                    <td class="bold">Rp ${formatCurrency(calculations.danaMenir, getDecimalPlaces(calculations.danaMenir))}</td>
+                                </tr>
+                            </table>
+
+                            <table>
+                                <div></div>
+                            </table>
+
+                            <table>
+                                <tr class="bold-border-top">
+                                    <th>Ambil</th>
+                                    <th>Jumlah</th>
+                                    <th>Harga</th>
+                                    <th>Total</th>
+                                </tr>
+                                ${pengambilanRows}
+                            </table>
+
+                            <table>
+                                <div></div>
+                            </table>
+
+                            <div class="footer">
+                                <div style="font-weight: bold;">TERIMA KASIH TELAH GILING DISINI</div>
+                                <div style="font-weight: bold;">SUKSES SELALU</div>
+                            </div>
+                        </div>
+                    </body>
+                    </html>
+                `;
+            }
 
             // Update placeholder on giling_kotor input
             document.getElementById('giling_kotor').addEventListener('input', function() {
@@ -2029,7 +2071,7 @@ async function downloadAsPng(formData, calculations, pengambilanData) {
             document.getElementById('biaya_giling').value = '9';
             document.getElementById('biaya_buruh_giling').value = '80';
             document.getElementById('biaya_buruh_jemur').value = '8,000';
-            document.getElementById('harga_konga').value = '250,000';
+            document.getElementById('harga_konga').value = '325,000';
             document.getElementById('harga_menir').value = '4,000';
             document.getElementById('bunga').value = '2';
             document.getElementById('harga_jual').value = '0';
