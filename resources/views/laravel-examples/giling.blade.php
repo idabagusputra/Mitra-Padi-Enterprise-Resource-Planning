@@ -772,10 +772,10 @@ function autoFillBeras(beras) {
 function autoFillKongaMenir(konga_menir) {
     if (!konga_menir) return;
     const fields = {
-    'jumlah_konga': cleanDBValue(konga_menir.total_konga ?? 0),
-    'harga_konga': '325000',
-    'jumlah_menir': cleanDBValue(konga_menir.total_menir ?? 0),
-    'harga_menir': '4000'
+'jumlah_konga': cleanDBValue(konga_menir.total_konga ?? 0),
+'harga_konga': konga_menir && konga_menir.total_konga ? '325000' : '0',
+'jumlah_menir': cleanDBValue(konga_menir.total_menir ?? 0),
+'harga_menir': konga_menir && konga_menir.total_menir ? '4000' : '0'
 };
     for (const [id, value] of Object.entries(fields)) {
         const input = document.getElementById(id);
