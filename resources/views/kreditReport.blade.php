@@ -102,7 +102,7 @@
                 <th>Alamat</th>
                 <th>Tanggal</th>
                 <th>Jumlah</th>
-                <th>Hutang + Bunga</th>
+                <th>Keterangan</th>
                 <th>Status</th>
             </tr>
         </thead>
@@ -116,11 +116,12 @@
                 <td style="text-align: center;">{{ $kredit->petani->alamat }}</td>
                 <td style="text-align: center;">{{ $kredit->tanggal }}</td>
                 <td style="text-align: right; padding-right: 8px;">Rp {{ number_format($kredit->jumlah, 2, ',', '.') }}</td>
-                <td style="text-align: right; padding-right: 8px;">
+                <td style="text-align: left; padding-left: 8px;">{{ $kredit->keterangan }}</td>
+                {{-- <td style="text-align: right; padding-right: 8px;">
                     Rp {{ number_format($kredit->hutang_plus_bunga, 2, ',', '.') }}
                     <br>
                     <small>({{ number_format($kredit->lama_bulan, 1, ',', '.') }} Bulan Bulan, Bunga: Rp {{ number_format($kredit->bunga, 2, ',', '.') }})</small>
-                </td>
+                </td> --}}
                 <td style="text-align: center;">{{ $kredit->status ? 'Lunas' : 'Belum Lunas' }}</td>
             </tr>
             @endforeach
