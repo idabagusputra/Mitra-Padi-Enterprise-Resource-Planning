@@ -114,7 +114,7 @@
                 <td style="text-align: center; white-space: nowrap;">{{ $kredit->id }}</td>
                 <td style="text-align: left; padding-left: 8px;">{{ $kredit->petani->nama }}</td>
                 <td style="text-align: center;">{{ $kredit->petani->alamat }}</td>
-                <td style="text-align: center; white-space: nowrap;">{{ $kredit->tanggal }}</td>
+                <td style="text-align: center; white-space: nowrap; padding-left: 8px; padding-right: 8px;">{{ $kredit->tanggal }}</td>
                 <td style="text-align: right; padding-right: 8px;">Rp {{ number_format($kredit->jumlah, 2, ',', '.') }}</td>
                 <td style="text-align: left; padding-left: 8px; max-width: 150px; word-wrap: break-word; white-space: normal;">{{ $kredit->keterangan }}</td>
                 {{-- <td style="text-align: right; padding-right: 8px;">
