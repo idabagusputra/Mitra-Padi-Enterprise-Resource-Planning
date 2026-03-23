@@ -1377,7 +1377,7 @@
             }
 
             // Download as PNG function (FORCE 80mm)
-async function downloadAsPng(formData, calculations, pengambilanData) {
+            async function downloadAsPng(formData, calculations, pengambilanData) {
     const downloadProgress = document.getElementById('downloadProgress');
     const iframeContainer = document.querySelector('.iframe-container');
 
@@ -1388,99 +1388,86 @@ async function downloadAsPng(formData, calculations, pengambilanData) {
         const container = document.getElementById('nota-preview-container');
         container.innerHTML = generateNotaHtmlForPng(formData, calculations, pengambilanData);
 
-        // Paksa container tersembunyi dengan positioning yang aman
-        container.style.position = 'fixed';  // ← UBAH dari 'absolute' ke 'fixed'
-        container.style.left = '-9999px';
+        // ✅ FIX: Gunakan fixed+visibility agar Android bisa render dengan benar
+        container.style.position = 'fixed';
+        container.style.left = '0';
         container.style.top = '0';
-        container.style.visibility = 'hidden'; // ← TAMBAH baris ini
+        container.style.zIndex = '-9999';
+        container.style.opacity = '0';
+        container.style.pointerEvents = 'none';
 
-        // === FORCE WIDTH 80MM ===
         const THERMAL_WIDTH_PX = 321;
 
         const notaElement = container.querySelector('.receipt');
+        notaElement.style.width = THERMAL_WIDTH_PX + 'px';
+        notaElement.style.maxWidth = THERMAL_WIDTH_PX + 'px';
+        notaElement.style.margin = '0';
+        notaElement.style.padding = '10px';
+        notaElement.style.boxSizing = 'border-box';
+        notaElement.style.background = '#ffffff';
 
-        // Reset semua styling sebelumnya
-        notaElement.style.cssText = ''; // ← TAMBAH baris ini
-
-        // Paksa ukuran thermal dengan styling yang SANGAT ketat
-        Object.assign(notaElement.style, { // ← UBAH menggunakan Object.assign
-            width: THERMAL_WIDTH_PX + 'px',
-            maxWidth: THERMAL_WIDTH_PX + 'px',
-            minWidth: THERMAL_WIDTH_PX + 'px', // ← TAMBAH minWidth
-            margin: '0',
-            padding: '15px',
-            boxSizing: 'border-box',
-            background: '#ffffff',
-            fontFamily: 'sans-serif',
-            fontSize: '9pt',
-            lineHeight: '1.4',
-            color: '#000000',
-            display: 'block' // ← TAMBAH display
-        });
-
-        // Tunggu render + font dengan delay lebih lama
+        // ✅ FIX: Tunggu lebih lama agar font & layout selesai di Android
         if (document.fonts) {
-            try {
-                await document.fonts.ready;
-            } catch(e) {
-                console.log('Font ready timeout');
-            }
+            await document.fonts.ready;
         }
+        await new Promise(resolve => setTimeout(resolve, 800));
 
-        // Delay untuk memastikan rendering selesai di semua device
-        await new Promise(resolve => setTimeout(resolve, 800)); // ← UBAH dari 500 ke 800
-
-        // Capture dengan settings yang OPTIMAL untuk Android
         const canvas = await html2canvas(notaElement, {
-            scale: 2, // ← UBAH dari 3 ke 2
+            scale: 3,
             useCORS: true,
             allowTaint: true,
             backgroundColor: '#ffffff',
             width: THERMAL_WIDTH_PX,
             windowWidth: THERMAL_WIDTH_PX,
-            imageTimeout: 0,
             logging: false,
-            removeContainer: false, // ← TAMBAH baris ini
-            foreignObjectRendering: true, // ← TAMBAH baris ini
-            onclone: function(clonedDocument) { // ← TAMBAH callback ini
-                // Pastikan sizing di cloned document juga
-                const allElements = clonedDocument.querySelectorAll('*');
-                allElements.forEach(el => {
-                    const computed = clonedDocument.defaultView.getComputedStyle(el);
-                    if (el.classList.contains('receipt')) {
-                        el.style.width = THERMAL_WIDTH_PX + 'px';
-                        el.style.maxWidth = THERMAL_WIDTH_PX + 'px';
-                        el.style.minWidth = THERMAL_WIDTH_PX + 'px';
-                        el.style.margin = '0';
-                        el.style.padding = '15px';
+            // ✅ FIX: Force font di dalam clone agar header/footer tidak berantakan
+            onclone: function(clonedDoc) {
+                const style = clonedDoc.createElement('style');
+                style.textContent = `
+                    .header, .footer {
+                        font-family: 'Courier New', Courier, monospace !important;
                     }
-                });
+                    .title {
+                        font-size: 13pt !important;
+                        font-weight: bold !important;
+                        display: block !important;
+                        text-align: center !important;
+                        width: 100% !important;
+                    }
+                    .subbold {
+                        display: block !important;
+                        text-align: center !important;
+                        width: 100% !important;
+                    }
+                    .info-item {
+                        display: block !important;
+                        text-align: center !important;
+                        width: 100% !important;
+                    }
+                    .footer div {
+                        display: block !important;
+                        text-align: center !important;
+                        width: 100% !important;
+                    }
+                `;
+                clonedDoc.head.appendChild(style);
             }
         });
 
-        // Download dengan nama file format: Nama_Petani_Tanggal.png
         const link = document.createElement('a');
-        const notaDate = new Date().toISOString().slice(0, 10);
+        const timestamp = new Date().toISOString().slice(0, 10);
+        const sanitizedName = formData.namaPetani.replace(/[^a-zA-Z0-9]/g, '_');
 
-        // Clean name: ubah spasi jadi underscore, hapus karakter special
-        const sanitizedName = formData.namaPetani // ← UBAH logic ini
-            .trim()
-            .replace(/\s+/g, '_')           // Ubah spasi jadi underscore
-            .replace(/[^a-zA-Z0-9_]/g, ''); // Hapus karakter bukan alphanumeric dan underscore
-
-        // Format: Nama_Petani_Tanggal.png (tanpa "Nota_" prefix)
-        link.download = `${sanitizedName}_${notaDate}.png`; // ← UBAH format nama file
+        // ✅ FIX: Format nama file NamaPetani_Tanggal
+        link.download = `${sanitizedName}_${timestamp}.png`;
         link.href = canvas.toDataURL('image/png', 1.0);
-        document.body.appendChild(link); // ← TAMBAH baris ini
         link.click();
-        document.body.removeChild(link); // ← TAMBAH baris ini
 
-        // Cleanup
         container.innerHTML = '';
 
     } catch (error) {
         console.error('Error generating PNG:', error);
-        alert('Gagal membuat gambar PNG. Silakan coba lagi.\n\nError: ' + error.message);
+        alert('Gagal membuat gambar PNG. Silakan coba lagi.');
     } finally {
         downloadProgress.classList.remove('active');
         iframeContainer.style.display = 'block';
