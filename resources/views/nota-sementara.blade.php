@@ -806,7 +806,7 @@
                                     <div class="form-group">
                                         <label for="harga_konga" class="form-label">Harga Konga (Rp)</label>
                                         <input class="form-control number-format" type="text" name="harga_konga" id="harga_konga"
-                                               inputmode="numeric" placeholder="" value="325,000" required>
+                                               inputmode="numeric" placeholder="" value="300,000" required>
                                     </div>
                                 </div>
 
@@ -2071,7 +2071,7 @@
             document.getElementById('biaya_giling').value = '9';
             document.getElementById('biaya_buruh_giling').value = '80';
             document.getElementById('biaya_buruh_jemur').value = '8,000';
-            document.getElementById('harga_konga').value = '325,000';
+            document.getElementById('harga_konga').value = '300,000';
             document.getElementById('harga_menir').value = '4,000';
             document.getElementById('bunga').value = '2';
             document.getElementById('harga_jual').value = '0';
