@@ -1422,36 +1422,44 @@
             logging: false,
             // ✅ FIX: Force font di dalam clone agar header/footer tidak berantakan
             onclone: function(clonedDoc) {
-                const style = clonedDoc.createElement('style');
-                style.textContent = `
-                    .header, .footer {
-                        font-family: 'Courier New', Courier, monospace !important;
-                    }
-                    .title {
-                        font-size: 13pt !important;
-                        font-weight: bold !important;
-                        display: block !important;
-                        text-align: center !important;
-                        width: 100% !important;
-                    }
-                    .subbold {
-                        display: block !important;
-                        text-align: center !important;
-                        width: 100% !important;
-                    }
-                    .info-item {
-                        display: block !important;
-                        text-align: center !important;
-                        width: 100% !important;
-                    }
-                    .footer div {
-                        display: block !important;
-                        text-align: center !important;
-                        width: 100% !important;
-                    }
-                `;
-                clonedDoc.head.appendChild(style);
-            }
+    const style = clonedDoc.createElement('style');
+    style.textContent = `
+        .header, .footer {
+            font-family: 'Courier New', Courier, monospace !important;
+        }
+        .title {
+            font-size: 13pt !important;
+            font-weight: bold !important;
+            display: block !important;
+            text-align: center !important;
+            width: 100% !important;
+        }
+        .subbold {
+            display: block !important;
+            text-align: center !important;
+            width: 100% !important;
+        }
+        .info-item {
+            display: block !important;
+            text-align: center !important;
+            width: 100% !important;
+            /* ✅ FIX: Perkecil font agar tidak wrap di Android */
+            font-size: 7.5pt !important;
+            letter-spacing: -0.3px !important;
+            word-spacing: -1px !important;
+            white-space: nowrap !important;
+        }
+        .footer div {
+            display: block !important;
+            text-align: center !important;
+            width: 100% !important;
+            font-size: 7.5pt !important;
+            letter-spacing: -0.3px !important;
+            white-space: nowrap !important;
+        }
+    `;
+    clonedDoc.head.appendChild(style);
+}
         });
 
         const link = document.createElement('a');
@@ -1554,10 +1562,12 @@
                             }
 
                             .receipt .info-item {
-                                margin-bottom: 1px;
-                                font-size: 10pt;
-                                margin-bottom: 2px;
-                            }
+    margin-bottom: 2px;
+    font-size: 7.5pt;
+    letter-spacing: -0.3px;
+    word-spacing: -1px;
+    white-space: nowrap;
+}
 
                             .receipt .subbold {
                                 font-size: 12pt;
@@ -1587,11 +1597,14 @@
                             }
 
                             .receipt .footer {
-                                text-align: center;
-                                margin-top: 10px;
-                                font-style: italic;
-                                font-family: 'Courier New', monospace;
-                            }
+    text-align: center;
+    margin-top: 10px;
+    font-style: italic;
+    font-family: 'Courier New', monospace;
+    font-size: 7.5pt;
+    letter-spacing: -0.3px;
+    white-space: nowrap;
+}
 
                             .receipt .bold-border-top {
                                 border-top: 2px solid #000;
