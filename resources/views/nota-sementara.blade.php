@@ -628,9 +628,6 @@
                 margin: 1rem auto;
             }
 
-            .iframe-container {
-                height: 55vh;
-            }
         }
 
         @media (max-width: 576px) {
