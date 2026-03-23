@@ -519,14 +519,16 @@
         }
 
         .modal-dialog {
-            width: fit-content;
-            max-width: 95vw;
-        }
+    width: fit-content;
+    max-width: 95vw;
+    margin-left: auto;
+    margin-right: auto;
+}
 
         .iframe-container {
-            width: 321px; /* thermal */
-            max-width: 100%;
-        }
+    width: 321px; /* thermal - desktop */
+    max-width: 100%;
+}
 
         @media (max-width: 576px) {
             .modal-footer {
@@ -583,6 +585,27 @@
            RESPONSIVE STYLES
         ============================================ */
         @media (max-width: 768px) {
+
+            .modal-dialog {
+        width: 100vw;
+        max-width: 100vw;
+        margin: 0;
+        padding: 0 20%;  /* ✅ 20% padding tiap sisi di Android */
+    }
+
+    .iframe-container {
+        width: 100%;     /* ✅ penuh dalam batas padding modal */
+        height: 70vh;    /* ✅ lebih tinggi di mobile */
+    }
+
+    .modal-content {
+        border-radius: var(--border-radius);
+    }
+
+    .modal-body {
+        padding: 1rem 0.5rem;  /* ✅ kurangi padding body agar iframe lebih lebar */
+    }
+
             .main-container {
                 padding: 1rem 0.75rem;
             }
