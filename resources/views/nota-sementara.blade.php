@@ -710,6 +710,32 @@
         .download-progress .spinner-border {
             color: var(--primary-color);
         }
+
+        /* Jemur Mode Buttons */
+.btn-jemur {
+    border: none;
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0;
+    letter-spacing: 0.3px;
+    border-radius: 0;
+}
+
+.btn-jemur-active {
+    background: var(--success-gradient);
+    color: white;
+    box-shadow: inset 0 -2px 0 rgba(0,0,0,0.15);
+}
+
+.btn-jemur-inactive {
+    background: var(--bg-light);
+    color: var(--text-muted);
+    border-top: 2px solid var(--border-color);
+    border-bottom: 2px solid var(--border-color);
+    border-right: 2px solid var(--border-color);
+}
     </style>
 </head>
 <body>
@@ -741,7 +767,7 @@
                             </div>
 
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-12">
                                     <div class="form-group">
                                         <label for="nama_petani" class="form-label">Nama Petani</label>
                                         <div class="search-petani-wrapper">
@@ -794,13 +820,35 @@
                                                inputmode="numeric" placeholder="0" required>
                                     </div>
                                 </div>
-                                <div class="col-md-3 col-6">
+                                {{-- <div class="col-md-3 col-6">
                                     <div class="form-group">
                                         <label for="jemur" class="form-label">Jemur (Karung)</label>
                                         <input class="form-control number-format" type="text" name="jemur" id="jemur"
                                                inputmode="numeric" placeholder="0" required>
                                     </div>
-                                </div>
+                                </div> --}}
+
+
+                              <div class="col-md-3 col-6">
+    <div class="form-group">
+        <label for="jemur" class="form-label">Jemur (Karung)</label>
+        <div style="display: flex; width: 100%;">
+            <input class="form-control number-format" type="text" name="jemur" id="jemur"
+                   inputmode="numeric" placeholder="0" required
+                   style="width:70%; border-radius: var(--border-radius-xs) 0 0 var(--border-radius-xs) !important; border-right: none !important;">
+            <button type="button" id="btn-normal" onclick="setJemurMode('N')"
+                    title="Normal"
+                    style="width:15%; border:none; font-size:0.75rem; font-weight:700; cursor:pointer; transition:all 0.2s; letter-spacing:0.3px; background: var(--primary-gradient); color:white; border-radius:0;">
+                N
+            </button>
+            <button type="button" id="btn-dryer" onclick="setJemurMode('D')"
+                    title="Dryer"
+                    style="width:15%; border: 2px solid var(--border-color); border-left:none; font-size:0.75rem; font-weight:700; cursor:pointer; transition:all 0.2s; letter-spacing:0.3px; background: var(--bg-light); color:var(--text-muted); border-radius: 0 var(--border-radius-xs) var(--border-radius-xs) 0;">
+                D
+            </button>
+        </div>
+    </div>
+</div>
                                 <div class="col-md-4 col-sm-6" style="display: none;">
                                     <div class="form-group">
                                         <label for="harga_jual" class="form-label">Harga Beras Laku (Rp)</label>
@@ -1213,7 +1261,8 @@
                     hargaMenir: getRawValue(document.getElementById('harga_menir')),
                     biayaGiling: getRawValue(document.getElementById('biaya_giling')),
                     biayaBuruhGiling: getRawValue(document.getElementById('biaya_buruh_giling')),
-                    biayaBuruhJemur: getRawValue(document.getElementById('biaya_buruh_jemur')),
+                    // SESUDAH
+biayaBuruhJemur: jemurMode === 'D' ? 10000 : 8000,
                     bunga: getRawValue(document.getElementById('bunga'))
                 };
 
@@ -1490,8 +1539,10 @@
         const sanitizedName = formData.namaPetani.replace(/[^a-zA-Z0-9]/g, '_');
 
         // ✅ FIX: Format nama file NamaPetani_Tanggal
-        link.download = `${sanitizedName}_${timestamp}.png`;
-        link.href = canvas.toDataURL('image/png', 1.0);
+        // link.download = `${sanitizedName}_${timestamp}.png`;
+        // link.href = canvas.toDataURL('image/png', 1.0);
+        link.download = `${sanitizedName}_${timestamp}.jpg`;
+link.href = canvas.toDataURL('image/jpeg', 1.0); // Gunakan JPEG untuk ukuran file lebih kecil, kualitas tetap bagus untuk nota dengan banyak area putih
         link.click();
 
         container.innerHTML = '';
@@ -2129,6 +2180,7 @@
                 });
 
                 document.getElementById('pulang').placeholder = formatted;
+
             });
 
             // Reset form on load
@@ -2143,6 +2195,47 @@
             document.getElementById('bunga').value = '2';
             document.getElementById('harga_jual').value = '0';
         });
+
+       function setJemurMode(mode) {
+    jemurMode = mode;
+
+    const btnN = document.getElementById('btn-normal');
+    const btnD = document.getElementById('btn-dryer');
+
+    const activeStyle = `
+        background: var(--primary-gradient);
+        color: white;
+        border: none;
+        font-size: 0.75rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s;
+        letter-spacing: 0.3px;
+        box-shadow: 0 4px 15px rgba(203, 12, 159, 0.3);
+    `;
+
+    const inactiveStyle = `
+        background: var(--bg-light);
+        color: var(--text-muted);
+        border: 2px solid var(--border-color);
+        border-left: none;
+        font-size: 0.75rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s;
+        letter-spacing: 0.3px;
+    `;
+
+    if (mode === 'N') {
+        btnN.style.cssText = activeStyle + 'width:15%; border-radius:0;';
+        btnD.style.cssText = inactiveStyle + 'width:15%; border-radius: 0 var(--border-radius-xs) var(--border-radius-xs) 0;';
+        document.getElementById('biaya_buruh_jemur').value = '8,000';
+    } else {
+        btnN.style.cssText = inactiveStyle + 'width:15%; border-radius:0; border-left:none;';
+        btnD.style.cssText = activeStyle + 'width:15%; border-radius: 0 var(--border-radius-xs) var(--border-radius-xs) 0;';
+        document.getElementById('biaya_buruh_jemur').value = '10,000';
+    }
+}
     </script>
 </body>
 </html>
