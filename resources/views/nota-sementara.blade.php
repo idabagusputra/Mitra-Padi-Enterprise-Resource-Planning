@@ -2195,6 +2195,8 @@ link.href = canvas.toDataURL('image/jpeg', 1.0); // Gunakan JPEG untuk ukuran fi
             document.getElementById('harga_menir').value = '4,000';
             document.getElementById('bunga').value = '2';
             document.getElementById('harga_jual').value = '0';
+            // Tambahkan paling bawah sebelum penutup });
+setJemurMode('N');
         });
 
        function setJemurMode(mode) {
@@ -2237,6 +2239,9 @@ link.href = canvas.toDataURL('image/jpeg', 1.0); // Gunakan JPEG untuk ukuran fi
         document.getElementById('biaya_buruh_jemur').value = '10,000';
     }
 }
+
+// Tambahkan paling bawah sebelum penutup });
+setJemurMode('N');
     </script>
 </body>
 </html>
