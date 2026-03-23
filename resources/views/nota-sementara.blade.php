@@ -833,20 +833,20 @@
     <div class="form-group">
         <label for="jemur" class="form-label">Jemur (Karung)</label>
         <div style="display: flex; width: 100%;">
-            <input class="form-control number-format" type="text" name="jemur" id="jemur"
-                   inputmode="numeric" placeholder="0" required
-                   style="width:70%; border-radius: var(--border-radius-xs) 0 0 var(--border-radius-xs) !important; border-right: none !important;">
-            <button type="button" id="btn-normal" onclick="setJemurMode('D')"
-        title="Dryer"
-        style="width:15%; border: 2px solid var(--border-color); border-left:none; font-size:0.75rem; font-weight:700; cursor:pointer; transition:all 0.2s; letter-spacing:0.3px; background: var(--bg-light); color:var(--text-muted); border-radius:0;">
-    D
-</button>
-<button type="button" id="btn-dryer" onclick="setJemurMode('N')"
-        title="Normal"
-        style="width:15%; border:none; font-size:0.75rem; font-weight:700; cursor:pointer; transition:all 0.2s; letter-spacing:0.3px; background: var(--primary-gradient); color:white; border-radius: 0 var(--border-radius-xs) var(--border-radius-xs) 0;">
-    N
-</button>
-        </div>
+    <input class="form-control number-format" type="text" name="jemur" id="jemur"
+           inputmode="numeric" placeholder="0" required
+           style="width:70%; border-radius: var(--border-radius-xs) 0 0 var(--border-radius-xs) !important; border-right: none !important;">
+    <button type="button" id="btn-dryer" onclick="setJemurMode('D')"
+            title="Dryer"
+            style="width:15%; border-top: 2px solid var(--border-color); border-bottom: 2px solid var(--border-color); border-left: none; border-right: none; font-size:0.75rem; font-weight:700; cursor:pointer; transition:all 0.2s; background: var(--bg-light); color:var(--text-muted); border-radius:0;">
+        D
+    </button>
+    <button type="button" id="btn-normal" onclick="setJemurMode('N')"
+            title="Normal"
+            style="width:15%; border:none; font-size:0.75rem; font-weight:700; cursor:pointer; transition:all 0.2s; background: var(--primary-gradient); color:white; border-radius: 0 var(--border-radius-xs) var(--border-radius-xs) 0;">
+        N
+    </button>
+</div>
     </div>
 </div>
                                 <div class="col-md-4 col-sm-6" style="display: none;">
