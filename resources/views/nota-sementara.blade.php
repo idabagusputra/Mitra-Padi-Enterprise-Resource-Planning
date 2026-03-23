@@ -590,7 +590,7 @@
         width: 100vw;
         max-width: 100vw;
         margin: 0;
-        padding: 0 20%;  /* ✅ 20% padding tiap sisi di Android */
+        padding: 0 0%;  /* ✅ 20% padding tiap sisi di Android */
     }
 
     .iframe-container {
