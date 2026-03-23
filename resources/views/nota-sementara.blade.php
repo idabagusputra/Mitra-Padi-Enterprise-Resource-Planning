@@ -1262,7 +1262,8 @@
                     biayaGiling: getRawValue(document.getElementById('biaya_giling')),
                     biayaBuruhGiling: getRawValue(document.getElementById('biaya_buruh_giling')),
                     // SESUDAH
-biayaBuruhJemur: jemurMode === 'D' ? 10000 : 8000,
+// SESUDAH (tambah fallback)
+biayaBuruhJemur: (jemurMode ?? 'N') === 'D' ? 10000 : 8000,
                     bunga: getRawValue(document.getElementById('bunga'))
                 };
 
