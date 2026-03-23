@@ -624,7 +624,7 @@
             }
 
             .modal-lg {
-                max-width: 95%;
+                max-width: 321px;
                 margin: 1rem auto;
             }
 
