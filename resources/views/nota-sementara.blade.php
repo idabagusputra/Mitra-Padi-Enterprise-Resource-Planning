@@ -2231,11 +2231,11 @@ setJemurMode('N');
 
     if (mode === 'N') {
         btnN.style.cssText = activeStyle + 'width:15%; border-radius: 0 var(--border-radius-xs) var(--border-radius-xs) 0;';
-        btnD.style.cssText = inactiveStyle + 'width:15%; border-radius:0;';
+        btnD.style.cssText = inactiveStyle + 'width:15%; border-radius:0; border-left:none;';
         document.getElementById('biaya_buruh_jemur').value = '8,000';
     } else {
         btnN.style.cssText = inactiveStyle + 'width:15%; border-radius: 0 var(--border-radius-xs) var(--border-radius-xs) 0;';
-        btnD.style.cssText = activeStyle + 'width:15%; border-radius:0;';
+        btnD.style.cssText = activeStyle + 'width:15%; border-radius:0; border-left:none;';
         document.getElementById('biaya_buruh_jemur').value = '10,000';
     }
 }
