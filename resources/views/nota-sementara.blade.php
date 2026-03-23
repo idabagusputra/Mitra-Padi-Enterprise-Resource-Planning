@@ -1486,7 +1486,7 @@ biayaBuruhJemur: (jemurMode ?? 'N') === 'D' ? 10000 : 8000,
         await new Promise(resolve => setTimeout(resolve, 800));
 
         const canvas = await html2canvas(notaElement, {
-            scale: 3,
+            scale: 5,
             useCORS: true,
             allowTaint: true,
             backgroundColor: '#ffffff',
