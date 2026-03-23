@@ -2197,7 +2197,7 @@ link.href = canvas.toDataURL('image/jpeg', 1.0); // Gunakan JPEG untuk ukuran fi
         });
 
        function setJemurMode(mode) {
-    jemurMode = mode;
+     jemurMode = mode ?? 'N';
 
     const btnN = document.getElementById('btn-normal');
     const btnD = document.getElementById('btn-dryer');
