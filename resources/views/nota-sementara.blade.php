@@ -836,19 +836,16 @@
             <input class="form-control number-format" type="text" name="jemur" id="jemur"
                    inputmode="numeric" placeholder="0" required
                    style="width:70%; border-radius: var(--border-radius-xs) 0 0 var(--border-radius-xs) !important; border-right: none !important;">
-
-            <button type="button" id="btn-dryer" onclick="setJemurMode('D')"
-                    title="Dryer"
-                    style="width:15%; border: 2px solid var(--border-color); border-left:none; font-size:0.75rem; font-weight:700; cursor:pointer; transition:all 0.2s; letter-spacing:0.3px; background: var(--bg-light); color:var(--text-muted); border-radius: 0 var(--border-radius-xs) var(--border-radius-xs) 0;">
-                D
-            </button>
-
-                   <button type="button" id="btn-normal" onclick="setJemurMode('N')"
+            <button type="button" id="btn-normal" onclick="setJemurMode('D')"
                     title="Normal"
                     style="width:15%; border:none; font-size:0.75rem; font-weight:700; cursor:pointer; transition:all 0.2s; letter-spacing:0.3px; background: var(--primary-gradient); color:white; border-radius:0;">
+                D
+            </button>
+            <button type="button" id="btn-dryer" onclick="setJemurMode('N')"
+                    title="Dryer"
+                    style="width:15%; border: 2px solid var(--border-color); border-left:none; font-size:0.75rem; font-weight:700; cursor:pointer; transition:all 0.2s; letter-spacing:0.3px; background: var(--bg-light); color:var(--text-muted); border-radius: 0 var(--border-radius-xs) var(--border-radius-xs) 0;">
                 N
             </button>
-
         </div>
     </div>
 </div>
