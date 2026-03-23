@@ -897,7 +897,7 @@
                                     <div class="form-group">
                                         <label for="biaya_buruh_jemur" class="form-label">Biaya Buruh Jemur (Rp)</label>
                                         <input class="form-control number-format" type="text" name="biaya_buruh_jemur"
-                                               id="biaya_buruh_jemur" value="8,000" inputmode="numeric" required>
+                                               id="biaya_buruh_jemur" value="10,000" inputmode="numeric" required>
                                     </div>
                                 </div>
                                 <div class="col-md-3 col-sm-6" style="display: none;">
