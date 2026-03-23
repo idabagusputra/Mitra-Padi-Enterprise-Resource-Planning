@@ -594,7 +594,7 @@
     }
 
     .iframe-container {
-        width: 100%;     /* ✅ penuh dalam batas padding modal */
+        width: 321px;     /* ✅ penuh dalam batas padding modal */
         height: 100%;    /* ✅ lebih tinggi di mobile */
     }
 
