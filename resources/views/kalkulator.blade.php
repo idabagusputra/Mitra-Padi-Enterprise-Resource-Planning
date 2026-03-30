@@ -3467,7 +3467,7 @@ function generateRataRataHTML(calculatorType) {
   .label { font-weight: 900; }
   .value { text-align: right; font-weight: 900; }
   .result-box {
-    border: 2.5px solid #000; padding: 0 0 4mm 0; margin: 4mm 0;
+    border: 2.5px solid #000; padding: 4mm; margin:  0 0 4mm 0;
     text-align: center; border-radius: 2px;
   }
   .result-label { font-size: 12px; letter-spacing: 1px; opacity: .8; margin-bottom: 2mm; font-weight: 900; }
@@ -3511,7 +3511,7 @@ function generateRataRataHTML(calculatorType) {
   </table>
 
   <div class="result-box">
-    <div class="result-label">HARGA RATA-RATA PENJUALAN</div>
+    <div class="result-label">HARGA RATA-RATA</div>
     <div class="result-value">Rp ${formatRibuan(rataRata.toFixed(0))}</div>
     <div class="result-sub">per Kilogram</div>
   </div>
