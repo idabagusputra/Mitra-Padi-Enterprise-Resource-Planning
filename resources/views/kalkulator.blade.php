@@ -2225,21 +2225,22 @@ async function showNotaModal(calculatorType) {
 
         // Pastikan hasilnya dalam ukuran mm yang benar
         // const imgData = canvas.toDataURL('image/png', 1.0); // kualitas 100%
-        const imgData = canvas.toDataURL('image/jpeg', 1.0); // kualitas 100%
+       // Pastikan hasilnya dalam ukuran mm yang benar
+const imgData = canvas.toDataURL('image/jpeg', 1.0); // kualitas 100%
 
-        // === Buat PDF resolusi tinggi ===
-        const { jsPDF } = window.jspdf;
-        const pdfWidth = 80; // mm
-        const pxPerMm = canvas.width / pdfWidth;
-        const pdfHeight = canvas.height / pxPerMm;
+// === Buat PDF resolusi tinggi ===
+const { jsPDF } = window.jspdf;
+const pdfWidth = 80; // mm
+const pxPerMm = canvas.width / pdfWidth;
+const pdfHeight = canvas.height / pxPerMm;
 
-        const pdf = new jsPDF({
-            orientation: 'portrait',
-            unit: 'mm',
-            format: [pdfWidth, pdfHeight],
-        });
+const pdf = new jsPDF({
+    orientation: 'portrait',
+    unit: 'mm',
+    format: [pdfWidth, pdfHeight],
+});
 
-        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight, '', 'FAST');
+pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight, '', 'FAST'); // ← ganti PNG ke JPEG
 
         // === Print otomatis ===
         const blob = pdf.output('blob');
