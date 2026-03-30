@@ -2224,7 +2224,8 @@ async function showNotaModal(calculatorType) {
         });
 
         // Pastikan hasilnya dalam ukuran mm yang benar
-        const imgData = canvas.toDataURL('image/png', 1.0); // kualitas 100%
+        // const imgData = canvas.toDataURL('image/png', 1.0); // kualitas 100%
+        const imgData = canvas.toDataURL('image/jpeg', 1.0); // kualitas 100%
 
         // === Buat PDF resolusi tinggi ===
         const { jsPDF } = window.jspdf;
