@@ -3467,7 +3467,7 @@ function generateRataRataHTML(calculatorType) {
   .label { font-weight: 900; }
   .value { text-align: right; font-weight: 900; }
   .result-box {
-    border: 2.5px solid #000; padding: 4mm; margin: 4mm 0;
+    border: 2.5px solid #000; padding: 0 0 4mm 0; margin: 4mm 0;
     text-align: center; border-radius: 2px;
   }
   .result-label { font-size: 12px; letter-spacing: 1px; opacity: .8; margin-bottom: 2mm; font-weight: 900; }
@@ -3490,7 +3490,7 @@ function generateRataRataHTML(calculatorType) {
     <thead>
       <tr>
         <th style="width:25%;text-align:left;">Berat</th>
-        <th style="width:25%;text-align:right;">Harga/Kg</th>
+        <th style="width:25%;text-align:right;">Harga</th>
         <th style="width:50%;text-align:right;">Total</th>
       </tr>
     </thead>
