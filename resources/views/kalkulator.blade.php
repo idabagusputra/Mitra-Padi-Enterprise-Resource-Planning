@@ -3378,7 +3378,7 @@ const blob = await new Promise(resolve =>
 
 
 // ============================================================
-// GENERATE HTML NOTA RATA-RATA HARGA
+// GENERATE HTML NOTA RATA-RATA HARGA (SIMPLIFIED)
 // ============================================================
 function generateRataRataHTML(calculatorType) {
     let rows = [];
@@ -3422,29 +3422,15 @@ function generateRataRataHTML(calculatorType) {
     // ---- Bangun baris detail tabel ----
     let detailRows = '';
     rows.forEach((r, i) => {
-        const persen = totalNilai > 0 ? ((r.nilai / totalNilai) * 100).toFixed(1) : '0.0';
-        const desc   = calculatorType === 'sak'
-            ? `${formatRibuan(r.jumlah)} Kg<br><span style="font-size:11px;opacity:.7">(${formatRibuan(r.sak)} Sak)</span>`
+        const desc = calculatorType === 'sak'
+            ? `${formatRibuan(r.jumlah)} Kg (${formatRibuan(r.sak)} Sak)`
             : `${formatRibuan(r.jumlah)} Kg`;
 
         detailRows += `
         <tr>
-            <td style="text-align:center;font-weight:700;">${i + 1}</td>
             <td>${desc}</td>
             <td style="text-align:right;">Rp ${formatRibuan(r.harga.toFixed(0))}</td>
-            <td style="text-align:right;font-weight:700;">Rp ${formatRibuan(r.nilai.toFixed(0))}</td>
-            <td style="text-align:center;font-size:11px;opacity:.8;">${persen}%</td>
-        </tr>`;
-    });
-
-    // ---- Bangun langkah perhitungan ----
-    let langkahRows = '';
-    rows.forEach((r, i) => {
-        langkahRows += `
-        <tr>
-            <td style="font-size:11px;opacity:.75;">Baris ${i + 1}</td>
-            <td style="font-size:11px;">${formatRibuan(r.jumlah)} × ${formatRibuan(r.harga.toFixed(0))}</td>
-            <td style="text-align:right;font-size:11px;">= Rp ${formatRibuan(r.nilai.toFixed(0))}</td>
+            <td style="text-align:right;">Rp ${formatRibuan(r.nilai.toFixed(0))}</td>
         </tr>`;
     });
 
@@ -3454,141 +3440,95 @@ function generateRataRataHTML(calculatorType) {
 <meta charset="UTF-8">
 <style>
   body {
-    width: 80mm; margin: 0; padding: 4mm 4mm 6mm;
+    width: 80mm; margin: 0; padding: 5mm 5mm 8mm;
     font-family: 'Courier New', monospace;
-    font-size: 13px; line-height: 1.35; color: #000; background: #fff;
+    font-size: 13px; line-height: 1.4; color: #000; background: #fff;
   }
   .center { text-align: center; }
-  .sep-solid  { border: none; border-top: 1.5px solid #000; margin: 3mm 0; }
-  .sep-dashed { border: none; border-top: 1px dashed #000;  margin: 2mm 0; }
-  .title  { font-size: 15px; font-weight: 900; letter-spacing: .5px; margin-bottom: 1mm; }
-  .title2 { font-size: 12px; font-weight: 700; margin-bottom: .5mm; }
-  .small  { font-size: 11px; opacity: .75; }
-  table   { width: 100%; border-collapse: collapse; }
-  th      { font-size: 11px; font-weight: 700; padding: 1.5mm 1mm;
-            border-bottom: 1.5px solid #000; border-top: 1.5px solid #000; text-align: left; }
-  td      { padding: 2mm 1mm; border-bottom: 1px dashed #ccc; vertical-align: middle; }
+  .sep { border: none; border-top: 1.5px solid #000; margin: 3mm 0; }
+  .title {
+    font-size: 16px; font-weight: 900; letter-spacing: 0.5px;
+    margin-bottom: 3mm; word-spacing: 1px;
+  }
+  .small { font-size: 11px; opacity: .75; }
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    font-size: 11px; font-weight: 700; padding: 2mm 1mm;
+    border-bottom: 1.5px solid #000; border-top: 1.5px solid #000;
+    text-align: left;
+  }
+  td { padding: 2.5mm 1mm; border-bottom: 1px solid #ddd; vertical-align: middle; }
   tr:last-child td { border-bottom: none; }
-  .box-result {
-    border: 2px solid #000; border-radius: 3px;
-    padding: 3mm; margin: 3mm 0; text-align: center;
+  .summary-table td { border: none; padding: 2mm 1mm; }
+  .label { font-weight: 700; }
+  .value { text-align: right; font-weight: 900; }
+  .result-box {
+    border: 2.5px solid #000; padding: 4mm; margin: 4mm 0;
+    text-align: center; border-radius: 2px;
   }
-  .box-result .label { font-size: 11px; letter-spacing: 1px; opacity: .7; margin-bottom: 1mm; }
-  .box-result .value { font-size: 22px; font-weight: 900; letter-spacing: 1px; }
-  .box-result .sub   { font-size: 11px; margin-top: 1mm; opacity: .7; }
-  .rumus {
-    background: #f5f5f5; border: 1px dashed #999;
-    padding: 2mm 3mm; border-radius: 2px; font-size: 11px;
-    margin: 2mm 0; line-height: 1.6;
-  }
-  .ttd { display: flex; justify-content: space-between; margin-top: 6mm; font-size: 11px; }
-  .ttd-box { text-align: center; }
-  .ttd-line { border-top: 1px solid #000; width: 25mm; margin: 10mm auto 1mm; }
+  .result-label { font-size: 12px; letter-spacing: 1px; opacity: .8; margin-bottom: 2mm; }
+  .result-value { font-size: 24px; font-weight: 900; letter-spacing: 1px; }
+  .result-sub { font-size: 11px; margin-top: 2mm; opacity: .75; }
 </style>
 </head>
 <body>
 
   <div class="center">
-    <div class="title">RATA-RATA HARGA BERAS</div>
-    <div class="title2">GILINGAN PADI PUTRA MANUABA</div>
-    <div class="small">DUS. BABAHAN, DES. TOLAI, KAB. PARIGI</div>
-    <div class="small">Telp: 0811-451-486 / 0822-6077-3867</div>
+    <div class="title">RATA-RATA HARGA<br>PENJUALAN BERAS</div>
   </div>
 
-  <hr class="sep-solid">
-
-  <div style="display:flex;justify-content:space-between;font-size:11px;">
-    <span>Tanggal : ${tanggal}</span>
-    <span>Pukul : ${waktu}</span>
+  <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2mm;">
+    <span>${tanggal}</span>
+    <span>${waktu}</span>
   </div>
 
-  <hr class="sep-dashed">
-
-  <div style="font-size:11px;font-weight:700;margin-bottom:1mm;">▌ DETAIL PEMBELIAN</div>
+  <hr class="sep">
 
   <table>
     <thead>
       <tr>
-        <th style="width:8%;text-align:center;">#</th>
-        <th style="width:26%;">Berat</th>
-        <th style="width:26%;text-align:right;">Harga/Kg</th>
-        <th style="width:30%;text-align:right;">Total</th>
-        <th style="width:10%;text-align:center;">%</th>
+        <th style="width:25%;text-align:left;">Berat</th>
+        <th style="width:25%;text-align:right;">Harga/Kg</th>
+        <th style="width:50%;text-align:right;">Total</th>
       </tr>
     </thead>
     <tbody>${detailRows}</tbody>
   </table>
 
-  <hr class="sep-dashed">
+  <hr class="sep" style="margin:2mm 0;">
 
-  <div style="font-size:11px;font-weight:700;margin-bottom:1mm;">▌ LANGKAH PERHITUNGAN</div>
-  <table style="margin-bottom:1mm;">
-    <tbody>${langkahRows}
-      <tr>
-        <td colspan="2" style="font-size:11px;font-weight:700;">Total Nilai</td>
-        <td style="text-align:right;font-size:11px;font-weight:700;">= Rp ${formatRibuan(totalNilai.toFixed(0))}</td>
-      </tr>
-      <tr>
-        <td colspan="2" style="font-size:11px;font-weight:700;">Total Berat</td>
-        <td style="text-align:right;font-size:11px;font-weight:700;">= ${formatRibuan(totalJumlahKg.toFixed(0))} Kg</td>
-      </tr>
-    </tbody>
-  </table>
-
-  <div class="rumus">
-    Rata-rata  =  Total Nilai  ÷  Total Berat<br>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=  Rp ${formatRibuan(totalNilai.toFixed(0))} ÷ ${formatRibuan(totalJumlahKg.toFixed(0))} Kg<br>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= <strong>Rp ${formatRibuan(rataRata.toFixed(0))} / Kg</strong>
-  </div>
-
-  <hr class="sep-solid">
-
-  <div class="box-result">
-    <div class="label">HARGA RATA-RATA PENJUALAN</div>
-    <div class="value">Rp ${formatRibuan(rataRata.toFixed(0))}</div>
-    <div class="sub">per Kilogram &bull; Total ${formatRibuan(totalJumlahKg.toFixed(0))} Kg &bull; ${rows.length} Transaksi</div>
-  </div>
-
-  <hr class="sep-dashed">
-
-  <table style="font-size:12px;">
+  <table class="summary-table">
     <tr>
-      <td style="border:none;padding:1mm 1mm;">Total Berat</td>
-      <td style="border:none;text-align:right;font-weight:700;padding:1mm 1mm;">
-        ${formatRibuan(totalJumlahKg.toFixed(0))} Kg
-      </td>
+      <td class="label" style="width:50%;">Total Berat :</td>
+      <td class="value" style="width:50%;">${formatRibuan(totalJumlahKg.toFixed(0))} Kg</td>
     </tr>
     <tr>
-      <td style="border:none;padding:1mm 1mm;">Total Nilai</td>
-      <td style="border:none;text-align:right;font-weight:700;padding:1mm 1mm;">
-        Rp ${formatRibuan(totalNilai.toFixed(0))}
-      </td>
-    </tr>
-    <tr>
-      <td style="border-bottom:none;padding:1mm 1mm;font-weight:900;">Harga Rata-Rata</td>
-      <td style="border-bottom:none;text-align:right;font-weight:900;padding:1mm 1mm;">
-        Rp ${formatRibuan(rataRata.toFixed(0))} / Kg
-      </td>
+      <td class="label" style="width:50%;">Total Nilai :</td>
+      <td class="value" style="width:50%;">Rp ${formatRibuan(totalNilai.toFixed(0))}</td>
     </tr>
   </table>
 
-  <hr class="sep-solid">
-
-  <div class="ttd">
-    <div class="ttd-box">
-      <div>Pembeli</div>
-      <div class="ttd-line"></div>
-      <div>(________________)</div>
-    </div>
-    <div class="ttd-box">
-      <div>Penjual</div>
-      <div class="ttd-line"></div>
-      <div>(________________)</div>
-    </div>
+  <div class="result-box">
+    <div class="result-label">HARGA RATA-RATA</div>
+    <div class="result-value">Rp ${formatRibuan(rataRata.toFixed(0))}</div>
+    <div class="result-sub">per Kilogram</div>
   </div>
 
-  <hr class="sep-dashed" style="margin-top:5mm;">
-  <div class="center small">Nota ini sah sebagai bukti pembayaran</div>
+  <hr class="sep" style="margin:2mm 0;">
+
+  <div style="font-size:11px;font-weight:700;margin-bottom:1.5mm;">Cara Perhitungan :</div>
+
+  <div style="font-size:11px;line-height:1.8;background:#f9f9f9;padding:2mm 2mm;border-left:2.5px solid #000;margin-bottom:1mm;">
+    <div style="margin-bottom:1mm;">
+      <strong>Rata-Rata = Total Nilai ÷ Total Berat</strong>
+    </div>
+    <div style="opacity:.85;">
+      Rp ${formatRibuan(totalNilai.toFixed(0))} ÷ ${formatRibuan(totalJumlahKg.toFixed(0))} Kg
+    </div>
+    <div style="margin-top:1mm;opacity:.85;">
+      = <strong style="font-size:12px;">Rp ${formatRibuan(rataRata.toFixed(0))} / Kg</strong>
+    </div>
+  </div>
 
 </body>
 </html>`;
