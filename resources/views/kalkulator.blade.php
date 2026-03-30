@@ -3511,7 +3511,7 @@ function generateRataRataHTML(calculatorType) {
   </table>
 
   <div class="result-box">
-    <div class="result-label">HARGA RATA-RATA</div>
+    <div class="result-label">HARGA RATA-RATA PENJUALAN</div>
     <div class="result-value">Rp ${formatRibuan(rataRata.toFixed(0))}</div>
     <div class="result-sub">per Kilogram</div>
   </div>
