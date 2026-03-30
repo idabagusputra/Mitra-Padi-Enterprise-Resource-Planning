@@ -3450,7 +3450,7 @@ function generateRataRataHTML(calculatorType) {
   .center { text-align: center; }
   .sep { border: none; border-top: 1.5px solid #000; margin: 3mm 0; }
   .title {
-    font-size: 16px; font-weight: 900; letter-spacing: 0.5px;
+    font-size: 15px; font-weight: 900; letter-spacing: 0.5px;
     margin-bottom: 3mm; word-spacing: 1px;
   }
   .small { font-size: 11px; opacity: .75; }
@@ -3467,7 +3467,7 @@ function generateRataRataHTML(calculatorType) {
   .label { font-weight: 900; }
   .value { text-align: right; font-weight: 900; }
   .result-box {
-    border: 2.5px solid #000; padding: 4mm; margin:  0 0 4mm 0;
+    border: 2.5px solid #000; padding: 4mm; margin:  3mm 0 4mm 0;
     text-align: center; border-radius: 2px;
   }
   .result-label { font-size: 12px; letter-spacing: 1px; opacity: .8; margin-bottom: 2mm; font-weight: 900; }
@@ -3478,7 +3478,7 @@ function generateRataRataHTML(calculatorType) {
 <body>
 
   <div class="center">
-    <div class="title">RATA-RATA HARGA<br>PENJUALAN BERAS</div>
+    <div class="title">RATA-RATA HARGA JUAL BERAS</div>
   </div>
 
   <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2mm;">
