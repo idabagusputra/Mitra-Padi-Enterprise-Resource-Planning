@@ -2875,17 +2875,36 @@ async function shareNotaToWhatsApp_iOS(notaContent, calculatorType) {
         await new Promise((r) => setTimeout(r, 300));
 
         const scale = window.devicePixelRatio * 4;
-        const canvas = await html2canvas(iframeBody, {
-            scale: scale,
-            useCORS: true,
-            backgroundColor: '#fff',
-            logging: false,
-        });
+const canvas = await html2canvas(iframeBody, {
+    scale: scale,
+    useCORS: true,
+    backgroundColor: '#fff',
+    logging: false,
+});
 
-        // === Konversi canvas ke Blob/File ===
-        const blob = await new Promise(resolve =>
-            canvas.toBlob(resolve, 'image/jpeg', 1.0)
-        );
+// === Potong canvas sampai footer saja ===
+let finalCanvas = canvas;
+const footerEl = iframeBody.querySelector('.footer');
+if (footerEl) {
+    const footerRect = footerEl.getBoundingClientRect();
+    const bodyRect = iframeBody.getBoundingClientRect();
+    const cropHeight = Math.ceil((footerRect.bottom - bodyRect.top) * scale);
+
+    const croppedCanvas = document.createElement('canvas');
+    croppedCanvas.width = canvas.width;
+    croppedCanvas.height = cropHeight;
+    croppedCanvas.getContext('2d').drawImage(
+        canvas,
+        0, 0, canvas.width, cropHeight,  // source
+        0, 0, canvas.width, cropHeight   // destination
+    );
+    finalCanvas = croppedCanvas;
+}
+
+// === Konversi canvas ke Blob/File ===
+const blob = await new Promise(resolve =>
+    finalCanvas.toBlob(resolve, 'image/jpeg', 1.0)
+);
 
         const fileName = `nota_${Date.now()}.jpg`;
         const file = new File([blob], fileName, { type: 'image/jpeg' });
