@@ -958,8 +958,11 @@
 
 
         <button class="btn btn-print half" onclick="saveNotaAsJPG('jumlah')">
-            <i class="fas fa-download"></i> SAVE GAMBAR
-        </button>
+    <i class="fas fa-download"></i> SAVE GAMBAR
+</button>
+<button class="btn btn-print half" onclick="saveRataRataHarga('jumlah')" style="background-color: #16a34a;">
+    <i class="fas fa-calculator"></i> RATA-RATA HARGA
+</button>
         <button class="btn btnn btn-save half" onclick="printLangsung('jumlah')"
         {{-- style="width: 178px; text-align: center;"> --}}
         style="text-align: center; margin: 0 !important;">
@@ -3363,6 +3366,337 @@ const blob = await new Promise(resolve =>
 //         w.document.body.appendChild(link);
 //     };
 // }
+
+
+
+
+
+
+
+
+
+
+
+// ============================================================
+// GENERATE HTML NOTA RATA-RATA HARGA
+// ============================================================
+function generateRataRataHTML(calculatorType) {
+    let rows = [];
+    let totalJumlahKg = 0;
+    let totalNilai = 0;
+
+    if (calculatorType === 'jumlah') {
+        document.querySelectorAll("#jumlahTable tbody tr:not(.total-row)").forEach(row => {
+            const jumlahInput = row.querySelector(".jumlah");
+            const hargaInput  = row.querySelector(".harga");
+            const jml  = getNumber(jumlahInput);
+            const hrg  = getNumber(hargaInput);
+            if (jml > 0 && hrg > 0) {
+                const nilai = jml * hrg;
+                totalJumlahKg += jml;
+                totalNilai    += nilai;
+                rows.push({ jumlah: jml, harga: hrg, nilai });
+            }
+        });
+    } else if (calculatorType === 'sak') {
+        document.querySelectorAll("#sakTable tbody tr:not(.total-row)").forEach(row => {
+            const sakInput   = row.querySelector(".sak");
+            const hargaInput = row.querySelector(".harga");
+            const sak  = getNumber(sakInput);
+            const hrg  = getNumber(hargaInput);
+            if (sak > 0 && hrg > 0) {
+                const jml   = sak * KG_PER_SAK;
+                const nilai = jml * hrg;
+                totalJumlahKg += jml;
+                totalNilai    += nilai;
+                rows.push({ jumlah: jml, harga: hrg, nilai, sak });
+            }
+        });
+    }
+
+    const rataRata = totalJumlahKg > 0 ? totalNilai / totalJumlahKg : 0;
+    const now      = new Date();
+    const tanggal  = now.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+    const waktu    = now.toTimeString().slice(0, 8);
+
+    // ---- Bangun baris detail tabel ----
+    let detailRows = '';
+    rows.forEach((r, i) => {
+        const persen = totalNilai > 0 ? ((r.nilai / totalNilai) * 100).toFixed(1) : '0.0';
+        const desc   = calculatorType === 'sak'
+            ? `${formatRibuan(r.jumlah)} Kg<br><span style="font-size:11px;opacity:.7">(${formatRibuan(r.sak)} Sak)</span>`
+            : `${formatRibuan(r.jumlah)} Kg`;
+
+        detailRows += `
+        <tr>
+            <td style="text-align:center;font-weight:700;">${i + 1}</td>
+            <td>${desc}</td>
+            <td style="text-align:right;">Rp ${formatRibuan(r.harga.toFixed(0))}</td>
+            <td style="text-align:right;font-weight:700;">Rp ${formatRibuan(r.nilai.toFixed(0))}</td>
+            <td style="text-align:center;font-size:11px;opacity:.8;">${persen}%</td>
+        </tr>`;
+    });
+
+    // ---- Bangun langkah perhitungan ----
+    let langkahRows = '';
+    rows.forEach((r, i) => {
+        langkahRows += `
+        <tr>
+            <td style="font-size:11px;opacity:.75;">Baris ${i + 1}</td>
+            <td style="font-size:11px;">${formatRibuan(r.jumlah)} × ${formatRibuan(r.harga.toFixed(0))}</td>
+            <td style="text-align:right;font-size:11px;">= Rp ${formatRibuan(r.nilai.toFixed(0))}</td>
+        </tr>`;
+    });
+
+    return `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  body {
+    width: 80mm; margin: 0; padding: 4mm 4mm 6mm;
+    font-family: 'Courier New', monospace;
+    font-size: 13px; line-height: 1.35; color: #000; background: #fff;
+  }
+  .center { text-align: center; }
+  .sep-solid  { border: none; border-top: 1.5px solid #000; margin: 3mm 0; }
+  .sep-dashed { border: none; border-top: 1px dashed #000;  margin: 2mm 0; }
+  .title  { font-size: 15px; font-weight: 900; letter-spacing: .5px; margin-bottom: 1mm; }
+  .title2 { font-size: 12px; font-weight: 700; margin-bottom: .5mm; }
+  .small  { font-size: 11px; opacity: .75; }
+  table   { width: 100%; border-collapse: collapse; }
+  th      { font-size: 11px; font-weight: 700; padding: 1.5mm 1mm;
+            border-bottom: 1.5px solid #000; border-top: 1.5px solid #000; text-align: left; }
+  td      { padding: 2mm 1mm; border-bottom: 1px dashed #ccc; vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  .box-result {
+    border: 2px solid #000; border-radius: 3px;
+    padding: 3mm; margin: 3mm 0; text-align: center;
+  }
+  .box-result .label { font-size: 11px; letter-spacing: 1px; opacity: .7; margin-bottom: 1mm; }
+  .box-result .value { font-size: 22px; font-weight: 900; letter-spacing: 1px; }
+  .box-result .sub   { font-size: 11px; margin-top: 1mm; opacity: .7; }
+  .rumus {
+    background: #f5f5f5; border: 1px dashed #999;
+    padding: 2mm 3mm; border-radius: 2px; font-size: 11px;
+    margin: 2mm 0; line-height: 1.6;
+  }
+  .ttd { display: flex; justify-content: space-between; margin-top: 6mm; font-size: 11px; }
+  .ttd-box { text-align: center; }
+  .ttd-line { border-top: 1px solid #000; width: 25mm; margin: 10mm auto 1mm; }
+</style>
+</head>
+<body>
+
+  <div class="center">
+    <div class="title">RATA-RATA HARGA BERAS</div>
+    <div class="title2">GILINGAN PADI PUTRA MANUABA</div>
+    <div class="small">DUS. BABAHAN, DES. TOLAI, KAB. PARIGI</div>
+    <div class="small">Telp: 0811-451-486 / 0822-6077-3867</div>
+  </div>
+
+  <hr class="sep-solid">
+
+  <div style="display:flex;justify-content:space-between;font-size:11px;">
+    <span>Tanggal : ${tanggal}</span>
+    <span>Pukul : ${waktu}</span>
+  </div>
+
+  <hr class="sep-dashed">
+
+  <div style="font-size:11px;font-weight:700;margin-bottom:1mm;">▌ DETAIL PEMBELIAN</div>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width:8%;text-align:center;">#</th>
+        <th style="width:26%;">Berat</th>
+        <th style="width:26%;text-align:right;">Harga/Kg</th>
+        <th style="width:30%;text-align:right;">Total</th>
+        <th style="width:10%;text-align:center;">%</th>
+      </tr>
+    </thead>
+    <tbody>${detailRows}</tbody>
+  </table>
+
+  <hr class="sep-dashed">
+
+  <div style="font-size:11px;font-weight:700;margin-bottom:1mm;">▌ LANGKAH PERHITUNGAN</div>
+  <table style="margin-bottom:1mm;">
+    <tbody>${langkahRows}
+      <tr>
+        <td colspan="2" style="font-size:11px;font-weight:700;">Total Nilai</td>
+        <td style="text-align:right;font-size:11px;font-weight:700;">= Rp ${formatRibuan(totalNilai.toFixed(0))}</td>
+      </tr>
+      <tr>
+        <td colspan="2" style="font-size:11px;font-weight:700;">Total Berat</td>
+        <td style="text-align:right;font-size:11px;font-weight:700;">= ${formatRibuan(totalJumlahKg.toFixed(0))} Kg</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="rumus">
+    Rata-rata  =  Total Nilai  ÷  Total Berat<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=  Rp ${formatRibuan(totalNilai.toFixed(0))} ÷ ${formatRibuan(totalJumlahKg.toFixed(0))} Kg<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= <strong>Rp ${formatRibuan(rataRata.toFixed(0))} / Kg</strong>
+  </div>
+
+  <hr class="sep-solid">
+
+  <div class="box-result">
+    <div class="label">HARGA RATA-RATA PENJUALAN</div>
+    <div class="value">Rp ${formatRibuan(rataRata.toFixed(0))}</div>
+    <div class="sub">per Kilogram &bull; Total ${formatRibuan(totalJumlahKg.toFixed(0))} Kg &bull; ${rows.length} Transaksi</div>
+  </div>
+
+  <hr class="sep-dashed">
+
+  <table style="font-size:12px;">
+    <tr>
+      <td style="border:none;padding:1mm 1mm;">Total Berat</td>
+      <td style="border:none;text-align:right;font-weight:700;padding:1mm 1mm;">
+        ${formatRibuan(totalJumlahKg.toFixed(0))} Kg
+      </td>
+    </tr>
+    <tr>
+      <td style="border:none;padding:1mm 1mm;">Total Nilai</td>
+      <td style="border:none;text-align:right;font-weight:700;padding:1mm 1mm;">
+        Rp ${formatRibuan(totalNilai.toFixed(0))}
+      </td>
+    </tr>
+    <tr>
+      <td style="border-bottom:none;padding:1mm 1mm;font-weight:900;">Harga Rata-Rata</td>
+      <td style="border-bottom:none;text-align:right;font-weight:900;padding:1mm 1mm;">
+        Rp ${formatRibuan(rataRata.toFixed(0))} / Kg
+      </td>
+    </tr>
+  </table>
+
+  <hr class="sep-solid">
+
+  <div class="ttd">
+    <div class="ttd-box">
+      <div>Pembeli</div>
+      <div class="ttd-line"></div>
+      <div>(________________)</div>
+    </div>
+    <div class="ttd-box">
+      <div>Penjual</div>
+      <div class="ttd-line"></div>
+      <div>(________________)</div>
+    </div>
+  </div>
+
+  <hr class="sep-dashed" style="margin-top:5mm;">
+  <div class="center small">Nota ini sah sebagai bukti pembayaran</div>
+
+</body>
+</html>`;
+}
+
+
+// ============================================================
+// SAVE RATA-RATA HARGA SEBAGAI JPG
+// ============================================================
+async function saveRataRataHarga(calculatorType) {
+
+    // Validasi: pastikan ada data
+    const tableSelector = calculatorType === 'sak' ? '#sakTable' : '#jumlahTable';
+    const inputClass    = calculatorType === 'sak' ? '.sak' : '.jumlah';
+    let hasData = false;
+    document.querySelectorAll(`${tableSelector} tbody tr:not(.total-row)`).forEach(row => {
+        if (getNumber(row.querySelector(inputClass)) > 0) hasData = true;
+    });
+    if (!hasData) {
+        alert('Belum ada data. Silakan isi jumlah dan harga terlebih dahulu.');
+        return;
+    }
+
+    const notaContent = generateRataRataHTML(calculatorType);
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+    // ---- Buat iframe tersembunyi ----
+    const iframe = document.createElement('iframe');
+    iframe.style.cssText = 'position:absolute;left:-9999px;top:-9999px;width:0;height:0;border:none';
+    document.body.appendChild(iframe);
+
+    const html = `<!DOCTYPE html><html><head><meta charset="UTF-8">
+    <style>
+      @page { size: 80mm auto; margin: 0; }
+      * { box-sizing: border-box; }
+      body { margin:0; padding:0; width:80mm; max-width:80mm;
+             background:#fff; -webkit-print-color-adjust:exact !important; }
+    </style></head><body>${notaContent}</body></html>`;
+
+    iframe.contentDocument.open();
+    iframe.contentDocument.write(html);
+    iframe.contentDocument.close();
+
+    // Tunggu load, lalu render
+    await new Promise(resolve => {
+        iframe.onload = resolve;
+        setTimeout(resolve, 200);
+    });
+
+    await new Promise(r => setTimeout(r, 400));
+
+    const iframeBody = iframe.contentDocument.body;
+    const scale      = window.devicePixelRatio * 4;
+
+    const canvas = await html2canvas(iframeBody, {
+        scale, useCORS: true, backgroundColor: '#fff', logging: false
+    });
+
+    document.body.removeChild(iframe);
+
+    // ---- iOS: share sheet ----
+    if (isIOS) {
+        const blob = await new Promise(r => canvas.toBlob(r, 'image/jpeg', 1.0));
+        const file = new File([blob], `rata_harga_${Date.now()}.jpg`, { type: 'image/jpeg' });
+
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            try { await navigator.share({ files: [file], title: 'Rata-Rata Harga Beras' }); }
+            catch (e) { if (e.name !== 'AbortError') alert('Gagal membagikan. Coba lagi.'); }
+        } else {
+            // Fallback: buka di tab baru
+            const newWin = window.open('', '_blank');
+            if (newWin) {
+                newWin.document.write(`<html><head><meta name="viewport" content="width=device-width,initial-scale=1">
+                <style>body{margin:0;padding:16px;background:#f0f0f0;display:flex;flex-direction:column;align-items:center;gap:12px}
+                img{max-width:100%;height:auto}p{font-size:13px;color:#555;text-align:center}</style></head>
+                <body><p>Tekan &amp; tahan gambar → "Simpan ke Foto"</p>
+                <img src="${canvas.toDataURL('image/jpeg',1.0)}" alt="Rata-Rata Harga"></body></html>`);
+            }
+        }
+        return;
+    }
+
+    // ---- Android / Desktop: langsung download ----
+    const imgData = canvas.toDataURL('image/jpeg', 1.0);
+    const link    = document.createElement('a');
+    link.href     = imgData;
+    link.download = `rata_harga_${new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')}.jpg`;
+    document.body.appendChild(link);
+    link.click();
+    setTimeout(() => document.body.removeChild(link), 100);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
