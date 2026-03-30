@@ -3443,6 +3443,7 @@ function generateRataRataHTML(calculatorType) {
     width: 80mm; margin: 0; padding: 5mm 5mm 8mm;
     font-family: 'Courier New', monospace;
     font-size: 13px; line-height: 1.4; color: #000; background: #fff;
+    font-weight: 700;
   }
   .center { text-align: center; }
   .sep { border: none; border-top: 1.5px solid #000; margin: 3mm 0; }
@@ -3451,24 +3452,25 @@ function generateRataRataHTML(calculatorType) {
     margin-bottom: 3mm; word-spacing: 1px;
   }
   .small { font-size: 11px; opacity: .75; }
+  .date-time { font-weight: 400; }
   table { width: 100%; border-collapse: collapse; }
   th {
-    font-size: 11px; font-weight: 700; padding: 2mm 1mm;
+    font-size: 11px; font-weight: 900; padding: 2mm 1mm;
     border-bottom: 1.5px solid #000; border-top: 1.5px solid #000;
     text-align: left;
   }
-  td { padding: 2.5mm 1mm; border-bottom: 1px solid #ddd; vertical-align: middle; }
+  td { padding: 2.5mm 1mm; border-bottom: 1px solid #ddd; vertical-align: middle; font-weight: 700; }
   tr:last-child td { border-bottom: none; }
-  .summary-table td { border: none; padding: 2mm 1mm; }
-  .label { font-weight: 700; }
+  .summary-table td { border: none; padding: 2mm 1mm; font-weight: 700; }
+  .label { font-weight: 900; }
   .value { text-align: right; font-weight: 900; }
   .result-box {
     border: 2.5px solid #000; padding: 4mm; margin: 4mm 0;
     text-align: center; border-radius: 2px;
   }
-  .result-label { font-size: 12px; letter-spacing: 1px; opacity: .8; margin-bottom: 2mm; }
+  .result-label { font-size: 12px; letter-spacing: 1px; opacity: .8; margin-bottom: 2mm; font-weight: 900; }
   .result-value { font-size: 24px; font-weight: 900; letter-spacing: 1px; }
-  .result-sub { font-size: 11px; margin-top: 2mm; opacity: .75; }
+  .result-sub { font-size: 11px; margin-top: 2mm; opacity: .75; font-weight: 700; }
 </style>
 </head>
 <body>
@@ -3478,8 +3480,8 @@ function generateRataRataHTML(calculatorType) {
   </div>
 
   <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2mm;">
-    <span>${tanggal}</span>
-    <span>${waktu}</span>
+    <span class="date-time">${tanggal}</span>
+    <span class="date-time">${waktu}</span>
   </div>
 
   <hr class="sep">
@@ -3487,7 +3489,7 @@ function generateRataRataHTML(calculatorType) {
   <table>
     <thead>
       <tr>
-        <th style="width:25%;text-align:left;">Berat</th>
+        <th style="width:25%;text-align:left;">Jumlah</th>
         <th style="width:25%;text-align:right;">Harga/Kg</th>
         <th style="width:50%;text-align:right;">Total</th>
       </tr>
@@ -3516,17 +3518,17 @@ function generateRataRataHTML(calculatorType) {
 
   <hr class="sep" style="margin:2mm 0;">
 
-  <div style="font-size:11px;font-weight:700;margin-bottom:1.5mm;">Cara Perhitungan :</div>
+  <div style="font-size:11px;font-weight:900;margin-bottom:1.5mm;">Cara Perhitungan :</div>
 
-  <div style="font-size:11px;line-height:1.8;background:#f9f9f9;padding:2mm 2mm;border-left:2.5px solid #000;margin-bottom:1mm;">
+  <div style="font-size:11px;line-height:1.8;background:#f9f9f9;padding:2mm 2mm;border-left:2.5px solid #000;margin-bottom:1mm;font-weight:700;">
     <div style="margin-bottom:1mm;">
       <strong>Rata-Rata = Total Nilai ÷ Total Berat</strong>
     </div>
-    <div style="opacity:.85;">
+    <div style="opacity:.85;font-weight:700;">
       Rp ${formatRibuan(totalNilai.toFixed(0))} ÷ ${formatRibuan(totalJumlahKg.toFixed(0))} Kg
     </div>
     <div style="margin-top:1mm;opacity:.85;">
-      = <strong style="font-size:12px;">Rp ${formatRibuan(rataRata.toFixed(0))} / Kg</strong>
+      = <strong style="font-size:12px;font-weight:900;">Rp ${formatRibuan(rataRata.toFixed(0))} / Kg</strong>
     </div>
   </div>
 
