@@ -2631,13 +2631,12 @@ async function saveNotaAsJPG(calculatorType) {
     const notaContent = generateNotaHTML(calculatorType);
 
     // === DETEKSI iOS ===
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
-    if (isIOS) {
-        // === METODE KHUSUS UNTUK iOS ===
-        await saveNotaAsJPG_iOS(notaContent, calculatorType);
-        return;
-    }
+if (isIOS) {
+    await shareNotaToWhatsApp_iOS(notaContent, calculatorType);
+    return;
+}
 
     // === KODE ASLI ANDA (TIDAK DIUBAH) ===
     // --- Buat iframe tersembunyi ---
@@ -2829,7 +2828,127 @@ async function saveNotaAsJPG_iOS(notaContent, calculatorType) {
 
 
 
+async function shareNotaToWhatsApp_iOS(notaContent, calculatorType) {
+    try {
+        const iframe = document.createElement('iframe');
+        iframe.style.position = 'absolute';
+        iframe.style.left = '-9999px';
+        iframe.style.top = '-9999px';
+        iframe.style.width = '0';
+        iframe.style.height = '0';
+        iframe.style.border = 'none';
+        document.body.appendChild(iframe);
 
+        const html = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <style>
+                    @page { size: 80mm auto; margin: 0; }
+                    * { box-sizing: border-box; }
+                    body {
+                        margin: 0;
+                        padding: 12px 10px;
+                        width: 80mm;
+                        max-width: 80mm;
+                        background: white;
+                        font-family: "Arial", sans-serif;
+                        -webkit-print-color-adjust: exact !important;
+                    }
+                </style>
+            </head>
+            <body>${notaContent}</body>
+            </html>
+        `;
+
+        iframe.contentDocument.open();
+        iframe.contentDocument.write(html);
+        iframe.contentDocument.close();
+
+        await new Promise(resolve => {
+            iframe.onload = resolve;
+            setTimeout(resolve, 100);
+        });
+
+        const iframeBody = iframe.contentDocument.body;
+        await new Promise((r) => setTimeout(r, 300));
+
+        const scale = window.devicePixelRatio * 4;
+        const canvas = await html2canvas(iframeBody, {
+            scale: scale,
+            useCORS: true,
+            backgroundColor: '#fff',
+            logging: false,
+        });
+
+        // === Konversi canvas ke Blob/File ===
+        const blob = await new Promise(resolve =>
+            canvas.toBlob(resolve, 'image/jpeg', 1.0)
+        );
+
+        const fileName = `nota_${Date.now()}.jpg`;
+        const file = new File([blob], fileName, { type: 'image/jpeg' });
+
+        // === Cek apakah Web Share API support file sharing ===
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            await navigator.share({
+                files: [file],
+                title: 'Nota',
+                text: 'Nota Giling',
+            });
+        } else {
+            // Fallback: buka gambar di tab baru jika share tidak support
+            const imgData = canvas.toDataURL('image/jpeg', 1.0);
+            const newWindow = window.open('', '_blank');
+            if (newWindow) {
+                newWindow.document.write(`
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <meta charset="UTF-8">
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        <title>Nota</title>
+                        <style>
+                            body {
+                                margin: 0;
+                                padding: 20px;
+                                display: flex;
+                                flex-direction: column;
+                                align-items: center;
+                                background: #f0f0f0;
+                                gap: 16px;
+                            }
+                            img { max-width: 100%; height: auto; }
+                            .info {
+                                font-size: 13px;
+                                color: #555;
+                                text-align: center;
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <p class="info">Tekan lama gambar → "Simpan ke Foto", lalu kirim via WhatsApp.</p>
+                        <img src="${imgData}" alt="Nota">
+                    </body>
+                    </html>
+                `);
+                newWindow.document.close();
+            } else {
+                alert('Pop-up diblokir! Silakan izinkan pop-up untuk situs ini.');
+            }
+        }
+
+        document.body.removeChild(iframe);
+
+    } catch (error) {
+        if (error.name !== 'AbortError') {
+            // AbortError = user cancel share sheet, bukan error
+            console.error('Error sharing on iOS:', error);
+            alert('Gagal membagikan nota. Silakan coba lagi.');
+        }
+    }
+}
 
 
 
