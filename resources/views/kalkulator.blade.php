@@ -3484,12 +3484,10 @@ function generateRataRataHTML(calculatorType) {
     <span class="date-time">${waktu}</span>
   </div>
 
-  <hr class="sep">
-
   <table>
     <thead>
       <tr>
-        <th style="width:25%;text-align:left;">Jumlah</th>
+        <th style="width:25%;text-align:left;">Berat</th>
         <th style="width:25%;text-align:right;">Harga/Kg</th>
         <th style="width:50%;text-align:right;">Total</th>
       </tr>
