@@ -2915,8 +2915,8 @@ const blob = await new Promise(resolve =>
         if (navigator.canShare && navigator.canShare({ files: [file] })) {
             await navigator.share({
                 files: [file],
-                title: 'Nota',
-                text: 'Nota Giling',
+                title: '',
+                text: '',
             });
         } else {
             // Fallback: buka gambar di tab baru jika share tidak support
