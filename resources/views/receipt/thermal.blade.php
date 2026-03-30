@@ -363,37 +363,42 @@
             </thead>
             <tbody>
                 @php
-                // Ambil data yang diperlukan
-                $filteredKredits = $giling->petani->kredits->where('status', false)->sortBy('tanggal');
-                $pembayaranKredit = $giling->pembayaranKredits->first();
-                $bungaRate = $pembayaranKredit ? $pembayaranKredit->bunga : 0;
-                @endphp
+$filteredKredits = $giling->petani->kredits->where('status', false)->sortBy('tanggal');
+$pembayaranKredit = $giling->pembayaranKredits->first();
+$bungaRate = $pembayaranKredit ? $pembayaranKredit->bunga : 0;
+@endphp
 
-                @forelse ($filteredKredits as $index => $kredit)
-                @php
-                $lamaBulan = $pembayaranKredit ? $pembayaranKredit->hitungLamaHutangBulan($kredit->tanggal) : 0;
-                $bunga = $kredit->jumlah * ($bungaRate / 100) * $lamaBulan;
-                $totalHutang = $kredit->jumlah + $bunga;
-                @endphp
-                <tr class="calculation-row">
-                    <td>{{ $loop->iteration }}. {{ \Carbon\Carbon::parse($kredit->tanggal)->format('d/m/Y') }}</td>
-                    <td>Rp {{ number_format($kredit->jumlah) }}</td>
-                    <td>{{ $lamaBulan }} Bln ({{ floor($bungaRate) }}%)</td>
-                    <td class="bold">Rp {{ number_format($totalHutang) }}</td>
-                </tr>
+@forelse ($filteredKredits as $index => $kredit)
+@php
+$lamaBulan = $pembayaranKredit ? $pembayaranKredit->hitungLamaHutangBulan($kredit->tanggal) : 0;
+$bunga = $kredit->jumlah * ($bungaRate / 100) * $lamaBulan;
+$totalHutang = $kredit->jumlah + $bunga;
+@endphp
+<tr class="calculation-row">
+    <td>{{ $loop->iteration }}. {{ \Carbon\Carbon::parse($kredit->tanggal)->format('d/m/Y') }}</td>
+    <td>Rp {{ number_format($kredit->jumlah) }}</td>
+    <td>{{ $lamaBulan }} Bln ({{ floor($bungaRate) }}%)</td>
+    <td class="bold">Rp {{ number_format($totalHutang) }}</td>
+</tr>
 
-                @if($loop->last && $bungaRate > 0)
-
+@if($loop->last && $bungaRate > 0)
 <tr class="calculation-row">
     <td colspan="4" style="text-align: justify; text-align-last: justify;">BUNGA TERHITUNG DARI TANGGAL UTANG SAMPAI TANGGAL GABAH MASUK : <strong>{{ $giling->created_at->addHours(0)->format('d/m/Y') }}</strong></td>
 </tr>
-    @endif
+@endif
 
-                @empty
-                <tr class="calculation-row">
+{{-- Kondisi baru: tampil ketika bulan = 0 dan bunga = 0 --}}
+@if($loop->last && $lamaBulan == 0 && $bunga == 0)
+<tr class="calculation-row">
+    <td colspan="4" style="text-align: justify; text-align-last: justify;">UTANG / PINJAMAN DANA TIDAK DIKENAKAN BUNGA</td>
+</tr>
+@endif
+
+@empty
+<tr class="calculation-row">
     <td colspan="4" style="text-align: justify; text-align-last: justify;">TIDAK ADA UTANG / PINJAMAN DANA</td>
 </tr>
-                @endforelse
+@endforelse
             </tbody>
         </table>
 
