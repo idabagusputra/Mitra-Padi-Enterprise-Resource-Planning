@@ -957,12 +957,14 @@
     </button>
 
 
+    <button class="btn btn-print half" onclick="saveRataRataHarga('jumlah')" style="background-color: #16a34a;">
+    <i class="fas fa-calculator"></i> RATA-RATA HARGA
+</button>
+
         <button class="btn btn-print half" onclick="saveNotaAsJPG('jumlah')">
     <i class="fas fa-download"></i> SAVE GAMBAR
 </button>
-<button class="btn btn-print half" onclick="saveRataRataHarga('jumlah')" style="background-color: #16a34a;">
-    <i class="fas fa-calculator"></i> RATA-RATA HARGA
-</button>
+
         <button class="btn btnn btn-save half" onclick="printLangsung('jumlah')"
         {{-- style="width: 178px; text-align: center;"> --}}
         style="text-align: center; margin: 0 !important;">
