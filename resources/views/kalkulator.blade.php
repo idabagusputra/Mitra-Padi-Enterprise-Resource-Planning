@@ -2882,21 +2882,23 @@ const canvas = await html2canvas(iframeBody, {
     logging: false,
 });
 
-// === Potong canvas sampai footer saja ===
+// === Potong canvas, buang .header-foot ke bawah ===
 let finalCanvas = canvas;
-const footerEl = iframeBody.querySelector('.footer');
-if (footerEl) {
-    const footerRect = footerEl.getBoundingClientRect();
+const headerFoot = iframeBody.querySelector('.header-foot');
+if (headerFoot) {
+    const headerFootRect = headerFoot.getBoundingClientRect();
     const bodyRect = iframeBody.getBoundingClientRect();
-    const cropHeight = Math.ceil((footerRect.bottom - bodyRect.top) * scale);
+
+    // Ambil tinggi sampai tepat SEBELUM .header-foot dimulai
+    const cropHeight = Math.ceil((headerFootRect.top - bodyRect.top) * scale);
 
     const croppedCanvas = document.createElement('canvas');
     croppedCanvas.width = canvas.width;
     croppedCanvas.height = cropHeight;
     croppedCanvas.getContext('2d').drawImage(
         canvas,
-        0, 0, canvas.width, cropHeight,  // source
-        0, 0, canvas.width, cropHeight   // destination
+        0, 0, canvas.width, cropHeight,
+        0, 0, canvas.width, cropHeight
     );
     finalCanvas = croppedCanvas;
 }
