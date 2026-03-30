@@ -3518,11 +3518,11 @@ function generateRataRataHTML(calculatorType) {
 
   <hr class="sep" style="margin:2mm 0;">
 
-  <div style="font-size:11px;font-weight:900;margin-bottom:1.5mm;">Cara Perhitungan :</div>
+  <div style="font-size:11px;font-weight:900;margin-bottom:1.5mm;">Cara Hitung Rata-Rata Harga Penjualan Beras :</div>
 
   <div style="font-size:11px;line-height:1.8;background:#f9f9f9;padding:2mm 2mm;border-left:2.5px solid #000;margin-bottom:1mm;font-weight:700;">
     <div style="margin-bottom:1mm;">
-      <strong>= Rata" = Total Nilai / Total Berat</strong>
+      <strong>= Total Nilai / Total Berat</strong>
     </div>
     <div style="opacity:.85;font-weight:700;">
       = Rp ${formatRibuan(totalNilai.toFixed(0))} / ${formatRibuan(totalJumlahKg.toFixed(0))} Kg
