@@ -3522,10 +3522,10 @@ function generateRataRataHTML(calculatorType) {
 
   <div style="font-size:11px;line-height:1.8;background:#f9f9f9;padding:2mm 2mm;border-left:2.5px solid #000;margin-bottom:1mm;font-weight:700;">
     <div style="margin-bottom:1mm;">
-      <strong>= Rata-Rata = Total Nilai ÷ Total Berat</strong>
+      <strong>= Rata" = Total Nilai / Total Berat</strong>
     </div>
     <div style="opacity:.85;font-weight:700;">
-      = Rp ${formatRibuan(totalNilai.toFixed(0))} ÷ ${formatRibuan(totalJumlahKg.toFixed(0))} Kg
+      = Rp ${formatRibuan(totalNilai.toFixed(0))} / ${formatRibuan(totalJumlahKg.toFixed(0))} Kg
     </div>
     <div style="margin-top:1mm;opacity:.85;">
       = <strong style="font-size:12px;font-weight:900;">Rp ${formatRibuan(rataRata.toFixed(0))} / Kg</strong>
@@ -3597,7 +3597,7 @@ async function saveRataRataHarga(calculatorType) {
         const file = new File([blob], `rata_harga_${Date.now()}.jpg`, { type: 'image/jpeg' });
 
         if (navigator.canShare && navigator.canShare({ files: [file] })) {
-            try { await navigator.share({ files: [file], title: 'Rata-Rata Harga Beras' }); }
+            try { await navigator.share({ files: [file], title: 'Rata-Rata Harga Penjualan Beras' }); }
             catch (e) { if (e.name !== 'AbortError') alert('Gagal membagikan. Coba lagi.'); }
         } else {
             // Fallback: buka di tab baru
