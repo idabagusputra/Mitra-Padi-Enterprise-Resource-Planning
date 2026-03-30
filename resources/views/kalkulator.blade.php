@@ -3470,9 +3470,9 @@ function generateRataRataHTML(calculatorType) {
     border: 2px solid #000; padding: 2mm; margin:  3mm 0 4mm 0;
     text-align: center; border-radius: 2px;
   }
-  .result-label { font-size: 12px; letter-spacing: 1px; opacity: .8; margin-bottom: 2mm; font-weight: 900; }
+  .result-label { font-size: 12px; letter-spacing: 1px; opacity: .8; margin-bottom: 1mm; font-weight: 900; }
   .result-value { font-size: 20px; font-weight: 900; letter-spacing: 1px; }
-  .result-sub { font-size: 12px; margin-top: 2mm; opacity: .75; font-weight: 700; }
+  .result-sub { font-size: 12px; margin-top: 1mm; opacity: .75; font-weight: 700; }
 </style>
 </head>
 <body>
