@@ -957,12 +957,17 @@
     </button>
 
 
-    <button class="btn btn-print half" onclick="saveRataRataHarga('jumlah')" style="background-color: #16a34a;">
+    <button class="btn btn-print half" onclick="saveRataRataHarga('jumlah')" style="background-color: #0097A7;">
     <i class="fas fa-calculator"></i> RATA-RATA HARGA
 </button>
 
         <button class="btn btn-print half" onclick="saveNotaAsJPG('jumlah')">
     <i class="fas fa-download"></i> SAVE GAMBAR
+</button>
+
+<button class="btn btnnn btn-save half" onclick="printLangsungRata('jumlah')"
+        style="text-align: center; margin: 0 !important; border-radius: 0 !important; border: 0 !important;">
+    <i class="fas fa-file-invoice-dollar"></i>
 </button>
 
         <button class="btn btnn btn-save half" onclick="printLangsung('jumlah')"
@@ -3375,7 +3380,56 @@ const blob = await new Promise(resolve =>
 
 
 
+async function printLangsungRata(calculatorType) {
+    const notaContent = generateRataRataHTML(calculatorType);
 
+    // --- buat iframe tersembunyi ---
+    const iframe = document.createElement('iframe');
+    iframe.style.position = 'absolute';
+    iframe.style.left = '-9999px';
+    iframe.style.top = '-9999px';
+    iframe.style.width = '0';
+    iframe.style.height = '0';
+    iframe.style.border = 'none';
+    document.body.appendChild(iframe);
+
+    const html = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <style>
+                @page { size: 80mm auto; margin: 0; }
+                * { box-sizing: border-box; }
+                body {
+                    margin: 0;
+                    padding: 12px 10px;
+                    width: 80mm;
+                    max-width: 80mm;
+                    background: white;
+                    font-family: "Arial", sans-serif;
+                    -webkit-print-color-adjust: exact !important;
+                    print-color-adjust: exact !important;
+                }
+            </style>
+        </head>
+        <body>${notaContent}</body>
+        </html>
+    `;
+
+    iframe.contentDocument.open();
+    iframe.contentDocument.write(html);
+    iframe.contentDocument.close();
+
+    iframe.onload = async function () {
+        // Tunggu render selesai
+        await new Promise((r) => setTimeout(r, 50));
+
+        // === Print langsung dari iframe ===
+        iframe.contentWindow.focus();
+        iframe.contentWindow.print();
+    };
+}
 
 
 
@@ -3518,7 +3572,7 @@ function generateRataRataHTML(calculatorType) {
 
   <hr class="sep" style="margin:2mm 0;">
 
-  <div style="font-size:12px;font-weight:900;margin-bottom:1.5mm;">Cara Hitung Rata" Harga Jual Beras :</div>
+  <div style="font-size:11px;font-weight:900;margin-bottom:1.5mm;">Cara Hitung Rata" Harga Jual Beras :</div>
 
   <div style="font-size:12px;line-height:1.8;background:#f9f9f9;padding:2mm 2mm;border-left:2.5px solid #000;margin-bottom:1mm;font-weight:1000;">
     <div style="margin-bottom:1mm;">
