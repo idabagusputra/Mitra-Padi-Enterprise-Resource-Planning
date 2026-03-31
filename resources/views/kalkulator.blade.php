@@ -958,7 +958,7 @@
 
 
     <button class="btn btn-print half" onclick="saveRataRataHarga('jumlah')" style="background-color: #0097A7;">
-    <i class="fas fa-calculator"></i> RATA-RATA HARGA
+    <i class="fas fa-calculator"></i> RATA" HARGA
 </button>
 
         <button class="btn btn-print half" onclick="saveNotaAsJPG('jumlah')">
