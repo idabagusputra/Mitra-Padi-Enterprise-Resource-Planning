@@ -1728,84 +1728,86 @@ link.href = canvas.toDataURL('image/jpeg', 1.0); // Gunakan JPEG untuk ukuran fi
                         </table>
 
                         <table>
-                            <tr class="bold-border-top">
-                                <td>Kalkulasi</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr class="bold-border-top-top calculation-row">
-                                <td class="small-text">Giling Kotor</td>
-                                <td>:</td>
-                                <td>${formatCurrency(formData.gilingKotor, getDecimalPlaces(formData.gilingKotor))} Kg</td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr class="calculation-row">
-                                <td class="small-text">Ongkos Giling</td>
-                                <td>:</td>
-                                <td>${formatCurrency(formData.gilingKotor, getDecimalPlaces(formData.gilingKotor))} × ${formatCurrency(formData.biayaGiling, getDecimalPlaces(formData.biayaGiling))}%</td>
-                                <td>=</td>
-                                <td>${formatCurrency(calculations.ongkosGiling, 2)} Kg</td>
-                            </tr>
-                            <tr class="calculation-row">
-                                <td class="small-text">Pinjam</td>
-                                <td>:</td>
-                                <td>${formatCurrency(formData.pinjam, getDecimalPlaces(formData.pinjam))} Kg</td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr class="calculation-row">
-                                <td class="small-text">Beras Bersih</td>
-                                <td>:</td>
-                                <td>${formatCurrency(calculations.berasBersih, calculations.berasBersih % 1 === 0 ? 0 : 2)} Kg</td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr class="calculation-row">
-                                <td class="small-text">Pulang</td>
-                                <td>:</td>
-                                <td>${formatCurrency(formData.pulang, formData.pulang % 1 === 0 ? 0 : 2)} Kg</td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr class="calculation-row">
-                                <td class="small-text">Beras Jual</td>
-                                <td>:</td>
-                                <td>${formatCurrency(calculations.berasJual, calculations.berasJual % 1 === 0 ? 0 : 2)} Kg</td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr class="calculation-row">
-                                <td class="small-text">Buruh Giling</td>
-                                <td>:</td>
-                                <td>${formatCurrency(formData.gilingKotor, getDecimalPlaces(formData.gilingKotor))} × Rp ${formatCurrency(formData.biayaBuruhGiling, getDecimalPlaces(formData.biayaBuruhGiling))}</td>
-                                <td>=</td>
-                                <td class="bold">Rp ${formatCurrency(calculations.buruhGiling, getDecimalPlaces(calculations.buruhGiling))}</td>
-                            </tr>
-                            <tr class="calculation-row">
-                                <td class="small-text">Buruh Jemur</td>
-                                <td>:</td>
-                                <td>${formatCurrency(formData.jemur, getDecimalPlaces(formData.jemur))} × Rp ${formatCurrency(formData.biayaBuruhJemur, getDecimalPlaces(formData.biayaBuruhJemur))}</td>
-                                <td>=</td>
-                                <td class="bold">Rp ${formatCurrency(calculations.buruhJemur, getDecimalPlaces(calculations.buruhJemur))}</td>
-                            </tr>
-                            <tr class="calculation-row">
-                                <td class="small-text">Jual Konga</td>
-                                <td>:</td>
-                                <td>${formatCurrency(formData.jumlahKonga, getDecimalPlaces(formData.jumlahKonga))} × Rp ${formatCurrency(formData.hargaKonga, getDecimalPlaces(formData.hargaKonga))}</td>
-                                <td>=</td>
-                                <td class="bold">Rp ${formatCurrency(calculations.danaKonga, getDecimalPlaces(calculations.danaKonga))}</td>
-                            </tr>
-                            <tr class="calculation-row">
-                                <td class="small-text">Jual Menir</td>
-                                <td>:</td>
-                                <td>${formatCurrency(formData.jumlahMenir, getDecimalPlaces(formData.jumlahMenir))} × Rp ${formatCurrency(formData.hargaMenir, getDecimalPlaces(formData.hargaMenir))}</td>
-                                <td>=</td>
-                                <td class="bold">Rp ${formatCurrency(calculations.danaMenir, getDecimalPlaces(calculations.danaMenir))}</td>
-                            </tr>
-                        </table>
+                                <tr class="bold-border-top">
+                                    <td>Kalkulasi</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr class="bold-border-top-top calculation-row">
+                                    <td class="small-text">Giling Kotor</td>
+                                    <td>:</td>
+                                    <td>${formatCurrency(formData.gilingKotor, getDecimalPlaces(formData.gilingKotor))} Kg</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr class="calculation-row">
+                                    <td class="small-text">Ongkos Giling</td>
+                                    <td>:</td>
+                                    <td>${formatCurrency(formData.gilingKotor, getDecimalPlaces(formData.gilingKotor))} × ${formatCurrency(formData.biayaGiling, getDecimalPlaces(formData.biayaGiling))}%</td>
+                                    <td>=</td>
+                                    <td>${formatCurrency(calculations.ongkosGiling, 2)} Kg</td>
+                                </tr>
+                                <tr class="calculation-row">
+                                    <td class="small-text">Pinjam</td>
+                                    <td>:</td>
+                                    <td>${formatCurrency(formData.pinjam, getDecimalPlaces(formData.pinjam))} Kg</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr class="calculation-row">
+                                    <td class="small-text">Beras Bersih</td>
+                                    <td>:</td>
+                                    <td>${formatCurrency(calculations.berasBersih, calculations.berasBersih % 1 === 0 ? 0 : 2)} Kg</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr class="calculation-row">
+                                    <td class="small-text">Pulang</td>
+                                    <td>:</td>
+                                    <td>${formatCurrency(formData.pulang, formData.pulang % 1 === 0 ? 0 : 2)} Kg</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr class="calculation-row">
+                                    <td class="small-text">Beras Jual</td>
+                                    <td>:</td>
+                                    <td class="bold">${formatCurrency(calculations.berasJual, calculations.berasJual % 1 === 0 ? 0 : 2)} Kg</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr class="calculation-row">
+                                    <td class="small-text">Konga Jual</td>
+                                    <td>:</td>
+                                    <td class="bold">${formatCurrency(formData.jumlahKonga, getDecimalPlaces(formData.jumlahKonga))} Karung</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr class="calculation-row">
+                                    <td class="small-text">Menir Jual</td>
+                                    <td>:</td>
+                                    <td class="bold">${formatCurrency(formData.jumlahMenir, getDecimalPlaces(formData.jumlahMenir))} Kg</td>
+                                    <td></td>
+                                    <td></td>
+
+                                </tr>
+                                <tr class="calculation-row">
+                                    <td class="small-text">Buruh Giling</td>
+                                    <td>:</td>
+                                    <td>${formatCurrency(formData.gilingKotor, getDecimalPlaces(formData.gilingKotor))} × Rp ${formatCurrency(formData.biayaBuruhGiling, getDecimalPlaces(formData.biayaBuruhGiling))}</td>
+                                    <td>=</td>
+                                    <td class="bold">Rp ${formatCurrency(calculations.buruhGiling, getDecimalPlaces(calculations.buruhGiling))}</td>
+                                </tr>
+                                <tr class="calculation-row">
+                                    <td class="small-text">Buruh Jemur</td>
+                                    <td>:</td>
+                                    <td>${formatCurrency(formData.jemur, getDecimalPlaces(formData.jemur))} × Rp ${formatCurrency(formData.biayaBuruhJemur, getDecimalPlaces(formData.biayaBuruhJemur))}</td>
+                                    <td>=</td>
+                                    <td class="bold">Rp ${formatCurrency(calculations.buruhJemur, getDecimalPlaces(calculations.buruhJemur))}</td>
+                                </tr>
+
+                            </table>
 
                         <table>
                             <div></div>
