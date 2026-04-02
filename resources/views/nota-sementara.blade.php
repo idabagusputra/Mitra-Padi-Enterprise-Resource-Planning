@@ -774,7 +774,7 @@
                                             <input type="text" id="nama_petani" name="nama_petani"
                                                    class="form-control search-petani-input"
                                                    placeholder="Cari nama petani..."
-                                                   autocomplete="off">
+                                                   autocomplete="off" required>
                                             <div id="search-petani-results" class="search-petani-results"></div>
                                         </div>
                                     </div>
@@ -810,7 +810,7 @@
                                     <div class="form-group">
                                         <label for="pulang" class="form-label">Beras Pulang (Kg)</label>
                                         <input class="form-control number-format" type="text" name="pulang" id="pulang"
-                                               inputmode="numeric" placeholder="">
+                                               inputmode="numeric" placeholder="0">
                                     </div>
                                 </div>
                                 <div class="col-md-3 col-6">
@@ -830,24 +830,27 @@
 
 
                               <div class="col-md-3 col-6">
-    <div class="form-group">
-        <label for="jemur" class="form-label">Jemur (Karung)</label>
-        <div style="display: flex; width: 100%;">
-            <input class="form-control number-format" type="text" name="jemur" id="jemur"
-                   inputmode="numeric" placeholder="0" required
-                   style="width:70%; border-radius: var(--border-radius-xs) 0 0 var(--border-radius-xs) !important; border-right: none !important;">
-            <button type="button" id="btn-dryer" onclick="setJemurMode('D')"
-                    title="Dryer"
-                    style="width:15%; border:none; font-size:0.75rem; font-weight:700; cursor:pointer; transition:all 0.2s; letter-spacing:0.3px; background: var(--primary-gradient); color:white; border-radius:0;">
-                D
-            </button>
-            <button type="button" id="btn-normal" onclick="setJemurMode('N')"
-                    title="Normal"
-                    style="width:15%; border: 2px solid var(--border-color); border-left:none; font-size:0.75rem; font-weight:700; cursor:pointer; transition:all 0.2s; letter-spacing:0.3px; background: var(--bg-light); color:var(--text-muted); border-radius: 0 var(--border-radius-xs) var(--border-radius-xs) 0;">
-                N
-            </button>
-        </div>
+   <div class="form-group">
+    <label for="jemur" class="form-label">Jemur (Karung)</label>
+    <div style="display: flex; width: 100%;">
+        <input class="form-control number-format" type="text" name="jemur" id="jemur"
+               inputmode="numeric" placeholder="0" required
+               style="width:70%; border-radius: var(--border-radius-xs) 0 0 var(--border-radius-xs) !important; border-right: none !important;"
+               onkeydown="handleJemurKeydown(event)">
+        <button type="button" id="btn-dryer" onclick="setJemurMode('D')"
+                title="Dryer"
+                tabindex="-1"
+                style="width:15%; border:none; font-size:0.75rem; font-weight:700; cursor:pointer; transition:all 0.2s; letter-spacing:0.3px; background: var(--primary-gradient); color:white; border-radius:0;">
+            D
+        </button>
+        <button type="button" id="btn-normal" onclick="setJemurMode('N')"
+                title="Normal"
+                tabindex="-1"
+                style="width:15%; border: 2px solid var(--border-color); border-left:none; font-size:0.75rem; font-weight:700; cursor:pointer; transition:all 0.2s; letter-spacing:0.3px; background: var(--bg-light); color:var(--text-muted); border-radius: 0 var(--border-radius-xs) var(--border-radius-xs) 0;">
+            N
+        </button>
     </div>
+</div>
 </div>
                                 <div class="col-md-4 col-sm-6" style="display: none;">
                                     <div class="form-group">
@@ -858,14 +861,14 @@
                                 </div>
                             </div>
 
-                            <!-- Data Produk Sampingan -->
+                         <!-- Data Produk Sampingan -->
                             <div class="section-title">
                                 <i class="bi bi-box-seam"></i>
                                 Penjualan Konga dan Menir
                             </div>
 
                             <div class="row">
-                                <div class="col-md-3 col-6">
+                                <div class="col-lg-6 col-md-6 col-sm-6 col-6">
                                     <div class="form-group">
                                         <label for="jumlah_konga" class="form-label">Jumlah Konga (Karung)</label>
                                         <input class="form-control number-format" type="text" name="jumlah_konga" id="jumlah_konga"
@@ -873,16 +876,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-3 col-6">
-                                    <div class="form-group">
-                                        <label for="harga_konga" class="form-label">Harga Konga (Rp)</label>
-                                        <input class="form-control number-format" type="text" name="harga_konga" id="harga_konga"
-                                               inputmode="numeric" placeholder="" value="300,000" required>
-                                    </div>
-                                </div>
-
-
-                                <div class="col-md-3 col-6">
+                                <div class="col-lg-6 col-md-6 col-sm-6 col-6">
                                     <div class="form-group">
                                         <label for="jumlah_menir" class="form-label">Jumlah Menir (Kg)</label>
                                         <input class="form-control number-format" type="text" name="jumlah_menir" id="jumlah_menir"
@@ -890,13 +884,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-3 col-6">
-                                    <div class="form-group">
-                                        <label for="harga_menir" class="form-label">Harga Menir (Rp)</label>
-                                        <input class="form-control number-format" type="text" name="harga_menir" id="harga_menir"
-                                               inputmode="numeric" placeholder="" value="4,000" required>
-                                    </div>
-                                </div>
+
                             </div>
 
                             <div class="row">
@@ -1256,9 +1244,9 @@
                     jemur: getRawValue(document.getElementById('jemur')),
                     hargaJual: getRawValue(document.getElementById('harga_jual')),
                     jumlahKonga: getRawValue(document.getElementById('jumlah_konga')),
-                    hargaKonga: getRawValue(document.getElementById('harga_konga')),
+                    // hargaKonga: getRawValue(document.getElementById('harga_konga')),
                     jumlahMenir: getRawValue(document.getElementById('jumlah_menir')),
-                    hargaMenir: getRawValue(document.getElementById('harga_menir')),
+                    // hargaMenir: getRawValue(document.getElementById('harga_menir')),
                     biayaGiling: getRawValue(document.getElementById('biaya_giling')),
                     biayaBuruhGiling: getRawValue(document.getElementById('biaya_buruh_giling')),
                     // SESUDAH
@@ -1275,8 +1263,8 @@ biayaBuruhJemur: (jemurMode ?? 'N') === 'D' ? 10000 : 8000,
                     berasBersih: formData.gilingKotor - (formData.gilingKotor * formData.biayaGiling / 100) - formData.pinjam,
                     berasJual: (formData.gilingKotor - (formData.gilingKotor * formData.biayaGiling / 100) - formData.pinjam) - formData.pulang,
                     danaBeras: ((formData.gilingKotor - (formData.gilingKotor * formData.biayaGiling / 100) - formData.pinjam) - formData.pulang) * formData.hargaJual,
-                    danaKonga: formData.jumlahKonga * formData.hargaKonga,
-                    danaMenir: formData.jumlahMenir * formData.hargaMenir,
+                    // danaKonga: formData.jumlahKonga * formData.hargaKonga,
+                    // danaMenir: formData.jumlahMenir * formData.hargaMenir,
                     buruhGiling: formData.biayaBuruhGiling * formData.gilingKotor,
                     buruhJemur: formData.biayaBuruhJemur * formData.jemur
                 };
@@ -2108,9 +2096,24 @@ link.href = canvas.toDataURL('image/jpeg', 1.0); // Gunakan JPEG untuk ukuran fi
                                 <tr class="calculation-row">
                                     <td class="small-text">Beras Jual</td>
                                     <td>:</td>
-                                    <td>${formatCurrency(calculations.berasJual, calculations.berasJual % 1 === 0 ? 0 : 2)} Kg</td>
+                                    <td class="bold">${formatCurrency(calculations.berasJual, calculations.berasJual % 1 === 0 ? 0 : 2)} Kg</td>
                                     <td></td>
                                     <td></td>
+                                </tr>
+                                <tr class="calculation-row">
+                                    <td class="small-text">Konga Jual</td>
+                                    <td>:</td>
+                                    <td class="bold">${formatCurrency(formData.jumlahKonga, getDecimalPlaces(formData.jumlahKonga))} Karung</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr class="calculation-row">
+                                    <td class="small-text">Menir Jual</td>
+                                    <td>:</td>
+                                    <td class="bold">${formatCurrency(formData.jumlahMenir, getDecimalPlaces(formData.jumlahMenir))} Kg</td>
+                                    <td></td>
+                                    <td></td>
+
                                 </tr>
                                 <tr class="calculation-row">
                                     <td class="small-text">Buruh Giling</td>
@@ -2126,20 +2129,7 @@ link.href = canvas.toDataURL('image/jpeg', 1.0); // Gunakan JPEG untuk ukuran fi
                                     <td>=</td>
                                     <td class="bold">Rp ${formatCurrency(calculations.buruhJemur, getDecimalPlaces(calculations.buruhJemur))}</td>
                                 </tr>
-                                <tr class="calculation-row">
-                                    <td class="small-text">Jual Konga</td>
-                                    <td>:</td>
-                                    <td>${formatCurrency(formData.jumlahKonga, getDecimalPlaces(formData.jumlahKonga))} × Rp ${formatCurrency(formData.hargaKonga, getDecimalPlaces(formData.hargaKonga))}</td>
-                                    <td>=</td>
-                                    <td class="bold">Rp ${formatCurrency(calculations.danaKonga, getDecimalPlaces(calculations.danaKonga))}</td>
-                                </tr>
-                                <tr class="calculation-row">
-                                    <td class="small-text">Jual Menir</td>
-                                    <td>:</td>
-                                    <td>${formatCurrency(formData.jumlahMenir, getDecimalPlaces(formData.jumlahMenir))} × Rp ${formatCurrency(formData.hargaMenir, getDecimalPlaces(formData.hargaMenir))}</td>
-                                    <td>=</td>
-                                    <td class="bold">Rp ${formatCurrency(calculations.danaMenir, getDecimalPlaces(calculations.danaMenir))}</td>
-                                </tr>
+
                             </table>
 
                             <table>
@@ -2198,6 +2188,10 @@ link.href = canvas.toDataURL('image/jpeg', 1.0); // Gunakan JPEG untuk ukuran fi
             // Tambahkan paling bawah sebelum penutup });
 setJemurMode('N');
         });
+
+
+
+
 
        function setJemurMode(mode) {
      jemurMode = mode ?? 'N';
