@@ -958,17 +958,28 @@
 
 
     <button class="btn btn-print half" onclick="saveRataRataHarga('jumlah')" style="background-color: #0097A7;">
-    <i class="fas fa-calculator"></i> RATA" HARGA
-</button>
-
-        <button class="btn btn-print half" onclick="saveNotaAsJPG('jumlah')">
-    <i class="fas fa-download"></i> SAVE GAMBAR
+    <i class="fas fa-calculator"></i> HARGA
 </button>
 
 <button class="btn btnnn btn-save half" onclick="printLangsungRata('jumlah')"
         style="text-align: center; margin: 0 !important; border-radius: 0 !important; border: 0 !important;">
     <i class="fas fa-file-invoice-dollar"></i>
 </button>
+
+<button class="btn btn-print half" onclick="saveRataRataHargaGabah('jumlah')" style="background-color: #0097A7;">
+    <i class="fas fa-sheaf"></i> GABAH
+</button>
+
+        <button class="btn btn-print half" onclick="saveNotaAsJPG('jumlah')">
+    <i class="fas fa-download"></i> SAVE GAMBAR
+</button>
+
+<button class="btn btnnn btn-save half" onclick="printLangsungRataGabah('jumlah')"
+        style="text-align: center; margin: 0 !important; border-radius: 0 !important; border: 0 !important;">
+    <i class="fas fa-file-invoice-dollar"></i>
+</button>
+
+
 
         <button class="btn btnn btn-save half" onclick="printLangsung('jumlah')"
         {{-- style="width: 178px; text-align: center;"> --}}
@@ -3450,11 +3461,81 @@ async function printLangsungRata(calculatorType) {
 }
 
 
+async function printLangsungRataGabah(calculatorType) {
+    const notaContent = generateRataRataGabahHTML(calculatorType);
+
+    // --- buat iframe tersembunyi ---
+    const iframe = document.createElement('iframe');
+    iframe.style.position = 'absolute';
+    iframe.style.left = '-9999px';
+    iframe.style.top = '-9999px';
+    iframe.style.width = '0';
+    iframe.style.height = '0';
+    iframe.style.border = 'none';
+    document.body.appendChild(iframe);
+
+    const html = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <style>
+                @page { size: 80mm auto; margin: 0; }
+                * { box-sizing: border-box; }
+                body {
+                    margin: 0;
+                    padding: 12px 10px;
+                    width: 80mm;
+                    max-width: 80mm;
+                    background: white;
+                    font-family: "Arial", sans-serif;
+                    -webkit-print-color-adjust: exact !important;
+                    print-color-adjust: exact !important;
+                }
+            </style>
+        </head>
+        <body>${notaContent}</body>
+         <div class="header-foot">
+    <div class="waktu" style="display: flex; justify-content: space-between;">
+        <div style="text-transform: none !important; font-weight: normal !important;">.</div>
+        <div style="text-transform: none !important; font-weight: normal !important;">.</div>
+    </div>
+    <div class="waktu" style="display: flex; justify-content: space-between;">
+        <div style="text-transform: none !important; font-weight: normal !important;">.</div>
+        <div style="text-transform: none !important; font-weight: normal !important;">.</div>
+    </div>
+    <div class="waktu" style="display: flex; justify-content: space-between;">
+        <div style="text-transform: none !important; font-weight: normal !important;">.</div>
+        <div style="text-transform: none !important; font-weight: normal !important;">.</div>
+    </div>
+    <div class="waktu" style="display: flex; justify-content: space-between;">
+        <div style="text-transform: none !important; font-weight: normal !important;">.</div>
+        <div style="text-transform: none !important; font-weight: normal !important;">.</div>
+    </div>
+
+        </html>
+    `;
+
+    iframe.contentDocument.open();
+    iframe.contentDocument.write(html);
+    iframe.contentDocument.close();
+
+    iframe.onload = async function () {
+        // Tunggu render selesai
+        await new Promise((r) => setTimeout(r, 50));
+
+        // === Print langsung dari iframe ===
+        iframe.contentWindow.focus();
+        iframe.contentWindow.print();
+    };
+}
+
+
 
 // ============================================================
 // GENERATE HTML NOTA RATA-RATA HARGA (SIMPLIFIED)
 // ============================================================
-function generateRataRataHTML(calculatorType) {
+function generateRataRataGabahHTML(calculatorType) {
     let rows = [];
     let totalJumlahKg = 0;
     let totalNilai = 0;
@@ -3608,6 +3689,160 @@ function generateRataRataHTML(calculatorType) {
 </html>`;
 }
 
+function generateRataRataHTML(calculatorType) {
+    let rows = [];
+    let totalJumlahKg = 0;
+    let totalNilai = 0;
+
+    if (calculatorType === 'jumlah') {
+        document.querySelectorAll("#jumlahTable tbody tr:not(.total-row)").forEach(row => {
+            const jumlahInput = row.querySelector(".jumlah");
+            const hargaInput  = row.querySelector(".harga");
+            const jml  = getNumber(jumlahInput);
+            const hrg  = getNumber(hargaInput);
+            if (jml > 0 && hrg > 0) {
+                const nilai = jml * hrg;
+                totalJumlahKg += jml;
+                totalNilai    += nilai;
+                rows.push({ jumlah: jml, harga: hrg, nilai });
+            }
+        });
+    } else if (calculatorType === 'sak') {
+        document.querySelectorAll("#sakTable tbody tr:not(.total-row)").forEach(row => {
+            const sakInput   = row.querySelector(".sak");
+            const hargaInput = row.querySelector(".harga");
+            const sak  = getNumber(sakInput);
+            const hrg  = getNumber(hargaInput);
+            if (sak > 0 && hrg > 0) {
+                const jml   = sak * KG_PER_SAK;
+                const nilai = jml * hrg;
+                totalJumlahKg += jml;
+                totalNilai    += nilai;
+                rows.push({ jumlah: jml, harga: hrg, nilai, sak });
+            }
+        });
+    }
+
+    const rataRata = totalJumlahKg > 0 ? totalNilai / totalJumlahKg : 0;
+    const now      = new Date();
+    const tanggal  = now.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+    const waktu    = now.toTimeString().slice(0, 8);
+
+    // ---- Bangun baris detail tabel ----
+    let detailRows = '';
+    rows.forEach((r, i) => {
+        const desc = calculatorType === 'sak'
+            ? `${formatRibuan(r.jumlah)} Kg (${formatRibuan(r.sak)} Sak)`
+            : `${formatRibuan(r.jumlah)} Kg`;
+
+        detailRows += `
+        <tr>
+            <td>${desc}</td>
+            <td style="text-align:right;">Rp ${formatRibuan(r.harga.toFixed(0))}</td>
+            <td style="text-align:right;">Rp ${formatRibuan(r.nilai.toFixed(0))}</td>
+        </tr>`;
+    });
+
+    return `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  body {
+    width: 80mm; margin: 0; padding: 5mm 5mm 8mm;
+    font-family: 'Courier New', monospace;
+    font-size: 13px; line-height: 1.4; color: #000; background: #fff;
+    font-weight: 700;
+  }
+  .center { text-align: center; }
+  .sep { border: none; border-top: 1.5px solid #000; margin: 3mm 0; }
+  .title {
+    font-size: 15px; font-weight: 900; letter-spacing: 0.5px;
+    margin-bottom: 3mm; word-spacing: 1px;
+  }
+  .small { font-size: 11px; opacity: .75; }
+  .date-time { font-weight: 400; }
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    font-size: 11px; font-weight: 900; padding: 2mm 1mm;
+    border-bottom: 1.5px solid #000; border-top: 1.5px solid #000;
+    text-align: left;
+  }
+  td { padding: 2.5mm 1mm; border-bottom: 1px solid #ddd; vertical-align: middle; font-weight: 700; }
+  tr:last-child td { border-bottom: none; }
+  .summary-table td { border: none; padding: 2mm 1mm; font-weight: 700; }
+  .label { font-weight: 900; }
+  .value { text-align: right; font-weight: 900; }
+  .result-box {
+    border: 2px solid #000; padding: 2mm; margin:  3mm 0 4mm 0;
+    text-align: center; border-radius: 2px;
+  }
+  .result-label { font-size: 12px; letter-spacing: 1px; opacity: .8; margin-bottom: 1mm; font-weight: 900; }
+  .result-value { font-size: 20px; font-weight: 900; letter-spacing: 1px; }
+  .result-sub { font-size: 12px; margin-top: 1mm; opacity: .75; font-weight: 700; }
+</style>
+</head>
+<body>
+
+  <div class="center">
+    <div class="title">RATA-RATA HARGA JEMUR GABAH</div>
+  </div>
+
+  <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2mm;">
+    <span class="date-time">${tanggal}</span>
+    <span class="date-time">${waktu}</span>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width:25%;text-align:left;">Gabah</th>
+        <th style="width:25%;text-align:right;">Jumlah</th>
+        <th style="width:50%;text-align:right;">Total</th>
+      </tr>
+    </thead>
+    <tbody>${detailRows}</tbody>
+  </table>
+
+  <hr class="sep" style="margin:2mm 0;">
+
+  <table class="summary-table">
+    <tr>
+      <td class="label" style="width:50%;">Total Gabah :</td>
+      <td class="value" style="width:50%;">${formatRibuan(totalJumlahKg.toFixed(0))} Karung</td>
+    </tr>
+    <tr>
+      <td class="label" style="width:50%;">Total Biaya :</td>
+      <td class="value" style="width:50%;">Rp ${formatRibuan(totalNilai.toFixed(0))}</td>
+    </tr>
+  </table>
+
+  <div class="result-box">
+    <div class="result-label">HARGA RATA-RATA</div>
+    <div class="result-value">Rp ${formatRibuan(rataRata.toFixed(0))}</div>
+    <div class="result-sub">per Karung</div>
+  </div>
+
+  <hr class="sep" style="margin:2mm 0;">
+
+  <div style="font-size:11.5px;font-weight:900;margin-bottom:1.5mm;">Cara Hitung Rata" Harga Jemur Gabah :</div>
+
+  <div style="font-size:14px;line-height:1.8;background:#f9f9f9;padding:2mm 2mm;border-left:2.5px solid #000;margin-bottom:1mm;font-weight:1000;">
+    <div style="margin-bottom:1mm;">
+      <strong>= Total Biaya ÷ Total Gabah</strong>
+    </div>
+    <div style="opacity:1;font-weight:1000;">
+      = Rp ${formatRibuan(totalNilai.toFixed(0))} ÷ ${formatRibuan(totalJumlahKg.toFixed(0))} Karung
+    </div>
+    <div style="margin-top:1mm;opacity:1;">
+      = <strong style="font-size:14px;font-weight:1000;">Rp ${formatRibuan(rataRata.toFixed(0))} / Karung</strong>
+    </div>
+  </div>
+
+</body>
+</html>`;
+}
+
 
 // ============================================================
 // SAVE RATA-RATA HARGA SEBAGAI JPG
@@ -3627,6 +3862,92 @@ async function saveRataRataHarga(calculatorType) {
     }
 
     const notaContent = generateRataRataHTML(calculatorType);
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+    // ---- Buat iframe tersembunyi ----
+    const iframe = document.createElement('iframe');
+    iframe.style.cssText = 'position:absolute;left:-9999px;top:-9999px;width:0;height:0;border:none';
+    document.body.appendChild(iframe);
+
+    const html = `<!DOCTYPE html><html><head><meta charset="UTF-8">
+    <style>
+      @page { size: 80mm auto; margin: 0; }
+      * { box-sizing: border-box; }
+      body { margin:0; padding:0; width:80mm; max-width:80mm;
+             background:#fff; -webkit-print-color-adjust:exact !important; }
+    </style></head><body>${notaContent}</body></html>`;
+
+    iframe.contentDocument.open();
+    iframe.contentDocument.write(html);
+    iframe.contentDocument.close();
+
+    // Tunggu load, lalu render
+    await new Promise(resolve => {
+        iframe.onload = resolve;
+        setTimeout(resolve, 200);
+    });
+
+    await new Promise(r => setTimeout(r, 400));
+
+    const iframeBody = iframe.contentDocument.body;
+    const scale      = window.devicePixelRatio * 4;
+
+    const canvas = await html2canvas(iframeBody, {
+        scale, useCORS: true, backgroundColor: '#fff', logging: false
+    });
+
+    document.body.removeChild(iframe);
+
+    // ---- iOS: share sheet ----
+    if (isIOS) {
+        const blob = await new Promise(r => canvas.toBlob(r, 'image/jpeg', 1.0));
+        const file = new File([blob], `rata_harga_${Date.now()}.jpg`, { type: 'image/jpeg' });
+
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            try { await navigator.share({ files: [file], title: 'Rata-Rata Harga Penjualan Beras' }); }
+            catch (e) { if (e.name !== 'AbortError') alert('Gagal membagikan. Coba lagi.'); }
+        } else {
+            // Fallback: buka di tab baru
+            const newWin = window.open('', '_blank');
+            if (newWin) {
+                newWin.document.write(`<html><head><meta name="viewport" content="width=device-width,initial-scale=1">
+                <style>body{margin:0;padding:16px;background:#f0f0f0;display:flex;flex-direction:column;align-items:center;gap:12px}
+                img{max-width:100%;height:auto}p{font-size:13px;color:#555;text-align:center}</style></head>
+                <body><p>Tekan &amp; tahan gambar → "Simpan ke Foto"</p>
+                <img src="${canvas.toDataURL('image/jpeg',1.0)}" alt="Rata-Rata Harga"></body></html>`);
+            }
+        }
+        return;
+    }
+
+    // ---- Android / Desktop: langsung download ----
+    const imgData = canvas.toDataURL('image/jpeg', 1.0);
+    const link    = document.createElement('a');
+    link.href     = imgData;
+    link.download = `rata_harga_${new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')}.jpg`;
+    document.body.appendChild(link);
+    link.click();
+    setTimeout(() => document.body.removeChild(link), 100);
+}
+
+// ============================================================
+// SAVE RATA-RATA HARGA SEBAGAI JPG
+// ============================================================
+async function saveRataRataHargaGabah(calculatorType) {
+
+    // Validasi: pastikan ada data
+    const tableSelector = calculatorType === 'sak' ? '#sakTable' : '#jumlahTable';
+    const inputClass    = calculatorType === 'sak' ? '.sak' : '.jumlah';
+    let hasData = false;
+    document.querySelectorAll(`${tableSelector} tbody tr:not(.total-row)`).forEach(row => {
+        if (getNumber(row.querySelector(inputClass)) > 0) hasData = true;
+    });
+    if (!hasData) {
+        alert('Belum ada data. Silakan isi jumlah dan harga terlebih dahulu.');
+        return;
+    }
+
+    const notaContent = generateRataRataGabahHTML(calculatorType);
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
     // ---- Buat iframe tersembunyi ----
