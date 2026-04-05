@@ -773,9 +773,9 @@ function autoFillKongaMenir(konga_menir) {
     if (!konga_menir) return;
     const fields = {
 'jumlah_konga': cleanDBValue(konga_menir.total_konga ?? 0),
-'harga_konga': konga_menir && konga_menir.total_konga ? '300000' : '0',
+'harga_konga': konga_menir && konga_menir.total_konga ? '250000' : '0',
 'jumlah_menir': cleanDBValue(konga_menir.total_menir ?? 0),
-'harga_menir': konga_menir && konga_menir.total_menir ? '4000' : '0'
+'harga_menir': konga_menir && konga_menir.total_menir ? '4500' : '0'
 };
     for (const [id, value] of Object.entries(fields)) {
         const input = document.getElementById(id);
@@ -809,7 +809,7 @@ function addPengambilanKarungKonga(jumlah) {
             </div>
             <div class="col-md-3">
                 <div class="form-group mb-0">
-                    <input type="text" name="pengambilans[${pengambilanCount}][harga]" class="form-control number-format pengambilan-w" placeholder="Harga" inputmode="numeric" data-raw-value="4000" value="4000">
+                    <input type="text" name="pengambilans[${pengambilanCount}][harga]" class="form-control number-format pengambilan-w" placeholder="Harga" inputmode="numeric" data-raw-value="4500" value="4500">
                 </div>
             </div>
             <div class="col-md-2">
@@ -956,7 +956,7 @@ function addPengambilanKarungKonga(jumlah) {
             </div>
             <div class="col-md-3">
                 <div class="form-group mb-0">
-                    <input type="text" name="pengambilans[${pengambilanCount}][harga]" class="form-control number-format pengambilan-w" placeholder="Harga" inputmode="numeric" data-raw-value="" value="4000">
+                    <input type="text" name="pengambilans[${pengambilanCount}][harga]" class="form-control number-format pengambilan-w" placeholder="Harga" inputmode="numeric" data-raw-value="" value="4500">
                 </div>
             </div>
             <div class="col-md-2">
