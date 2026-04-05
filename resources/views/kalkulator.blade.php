@@ -957,8 +957,8 @@
     </button>
 
 
-    <button class="btn btn-print half" onclick="saveRataRataHargaGabah('jumlah')" style="background-color: #0097A7;">
-    <i class="fas fa-calculator" style="margin-end: 0 !important;"></i>
+    <button class="btn btn-print half" onclick="saveRataRataHargaGabah('jumlah')" style="background-color: #0097A7; margin: 0 !important;">
+    <i class="fas fa-calculator"></i>
 </button>
 
 <button class="btn btnnn btn-save half" onclick="printLangsungRataGabah('jumlah')"
@@ -966,8 +966,8 @@
     <i class="fas fa-file-invoice-dollar"></i>
 </button>
 
-<button class="btn btn-print half" onclick="saveRataRataHarga('jumlah')" style="background-color: #0097A7;">
-    <i class="fas fa-tractor" style="margin-end: 0 !important;"></i>
+<button class="btn btn-print half" onclick="saveRataRataHarga('jumlah')" style="background-color: #0097A7; margin: 0 !important;">
+    <i class="fas fa-tractor"></i>
 </button>
 
 <button class="btn btnnn btn-save half" onclick="printLangsungRata('jumlah')"
@@ -975,8 +975,8 @@
     <i class="fas fa-file-invoice-dollar"></i>
 </button>
 
-        <button class="btn btn-print half" onclick="saveNotaAsJPG('jumlah')">
-    <i class="fas fa-download" style="margin-end: 0 !important;"></i>
+        <button class="btn btn-print half"  style="margin: 0 !important;"> onclick="saveNotaAsJPG('jumlah')">
+    <i class="fas fa-download"></i>
 </button>
 
 
