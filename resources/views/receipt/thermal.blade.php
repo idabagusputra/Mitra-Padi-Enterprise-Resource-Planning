@@ -390,7 +390,7 @@ $totalHutang = $kredit->jumlah + $bunga;
 {{-- Kondisi baru: tampil ketika bulan = 0 dan bunga = 0 --}}
 @if($loop->last && $lamaBulan == 0 && $bunga == 0)
 <tr class="calculation-row">
-    <td colspan="4" style="text-align: justify; text-align-last: justify;">UTANG / PINJAMAN DANA TIDAK DIKENAKAN BUNGA</td>
+    <td colspan="4" style="text-align: justify; text-align-last: justify;">PINJAMAN DANA TIDAK DIKENAKAN BUNGA</td>
 </tr>
 @endif
 
