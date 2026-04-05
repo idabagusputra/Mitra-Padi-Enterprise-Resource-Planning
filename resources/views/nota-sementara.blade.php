@@ -1167,7 +1167,7 @@
                                 <div class="form-group mb-0">
                                     <label class="form-label">Harga</label>
                                     <input type="text" name="pengambilans[${pengambilanCount}][harga]"
-                                           class="form-control number-format" placeholder="Harga" inputmode="numeric" data-raw-value="" value="4,000">
+                                           class="form-control number-format" placeholder="Harga" inputmode="numeric" data-raw-value="" value="4,500">
                                 </div>
                             </div>
                             <div class="col-md-2 col-4 d-none">
