@@ -775,7 +775,7 @@ function autoFillKongaMenir(konga_menir) {
 'jumlah_konga': cleanDBValue(konga_menir.total_konga ?? 0),
 'harga_konga': konga_menir && konga_menir.total_konga ? '250000' : '0',
 'jumlah_menir': cleanDBValue(konga_menir.total_menir ?? 0),
-'harga_menir': konga_menir && konga_menir.total_menir ? '4500' : '0'
+'harga_menir': konga_menir && konga_menir.total_menir ? '4000' : '0'
 };
     for (const [id, value] of Object.entries(fields)) {
         const input = document.getElementById(id);
