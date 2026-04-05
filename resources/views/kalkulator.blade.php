@@ -957,7 +957,7 @@
     </button>
 
 
-    <button class="btn btn-print half" onclick="saveRataRataHarga('jumlah')" style="background-color: #0097A7;">
+    <button class="btn btn-print half" onclick="saveRataRataHargaGabah('jumlah')" style="background-color: #0097A7;">
     <i class="fas fa-calculator"></i> HARGA
 </button>
 
@@ -966,9 +966,7 @@
     <i class="fas fa-file-invoice-dollar"></i>
 </button>
 
-
-
-<button class="btn btn-print half" onclick="saveRataRataHargaGabah('jumlah')" style="background-color: #0097A7;">
+<button class="btn btn-print half" onclick="saveRataRataHarga('jumlah')" style="background-color: #0097A7;">
     <i class="fas fa-tractor"></i> GABAH
 </button>
 
@@ -976,8 +974,6 @@
         style="text-align: center; margin: 0 !important; border-radius: 0 !important; border: 0 !important;">
     <i class="fas fa-file-invoice-dollar"></i>
 </button>
-
-
 
         <button class="btn btn-print half" onclick="saveNotaAsJPG('jumlah')">
     <i class="fas fa-download"></i> NOTA
