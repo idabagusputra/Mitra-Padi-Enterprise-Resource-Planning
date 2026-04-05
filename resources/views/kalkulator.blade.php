@@ -3427,6 +3427,10 @@ async function printLangsungRata(calculatorType) {
         <div style="text-transform: none !important; font-weight: normal !important;">.</div>
         <div style="text-transform: none !important; font-weight: normal !important;">.</div>
     </div>
+    <div class="waktu" style="display: flex; justify-content: space-between;">
+        <div style="text-transform: none !important; font-weight: normal !important;">.</div>
+        <div style="text-transform: none !important; font-weight: normal !important;">.</div>
+    </div>
 
         </html>
     `;
