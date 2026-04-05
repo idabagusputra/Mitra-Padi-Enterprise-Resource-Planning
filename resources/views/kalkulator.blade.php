@@ -953,7 +953,7 @@
 
             <div class="action-bar">
     <button class="btn btn-primary" onclick="tambahBarisJumlah()">
-        <i class="fas fa-plus"></i> TAMBAH BARIS
+        <i class="fas fa-plus"></i>
     </button>
 
 
