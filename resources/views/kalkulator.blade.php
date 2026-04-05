@@ -3596,10 +3596,10 @@ function generateRataRataHTML(calculatorType) {
     <div style="margin-bottom:1mm;">
       <strong>= Total Nilai ÷ Total Berat</strong>
     </div>
-    <div style="opacity:.85;font-weight:1000;">
+    <div style="opacity:1;font-weight:1000;">
       = Rp ${formatRibuan(totalNilai.toFixed(0))} ÷ ${formatRibuan(totalJumlahKg.toFixed(0))} Kg
     </div>
-    <div style="margin-top:1mm;opacity:.85;">
+    <div style="margin-top:1mm;opacity:1;">
       = <strong style="font-size:14px;font-weight:1000;">Rp ${formatRibuan(rataRata.toFixed(0))} / Kg</strong>
     </div>
   </div>
