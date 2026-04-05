@@ -3600,7 +3600,7 @@ function generateRataRataHTML(calculatorType) {
       = Rp ${formatRibuan(totalNilai.toFixed(0))} ÷ ${formatRibuan(totalJumlahKg.toFixed(0))} Kg
     </div>
     <div style="margin-top:1mm;opacity:.85;">
-      = <strong style="font-size:15px;font-weight:1000;">Rp ${formatRibuan(rataRata.toFixed(0))} / Kg</strong>
+      = <strong style="font-size:14px;font-weight:1000;">Rp ${formatRibuan(rataRata.toFixed(0))} / Kg</strong>
     </div>
   </div>
 
