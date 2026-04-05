@@ -3592,15 +3592,15 @@ function generateRataRataHTML(calculatorType) {
 
   <div style="font-size:11.5px;font-weight:900;margin-bottom:1.5mm;">Cara Hitung Rata" Harga Jual Beras :</div>
 
-  <div style="font-size:13px;line-height:1.8;background:#f9f9f9;padding:2mm 2mm;border-left:2.5px solid #000;margin-bottom:1mm;font-weight:1000;">
+  <div style="font-size:14px;line-height:1.8;background:#f9f9f9;padding:2mm 2mm;border-left:2.5px solid #000;margin-bottom:1mm;font-weight:1000;">
     <div style="margin-bottom:1mm;">
       <strong>= Total Nilai ÷ Total Berat</strong>
     </div>
-    <div style="opacity:.85;font-weight:1000;">
+    <div style="opacity:.100;font-weight:1000;">
       = Rp ${formatRibuan(totalNilai.toFixed(0))} ÷ ${formatRibuan(totalJumlahKg.toFixed(0))} Kg
     </div>
-    <div style="margin-top:1mm;opacity:.85;">
-      = <strong style="font-size:13px;font-weight:1000;">Rp ${formatRibuan(rataRata.toFixed(0))} / Kg</strong>
+    <div style="margin-top:1mm;opacity:.100;">
+      = <strong style="font-size:14px;font-weight:1000;">Rp ${formatRibuan(rataRata.toFixed(0))} / Kg</strong>
     </div>
   </div>
 
