@@ -952,7 +952,7 @@
 </div>
 
             <div class="action-bar">
-    <button class="btn btn-primary" onclick="tambahBarisJumlah()">
+    <button class="btn btnn btn-primary" onclick="tambahBarisJumlah()">
         <i class="fas fa-plus"></i>
     </button>
 
