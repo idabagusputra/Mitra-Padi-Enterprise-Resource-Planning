@@ -3733,8 +3733,8 @@ function generateRataRataHTML(calculatorType) {
     let detailRows = '';
     rows.forEach((r, i) => {
         const desc = calculatorType === 'sak'
-            ? `${formatRibuan(r.jumlah)} Kg (${formatRibuan(r.sak)} Sak)`
-            : `${formatRibuan(r.jumlah)} Kg`;
+            ? `${formatRibuan(r.jumlah)} Karung (${formatRibuan(r.sak)} Sak)`
+            : `${formatRibuan(r.jumlah)} Karung`;
 
         detailRows += `
         <tr>
@@ -3786,7 +3786,7 @@ function generateRataRataHTML(calculatorType) {
 <body>
 
   <div class="center">
-    <div class="title">RATA-RATA HARGA JEMUR GABAH</div>
+    <div class="title">RATA-RATA HARGA JEMUR PADI</div>
   </div>
 
   <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2mm;">
