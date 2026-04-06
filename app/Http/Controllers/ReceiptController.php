@@ -25,6 +25,23 @@ class ReceiptController extends Controller
 
         $walker = function ($frame) use (&$walker, &$maxY) {
             try {
+                $node = $frame->get_node();
+
+                // Berhenti tepat di sentinel #pdf-end
+                if ($node && $node->nodeType === XML_ELEMENT_NODE) {
+                    $id = $node->getAttribute('id');
+                    if ($id === 'pdf-end') {
+                        $paddingBox = $frame->get_padding_box();
+                        if ($paddingBox) {
+                            $bottom = $paddingBox['y'] + $paddingBox['h'];
+                            if ($bottom > $maxY) {
+                                $maxY = $bottom;
+                            }
+                        }
+                        return; // Stop, tidak perlu jalan lebih jauh
+                    }
+                }
+
                 $paddingBox = $frame->get_padding_box();
                 if ($paddingBox) {
                     $bottom = $paddingBox['y'] + $paddingBox['h'];
@@ -46,7 +63,6 @@ class ReceiptController extends Controller
             $walker($tree->get_root());
         }
 
-        // Konversi dari points (DomPDF internal) ke px: 1 point = 96/72 px
         return ($maxY * 96) / 72;
     }
 
