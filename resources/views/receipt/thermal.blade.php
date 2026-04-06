@@ -476,8 +476,7 @@ $totalHutang = $kredit->jumlah + $bunga;
         </table>
 
 
-        <!-- PENANDA AKHIR -->
-<div id="pdf-end"></div>
+        <table id="pdf-end" style="width: 100%; border-collapse: collapse; margin: 5px 0;">
 
 </body>
 
