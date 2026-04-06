@@ -63,7 +63,7 @@ class ReceiptController extends Controller
         $defaultCss = '
             <style>
                 @page {
-                    margin: 0mm 3mm 3mm 3mm;
+                    margin: 0mm 3mm 0mm 3mm;
 
                 }
                 body {
