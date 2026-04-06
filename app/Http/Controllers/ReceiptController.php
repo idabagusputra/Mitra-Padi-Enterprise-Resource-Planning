@@ -15,39 +15,6 @@ use Aws\S3\S3Client;
 
 class ReceiptController extends Controller
 {
-
-    private function getPdfEndY(Dompdf $dompdf): float
-    {
-        $y = 0;
-
-        // Ambil root frame (INI YANG BENAR)
-        $root = $dompdf->getFrameTree()->get_root();
-
-        $walker = function ($frame) use (&$walker, &$y) {
-            $node = $frame->get_node();
-
-            if ($node && $node->nodeType === XML_ELEMENT_NODE) {
-                if ($node->getAttribute('id') === 'pdf-end') {
-
-                    // Ambil posisi
-                    $pos = $frame->get_position();
-                    $bottom = $pos['y'] + $frame->get_height();
-
-                    $y = $bottom;
-                }
-            }
-
-            foreach ($frame->get_children() as $child) {
-                $walker($child);
-            }
-        };
-
-        $walker($root);
-
-        return $y;
-    }
-
-
     public function generatePdf($gilingId)
     {
         $daftarGiling = DaftarGiling::findOrFail($gilingId);
@@ -85,10 +52,9 @@ class ReceiptController extends Controller
 
         // Convert mm to points (1mm = 2.83465 points)
         $width = 86 * 2.83465;
-        $height = 400 * 2.83465;
 
-        // Set custom paper size
-        $dompdf->setPaper(array(0, 0, $width, $height));
+
+        $dompdf->setPaper([0, 0, $width, 10000]);
 
         // Get HTML content using existing view
         $htmlContent = view('receipt.thermal', compact('giling', 'daftarGiling', 'unpaidKredits'))->render();
@@ -132,19 +98,6 @@ class ReceiptController extends Controller
         $dompdf->loadHtml($htmlContent);
 
         // Render PDF
-        // Render awal
-        $dompdf->render();
-
-        // Ambil posisi elemen terakhir
-        $endY = $this->getPdfEndY($dompdf);
-
-        // Tambahin sedikit padding biar aman
-        $endY += 10;
-
-        // Set tinggi sesuai konten
-        $dompdf->setPaper([0, 0, $width, $endY]);
-
-        // Render ulang final
         $dompdf->render();
 
         // Define PDF path
