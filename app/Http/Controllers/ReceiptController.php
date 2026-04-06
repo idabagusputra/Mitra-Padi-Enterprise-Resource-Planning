@@ -191,35 +191,7 @@ class ReceiptController extends Controller
         }
     }
 
-    private function getContentHeight(Dompdf $dompdf): float
-    {
-        $maxY = 0;
 
-        $walker = function ($frame) use (&$walker, &$maxY) {
-            try {
-                $paddingBox = $frame->get_padding_box();
-                if ($paddingBox) {
-                    $bottom = $paddingBox['y'] + $paddingBox['h'];
-                    if ($bottom > $maxY) {
-                        $maxY = $bottom;
-                    }
-                }
-            } catch (\Throwable $e) {
-                // Skip frame yang tidak bisa dibaca
-            }
-
-            foreach ($frame->get_children() as $child) {
-                $walker($child);
-            }
-        };
-
-        $tree = $dompdf->getTree();
-        if ($tree && $tree->get_root()) {
-            $walker($tree->get_root());
-        }
-
-        return ($maxY * 96) / 72;
-    }
 
     public function printLatest()
     {
