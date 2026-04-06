@@ -15,6 +15,41 @@ use Aws\S3\S3Client;
 
 class ReceiptController extends Controller
 {
+
+    /**
+     * Mengambil tinggi konten aktual dari frame tree DomPDF (dalam px)
+     */
+    private function getContentHeight(Dompdf $dompdf): float
+    {
+        $maxY = 0;
+
+        $walker = function ($frame) use (&$walker, &$maxY) {
+            try {
+                $paddingBox = $frame->get_padding_box();
+                if ($paddingBox) {
+                    $bottom = $paddingBox['y'] + $paddingBox['h'];
+                    if ($bottom > $maxY) {
+                        $maxY = $bottom;
+                    }
+                }
+            } catch (\Throwable $e) {
+                // Skip frame yang tidak bisa dibaca
+            }
+
+            foreach ($frame->get_children() as $child) {
+                $walker($child);
+            }
+        };
+
+        $tree = $dompdf->getTree();
+        if ($tree && $tree->get_root()) {
+            $walker($tree->get_root());
+        }
+
+        // Konversi dari points (DomPDF internal) ke px: 1 point = 96/72 px
+        return ($maxY * 96) / 72;
+    }
+
     public function generatePdf($gilingId)
     {
         $daftarGiling = DaftarGiling::findOrFail($gilingId);
@@ -27,17 +62,30 @@ class ReceiptController extends Controller
             abort(404, 'Data Giling tidak ditemukan.');
         }
 
-        // Get unpaid kredits
         $unpaidKredits = $giling->petani->kredits->where('status', false);
 
-        // Calculate lama_bulan for each kredit
         $now = Carbon::now();
         foreach ($unpaidKredits as $kredit) {
             $tanggal = Carbon::parse($kredit->tanggal);
             $kredit->lama_bulan = $tanggal->diffInMonths($now);
         }
 
-        // Setup DomPDF dengan konfigurasi khusus
+        // ===== Siapkan HTML content dulu =====
+        $defaultCss = '
+        <style>
+            @page { margin: 0mm 3mm 3mm 3mm; }
+            body { font-family: sans-serif; margin: 0; font-size: 10pt; line-height: 1.3; }
+            * { box-sizing: border-box; }
+            table { width: 100%; }
+            .text-center { text-align: center; }
+            .text-right { text-align: right; }
+            .font-bold { font-weight: bold; }
+        </style>
+    ';
+
+        $htmlContent = $defaultCss . view('receipt.thermal', compact('giling', 'daftarGiling', 'unpaidKredits'))->render();
+
+        // ===== Setup Options DomPDF =====
         $options = new Options();
         $options->set('isRemoteEnabled', true);
         $options->set('isHtml5ParserEnabled', true);
@@ -47,66 +95,27 @@ class ReceiptController extends Controller
         $options->set('dpi', 96);
         $options->set('debugKeepTemp', true);
 
-        // Convert mm to points (1mm = 2.83465 points)
-        $widthMm = 86;
-        $width = $widthMm * 2.83465;
+        $width = 86 * 2.83465;
 
-        // Get HTML content using existing view
-        $htmlContent = view('receipt.thermal', compact('giling', 'daftarGiling', 'unpaidKredits'))->render();
+        // ===== PASS 1: Ukur tinggi konten sebenarnya =====
+        $dompdfTemp = new Dompdf($options);
+        $dompdfTemp->setPaper(array(0, 0, $width, 2000 * 2.83465));
+        $dompdfTemp->loadHtml($htmlContent);
+        $dompdfTemp->render();
 
-        // Add default CSS untuk memastikan tampilan sesuai
-        $defaultCss = '
-        <style>
-            @page {
-                margin: 0mm 3mm 3mm 3mm;
-            }
-            body {
-                font-family: sans-serif;
-                margin: 0;
-                font-size: 10pt;
-                line-height: 1.3;
-            }
-            * {
-                box-sizing: border-box;
-            }
-            table {
-                width: 100%;
-            }
-            .text-center {
-                text-align: center;
-            }
-            .text-right {
-                text-align: right;
-            }
-            .font-bold {
-                font-weight: bold;
-            }
-        </style>
-    ';
+        $actualHeight = $this->getContentHeight($dompdfTemp) * 2.83465;
+        $actualHeight += (6 * 2.83465); // margin bawah 6mm
 
-        // Combine CSS with HTML content
-        $htmlContent = $defaultCss . $htmlContent;
-
-        // KUNCI: Estimasi tinggi dari struktur HTML (bukan dari Dompdf API)
-        $estimatedHeightPoints = $this->measureContentHeight($htmlContent);
-
-        // Setup DomPDF dengan ukuran yang sudah dihitung
+        // ===== PASS 2: Render final dengan tinggi yang tepat =====
         $dompdf = new Dompdf($options);
-
-        // Set custom paper size dengan tinggi yang sudah diestimasi
-        $dompdf->setPaper(array(0, 0, $width, $estimatedHeightPoints));
-
-        // Load HTML ke DomPDF
+        $dompdf->setPaper(array(0, 0, $width, $actualHeight));
         $dompdf->loadHtml($htmlContent);
-
-        // Render PDF
         $dompdf->render();
 
         // Define PDF path
         $pdfFileName = 'receipt-' . $giling->id . '.pdf';
         $pdfPath = public_path('receipts');
 
-        // Ensure directory exists
         if (!file_exists($pdfPath)) {
             mkdir($pdfPath, 0755, true);
         }
@@ -114,10 +123,9 @@ class ReceiptController extends Controller
         $pdfFullPath = $pdfPath . '/' . $pdfFileName;
 
         try {
-            // Save PDF to file
-            file_put_contents($pdfFullPath, $dompdf->output());
-            // Generate the PDF content
             $pdfContent = $dompdf->output();
+
+            file_put_contents($pdfFullPath, $pdfContent);
 
             // Cloudflare R2 Upload
             $r2Client = new S3Client([
@@ -133,57 +141,49 @@ class ReceiptController extends Controller
             $r2FileName = 'Nota_Giling/' . $giling->id . '_Nota_Giling_' . date('Y-m-d_H-i-s') . '.pdf';
 
             $r2Upload = $r2Client->putObject([
-                'Bucket' => 'mitra-padi', // Nama bucket Anda
+                'Bucket' => 'mitra-padi',
                 'Body' => $pdfContent,
                 'Key' => $r2FileName,
                 'ContentType' => 'application/pdf',
                 'ACL' => 'public-read'
             ]);
 
-            // Dapatkan URL publik R2
             $r2Url = "https://pub-b2576acededb43e08e7292257cd6a4c8.r2.dev/{$r2FileName}";
 
-            // Menyimpan URL Cloudinary ke database
             $daftarGiling->s3_url = $r2Url;
             $daftarGiling->save();
 
-            // Set up Google Drive client
+            // Google Drive Upload
             $client = new Client();
             $client->setAuthConfig(storage_path('app/google-drive-credentials.json'));
             $client->addScope(Drive::DRIVE);
 
             $driveService = new Drive($client);
 
-            // Check folder access
             try {
-                $folderCheck = $driveService->files->get('124X5hrQB-fxqMk66zAY8Cp-CFyysSOME', [
-                    'fields' => 'id,name'
-                ]);
+                $folderCheck = $driveService->files->get('124X5hrQB-fxqMk66zAY8Cp-CFyysSOME', ['fields' => 'id,name']);
                 Log::info('Folder found: ' . $folderCheck->getName());
             } catch (\Exception $e) {
                 Log::error('Failed to access folder: ' . $e->getMessage());
                 throw new \Exception('Folder cannot be accessed');
             }
 
-            // Prepare file metadata
             $fileMetadata = new Drive\DriveFile([
                 'name' => $pdfFileName,
                 'parents' => ['124X5hrQB-fxqMk66zAY8Cp-CFyysSOME']
             ]);
 
-            // Upload file to Google Drive
             $file = $driveService->files->create($fileMetadata, [
-                'data' => $dompdf->output(),
+                'data' => $pdfContent,
                 'mimeType' => 'application/pdf',
                 'uploadType' => 'multipart',
                 'fields' => 'id,webViewLink'
             ]);
 
-            // Return file path along with Drive details for further use
             return [
-                'pdf_path' => $pdfFullPath, // PDF file path
-                'file_id' => $file->id,      // Google Drive file ID
-                'web_view_link' => $file->webViewLink // Google Drive file view link
+                'pdf_path' => $pdfFullPath,
+                'file_id' => $file->id,
+                'web_view_link' => $file->webViewLink
             ];
         } catch (\Exception $e) {
             Log::error('Upload failed: ' . $e->getMessage());
@@ -191,75 +191,34 @@ class ReceiptController extends Controller
         }
     }
 
-    /**
-     * Mengukur tinggi konten HTML berdasarkan struktur DOM
-     * Tidak menggunakan API Dompdf yang mungkin tidak tersedia
-     *
-     * @param string $htmlContent HTML content dengan CSS
-     * @return float Tinggi dalam points
-     */
-    private function measureContentHeight($htmlContent)
+    private function getContentHeight(Dompdf $dompdf): float
     {
-        libxml_use_internal_errors(true);
+        $maxY = 0;
 
-        $dom = new \DOMDocument();
-        $dom->loadHTML('<?xml encoding="UTF-8">' . $htmlContent);
+        $walker = function ($frame) use (&$walker, &$maxY) {
+            try {
+                $paddingBox = $frame->get_padding_box();
+                if ($paddingBox) {
+                    $bottom = $paddingBox['y'] + $paddingBox['h'];
+                    if ($bottom > $maxY) {
+                        $maxY = $bottom;
+                    }
+                }
+            } catch (\Throwable $e) {
+                // Skip frame yang tidak bisa dibaca
+            }
 
-        libxml_clear_errors();
+            foreach ($frame->get_children() as $child) {
+                $walker($child);
+            }
+        };
 
-        // Ambil body element
-        $body = $dom->getElementsByTagName('body')->item(0);
-
-        if (!$body) {
-            // Fallback jika body tidak ditemukan
-            Log::warning('Could not find body element in HTML');
-            return 600 * 2.83465; // Default ~150mm
+        $tree = $dompdf->getTree();
+        if ($tree && $tree->get_root()) {
+            $walker($tree->get_root());
         }
 
-        // Hitung berdasarkan elemen-elemen
-        $lineCount = 0;
-
-        // Count table rows (setiap row = ~1 line)
-        $tableRows = $body->getElementsByTagName('tr');
-        $lineCount += $tableRows->length;
-
-        // Count paragraphs & divs (setiap = ~1.5 lines)
-        $paragraphs = $body->getElementsByTagName('p');
-        $lineCount += ($paragraphs->length * 1.5);
-
-        $divs = $body->getElementsByTagName('div');
-        $lineCount += ($divs->length * 0.5);
-
-        // Count line breaks
-        $brs = $body->getElementsByTagName('br');
-        $lineCount += $brs->length;
-
-        // Hitung total text content length (untuk estimasi wrapping)
-        $textLength = strlen($body->textContent);
-
-        // Estimasi: setiap 50 karakter = 1 line (untuk width 86mm)
-        $textLines = ceil($textLength / 50);
-
-        // Ambil nilai yang lebih besar
-        $estimatedLines = max($lineCount, $textLines);
-
-        // Konversi lines ke points
-        // 1 line = ~12pt (untuk 10pt font dengan line-height 1.3)
-        $contentHeightPt = $estimatedLines * 12;
-
-        // Tambah header, footer, margins, spacing
-        $contentHeightPt += 100; // ~35mm untuk margins dan spacing
-
-        // Set minimum dan maximum height
-        $minHeightPt = 300; // ~105mm
-        $maxHeightPt = 3000; // ~1050mm
-
-        $finalHeight = min($maxHeightPt, max($minHeightPt, $contentHeightPt));
-
-        // Log untuk debugging
-        Log::debug("HTML measurement: rows={$tableRows->length}, paras={$paragraphs->length}, textLen={$textLength}, lines={$estimatedLines}, height={$finalHeight}pt");
-
-        return $finalHeight;
+        return ($maxY * 96) / 72;
     }
 
     public function printLatest()
