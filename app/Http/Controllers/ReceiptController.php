@@ -24,12 +24,16 @@ class ReceiptController extends Controller
         $maxY = 0;
 
         $walker = function ($frame) use (&$walker, &$maxY) {
+            static $foundEnd = false;
+
+            if ($foundEnd) return;
+
             try {
                 $node = $frame->get_node();
 
-                // Berhenti tepat di sentinel #pdf-end
                 if ($node && $node->nodeType === XML_ELEMENT_NODE) {
                     $id = $node->getAttribute('id');
+
                     if ($id === 'pdf-end') {
                         $paddingBox = $frame->get_padding_box();
                         if ($paddingBox) {
@@ -38,7 +42,9 @@ class ReceiptController extends Controller
                                 $maxY = $bottom;
                             }
                         }
-                        return; // Stop, tidak perlu jalan lebih jauh
+
+                        $foundEnd = true; // 🔥 STOP TOTAL
+                        return;
                     }
                 }
 
@@ -50,7 +56,6 @@ class ReceiptController extends Controller
                     }
                 }
             } catch (\Throwable $e) {
-                // Skip frame yang tidak bisa dibaca
             }
 
             foreach ($frame->get_children() as $child) {
@@ -113,14 +118,20 @@ class ReceiptController extends Controller
 
         $width = 86 * 2.83465;
 
-        // ===== PASS 1: Ukur tinggi konten sebenarnya =====
-        $dompdfTemp = new Dompdf($options);
-        $dompdfTemp->setPaper(array(0, 0, $width, 2000 * 2.83465));
-        $dompdfTemp->loadHtml($htmlContent);
-        $dompdfTemp->render();
+        // ===== PASS 1: render untuk hitung tinggi =====
+        $tempDompdf = new Dompdf($options);
+        $tempDompdf->setPaper([0, 0, $width, 2000]); // tinggi besar sementara
+        $tempDompdf->loadHtml($htmlContent);
+        $tempDompdf->render();
 
-        $actualHeight = $this->getContentHeight($dompdfTemp) * 2.83465;
-        $actualHeight += (6 * 2.83465); // margin bawah 6mm
+        // Hitung tinggi berdasarkan sentinel
+        $contentHeightPx = $this->getContentHeight($tempDompdf);
+
+        // Convert px → pt
+        $actualHeight = ($contentHeightPx * 72) / 96;
+
+        // Tambah margin bawah
+        $actualHeight += (6 * 2.83465);
 
         // ===== PASS 2: Render final dengan tinggi yang tepat =====
         $dompdf = new Dompdf($options);
