@@ -54,11 +54,10 @@ class ReceiptController extends Controller
         // Get HTML content using existing view
         $htmlContent = view('receipt.thermal', compact('giling', 'daftarGiling', 'unpaidKredits'))->render();
 
-        // Add default CSS dengan @page size auto untuk flexible height
+        // Add default CSS untuk memastikan tampilan sesuai
         $defaultCss = '
         <style>
             @page {
-                size: ' . $widthMm . 'mm auto;
                 margin: 0mm 3mm 3mm 3mm;
             }
             body {
@@ -88,34 +87,20 @@ class ReceiptController extends Controller
         // Combine CSS with HTML content
         $htmlContent = $defaultCss . $htmlContent;
 
-        // Create DomPDF instance
+        // KUNCI: Estimasi tinggi dari struktur HTML (bukan dari Dompdf API)
+        $estimatedHeightPoints = $this->measureContentHeight($htmlContent);
+
+        // Setup DomPDF dengan ukuran yang sudah dihitung
         $dompdf = new Dompdf($options);
 
-        // Set custom paper size - PENTING: gunakan large height untuk auto sizing
-        $dompdf->setPaper(array(0, 0, $width, 10000));
+        // Set custom paper size dengan tinggi yang sudah diestimasi
+        $dompdf->setPaper(array(0, 0, $width, $estimatedHeightPoints));
 
-        // Load HTML
+        // Load HTML ke DomPDF
         $dompdf->loadHtml($htmlContent);
 
         // Render PDF
         $dompdf->render();
-
-        // KUNCI: Setelah render, extract actual used height dan re-render dengan ukuran tepat
-        $pages = $dompdf->getPages();
-
-        if (!empty($pages)) {
-            // Render ulang dengan ukuran yang sebenarnya digunakan
-            $dompdf = new Dompdf($options);
-
-            // Estimasi tinggi berdasarkan jumlah pages
-            // 1 page = content fit dalam ~300-800pt tergantung konten
-            // Multiple pages = each page ~792pt (standar)
-            $estimatedHeight = $this->getEstimatedHeight(count($pages));
-
-            $dompdf->setPaper(array(0, 0, $width, $estimatedHeight));
-            $dompdf->loadHtml($htmlContent);
-            $dompdf->render();
-        }
 
         // Define PDF path
         $pdfFileName = 'receipt-' . $giling->id . '.pdf';
@@ -131,6 +116,7 @@ class ReceiptController extends Controller
         try {
             // Save PDF to file
             file_put_contents($pdfFullPath, $dompdf->output());
+            // Generate the PDF content
             $pdfContent = $dompdf->output();
 
             // Cloudflare R2 Upload
@@ -147,15 +133,17 @@ class ReceiptController extends Controller
             $r2FileName = 'Nota_Giling/' . $giling->id . '_Nota_Giling_' . date('Y-m-d_H-i-s') . '.pdf';
 
             $r2Upload = $r2Client->putObject([
-                'Bucket' => 'mitra-padi',
+                'Bucket' => 'mitra-padi', // Nama bucket Anda
                 'Body' => $pdfContent,
                 'Key' => $r2FileName,
                 'ContentType' => 'application/pdf',
                 'ACL' => 'public-read'
             ]);
 
+            // Dapatkan URL publik R2
             $r2Url = "https://pub-b2576acededb43e08e7292257cd6a4c8.r2.dev/{$r2FileName}";
 
+            // Menyimpan URL Cloudinary ke database
             $daftarGiling->s3_url = $r2Url;
             $daftarGiling->save();
 
@@ -191,10 +179,11 @@ class ReceiptController extends Controller
                 'fields' => 'id,webViewLink'
             ]);
 
+            // Return file path along with Drive details for further use
             return [
-                'pdf_path' => $pdfFullPath,
-                'file_id' => $file->id,
-                'web_view_link' => $file->webViewLink
+                'pdf_path' => $pdfFullPath, // PDF file path
+                'file_id' => $file->id,      // Google Drive file ID
+                'web_view_link' => $file->webViewLink // Google Drive file view link
             ];
         } catch (\Exception $e) {
             Log::error('Upload failed: ' . $e->getMessage());
@@ -203,28 +192,74 @@ class ReceiptController extends Controller
     }
 
     /**
-     * Estimasi tinggi berdasarkan jumlah pages yang dirender
+     * Mengukur tinggi konten HTML berdasarkan struktur DOM
+     * Tidak menggunakan API Dompdf yang mungkin tidak tersedia
      *
-     * @param int $numPages Jumlah pages dari render pertama
+     * @param string $htmlContent HTML content dengan CSS
      * @return float Tinggi dalam points
      */
-    private function getEstimatedHeight($numPages)
+    private function measureContentHeight($htmlContent)
     {
-        // Untuk receipt thermal 86mm:
-        // - 1 page = konten singkat, ~400-600pt
-        // - 2+ pages = ada konten panjang
+        libxml_use_internal_errors(true);
 
-        if ($numPages <= 1) {
-            // Single page - gunakan tinggi minimal yang cukup
-            return 600 * 2.83465; // ~150mm
+        $dom = new \DOMDocument();
+        $dom->loadHTML('<?xml encoding="UTF-8">' . $htmlContent);
+
+        libxml_clear_errors();
+
+        // Ambil body element
+        $body = $dom->getElementsByTagName('body')->item(0);
+
+        if (!$body) {
+            // Fallback jika body tidak ditemukan
+            Log::warning('Could not find body element in HTML');
+            return 600 * 2.83465; // Default ~150mm
         }
 
-        if ($numPages === 2) {
-            return 800 * 2.83465; // ~280mm
-        }
+        // Hitung berdasarkan elemen-elemen
+        $lineCount = 0;
 
-        // 3+ pages - scale accordingly
-        return (400 + ($numPages - 1) * 300) * 2.83465;
+        // Count table rows (setiap row = ~1 line)
+        $tableRows = $body->getElementsByTagName('tr');
+        $lineCount += $tableRows->length;
+
+        // Count paragraphs & divs (setiap = ~1.5 lines)
+        $paragraphs = $body->getElementsByTagName('p');
+        $lineCount += ($paragraphs->length * 1.5);
+
+        $divs = $body->getElementsByTagName('div');
+        $lineCount += ($divs->length * 0.5);
+
+        // Count line breaks
+        $brs = $body->getElementsByTagName('br');
+        $lineCount += $brs->length;
+
+        // Hitung total text content length (untuk estimasi wrapping)
+        $textLength = strlen($body->textContent);
+
+        // Estimasi: setiap 50 karakter = 1 line (untuk width 86mm)
+        $textLines = ceil($textLength / 50);
+
+        // Ambil nilai yang lebih besar
+        $estimatedLines = max($lineCount, $textLines);
+
+        // Konversi lines ke points
+        // 1 line = ~12pt (untuk 10pt font dengan line-height 1.3)
+        $contentHeightPt = $estimatedLines * 12;
+
+        // Tambah header, footer, margins, spacing
+        $contentHeightPt += 100; // ~35mm untuk margins dan spacing
+
+        // Set minimum dan maximum height
+        $minHeightPt = 300; // ~105mm
+        $maxHeightPt = 3000; // ~1050mm
+
+        $finalHeight = min($maxHeightPt, max($minHeightPt, $contentHeightPt));
+
+        // Log untuk debugging
+        Log::debug("HTML measurement: rows={$tableRows->length}, paras={$paragraphs->length}, textLen={$textLength}, lines={$estimatedLines}, height={$finalHeight}pt");
+
+        return $finalHeight;
     }
 
     public function printLatest()
