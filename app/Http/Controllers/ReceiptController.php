@@ -16,19 +16,24 @@ use Aws\S3\S3Client;
 class ReceiptController extends Controller
 {
 
-    private function getPdfEndY($dompdf)
+    private function getPdfEndY(Dompdf $dompdf): float
     {
         $y = 0;
 
-        $frames = $dompdf->getCanvas()->get_cpdf()->root;
+        // Ambil root frame (INI YANG BENAR)
+        $root = $dompdf->getFrameTree()->get_root();
 
         $walker = function ($frame) use (&$walker, &$y) {
             $node = $frame->get_node();
 
             if ($node && $node->nodeType === XML_ELEMENT_NODE) {
                 if ($node->getAttribute('id') === 'pdf-end') {
+
+                    // Ambil posisi
                     $pos = $frame->get_position();
-                    $y = $pos['y'] + $frame->get_height();
+                    $bottom = $pos['y'] + $frame->get_height();
+
+                    $y = $bottom;
                 }
             }
 
@@ -37,7 +42,7 @@ class ReceiptController extends Controller
             }
         };
 
-        $walker($frames);
+        $walker($root);
 
         return $y;
     }
