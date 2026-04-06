@@ -97,7 +97,35 @@ class ReceiptController extends Controller
         // Load HTML ke DomPDF
         $dompdf->loadHtml($htmlContent);
 
-        // Render PDF
+        $endY = 0;
+
+        $dompdf->setCallbacks([
+            'end_frame' => function ($frame) use (&$endY) {
+
+                $node = $frame->get_node();
+
+                if ($node && $node->nodeType === XML_ELEMENT_NODE) {
+                    if ($node->getAttribute('id') === 'pdf-end') {
+
+                        $pos = $frame->get_position();
+                        $bottom = $pos['y'] + $frame->get_height();
+
+                        $endY = $bottom;
+                    }
+                }
+            }
+        ]);
+
+        // Render pertama
+        $dompdf->render();
+
+        // Tambahkan sedikit padding
+        $endY += 10;
+
+        // Set tinggi sesuai posisi pdf-end
+        $dompdf->setPaper([0, 0, $width, $endY]);
+
+        // Render ulang FINAL (SUDAH TERPOTONG)
         $dompdf->render();
 
         // Define PDF path
