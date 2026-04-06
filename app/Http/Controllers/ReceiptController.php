@@ -48,65 +48,57 @@ class ReceiptController extends Controller
         $options->set('debugKeepTemp', true);
         // $options->set('debugCss', true);
 
-        // === PASS 1: Ukur tinggi konten sampai #pdf-end ===
-        $measureDompdf = new Dompdf($options);
-
-        // Paper besar dulu untuk render semua konten
-        $width = 86 * 2.83465;
-        $measureDompdf->setPaper(array(0, 0, $width, 9999 * 2.83465));
-
-        $htmlContent = view('receipt.thermal', compact('giling', 'daftarGiling', 'unpaidKredits'))->render();
-
-        $defaultCss = '
-            <style>
-        @page { margin: 0mm 3mm 3mm 3mm; }
-        body { font-family: sans-serif; margin: 0; font-size: 10pt; line-height: 1.3; }
-        * { box-sizing: border-box; }
-        table { width: 100%; }
-
-        /* POTONG konten setelah #pdf-end */
-        #pdf-end ~ * {
-            display: none !important;
-            visibility: hidden !important;
-            height: 0 !important;
-            overflow: hidden !important;
-        }
-    </style>
-    ';
-
-        $measureDompdf->loadHtml($defaultCss . $htmlContent);
-        $measureDompdf->render();
-
-        // Ambil tinggi konten aktual dari halaman yang ter-render
-        $canvas = $measureDompdf->getCanvas();
-        $contentHeightPt = $canvas->get_height();
-
-        // === PASS 2: Render PDF final dengan tinggi yang tepat ===
         $dompdf = new Dompdf($options);
 
-        // Tambahkan sedikit padding bawah (misal 10mm = 28.3pt)
-        $paddingPt = 10 * 2.83465;
-        $finalHeight = $contentHeightPt + $paddingPt;
+        // Convert mm to points (1mm = 2.83465 points)
+        $width = 86 * 2.83465;
+        $height = 400 * 2.83465;
 
-        $dompdf->setPaper(array(0, 0, $width, $finalHeight));
+        // Set custom paper size
+        $dompdf->setPaper(array(0, 0, $width, $height));
 
-        $finalCss = '
-        <style>
-            @page { margin: 0mm 3mm 3mm 3mm; }
-            body { font-family: sans-serif; margin: 0; font-size: 10pt; line-height: 1.3; }
-            * { box-sizing: border-box; }
-            table { width: 100%; }
-            .text-center { text-align: center; }
-            .text-right { text-align: right; }
-            .font-bold { font-weight: bold; }
+        // Get HTML content using existing view
+        $htmlContent = view('receipt.thermal', compact('giling', 'daftarGiling', 'unpaidKredits'))->render();
 
-            /* Sembunyikan konten setelah #pdf-end */
-            #pdf-end ~ * { display: none !important; }
-            #pdf-end * { display: none !important; }
-        </style>
-    ';
+        // Add default CSS untuk memastikan tampilan sesuai
+        $defaultCss = '
+            <style>
+                @page {
+                    margin: 0mm 3mm 3mm 3mm;
 
-        $dompdf->loadHtml($finalCss . $htmlContent);
+                }
+                body {
+                    font-family: sans-serif;
+                    margin: 0;
+
+                    font-size: 10pt;
+                    line-height: 1.3;
+                }
+                * {
+                    box-sizing: border-box;
+                }
+                table {
+                    width: 100%;
+                }
+                .text-center {
+                    text-align: center;
+                }
+                .text-right {
+                    text-align: right;
+                }
+                .font-bold {
+                    font-weight: bold;
+                }
+            </style>
+        ';
+
+        // Combine CSS with HTML content
+        $htmlContent = $defaultCss . $htmlContent;
+
+        // Load HTML ke DomPDF
+        $dompdf->loadHtml($htmlContent);
+
+        // Render PDF
         $dompdf->render();
 
         // Define PDF path
