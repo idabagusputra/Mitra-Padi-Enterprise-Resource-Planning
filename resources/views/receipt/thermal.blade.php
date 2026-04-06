@@ -456,7 +456,7 @@ $totalHutang = $kredit->jumlah + $bunga;
         </div>
 
         <!-- Titik-titik di kiri dan kanan sebanyak 4 baris -->
-        <table style="width: 100%; border-collapse: collapse; margin: 5px 0;">
+        <table id="pdf-end"  style="width: 100%; border-collapse: collapse; margin: 5px 0;">
             <tr>
                 <td style="width: 50%; text-align: left; padding: 1px 0;">.</td>
                 <td style="width: 50%; text-align: right; padding: 1px 0;">.</td>
@@ -475,9 +475,8 @@ $totalHutang = $kredit->jumlah + $bunga;
             </tr>
         </table>
 
-
-       <span style="position: absolute; top: 0;" class="pdf-end-marker"></span>
-
+{{-- Marker tinggi --}}
+<div id="content-end-marker" style="height: 1px; margin: 0; padding: 0;"></div>
 </body>
 
 </html>

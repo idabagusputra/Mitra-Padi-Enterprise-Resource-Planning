@@ -48,84 +48,65 @@ class ReceiptController extends Controller
         $options->set('debugKeepTemp', true);
         // $options->set('debugCss', true);
 
-        $dompdf = new Dompdf($options);
+        // === PASS 1: Ukur tinggi konten sampai #pdf-end ===
+        $measureDompdf = new Dompdf($options);
 
-        // Convert mm to points (1mm = 2.83465 points)
+        // Paper besar dulu untuk render semua konten
         $width = 86 * 2.83465;
+        $measureDompdf->setPaper(array(0, 0, $width, 9999 * 2.83465));
 
-
-        $dompdf->setPaper([0, 0, $width, 10000]);
-
-        // Get HTML content using existing view
         $htmlContent = view('receipt.thermal', compact('giling', 'daftarGiling', 'unpaidKredits'))->render();
 
-        // Add default CSS untuk memastikan tampilan sesuai
         $defaultCss = '
             <style>
-                @page {
-                    margin: 0mm 3mm 0mm 3mm;
+        @page { margin: 0mm 3mm 3mm 3mm; }
+        body { font-family: sans-serif; margin: 0; font-size: 10pt; line-height: 1.3; }
+        * { box-sizing: border-box; }
+        table { width: 100%; }
 
-                }
-                body {
-                    font-family: sans-serif;
-                    margin: 0;
+        /* POTONG konten setelah #pdf-end */
+        #pdf-end ~ * {
+            display: none !important;
+            visibility: hidden !important;
+            height: 0 !important;
+            overflow: hidden !important;
+        }
+    </style>
+    ';
 
-                    font-size: 10pt;
-                    line-height: 1.3;
-                }
-                * {
-                    box-sizing: border-box;
-                }
-                table {
-                    width: 100%;
-                }
-                .text-center {
-                    text-align: center;
-                }
-                .text-right {
-                    text-align: right;
-                }
-                .font-bold {
-                    font-weight: bold;
-                }
-            </style>
-        ';
+        $measureDompdf->loadHtml($defaultCss . $htmlContent);
+        $measureDompdf->render();
 
-        // Combine CSS with HTML content
-        $htmlContent = $defaultCss . $htmlContent;
+        // Ambil tinggi konten aktual dari halaman yang ter-render
+        $canvas = $measureDompdf->getCanvas();
+        $contentHeightPt = $canvas->get_height();
 
-        // Load HTML ke DomPDF
-        $dompdf->loadHtml($htmlContent);
+        // === PASS 2: Render PDF final dengan tinggi yang tepat ===
+        $dompdf = new Dompdf($options);
 
-        $endY = 0;
+        // Tambahkan sedikit padding bawah (misal 10mm = 28.3pt)
+        $paddingPt = 10 * 2.83465;
+        $finalHeight = $contentHeightPt + $paddingPt;
 
-        $dompdf->setCallbacks([
-            'end_frame' => function ($frame) use (&$endY) {
+        $dompdf->setPaper(array(0, 0, $width, $finalHeight));
 
-                $node = $frame->get_node();
+        $finalCss = '
+        <style>
+            @page { margin: 0mm 3mm 3mm 3mm; }
+            body { font-family: sans-serif; margin: 0; font-size: 10pt; line-height: 1.3; }
+            * { box-sizing: border-box; }
+            table { width: 100%; }
+            .text-center { text-align: center; }
+            .text-right { text-align: right; }
+            .font-bold { font-weight: bold; }
 
-                if ($node && $node->nodeType === XML_ELEMENT_NODE) {
-                    if ($node->getAttribute('id') === 'pdf-end') {
+            /* Sembunyikan konten setelah #pdf-end */
+            #pdf-end ~ * { display: none !important; }
+            #pdf-end * { display: none !important; }
+        </style>
+    ';
 
-                        $pos = $frame->get_position();
-                        $bottom = $pos['y'] + $frame->get_height();
-
-                        $endY = $bottom;
-                    }
-                }
-            }
-        ]);
-
-        // Render pertama
-        $dompdf->render();
-
-        // Tambahkan sedikit padding
-        $endY += 10;
-
-        // Set tinggi sesuai posisi pdf-end
-        $dompdf->setPaper([0, 0, $width, $endY]);
-
-        // Render ulang FINAL (SUDAH TERPOTONG)
+        $dompdf->loadHtml($finalCss . $htmlContent);
         $dompdf->render();
 
         // Define PDF path
