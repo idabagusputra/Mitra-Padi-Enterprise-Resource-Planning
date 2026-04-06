@@ -54,10 +54,11 @@ class ReceiptController extends Controller
         // Get HTML content using existing view
         $htmlContent = view('receipt.thermal', compact('giling', 'daftarGiling', 'unpaidKredits'))->render();
 
-        // Add default CSS untuk memastikan tampilan sesuai
+        // Add default CSS dengan @page size auto untuk flexible height
         $defaultCss = '
         <style>
             @page {
+                size: ' . $widthMm . 'mm auto;
                 margin: 0mm 3mm 3mm 3mm;
             }
             body {
@@ -87,34 +88,34 @@ class ReceiptController extends Controller
         // Combine CSS with HTML content
         $htmlContent = $defaultCss . $htmlContent;
 
-        // Create temporary DomPDF instance untuk measure content height
-        $dompdf = new Dompdf($options);
-        $dompdf->setPaper(array(0, 0, $width, $width * 3)); // Temporary large height
-        $dompdf->loadHtml($htmlContent);
-        $dompdf->render();
-
-        // Get the height of rendered content
-        $canvas = $dompdf->getCanvas();
-        $pdf = $canvas->get_page_stream_object();
-
-        // Calculate actual content height (fallback: measure dari rendered pages)
-        $info = $dompdf->getCanvas()->get_current_page();
-
-        // Hitung tinggi berdasarkan jumlah halaman dan konten
-        $heightPoints = $dompdf->getCanvas()->get_page_height();
-
-        // Alternatif: Gunakan pendekatan berbeda dengan measuring wrapper element
-        // Measure content dengan DOM parsing
-        $contentHeight = $this->measureHtmlHeight($htmlContent, $widthMm);
-
-        // Sekarang buat DomPDF final dengan ukuran yang tepat
+        // Create DomPDF instance
         $dompdf = new Dompdf($options);
 
-        // Set ukuran kertas final dengan tinggi dinamis
-        $finalHeight = $contentHeight + 20; // Add padding
-        $dompdf->setPaper(array(0, 0, $width, $finalHeight));
+        // Set custom paper size - PENTING: gunakan large height untuk auto sizing
+        $dompdf->setPaper(array(0, 0, $width, 10000));
+
+        // Load HTML
         $dompdf->loadHtml($htmlContent);
+
+        // Render PDF
         $dompdf->render();
+
+        // KUNCI: Setelah render, extract actual used height dan re-render dengan ukuran tepat
+        $pages = $dompdf->getPages();
+
+        if (!empty($pages)) {
+            // Render ulang dengan ukuran yang sebenarnya digunakan
+            $dompdf = new Dompdf($options);
+
+            // Estimasi tinggi berdasarkan jumlah pages
+            // 1 page = content fit dalam ~300-800pt tergantung konten
+            // Multiple pages = each page ~792pt (standar)
+            $estimatedHeight = $this->getEstimatedHeight(count($pages));
+
+            $dompdf->setPaper(array(0, 0, $width, $estimatedHeight));
+            $dompdf->loadHtml($htmlContent);
+            $dompdf->render();
+        }
 
         // Define PDF path
         $pdfFileName = 'receipt-' . $giling->id . '.pdf';
@@ -202,34 +203,28 @@ class ReceiptController extends Controller
     }
 
     /**
-     * Helper function untuk mengukur tinggi HTML content
+     * Estimasi tinggi berdasarkan jumlah pages yang dirender
+     *
+     * @param int $numPages Jumlah pages dari render pertama
+     * @return float Tinggi dalam points
      */
-    private function measureHtmlHeight($htmlContent, $widthMm)
+    private function getEstimatedHeight($numPages)
     {
-        // Gunakan DOMDocument untuk parse HTML
-        libxml_use_internal_errors(true);
-        $dom = new \DOMDocument();
-        $dom->loadHTML('<?xml encoding="UTF-8">' . $htmlContent);
-        libxml_clear_errors();
+        // Untuk receipt thermal 86mm:
+        // - 1 page = konten singkat, ~400-600pt
+        // - 2+ pages = ada konten panjang
 
-        // Hitung estimasi tinggi berdasarkan jumlah elemen dan teks
-        $body = $dom->getElementsByTagName('body')->item(0);
-
-        if (!$body) {
-            return 400 * 2.83465; // Default fallback
+        if ($numPages <= 1) {
+            // Single page - gunakan tinggi minimal yang cukup
+            return 600 * 2.83465; // ~150mm
         }
 
-        // Count elements dan estimate height
-        $rowCount = $body->getElementsByTagName('tr')->length;
-        $paragraphs = $body->getElementsByTagName('p')->length;
+        if ($numPages === 2) {
+            return 800 * 2.83465; // ~280mm
+        }
 
-        // Estimasi: setiap row ~8pt, setiap paragraph ~15pt (rough calculation)
-        $estimatedHeightPt = ($rowCount * 8) + ($paragraphs * 15) + 100;
-
-        // Add buffer untuk margins dan spacing
-        $estimatedHeightPt += 50;
-
-        return $estimatedHeightPt;
+        // 3+ pages - scale accordingly
+        return (400 + ($numPages - 1) * 300) * 2.83465;
     }
 
     public function printLatest()
