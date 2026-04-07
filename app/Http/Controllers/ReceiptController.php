@@ -72,10 +72,23 @@ class ReceiptController extends Controller
         $dompdf->loadHtml($htmlContent);
         $dompdf->render();
 
-        $canvas        = $dompdf->getCanvas();
-        $pageHeight    = $canvas->get_height();
-        $currentY      = $canvas->get_y();
-        $contentHeight = $pageHeight - $currentY + 10; // 10pt padding bawah
+        $canvas     = $dompdf->getCanvas();
+        $pageHeight = $canvas->get_height();
+
+        // Coba get_cpdf() dulu, fallback ke Reflection
+        if (method_exists($canvas, 'get_cpdf')) {
+            $cpdf     = $canvas->get_cpdf();
+            $currentY = $cpdf->y;
+        } else {
+            // Fallback: akses property $_pdf via Reflection
+            $reflection = new \ReflectionClass($canvas);
+            $prop       = $reflection->getProperty('_pdf');
+            $prop->setAccessible(true);
+            $cpdf       = $prop->getValue($canvas);
+            $currentY   = $cpdf->y;
+        }
+
+        $contentHeight = ($pageHeight - $currentY) + 20;
 
         // ── PASS 2: render dengan tinggi dinamis ────────────────────
         $dompdf2 = new Dompdf($options);
