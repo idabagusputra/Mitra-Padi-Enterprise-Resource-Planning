@@ -56,7 +56,7 @@ class ReceiptController extends Controller
         // Lebar thermal (86mm)
         $width = 86 * 2.83465;
 
-        // Render HTML dari Blade
+        // HTML dari Blade
         $htmlContent = view('receipt.thermal', compact(
             'giling',
             'daftarGiling',
@@ -64,72 +64,85 @@ class ReceiptController extends Controller
         ))->render();
 
         /**
-         * 🔥 POTONG HTML SAMPAI #akhir-konten (AMAN)
-         */
-        $endMarker = 'id="akhir-konten"';
-        $pos = strpos($htmlContent, $endMarker);
-
-        if ($pos !== false) {
-            // Cari </table> terakhir setelah marker
-            $endTablePos = strpos($htmlContent, '</table>', $pos);
-
-            if ($endTablePos !== false) {
-                $htmlContent = substr($htmlContent, 0, $endTablePos + 8);
-            }
-        }
-
-        /**
          * 🔥 CSS DEFAULT
          */
         $defaultCss = '
-        <style>
-            @page {
-                margin: 0mm 3mm 0mm 3mm;
-            }
-            body {
-                font-family: sans-serif;
-                margin: 0;
-                font-size: 10pt;
-                line-height: 1.3;
-            }
-            * {
-                box-sizing: border-box;
-            }
-            table {
-                width: 100%;
-            }
-            .text-center {
-                text-align: center;
-            }
-            .text-right {
-                text-align: right;
-            }
-            .font-bold {
-                font-weight: bold;
-            }
-        </style>
+    <style>
+        @page {
+            margin: 0mm 3mm 0mm 3mm;
+        }
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            font-size: 10pt;
+            line-height: 1.3;
+        }
+        * {
+            box-sizing: border-box;
+        }
+        table {
+            width: 100%;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .text-right {
+            text-align: right;
+        }
+        .font-bold {
+            font-weight: bold;
+        }
+    </style>
     ';
 
         $htmlContent = $defaultCss . $htmlContent;
 
         /**
-         * 🔥 HITUNG TINGGI DINAMIS (TANPA ANGKA FIX)
+         * 🔥 SET CALLBACK UNTUK AMBIL POSISI REAL #akhir-konten
          */
-        $textOnly = strip_tags($htmlContent);
-        $lineCount = substr_count($textOnly, "\n") + 50;
+        $endY = 0;
 
-        // 1 baris ≈ 12pt (estimasi aman thermal)
-        $height = $lineCount * 12;
+        $dompdf->setPaper([0, 0, $width, 2000]); // sementara (tidak masalah)
 
-        // Safety minimal tinggi
-        if ($height < 100) {
-            $height = 100;
+        $dompdf->setCallbacks([
+            'end_frame' => function ($frame) use (&$endY) {
+
+                $node = $frame->get_node();
+
+                if ($node && $node->nodeType === XML_ELEMENT_NODE) {
+
+                    if ($node->getAttribute('id') === 'akhir-konten') {
+
+                        $pos = $frame->get_position();
+                        $bottom = $pos['y'] + $frame->get_height();
+
+                        if ($bottom > $endY) {
+                            $endY = $bottom;
+                        }
+                    }
+                }
+            }
+        ]);
+
+        // Load & render pertama (hanya untuk hitung posisi)
+        $dompdf->loadHtml($htmlContent);
+        $dompdf->render();
+
+        /**
+         * 🔥 HITUNG TINGGI FINAL (PIXEL REAL)
+         */
+        if ($endY <= 0) {
+            // fallback kalau id tidak terbaca
+            $endY = $dompdf->getCanvas()->get_height();
         }
 
-        $dompdf->setPaper([0, 0, $width, $height]);
+        // Tambahkan sedikit margin biar tidak kepotong
+        $endY += 5;
 
-        // Load & render
-        $dompdf->loadHtml($htmlContent);
+        /**
+         * 🔥 SET UKURAN FINAL & RENDER ULANG
+         */
+        $dompdf->setPaper([0, 0, $width, $endY]);
         $dompdf->render();
 
         // Simpan file
