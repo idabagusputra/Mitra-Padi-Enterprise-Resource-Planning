@@ -474,8 +474,6 @@ $totalHutang = $kredit->jumlah + $bunga;
                 <td style="width: 50%; text-align: right; padding: 1px 0;">.</td>
             </tr>
         </table>
-
-
 </body>
 
 </html>
