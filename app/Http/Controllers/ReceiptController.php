@@ -32,7 +32,7 @@ class ReceiptController extends Controller
             abort(404, 'Data Giling tidak ditemukan.');
         }
 
-        // Get unpaid kredits
+        // Unpaid kredit
         $unpaidKredits = $giling->petani->kredits->where('status', false);
 
         // Hitung lama bulan
@@ -53,11 +53,8 @@ class ReceiptController extends Controller
 
         $dompdf = new Dompdf($options);
 
-        // Lebar thermal (86mm), tinggi BESAR (biar aman)
+        // Lebar thermal (86mm)
         $width = 86 * 2.83465;
-        $height = 1200 * 2.83465;
-
-        $dompdf->setPaper([0, 0, $width, $height]);
 
         // Render HTML dari Blade
         $htmlContent = view('receipt.thermal', compact(
@@ -67,12 +64,13 @@ class ReceiptController extends Controller
         ))->render();
 
         /**
-         * 🔥 POTONG HTML SAMPAI #akhir-konten
+         * 🔥 POTONG HTML SAMPAI #akhir-konten (AMAN)
          */
         $endMarker = 'id="akhir-konten"';
         $pos = strpos($htmlContent, $endMarker);
 
         if ($pos !== false) {
+            // Cari </table> terakhir setelah marker
             $endTablePos = strpos($htmlContent, '</table>', $pos);
 
             if ($endTablePos !== false) {
@@ -80,11 +78,13 @@ class ReceiptController extends Controller
             }
         }
 
-        // CSS default
+        /**
+         * 🔥 CSS DEFAULT
+         */
         $defaultCss = '
         <style>
             @page {
-                margin: 0mm 3mm 3mm 3mm;
+                margin: 0mm 3mm 0mm 3mm;
             }
             body {
                 font-family: sans-serif;
@@ -111,6 +111,22 @@ class ReceiptController extends Controller
     ';
 
         $htmlContent = $defaultCss . $htmlContent;
+
+        /**
+         * 🔥 HITUNG TINGGI DINAMIS (TANPA ANGKA FIX)
+         */
+        $textOnly = strip_tags($htmlContent);
+        $lineCount = substr_count($textOnly, "\n") + 50;
+
+        // 1 baris ≈ 12pt (estimasi aman thermal)
+        $height = $lineCount * 12;
+
+        // Safety minimal tinggi
+        if ($height < 100) {
+            $height = 100;
+        }
+
+        $dompdf->setPaper([0, 0, $width, $height]);
 
         // Load & render
         $dompdf->loadHtml($htmlContent);
