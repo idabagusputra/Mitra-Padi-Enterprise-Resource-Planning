@@ -50,20 +50,34 @@ class ReceiptController extends Controller
 
         $dompdf = new Dompdf($options);
 
-        // Get HTML content using existing view
         $htmlContent = view('receipt.thermal', compact('giling', 'daftarGiling', 'unpaidKredits'))->render();
 
-        // Dynamic height
+        // Potong HTML tepat setelah penutup table#akhir-konten
+        $marker = 'id="akhir-konten"';
+        $markerPos = strpos($htmlContent, $marker);
+        if ($markerPos !== false) {
+            // Cari </table> penutup setelah marker
+            $closePos = strpos($htmlContent, '</table>', $markerPos);
+            if ($closePos !== false) {
+                // Potong HTML sampai sini saja untuk penghitungan
+                $htmlTrimmed = substr($htmlContent, 0, $closePos + strlen('</table>'));
+            } else {
+                $htmlTrimmed = $htmlContent;
+            }
+        } else {
+            $htmlTrimmed = $htmlContent;
+        }
+
+        // Hitung tinggi dari konten yang sudah dipotong
         $dom = new \DOMDocument();
         libxml_use_internal_errors(true);
-        $dom->loadHTML(mb_convert_encoding($htmlContent, 'HTML-ENTITIES', 'UTF-8'));
+        $dom->loadHTML(mb_convert_encoding($htmlTrimmed, 'HTML-ENTITIES', 'UTF-8'));
         libxml_clear_errors();
 
-        $trCount    = $dom->getElementsByTagName('tr')->length;
-        $tableCount = $dom->getElementsByTagName('table')->length;
-        $imgCount   = $dom->getElementsByTagName('img')->length;
+        $trCount = $dom->getElementsByTagName('tr')->length;
+        $imgCount = $dom->getElementsByTagName('img')->length;
 
-        $estimatedMm = 30 + ($trCount * 7) + ($tableCount * 3) + ($imgCount * 15) + 10;
+        $estimatedMm = 30 + ($trCount * 7) + ($imgCount * 15) + 10;
         $estimatedMm = max(100, min(1200, $estimatedMm));
 
         $width  = 86 * 2.83465;

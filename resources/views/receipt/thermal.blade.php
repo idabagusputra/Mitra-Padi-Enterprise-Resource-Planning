@@ -456,7 +456,7 @@ $totalHutang = $kredit->jumlah + $bunga;
         </div>
 
         <!-- Titik-titik di kiri dan kanan sebanyak 4 baris -->
-        <table style="width: 100%; border-collapse: collapse; margin: 5px 0;">
+        <table id="akhir-konten"  style="width: 100%; border-collapse: collapse; margin: 5px 0;">
             <tr>
                 <td style="width: 50%; text-align: left; padding: 1px 0;">.</td>
                 <td style="width: 50%; text-align: right; padding: 1px 0;">.</td>
