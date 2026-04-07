@@ -27,13 +27,17 @@ class ReceiptController extends Controller
             abort(404, 'Data Giling tidak ditemukan.');
         }
 
+        // Get unpaid kredits
         $unpaidKredits = $giling->petani->kredits->where('status', false);
+
+        // Calculate lama_bulan for each kredit
         $now = Carbon::now();
         foreach ($unpaidKredits as $kredit) {
             $tanggal = Carbon::parse($kredit->tanggal);
             $kredit->lama_bulan = $tanggal->diffInMonths($now);
         }
 
+        // Setup DomPDF dengan konfigurasi khusus
         $options = new Options();
         $options->set('isRemoteEnabled', true);
         $options->set('isHtml5ParserEnabled', true);
@@ -42,125 +46,157 @@ class ReceiptController extends Controller
         $options->set('defaultMediaType', 'print');
         $options->set('dpi', 96);
         $options->set('debugKeepTemp', true);
+        // $options->set('debugCss', true);
 
+        $dompdf = new Dompdf($options);
+
+        // Get HTML content using existing view
         $htmlContent = view('receipt.thermal', compact('giling', 'daftarGiling', 'unpaidKredits'))->render();
 
-        $defaultCss = '
-        <style>
-            @page { margin: 0mm 3mm 3mm 3mm; }
-            body {
-                font-family: sans-serif;
-                margin: 0;
-                font-size: 10pt;
-                line-height: 1.3;
-            }
-            * { box-sizing: border-box; }
-            table { width: 100%; }
-            .text-center { text-align: center; }
-            .text-right { text-align: right; }
-            .font-bold { font-weight: bold; }
-        </style>
-    ';
+        // Dynamic height
+        $dom = new \DOMDocument();
+        libxml_use_internal_errors(true);
+        $dom->loadHTML(mb_convert_encoding($htmlContent, 'HTML-ENTITIES', 'UTF-8'));
+        libxml_clear_errors();
 
+        $trCount    = $dom->getElementsByTagName('tr')->length;
+        $tableCount = $dom->getElementsByTagName('table')->length;
+        $imgCount   = $dom->getElementsByTagName('img')->length;
+
+        $estimatedMm = 30 + ($trCount * 7) + ($tableCount * 3) + ($imgCount * 15) + 10;
+        $estimatedMm = max(100, min(1200, $estimatedMm));
+
+        $width  = 86 * 2.83465;
+        $height = $estimatedMm * 2.83465;
+
+        $dompdf->setPaper([0, 0, $width, $height]);
+
+
+        // Add default CSS untuk memastikan tampilan sesuai
+        $defaultCss = '
+            <style>
+                @page {
+                    margin: 0mm 3mm 3mm 3mm;
+
+                }
+                body {
+                    font-family: sans-serif;
+                    margin: 0;
+
+                    font-size: 10pt;
+                    line-height: 1.3;
+                }
+                * {
+                    box-sizing: border-box;
+                }
+                table {
+                    width: 100%;
+                }
+                .text-center {
+                    text-align: center;
+                }
+                .text-right {
+                    text-align: right;
+                }
+                .font-bold {
+                    font-weight: bold;
+                }
+            </style>
+        ';
+
+        // Combine CSS with HTML content
         $htmlContent = $defaultCss . $htmlContent;
 
-        $width = 86 * 2.83465; // lebar tetap dalam points
-
-        // ── PASS 1: ukur tinggi konten ──────────────────────────────
-        $dompdf = new Dompdf($options);
-        $dompdf->setPaper([0, 0, $width, 99999]);
+        // Load HTML ke DomPDF
         $dompdf->loadHtml($htmlContent);
+
+        // Render PDF
         $dompdf->render();
 
-        $canvas     = $dompdf->getCanvas();
-        $pageHeight = $canvas->get_height();
-
-        // Coba get_cpdf() dulu, fallback ke Reflection
-        if (method_exists($canvas, 'get_cpdf')) {
-            $cpdf     = $canvas->get_cpdf();
-            $currentY = $cpdf->y;
-        } else {
-            // Fallback: akses property $_pdf via Reflection
-            $reflection = new \ReflectionClass($canvas);
-            $prop       = $reflection->getProperty('_pdf');
-            $prop->setAccessible(true);
-            $cpdf       = $prop->getValue($canvas);
-            $currentY   = $cpdf->y;
-        }
-
-        $contentHeight = ($pageHeight - $currentY) + 20;
-
-        // ── PASS 2: render dengan tinggi dinamis ────────────────────
-        $dompdf2 = new Dompdf($options);
-        $dompdf2->setPaper([0, 0, $width, $contentHeight]);
-        $dompdf2->loadHtml($htmlContent);
-        $dompdf2->render();
-
-        $pdfContent = $dompdf2->output();
-
-        // ── Simpan ke disk ──────────────────────────────────────────
+        // Define PDF path
+        // $pdfFileName = $giling->id . '_' . 'Nota_Giling_' . date('Y-m-d_H-i-s') . '.pdf';
         $pdfFileName = 'receipt-' . $giling->id . '.pdf';
-        $pdfPath     = public_path('receipts');
+        $pdfPath = public_path('receipts');
 
+        // Ensure directory exists
         if (!file_exists($pdfPath)) {
             mkdir($pdfPath, 0755, true);
         }
 
         $pdfFullPath = $pdfPath . '/' . $pdfFileName;
-        file_put_contents($pdfFullPath, $pdfContent);
 
         try {
-            // ── Upload ke Cloudflare R2 ─────────────────────────────
+            // Save PDF to file
+            file_put_contents($pdfFullPath, $dompdf->output());
+            // Generate the PDF content
+            $pdfContent = $dompdf->output();
+
+            // Cloudflare R2 Upload
             $r2Client = new S3Client([
-                'version'     => 'latest',
-                'region'      => 'auto',
-                'endpoint'    => 'https://c9961806b72189a4d763edfd8dc0e55f.r2.cloudflarestorage.com',
+                'version' => 'latest',
+                'region' => 'auto',
+                'endpoint' => 'https://c9961806b72189a4d763edfd8dc0e55f.r2.cloudflarestorage.com',
                 'credentials' => [
-                    'key'    => '2abc6cf8c76a71e84264efef65031933',
+                    'key' => '2abc6cf8c76a71e84264efef65031933',
                     'secret' => '1aa2ca39d8480cdbf846807ad5a7a1e492e72ee9a947ead03ef5d8ad67dea45d',
                 ]
             ]);
 
             $r2FileName = 'Nota_Giling/' . $giling->id . '_Nota_Giling_' . date('Y-m-d_H-i-s') . '.pdf';
 
-            $r2Client->putObject([
-                'Bucket'      => 'mitra-padi',
-                'Body'        => $pdfContent,
-                'Key'         => $r2FileName,
+            $r2Upload = $r2Client->putObject([
+                'Bucket' => 'mitra-padi', // Nama bucket Anda
+                'Body' => $pdfContent,
+                'Key' => $r2FileName,
                 'ContentType' => 'application/pdf',
-                'ACL'         => 'public-read'
+                'ACL' => 'public-read'
             ]);
 
+            // Dapatkan URL publik R2
             $r2Url = "https://pub-b2576acededb43e08e7292257cd6a4c8.r2.dev/{$r2FileName}";
+
+            // Menyimpan URL Cloudinary ke database
             $daftarGiling->s3_url = $r2Url;
             $daftarGiling->save();
 
-            // ── Upload ke Google Drive ──────────────────────────────
+
+            // Set up Google Drive client
             $client = new Client();
             $client->setAuthConfig(storage_path('app/google-drive-credentials.json'));
             $client->addScope(Drive::DRIVE);
 
             $driveService = new Drive($client);
 
-            $folderCheck = $driveService->files->get('124X5hrQB-fxqMk66zAY8Cp-CFyysSOME', ['fields' => 'id,name']);
-            Log::info('Folder found: ' . $folderCheck->getName());
+            // Check folder access
+            try {
+                $folderCheck = $driveService->files->get('124X5hrQB-fxqMk66zAY8Cp-CFyysSOME', [
+                    'fields' => 'id,name'
+                ]);
+                Log::info('Folder found: ' . $folderCheck->getName());
+            } catch (\Exception $e) {
+                Log::error('Failed to access folder: ' . $e->getMessage());
+                throw new \Exception('Folder cannot be accessed');
+            }
 
+            // Prepare file metadata
             $fileMetadata = new Drive\DriveFile([
-                'name'    => $pdfFileName,
+                'name' => $pdfFileName,
                 'parents' => ['124X5hrQB-fxqMk66zAY8Cp-CFyysSOME']
             ]);
 
+            // Upload file to Google Drive
             $file = $driveService->files->create($fileMetadata, [
-                'data'       => $pdfContent,
-                'mimeType'   => 'application/pdf',
+                'data' => $dompdf->output(),
+                'mimeType' => 'application/pdf',
                 'uploadType' => 'multipart',
-                'fields'     => 'id,webViewLink'
+                'fields' => 'id,webViewLink'
             ]);
 
+            // Return file path along with Drive details for further use
             return [
-                'pdf_path'      => $pdfFullPath,
-                'file_id'       => $file->id,
-                'web_view_link' => $file->webViewLink
+                'pdf_path' => $pdfFullPath, // PDF file path
+                'file_id' => $file->id,      // Google Drive file ID
+                'web_view_link' => $file->webViewLink // Google Drive file view link
             ];
         } catch (\Exception $e) {
             Log::error('Upload failed: ' . $e->getMessage());
