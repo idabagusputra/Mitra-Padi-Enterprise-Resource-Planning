@@ -32,7 +32,7 @@ class ReceiptController extends Controller
             abort(404, 'Data Giling tidak ditemukan.');
         }
 
-        // Unpaid kredit
+        // Get unpaid kredits
         $unpaidKredits = $giling->petani->kredits->where('status', false);
 
         // Hitung lama bulan
@@ -53,10 +53,13 @@ class ReceiptController extends Controller
 
         $dompdf = new Dompdf($options);
 
-        // Lebar thermal (86mm)
+        // Lebar thermal (86mm), tinggi BESAR (biar aman)
         $width = 86 * 2.83465;
+        $height = 1200 * 2.83465;
 
-        // HTML dari Blade
+        $dompdf->setPaper([0, 0, $width, $height]);
+
+        // Render HTML dari Blade
         $htmlContent = view('receipt.thermal', compact(
             'giling',
             'daftarGiling',
@@ -64,85 +67,48 @@ class ReceiptController extends Controller
         ))->render();
 
         /**
-         * 🔥 CSS DEFAULT
+         * 🔥 POTONG HTML SAMPAI #akhir-konten
          */
+        $endMarker = 'id="akhir-konten"';
+        $pos = strpos($htmlContent, '<!-- END_PRINT -->');
+        if ($pos !== false) {
+            $htmlContent = substr($htmlContent, 0, $pos);
+        }
+
+        // CSS default
         $defaultCss = '
-    <style>
-        @page {
-            margin: 0mm 3mm 0mm 3mm;
-        }
-        body {
-            font-family: sans-serif;
-            margin: 0;
-            font-size: 10pt;
-            line-height: 1.3;
-        }
-        * {
-            box-sizing: border-box;
-        }
-        table {
-            width: 100%;
-        }
-        .text-center {
-            text-align: center;
-        }
-        .text-right {
-            text-align: right;
-        }
-        .font-bold {
-            font-weight: bold;
-        }
-    </style>
+        <style>
+            @page {
+                margin: 0mm 3mm 3mm 3mm;
+            }
+            body {
+                font-family: sans-serif;
+                margin: 0;
+                font-size: 10pt;
+                line-height: 1.3;
+            }
+            * {
+                box-sizing: border-box;
+            }
+            table {
+                width: 100%;
+            }
+            .text-center {
+                text-align: center;
+            }
+            .text-right {
+                text-align: right;
+            }
+            .font-bold {
+                font-weight: bold;
+            }
+        </style>
     ';
 
         $htmlContent = $defaultCss . $htmlContent;
 
-        /**
-         * 🔥 SET CALLBACK UNTUK AMBIL POSISI REAL #akhir-konten
-         */
-        $endY = 0;
-
-        $dompdf->setPaper([0, 0, $width, 2000]); // sementara (tidak masalah)
-
-        $dompdf->setCallbacks([
-            'end_frame' => function ($frame) use (&$endY) {
-
-                $node = $frame->get_node();
-
-                if ($node && $node->nodeType === XML_ELEMENT_NODE) {
-
-                    if ($node->getAttribute('id') === 'akhir-konten') {
-
-                        $pos = $frame->get_position();
-                        $bottom = $pos['y'] + $frame->get_height();
-
-                        if ($bottom > $endY) {
-                            $endY = $bottom;
-                        }
-                    }
-                }
-            }
-        ]);
-
-        // Load & render pertama (hanya untuk hitung posisi)
+        // Load & render
         $dompdf->loadHtml($htmlContent);
-        $dompdf->render();
-
-        /**
-         * 🔥 HITUNG TINGGI FINAL (PIXEL REAL)
-         */
-        if ($endY <= 0) {
-            // fallback kalau id tidak terbaca
-            $endY = $dompdf->getCanvas()->get_height();
-        }
-
-        // Tambahkan sedikit margin biar tidak kepotong
-        $endY += 5;
-
-        /**
-         * 🔥 SET UKURAN FINAL & RENDER ULANG
-         */
-        $dompdf->setPaper([0, 0, $width, $endY]);
         $dompdf->render();
 
         // Simpan file

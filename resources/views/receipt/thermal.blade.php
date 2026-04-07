@@ -475,7 +475,7 @@ $totalHutang = $kredit->jumlah + $bunga;
             </tr>
         </table>
 
-        <table id="akhir-konten">
+        <!-- END_PRINT -->
 </body>
 
 </html>
