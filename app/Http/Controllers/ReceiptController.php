@@ -51,20 +51,42 @@ class ReceiptController extends Controller
         $options->set('defaultMediaType', 'print');
         $options->set('dpi', 96);
 
-        $dompdf = new Dompdf($options);
-
-        // Lebar thermal (86mm), tinggi BESAR (biar aman)
-        $width = 86 * 2.83465;
-        $height = 1200 * 2.83465;
-
-        $dompdf->setPaper([0, 0, $width, $height]);
-
         // Render HTML dari Blade
         $htmlContent = view('receipt.thermal', compact(
             'giling',
             'daftarGiling',
             'unpaidKredits'
         ))->render();
+
+        $dompdf = new Dompdf($options);
+
+        // Lebar tetap
+        $width = 86 * 2.83465;
+
+        // Render pertama (dummy tinggi besar)
+        $dompdf->setPaper([0, 0, $width, 2000 * 2.83465]);
+
+        $dompdf->loadHtml($htmlContent);
+        $dompdf->render();
+
+        /**
+         * 🔥 AMBIL TINGGI ASLI PDF
+         */
+        $canvas = $dompdf->getCanvas();
+        $height = $canvas->get_height();
+
+        /**
+         * 🔥 RENDER ULANG DENGAN TINGGI PAS
+         */
+        $dompdf = new Dompdf($options);
+        $dompdf->setPaper([0, 0, $width, $height]);
+
+        $dompdf->loadHtml($htmlContent);
+        $dompdf->render();
+
+        $dompdf->setPaper([0, 0, $width, $height]);
+
+
 
         /**
          * 🔥 POTONG HTML SAMPAI #akhir-konten
