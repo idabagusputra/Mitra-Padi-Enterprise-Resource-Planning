@@ -392,6 +392,11 @@ Route::get('/nota', function (Request $request) {
     return view('nota-sementara');
 });
 
+
+
+Route::post('/drive/upload-nota', [BukuStokController::class, 'uploadNota'])
+    ->name('drive.upload-nota');
+
 Route::group(['middleware' => 'guest'], function () {
 
 

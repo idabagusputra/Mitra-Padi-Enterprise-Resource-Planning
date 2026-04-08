@@ -4746,7 +4746,13 @@ async function saveNotaPDF() {
         });
 
         const imgData = canvas.toDataURL('image/png', 1.0);
-        doc.addImage(imgData, 'PNG', 0, 0, PDF_WIDTH_MM, pdfHeightMm);
+        doc.save(filename);
+        showToast('✓ PDF berhasil disimpan: ' + filename, 'success');
+
+        // ── Kirim ke Google Drive (tambahan, tidak ubah logika lama) ──
+        const pdfBlob = doc.output('blob');           // ← baris baru 1
+        uploadNotaToDrive(pdfBlob, filename);          // ← baris baru 2
+        // ─────────────────────────────────────────────────────────────
 
         // ============================================
         // Nama file: keterangan_tanggal.pdf
@@ -4775,6 +4781,44 @@ async function saveNotaPDF() {
     } finally {
         btn.innerHTML = originalHTML;
         btn.disabled = false;
+    }
+}
+
+// ============================================
+// UPLOAD NOTA PDF KE GOOGLE DRIVE
+// Dipanggil setelah saveNotaPDF() selesai
+// ============================================
+async function uploadNotaToDrive(docBlob, filename) {
+    try {
+        const formData = new FormData();
+        formData.append('pdf', docBlob, filename);
+        formData.append('filename', filename);
+
+        // CSRF token Laravel
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content
+            || document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1]
+            || '';
+
+        const response = await fetch('/drive/upload-nota', {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': decodeURIComponent(csrfToken),
+            },
+            body: formData,
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            showToast('☁️ PDF terkirim ke Drive: ' + filename, 'success');
+            console.log('Drive link:', result.web_view_link);
+        } else {
+            console.error('Upload Drive gagal:', result.message);
+            showToast('⚠️ Gagal kirim ke Drive: ' + result.message, 'warning');
+        }
+    } catch (err) {
+        console.error('Upload Drive error:', err);
+        showToast('⚠️ Gagal kirim ke Drive', 'warning');
     }
 }
 

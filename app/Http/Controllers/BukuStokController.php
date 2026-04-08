@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Google\Client;
+use Google\Service\Drive;
 
 use App\Models\Petani;
 use App\Models\BukuStokBeras;
@@ -17,6 +20,67 @@ use App\Models\StokGlobal;
 
 class BukuStokController extends Controller
 {
+
+    private const FOLDER_ID = '124X5hrQB-fxqMk66zAY8Cp-CFyysSOME';
+
+    public function uploadNota(Request $request)
+    {
+        $request->validate([
+            'pdf'      => 'required|file|mimes:pdf|max:20480',
+            'filename' => 'required|string|max:255',
+        ]);
+
+        try {
+            $pdfFile    = $request->file('pdf');
+            $pdfContent = file_get_contents($pdfFile->getRealPath());
+            $filename   = $request->input('filename');
+
+            // ── Autentikasi Service Account ──────────────────────────
+            $client = new Client();
+            $client->setAuthConfig(storage_path('app/google-drive-credentials.json'));
+            $client->addScope(Drive::DRIVE);
+
+            $driveService = new Drive($client);
+
+            // ── Verifikasi folder target ─────────────────────────────
+            $folderCheck = $driveService->files->get(
+                self::FOLDER_ID,
+                ['fields' => 'id,name']
+            );
+            Log::info('Drive folder found: ' . $folderCheck->getName());
+
+            // ── Upload file ──────────────────────────────────────────
+            $fileMetadata = new Drive\DriveFile([
+                'name'    => $filename,
+                'parents' => [self::FOLDER_ID],
+            ]);
+
+            $file = $driveService->files->create($fileMetadata, [
+                'data'       => $pdfContent,
+                'mimeType'   => 'application/pdf',
+                'uploadType' => 'multipart',
+                'fields'     => 'id,webViewLink',
+            ]);
+
+            Log::info('PDF uploaded to Drive', [
+                'file_id'       => $file->id,
+                'web_view_link' => $file->webViewLink,
+                'filename'      => $filename,
+            ]);
+
+            return response()->json([
+                'success'       => true,
+                'file_id'       => $file->id,
+                'web_view_link' => $file->webViewLink,
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Drive upload failed: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
 
     public function getServisCounter()
     {
