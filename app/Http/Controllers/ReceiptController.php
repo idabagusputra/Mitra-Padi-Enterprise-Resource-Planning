@@ -27,17 +27,13 @@ class ReceiptController extends Controller
             abort(404, 'Data Giling tidak ditemukan.');
         }
 
-        // Get unpaid kredits
         $unpaidKredits = $giling->petani->kredits->where('status', false);
-
-        // Calculate lama_bulan for each kredit
         $now = Carbon::now();
         foreach ($unpaidKredits as $kredit) {
-            $tanggal = Carbon::parse($kredit->tanggal);
-            $kredit->lama_bulan = $tanggal->diffInMonths($now);
+            $kredit->lama_bulan = Carbon::parse($kredit->tanggal)->diffInMonths($now);
         }
 
-        // Setup DomPDF dengan konfigurasi khusus
+        // ── Setup DomPDF ────────────────────────────────────────────
         $options = new Options();
         $options->set('isRemoteEnabled', true);
         $options->set('isHtml5ParserEnabled', true);
@@ -45,146 +41,110 @@ class ReceiptController extends Controller
         $options->set('isFontSubsettingEnabled', true);
         $options->set('defaultMediaType', 'print');
         $options->set('dpi', 96);
-        $options->set('debugKeepTemp', true);
-        // $options->set('debugCss', true);
 
+        // Lebar thermal printer: 86mm → points (1mm = 2.83465pt)
+        $widthMm  = 86;
+        $widthPt  = $widthMm * 2.83465;
+
+        // ── LANGKAH 1: Render sementara dengan height besar ─────────
+        // Tujuan: hitung berapa tinggi konten sesungguhnya
         $dompdf = new Dompdf($options);
+        $dompdf->setPaper([0, 0, $widthPt, 99999]); // height sangat besar agar tidak terpotong
 
-        // Convert mm to points (1mm = 2.83465 points)
-        $width = 86 * 2.83465;
-        $height = 400 * 2.83465;
-
-        // Set custom paper size
-        $dompdf->setPaper(array(0, 0, $width, $height));
-
-        // Get HTML content using existing view
-        $htmlContent = view('receipt.thermal', compact('giling', 'daftarGiling', 'unpaidKredits'))->render();
-
-        // Add default CSS untuk memastikan tampilan sesuai
         $defaultCss = '
-            <style>
-                @page {
-                    margin: 0mm 3mm 3mm 3mm;
+        <style>
+            @page { margin: 0mm 3mm 3mm 3mm; }
+            body  { font-family: sans-serif; margin: 0; font-size: 10pt; line-height: 1.3; }
+            *     { box-sizing: border-box; }
+            table { width: 100%; }
+            .text-center { text-align: center; }
+            .text-right  { text-align: right;  }
+            .font-bold   { font-weight: bold;  }
+        </style>
+    ';
 
-                }
-                body {
-                    font-family: sans-serif;
-                    margin: 0;
+        $htmlContent = $defaultCss . view('receipt.thermal', compact('giling', 'daftarGiling', 'unpaidKredits'))->render();
 
-                    font-size: 10pt;
-                    line-height: 1.3;
-                }
-                * {
-                    box-sizing: border-box;
-                }
-                table {
-                    width: 100%;
-                }
-                .text-center {
-                    text-align: center;
-                }
-                .text-right {
-                    text-align: right;
-                }
-                .font-bold {
-                    font-weight: bold;
-                }
-            </style>
-        ';
-
-        // Combine CSS with HTML content
-        $htmlContent = $defaultCss . $htmlContent;
-
-        // Load HTML ke DomPDF
         $dompdf->loadHtml($htmlContent);
-
-        // Render PDF
         $dompdf->render();
 
-        // Define PDF path
-        // $pdfFileName = $giling->id . '_' . 'Nota_Giling_' . date('Y-m-d_H-i-s') . '.pdf';
-        $pdfFileName = 'receipt-' . $giling->id . '.pdf';
-        $pdfPath = public_path('receipts');
+        // ── LANGKAH 2: Ukur tinggi konten aktual ────────────────────
+        $canvas      = $dompdf->getCanvas();
+        $contentHeight = $canvas->get_height(); // dalam points
 
-        // Ensure directory exists
+        // Tambahkan sedikit padding bawah agar konten tidak kepotong
+        $paddingPt   = 10; // ~3.5mm
+        $finalHeight = $contentHeight + $paddingPt;
+
+        // ── LANGKAH 3: Render ulang dengan ukuran yang tepat ────────
+        $dompdf = new Dompdf($options);
+        $dompdf->setPaper([0, 0, $widthPt, $finalHeight]);
+        $dompdf->loadHtml($htmlContent);
+        $dompdf->render();
+
+        // ── Simpan file ─────────────────────────────────────────────
+        $pdfFileName = 'receipt-' . $giling->id . '.pdf';
+        $pdfPath     = public_path('receipts');
+
         if (!file_exists($pdfPath)) {
             mkdir($pdfPath, 0755, true);
         }
 
         $pdfFullPath = $pdfPath . '/' . $pdfFileName;
+        $pdfContent  = $dompdf->output();
 
         try {
-            // Save PDF to file
-            file_put_contents($pdfFullPath, $dompdf->output());
-            // Generate the PDF content
-            $pdfContent = $dompdf->output();
+            file_put_contents($pdfFullPath, $pdfContent);
 
-            // Cloudflare R2 Upload
+            // ── Upload ke Cloudflare R2 ──────────────────────────────
             $r2Client = new S3Client([
-                'version' => 'latest',
-                'region' => 'auto',
-                'endpoint' => 'https://c9961806b72189a4d763edfd8dc0e55f.r2.cloudflarestorage.com',
+                'version'     => 'latest',
+                'region'      => 'auto',
+                'endpoint'    => 'https://c9961806b72189a4d763edfd8dc0e55f.r2.cloudflarestorage.com',
                 'credentials' => [
-                    'key' => '2abc6cf8c76a71e84264efef65031933',
+                    'key'    => '2abc6cf8c76a71e84264efef65031933',
                     'secret' => '1aa2ca39d8480cdbf846807ad5a7a1e492e72ee9a947ead03ef5d8ad67dea45d',
                 ]
             ]);
 
             $r2FileName = 'Nota_Giling/' . $giling->id . '_Nota_Giling_' . date('Y-m-d_H-i-s') . '.pdf';
-
-            $r2Upload = $r2Client->putObject([
-                'Bucket' => 'mitra-padi', // Nama bucket Anda
-                'Body' => $pdfContent,
-                'Key' => $r2FileName,
+            $r2Client->putObject([
+                'Bucket'      => 'mitra-padi',
+                'Body'        => $pdfContent,
+                'Key'         => $r2FileName,
                 'ContentType' => 'application/pdf',
-                'ACL' => 'public-read'
+                'ACL'         => 'public-read',
             ]);
 
-            // Dapatkan URL publik R2
             $r2Url = "https://pub-b2576acededb43e08e7292257cd6a4c8.r2.dev/{$r2FileName}";
-
-            // Menyimpan URL Cloudinary ke database
             $daftarGiling->s3_url = $r2Url;
             $daftarGiling->save();
 
-
-            // Set up Google Drive client
+            // ── Upload ke Google Drive ───────────────────────────────
             $client = new Client();
             $client->setAuthConfig(storage_path('app/google-drive-credentials.json'));
             $client->addScope(Drive::DRIVE);
-
             $driveService = new Drive($client);
 
-            // Check folder access
-            try {
-                $folderCheck = $driveService->files->get('124X5hrQB-fxqMk66zAY8Cp-CFyysSOME', [
-                    'fields' => 'id,name'
-                ]);
-                Log::info('Folder found: ' . $folderCheck->getName());
-            } catch (\Exception $e) {
-                Log::error('Failed to access folder: ' . $e->getMessage());
-                throw new \Exception('Folder cannot be accessed');
-            }
+            $folderCheck = $driveService->files->get('124X5hrQB-fxqMk66zAY8Cp-CFyysSOME', ['fields' => 'id,name']);
+            Log::info('Folder found: ' . $folderCheck->getName());
 
-            // Prepare file metadata
             $fileMetadata = new Drive\DriveFile([
-                'name' => $pdfFileName,
-                'parents' => ['124X5hrQB-fxqMk66zAY8Cp-CFyysSOME']
+                'name'    => $pdfFileName,
+                'parents' => ['124X5hrQB-fxqMk66zAY8Cp-CFyysSOME'],
             ]);
 
-            // Upload file to Google Drive
             $file = $driveService->files->create($fileMetadata, [
-                'data' => $dompdf->output(),
-                'mimeType' => 'application/pdf',
+                'data'       => $pdfContent,
+                'mimeType'   => 'application/pdf',
                 'uploadType' => 'multipart',
-                'fields' => 'id,webViewLink'
+                'fields'     => 'id,webViewLink',
             ]);
 
-            // Return file path along with Drive details for further use
             return [
-                'pdf_path' => $pdfFullPath, // PDF file path
-                'file_id' => $file->id,      // Google Drive file ID
-                'web_view_link' => $file->webViewLink // Google Drive file view link
+                'pdf_path'      => $pdfFullPath,
+                'file_id'       => $file->id,
+                'web_view_link' => $file->webViewLink,
             ];
         } catch (\Exception $e) {
             Log::error('Upload failed: ' . $e->getMessage());
