@@ -4746,13 +4746,23 @@ async function saveNotaPDF() {
         });
 
         const imgData = canvas.toDataURL('image/png', 1.0);
+         // ✅ Deklarasi filename harus sudah ada LEBIH DULU
+        const keteranganEl = iframeDoc.querySelector('.keterangan div');
+        const tanggalEl    = iframeDoc.querySelector('.date-row span:first-child');
+        const keterangan = keteranganEl
+            ? keteranganEl.textContent.trim().replace(/[\/\\:*?"<>|]/g, '-')
+            : 'Nota';
+        const tanggal = tanggalEl
+            ? tanggalEl.textContent.trim().replace(/\//g, '-')
+            : new Date().toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-');
+        const filename = `${tanggal}_${keterangan}.pdf`;
+
         doc.save(filename);
         showToast('✓ PDF berhasil disimpan: ' + filename, 'success');
 
-        // ── Kirim ke Google Drive (tambahan, tidak ubah logika lama) ──
-        const pdfBlob = doc.output('blob');           // ← baris baru 1
-        uploadNotaToDrive(pdfBlob, filename);          // ← baris baru 2
-        // ─────────────────────────────────────────────────────────────
+        // ✅ Baru taruh dua baris ini — filename sudah terdefinisi di atas
+        const pdfBlob = doc.output('blob');
+        uploadNotaToDrive(pdfBlob, filename);
 
         // ============================================
         // Nama file: keterangan_tanggal.pdf
