@@ -97,7 +97,7 @@ class ReceiptController extends Controller
             $finalHeight = 400 * 2.83465; // fallback
         } else {
             $contentUsed = 99999 - $minY;
-            $finalHeight = $contentUsed + 20; // 20pt padding bawah
+            $finalHeight = $contentUsed + 15; // 20pt padding bawah
         }
 
         Log::info("PDF Height - minY: {$minY}, contentUsed: " . (99999 - $minY) . ", finalHeight: {$finalHeight}");
@@ -113,7 +113,7 @@ class ReceiptController extends Controller
         $contentHeight = $canvas->get_height(); // dalam points
 
         // Tambahkan sedikit padding bawah agar konten tidak kepotong
-        $paddingPt   = 10; // ~3.5mm
+        $paddingPt   = 0; // ~3.5mm
         $finalHeight = $contentHeight + $paddingPt;
 
         // ── LANGKAH 3: Render ulang dengan ukuran yang tepat ────────
