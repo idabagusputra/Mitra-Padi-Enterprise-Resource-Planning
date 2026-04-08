@@ -42,70 +42,37 @@ class ReceiptController extends Controller
         $options->set('defaultMediaType', 'print');
         $options->set('dpi', 96);
 
-        $widthMm = 86;
-        $widthPt = $widthMm * 2.83465; // 243.78pt
+        // Lebar thermal printer: 86mm → points (1mm = 2.83465pt)
+        $widthMm  = 86;
+        $widthPt  = $widthMm * 2.83465;
 
-        $htmlContent = view('receipt.thermal', compact('giling', 'daftarGiling', 'unpaidKredits'))->render();
+        // ── LANGKAH 1: Render sementara dengan height besar ─────────
+        // Tujuan: hitung berapa tinggi konten sesungguhnya
+        $dompdf = new Dompdf($options);
+        $dompdf->setPaper([0, 0, $widthPt, 99999]); // height sangat besar agar tidak terpotong
 
         $defaultCss = '
-    <style>
-        @page { margin: 0mm 3mm 3mm 3mm; }
-        body  { font-family: sans-serif; margin: 0; font-size: 10pt; line-height: 1.3; }
-        *     { box-sizing: border-box; }
-        table { width: 100%; }
-        .text-center { text-align: center; }
-        .text-right  { text-align: right;  }
-        .font-bold   { font-weight: bold;  }
-    </style>
-';
-
-        $fullHtml = $defaultCss . $htmlContent;
-
-        // ── RENDER PERTAMA: height sangat besar ──────────────────────
-        $dompdf = new Dompdf($options);
-        $dompdf->setPaper([0, 0, $widthPt, 99999]);
-        $dompdf->loadHtml($fullHtml);
-        $dompdf->render();
-
-        // ── AMBIL POSISI Y ELEMEN TERAKHIR dari CPDF ─────────────────
-        // DomPDF koordinat: Y=0 ada di BAWAH (system PDF)
-        // Elemen pertama ditulis di Y tinggi, elemen terakhir di Y rendah
-        $cpdf    = $dompdf->getCanvas()->get_cpdf();
-        $minY    = PHP_INT_MAX;
-
-        foreach ($cpdf->objects as $obj) {
-            if (!isset($obj['t']) || $obj['t'] !== 'contents' || empty($obj['c'])) {
-                continue;
-            }
-            // Cari semua perintah "text position" (Td, TD, Tm) dan "draw" (re = rectangle)
-            // Format: x y Td  atau  x y w h re
-            if (preg_match_all('/([\d.]+)\s+([\d.]+)\s+Td/', $obj['c'], $tdMatches)) {
-                foreach ($tdMatches[2] as $y) {
-                    $minY = min($minY, (float)$y);
-                }
-            }
-            if (preg_match_all('/([\d.]+)\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)\s+re/', $obj['c'], $reMatches)) {
-                foreach ($reMatches[2] as $y) {
-                    $minY = min($minY, (float)$y);
-                }
-            }
+        <style>
+             @page { margin: 0mm 3mm 3mm 3mm; }
+        html, body { margin: 0 !important; padding: 0 !important; }
+        body {
+            font-family: sans-serif;
+            font-size: 10pt;
+            line-height: 1.3;
+            width: 100%;
+            text-align: left;
         }
+        * { box-sizing: border-box; }
+            table { width: 100%; }
+            .text-center { text-align: center; }
+            .text-right  { text-align: right;  }
+            .font-bold   { font-weight: bold;  }
+        </style>
+    ';
 
-        // Konversi: tinggi konten = 99999 - minY (karena Y terbalik di PDF)
-        // Tambah margin bawah 10pt (~3.5mm)
-        if ($minY === PHP_INT_MAX) {
-            $finalHeight = 400 * 2.83465; // fallback
-        } else {
-            $contentUsed = 99999 - $minY;
-            $finalHeight = $contentUsed + 15; // 20pt padding bawah
-        }
+        $htmlContent = $defaultCss . view('receipt.thermal', compact('giling', 'daftarGiling', 'unpaidKredits'))->render();
 
-        Log::info("PDF Height - minY: {$minY}, contentUsed: " . (99999 - $minY) . ", finalHeight: {$finalHeight}");
-
-        // ── RENDER KEDUA: ukuran tepat ───────────────────────────────
-        $dompdf = new Dompdf($options);
-        $dompdf->setPaper([0, 0, $widthPt, $finalHeight]);
-        $dompdf->loadHtml($fullHtml);
+        $dompdf->loadHtml($htmlContent);
         $dompdf->render();
 
         // ── LANGKAH 2: Ukur tinggi konten aktual ────────────────────
@@ -113,7 +80,7 @@ class ReceiptController extends Controller
         $contentHeight = $canvas->get_height(); // dalam points
 
         // Tambahkan sedikit padding bawah agar konten tidak kepotong
-        $paddingPt   = 0; // ~3.5mm
+        $paddingPt   = 10; // ~3.5mm
         $finalHeight = $contentHeight + $paddingPt;
 
         // ── LANGKAH 3: Render ulang dengan ukuran yang tepat ────────
