@@ -2769,7 +2769,7 @@
                     <div class="spinner-border text-success" role="status">
                         <span class="visually-hidden">Loading...</span>
                     </div>
-                    <p class="mt-3 text-muted">Sedang membuat gambar...</p>
+                    <p class="mt-3 text-muted">Sedang membuat nota...</p>
                 </div>
             </div>
             <div class="modal-footer">
@@ -2777,7 +2777,7 @@
                     <i class="bi bi-x-circle"></i> Tutup
                 </button>
                 <button type="button" class="btn btn-success" id="btn-save-nota-operator">
-                    <i class="bi bi-download"></i> Simpan PNG
+                    <i class="bi bi-download"></i> Simpan PDF
                 </button>
                 <button type="button" class="btn btn-primary" id="btn-print-nota-operator">
                     <i class="bi bi-printer"></i> Cetak
@@ -2820,13 +2820,21 @@
         <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
             <table style="width: 100%; font-size: 0.9rem;">
                 <tr>
-                    <td style="padding: 0.25rem 0;"><strong>Total Giling Kotor Saat Ini:</strong></td>
-                    <td id="servis-current-value" style="text-align: right; font-weight: bold; color: #f5365c;">-</td>
+                    <td style="padding: 0.25rem 0;"><strong>Ket Servis Sebelumnya:</strong></td>
+                    <td id="servis-reset-note" style="text-align: right; font-weight: bold; color: #185FA5;">-</td>
                 </tr>
                 <tr>
+                    <td style="padding: 0.25rem 0;"><strong>Batas Petani:</strong></td>
+                    <td id="servis-nama-petani" style="text-align: right; font-weight: bold; color: #127d03;">-</td>
+                </tr>
+                <tr>
+                    <td style="padding: 0.25rem 0;"><strong>Total Giling:</strong></td>
+                    <td id="servis-current-value" style="text-align: right; font-weight: bold; color: #cd0101;">-</td>
+                </tr>
+                {{-- <tr>
                     <td style="padding: 0.25rem 0;"><strong>Setelah Reset:</strong></td>
                     <td style="text-align: right; font-weight: bold; color: #17ad37;">0.00 Kg</td>
-                </tr>
+                </tr> --}}
             </table>
         </div>
 
@@ -2865,6 +2873,8 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 
     // ============================================
@@ -4679,132 +4689,92 @@ function printNotaOperator() {
         iframe.contentWindow.print();
     }, 100);
 }
+
+
 // ============================================
-// SAVE NOTA PDF - Download Langsung (Android Optimized)
+// SAVE NOTA PDF - 80mm, panjang sesuai konten
 // ============================================
 async function saveNotaPDF() {
     if (isSubmitting) return;
     const iframe = document.getElementById('nota-iframe-operator');
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    const btn = document.getElementById('btn-save-nota-operator');
+    const originalHTML = btn.innerHTML;
 
-    if (isMobile) {
-        // Mobile: Convert HTML to image then to PDF-like download
-        const btn = document.getElementById('btn-save-nota-operator');
-        const originalHTML = btn.innerHTML;
+    btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Membuat PDF...';
+    btn.disabled = true;
 
-        btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Membuat PDF...';
-        btn.disabled = true;
+    try {
+        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+        const body = iframeDoc.body;
 
-        try {
-            // Get iframe document
-            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-            const body = iframeDoc.body;
+        // Paksa lebar 80mm saat capture
+        const originalWidth = body.style.width;
+        const originalOverflow = body.style.overflow;
+        body.style.width = '302px'; // 80mm ≈ 302px
+        body.style.overflow = 'visible';
 
-            // Set temporary styles for capture
-            const originalWidth = body.style.width;
-            const originalBackground = body.style.background;
-            body.style.width = '80mm';
-            body.style.background = 'white';
+        // Tunggu render selesai
+        await new Promise(resolve => setTimeout(resolve, 100));
 
-            // Capture as canvas using html2canvas
-            const canvas = await html2canvas(body, {
-                scale: 3, // High quality
-                useCORS: true,
-                logging: false,
-                width: 302, // 80mm in pixels (80mm * 3.78 = 302px)
-                windowWidth: 302,
-                backgroundColor: '#ffffff'
-            });
+        // Capture seluruh konten (scrollHeight = panjang penuh)
+        const canvas = await html2canvas(body, {
+            scale: 5,
+            useCORS: true,
+            logging: false,
+            width: 302,
+            height: body.scrollHeight,
+            windowWidth: 302,
+            windowHeight: body.scrollHeight,
+            backgroundColor: '#ffffff'
+        });
 
-            // Restore original styles
-            body.style.width = originalWidth;
-            body.style.background = originalBackground;
+        // Restore style
+        body.style.width = originalWidth;
+        body.style.overflow = originalOverflow;
 
-            // Convert canvas to blob
-            canvas.toBlob(function(blob) {
-                // Create download link
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
+        // Hitung dimensi PDF (mm)
+        const PDF_WIDTH_MM = 80;
+        const PX_PER_MM = 302 / 80; // 1mm = 3.775px pada 302px lebar
+        const pdfHeightMm = (canvas.height / 5) / PX_PER_MM; // bagi scale(5)
 
-                // Generate filename dengan timestamp
-                const now = new Date();
-                const timestamp = now.toISOString().slice(0,10).replace(/-/g, '');
-                const filename = `Nota_Operator_${timestamp}_${now.getHours()}${now.getMinutes()}.png`;
+        // Buat PDF dengan ukuran pas
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({
+            orientation: 'portrait',
+            unit: 'mm',
+            format: [PDF_WIDTH_MM, pdfHeightMm]
+        });
 
-                a.href = url;
-                a.download = filename;
-                a.style.display = 'none';
+        const imgData = canvas.toDataURL('image/png', 1.0);
+        doc.addImage(imgData, 'PNG', 0, 0, PDF_WIDTH_MM, pdfHeightMm);
 
-                document.body.appendChild(a);
-                a.click();
+        // ============================================
+        // Nama file: keterangan_tanggal.pdf
+        // Ambil dari iframe - keterangan & tanggal nota
+        // ============================================
+        const keteranganEl = iframeDoc.querySelector('.keterangan div');
+        const tanggalEl    = iframeDoc.querySelector('.date-row span:first-child');
 
-                // Cleanup
-                setTimeout(() => {
-                    document.body.removeChild(a);
-                    URL.revokeObjectURL(url);
-                }, 100);
+        const keterangan = keteranganEl
+            ? keteranganEl.textContent.trim().replace(/[\/\\:*?"<>|]/g, '-')
+            : 'Nota';
 
-                // Show success message
-                showToast('✓ Nota berhasil disimpan sebagai gambar', 'success');
+        const tanggal = tanggalEl
+            ? tanggalEl.textContent.trim().replace(/\//g, '-')
+            : new Date().toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-');
 
-                // Reset button
-                btn.innerHTML = originalHTML;
-                btn.disabled = false;
+        const filename = `${tanggal}_${keterangan}.pdf`;
 
-            }, 'image/png', 1.0);
+        doc.save(filename);
 
-        } catch (error) {
-            console.error('Error generating PDF:', error);
-            alert('Gagal membuat PDF. Error: ' + error.message);
-            btn.innerHTML = originalHTML;
-            btn.disabled = false;
-        }
+        showToast('✓ PDF berhasil disimpan: ' + filename, 'success');
 
-    } else {
-        // Desktop: tampilkan instruksi
-        const instructionDiv = document.createElement('div');
-        instructionDiv.style.cssText = `
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-            z-index: 99999;
-            max-width: 400px;
-            text-align: center;
-        `;
-
-        instructionDiv.innerHTML = `
-            <div style="margin-bottom: 1rem;">
-                <i class="bi bi-info-circle-fill" style="font-size: 3rem; color: #2152ff;"></i>
-            </div>
-            <h5 style="margin-bottom: 1rem; color: #344767;">Cara Menyimpan sebagai PDF</h5>
-            <ol style="text-align: left; color: #8392ab; font-size: 0.9rem; line-height: 1.6;">
-                <li>Pilih <strong>"Save as PDF"</strong> atau <strong>"Microsoft Print to PDF"</strong> di bagian Printer/Destination</li>
-                <li>Pastikan <strong>Paper size: 80mm</strong></li>
-                <li>Klik <strong>Save</strong></li>
-            </ol>
-            <button onclick="this.parentElement.remove()" style="
-                margin-top: 1rem;
-                padding: 0.75rem 2rem;
-                background: linear-gradient(135deg, #2152ff 0%, #21d4fd 100%);
-                color: white;
-                border: none;
-                border-radius: 8px;
-                font-weight: 600;
-                cursor: pointer;
-            ">Mengerti</button>
-        `;
-
-        document.body.appendChild(instructionDiv);
-
-        setTimeout(() => {
-            iframe.contentWindow.focus();
-            iframe.contentWindow.print();
-        }, 2000);
+    } catch (error) {
+        console.error('Error generating PDF:', error);
+        alert('Gagal membuat PDF. Error: ' + error.message);
+    } finally {
+        btn.innerHTML = originalHTML;
+        btn.disabled = false;
     }
 }
 
@@ -4894,6 +4864,10 @@ function openServisModal() {
                 // Update display in modal
                 document.getElementById('servis-current-value').textContent =
                     smartFormatNumber(currentServisTotal) + ' Kg';
+
+                     // Tampilkan servis_reset_note & nama_petani
+        document.getElementById('servis-reset-note').textContent = data.servis_reset_note;
+        document.getElementById('servis-nama-petani').textContent = data.nama_petani;
 
                 // Show modal
                 document.getElementById('modal-overlay-servis').classList.add('active');

@@ -14,20 +14,40 @@ use App\Models\PenjualanBeras;
 use App\Models\PenjualanKongaMenir;
 use App\Models\StokGlobal;
 
+
 class BukuStokController extends Controller
 {
 
     public function getServisCounter()
     {
         try {
+            // Ambil record terakhir untuk servis_reset_note & nama_petani
+            // Ambil nama_petani terakhir yang tidak null
+            $lastRecord = BukuStokBeras::where('counted_for_servis', false)
+                ->whereNotNull('nama_petani')
+                ->latest()
+                ->first();
+
+            // Ambil servis_reset_note terakhir yang tidak null
+            $lastNote = BukuStokBeras::where('counted_for_servis', false)
+                ->whereNotNull('servis_reset_note')
+                ->latest()
+                ->first();
+
             // Hitung total giling_kotor yang counted_for_servis = true
             $total = DB::table('buku_stok_beras')
                 ->where('counted_for_servis', true)
-                ->sum('giling_kotor');
+                ->sum('giling_kotor') ?? 0;
+
+            // Hitung total giling kotor untuk servis counter (hanya yang counted_for_servis = true)
+            $total = BukuStokBeras::where('counted_for_servis', true)
+                ->sum('giling_kotor') ?? 0;
 
             return response()->json([
                 'success' => true,
-                'total' => $total ?? 0
+                'total' => $total ?? 0,
+                'servis_reset_note' => $lastNote?->servis_reset_note ?? '-',
+                'nama_petani'      => $lastRecord?->nama_petani ?? '-',
             ]);
         } catch (\Exception $e) {
             return response()->json([
