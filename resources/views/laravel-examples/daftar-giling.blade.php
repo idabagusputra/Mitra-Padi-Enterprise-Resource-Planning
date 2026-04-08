@@ -312,7 +312,7 @@
                                         <p class="text-xs font-weight-bold mb-0">{{ number_format($daftarGiling->beras_jual, 2, ',', '.') }} Kg</p>
                                     </td> --}}
                                     <td class="text-center">
-                                        <p class="text-xs font-weight-bold mb-0">Rp {{ number_format($daftarGiling->harga_jual, 2, ',', '.') }},00</p>
+                                        <p class="text-xs font-weight-bold mb-0">Rp {{ number_format($daftarGiling->harga_jual, 2, ',', '.') }}</p>
                                     </td>
                                     {{-- <td class="text-center">
                                         <p class="text-xs font-weight-bold mb-0">Rp {{ number_format($daftarGiling->total_biaya_buruh_giling, 2, ',', '.') }}</p>
