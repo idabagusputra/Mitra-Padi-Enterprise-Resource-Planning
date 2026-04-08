@@ -21,12 +21,12 @@ use App\Models\StokGlobal;
 class BukuStokController extends Controller
 {
 
-    private const FOLDER_ID = '124X5hrQB-fxqMk66zAY8Cp-CFyysSOME';
+    private const FOLDER_ID = '1DLll9qVTvZrGtcGHlPugwo5cq8Ra5ZPv';
 
     public function uploadNota(Request $request)
     {
         $request->validate([
-            'pdf'      => 'required|file|mimes:pdf|max:20480',
+            'pdf'      => 'required|file|mimes:pdf|max:51200', // ← 50MB
             'filename' => 'required|string|max:255',
         ]);
 

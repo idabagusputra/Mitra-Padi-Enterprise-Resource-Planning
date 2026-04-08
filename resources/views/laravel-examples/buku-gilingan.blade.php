@@ -4718,7 +4718,7 @@ async function saveNotaPDF() {
 
         // Capture seluruh konten (scrollHeight = panjang penuh)
         const canvas = await html2canvas(body, {
-            scale: 5,
+            scale: 3,
             useCORS: true,
             logging: false,
             width: 302,
@@ -4735,7 +4735,7 @@ async function saveNotaPDF() {
         // Hitung dimensi PDF (mm)
         const PDF_WIDTH_MM = 80;
         const PX_PER_MM = 302 / 80; // 1mm = 3.775px pada 302px lebar
-        const pdfHeightMm = (canvas.height / 5) / PX_PER_MM; // bagi scale(5)
+        const pdfHeightMm = (canvas.height / 3) / PX_PER_MM; // bagi scale(5)
 
         // Buat PDF dengan ukuran pas
         const { jsPDF } = window.jspdf;
