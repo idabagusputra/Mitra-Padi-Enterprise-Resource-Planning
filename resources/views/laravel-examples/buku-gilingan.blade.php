@@ -4746,23 +4746,7 @@ async function saveNotaPDF() {
         });
 
         const imgData = canvas.toDataURL('image/png', 1.0);
-         // ✅ Deklarasi filename harus sudah ada LEBIH DULU
-        const keteranganEl = iframeDoc.querySelector('.keterangan div');
-        const tanggalEl    = iframeDoc.querySelector('.date-row span:first-child');
-        const keterangan = keteranganEl
-            ? keteranganEl.textContent.trim().replace(/[\/\\:*?"<>|]/g, '-')
-            : 'Nota';
-        const tanggal = tanggalEl
-            ? tanggalEl.textContent.trim().replace(/\//g, '-')
-            : new Date().toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-');
-        const filename = `${tanggal}_${keterangan}.pdf`;
-
-        doc.save(filename);
-        showToast('✓ PDF berhasil disimpan: ' + filename, 'success');
-
-        // ✅ Baru taruh dua baris ini — filename sudah terdefinisi di atas
-        const pdfBlob = doc.output('blob');
-        uploadNotaToDrive(pdfBlob, filename);
+        doc.addImage(imgData, 'PNG', 0, 0, PDF_WIDTH_MM, pdfHeightMm);
 
         // ============================================
         // Nama file: keterangan_tanggal.pdf
@@ -4779,11 +4763,17 @@ async function saveNotaPDF() {
             ? tanggalEl.textContent.trim().replace(/\//g, '-')
             : new Date().toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-');
 
-        const filename = `${tanggal}_${keterangan}.pdf`;
+  const filename = `${tanggal}_${keterangan}.pdf`;
 
         doc.save(filename);
 
+        // ── Kirim ke Google Drive ──
+        const pdfBlob = doc.output('blob');
+        await uploadNotaToDrive(pdfBlob, filename); // ← tambah await
+        // ──────────────────────────────────────────
+
         showToast('✓ PDF berhasil disimpan: ' + filename, 'success');
+
 
     } catch (error) {
         console.error('Error generating PDF:', error);
@@ -4794,41 +4784,54 @@ async function saveNotaPDF() {
     }
 }
 
-// ============================================
-// UPLOAD NOTA PDF KE GOOGLE DRIVE
-// Dipanggil setelah saveNotaPDF() selesai
-// ============================================
 async function uploadNotaToDrive(docBlob, filename) {
     try {
         const formData = new FormData();
         formData.append('pdf', docBlob, filename);
         formData.append('filename', filename);
 
-        // CSRF token Laravel
-        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content
-            || document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1]
-            || '';
+        // Ambil CSRF token - coba semua cara
+        const csrfMeta   = document.querySelector('meta[name="csrf-token"]')?.content;
+        const csrfCookie = document.cookie.split(';')
+                            .find(c => c.trim().startsWith('XSRF-TOKEN='))
+                            ?.split('=')[1];
+        const csrfToken  = csrfMeta || (csrfCookie ? decodeURIComponent(csrfCookie) : '');
+
+        console.log('[Drive] Uploading:', filename, '| CSRF:', csrfToken ? 'found' : 'NOT FOUND');
 
         const response = await fetch('/drive/upload-nota', {
             method: 'POST',
             headers: {
-                'X-CSRF-TOKEN': decodeURIComponent(csrfToken),
+                'X-CSRF-TOKEN': csrfToken,
+                'Accept': 'application/json',
             },
             body: formData,
         });
 
-        const result = await response.json();
+        console.log('[Drive] Response status:', response.status);
+
+        // Tangkap response non-JSON (misal HTML error page)
+        const text = await response.text();
+        let result;
+        try {
+            result = JSON.parse(text);
+        } catch {
+            console.error('[Drive] Response bukan JSON:', text.substring(0, 300));
+            showToast('⚠️ Server error - cek console', 'warning');
+            return;
+        }
 
         if (result.success) {
             showToast('☁️ PDF terkirim ke Drive: ' + filename, 'success');
-            console.log('Drive link:', result.web_view_link);
+            console.log('[Drive] Link:', result.web_view_link);
         } else {
-            console.error('Upload Drive gagal:', result.message);
+            console.error('[Drive] Gagal:', result.message);
             showToast('⚠️ Gagal kirim ke Drive: ' + result.message, 'warning');
         }
+
     } catch (err) {
-        console.error('Upload Drive error:', err);
-        showToast('⚠️ Gagal kirim ke Drive', 'warning');
+        console.error('[Drive] Upload error:', err);
+        showToast('⚠️ Gagal kirim ke Drive: ' + err.message, 'warning');
     }
 }
 
