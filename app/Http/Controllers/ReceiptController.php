@@ -53,16 +53,9 @@ class ReceiptController extends Controller
 
         $defaultCss = '
         <style>
-             @page { margin: 0mm 3mm 3mm 3mm; }
-        html, body { margin: 0 !important; padding: 0 !important; }
-        body {
-            font-family: sans-serif;
-            font-size: 10pt;
-            line-height: 1.3;
-            width: 100%;
-            text-align: left;
-        }
-        * { box-sizing: border-box; }
+            @page { margin: 0mm 3mm 3mm 3mm; }
+            body  { font-family: sans-serif; margin: 0; font-size: 10pt; line-height: 1.3; }
+            *     { box-sizing: border-box; }
             table { width: 100%; }
             .text-center { text-align: center; }
             .text-right  { text-align: right;  }
