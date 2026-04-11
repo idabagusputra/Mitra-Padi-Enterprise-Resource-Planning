@@ -237,117 +237,50 @@ class BukuStokController extends Controller
             ->where('petani_id', '!=', 330)
             ->sum('giling_kotor') ?? 0;
 
-        $dua_bulan_lalu = now()->subMonths(2)->startOfDay();
-
         return view('laravel-examples/buku-gilingan', [
-            // Buku Stok Beras - 2 bulan terakhir
+            // Buku Stok Beras - urut tanggal DESC, id DESC
             'bukuStokBeras' => BukuStokBeras::with('petani')
-                ->where('tanggal', '>=', $dua_bulan_lalu)
                 ->orderByDesc('tanggal')
                 ->orderByDesc('id')
                 ->get(),
 
-            // Pinjaman Beras - 2 bulan terakhir + yang belum lunas lebih dari 2 bulan
+            // Pinjaman Beras - urut status ASC (belum lunas dulu), tanggal DESC, id DESC
             'pinjamanBeras' => BukuStokPinjamanBeras::with('petani')
-                ->where(function ($q) use ($dua_bulan_lalu) {
-                    $q->where('tanggal', '>=', $dua_bulan_lalu)
-                        ->orWhere(function ($q2) use ($dua_bulan_lalu) {
-                            $q2->where('tanggal', '<', $dua_bulan_lalu)
-                                ->where('status', 'belum lunas');
-                        });
-                })
                 ->orderBy('status', 'asc')
                 ->orderByDesc('tanggal')
                 ->orderByDesc('id')
                 ->get(),
 
-            // Pinjaman Konga - 2 bulan terakhir + yang belum lunas lebih dari 2 bulan
+            // Pinjaman Konga - urut status ASC (belum lunas dulu), tanggal DESC, id DESC
             'pinjamanKonga' => BukuStokPinjamanKonga::with('petani')
-                ->where(function ($q) use ($dua_bulan_lalu) {
-                    $q->where('tanggal', '>=', $dua_bulan_lalu)
-                        ->orWhere(function ($q2) use ($dua_bulan_lalu) {
-                            $q2->where('tanggal', '<', $dua_bulan_lalu)
-                                ->where('status', 'belum lunas');
-                        });
-                })
                 ->orderBy('status', 'asc')
                 ->orderByDesc('tanggal')
                 ->orderByDesc('id')
                 ->get(),
 
-            // Buku Stok Konga & Menir - 2 bulan terakhir
+            // Buku Stok Konga & Menir - urut tanggal DESC, id DESC
             'bukuStokKongaMenir' => BukuStokKongaMenir::with('petani')
-                ->where('tanggal', '>=', $dua_bulan_lalu)
                 ->orderByDesc('tanggal')
                 ->orderByDesc('id')
                 ->get(),
 
-            // Penjualan Beras - 2 bulan terakhir
-            'penjualanBeras' => PenjualanBeras::where('tanggal', '>=', $dua_bulan_lalu)
-                ->orderByDesc('tanggal')
+            // Penjualan Beras - urut tanggal DESC, id DESC
+            'penjualanBeras' => PenjualanBeras::orderByDesc('tanggal')
                 ->orderByDesc('id')
                 ->get(),
 
-            // Penjualan Konga & Menir - 2 bulan terakhir
-            'penjualanKongaMenir' => PenjualanKongaMenir::where('tanggal', '>=', $dua_bulan_lalu)
-                ->orderByDesc('tanggal')
+            // Penjualan Konga & Menir - urut tanggal DESC, id DESC
+            'penjualanKongaMenir' => PenjualanKongaMenir::orderByDesc('tanggal')
                 ->orderByDesc('id')
                 ->get(),
 
             // Stok Global
             'stokGlobal' => $this->stokGlobal(),
-
             // Total Giling Kotor untuk Counter Servis
             'totalGilingKotor' => $totalGilingKotor,
-
             // Total Giling Kotor untuk Counter Buruh
             'buruhGilingKotor' => $buruhGilingKotor,
         ]);
-
-        // return view('laravel-examples/buku-gilingan', [
-        //     // Buku Stok Beras - urut tanggal DESC, id DESC
-        //     'bukuStokBeras' => BukuStokBeras::with('petani')
-        //         ->orderByDesc('tanggal')
-        //         ->orderByDesc('id')
-        //         ->get(),
-
-        //     // Pinjaman Beras - urut status ASC (belum lunas dulu), tanggal DESC, id DESC
-        //     'pinjamanBeras' => BukuStokPinjamanBeras::with('petani')
-        //         ->orderBy('status', 'asc')
-        //         ->orderByDesc('tanggal')
-        //         ->orderByDesc('id')
-        //         ->get(),
-
-        //     // Pinjaman Konga - urut status ASC (belum lunas dulu), tanggal DESC, id DESC
-        //     'pinjamanKonga' => BukuStokPinjamanKonga::with('petani')
-        //         ->orderBy('status', 'asc')
-        //         ->orderByDesc('tanggal')
-        //         ->orderByDesc('id')
-        //         ->get(),
-
-        //     // Buku Stok Konga & Menir - urut tanggal DESC, id DESC
-        //     'bukuStokKongaMenir' => BukuStokKongaMenir::with('petani')
-        //         ->orderByDesc('tanggal')
-        //         ->orderByDesc('id')
-        //         ->get(),
-
-        //     // Penjualan Beras - urut tanggal DESC, id DESC
-        //     'penjualanBeras' => PenjualanBeras::orderByDesc('tanggal')
-        //         ->orderByDesc('id')
-        //         ->get(),
-
-        //     // Penjualan Konga & Menir - urut tanggal DESC, id DESC
-        //     'penjualanKongaMenir' => PenjualanKongaMenir::orderByDesc('tanggal')
-        //         ->orderByDesc('id')
-        //         ->get(),
-
-        //     // Stok Global
-        //     'stokGlobal' => $this->stokGlobal(),
-        //     // Total Giling Kotor untuk Counter Servis
-        //     'totalGilingKotor' => $totalGilingKotor,
-        //     // Total Giling Kotor untuk Counter Buruh
-        //     'buruhGilingKotor' => $buruhGilingKotor,
-        // ]);
     }
 
     /* =====================================================
