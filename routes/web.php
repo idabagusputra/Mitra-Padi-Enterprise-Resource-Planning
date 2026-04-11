@@ -373,6 +373,10 @@ Route::get('/buku-stok/get-servis-counter', [BukuStokController::class, 'getServ
 Route::post('/buku-stok/reset-servis-counter', [BukuStokController::class, 'resetServisCounter'])->name('buku-stok.reset-servis-counter');
 
 
+Route::get('/buku-stok/get-buruh-counter', [BukuStokController::class, 'getBuruhCounter'])->name('buku-stok.get-buruh-counter');
+Route::post('/buku-stok/reset-buruh-counter', [BukuStokController::class, 'resetBuruhCounter'])->name('buku-stok.reset-buruh-counter');
+
+
 // Tambahkan route ini di sekitar route buku-stok yang sudah ada
 Route::post('/buku-stok/update-stok-global', [BukuStokController::class, 'updateStokGlobal'])->name('buku-stok.update-stok-global');
 

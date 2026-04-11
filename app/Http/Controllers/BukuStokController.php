@@ -85,33 +85,32 @@ class BukuStokController extends Controller
     public function getServisCounter()
     {
         try {
-            // Ambil record terakhir untuk servis_reset_note & nama_petani
-            // Ambil nama_petani terakhir yang tidak null
+            $excludeCeker = function ($q) {
+                $q->where('petani_id', '!=', 330)
+                    ->orWhereNull('petani_id');
+            };
+
             $lastRecord = BukuStokBeras::where('counted_for_servis', false)
                 ->whereNotNull('nama_petani')
+                ->where($excludeCeker)
                 ->latest()
                 ->first();
 
-            // Ambil servis_reset_note terakhir yang tidak null
             $lastNote = BukuStokBeras::where('counted_for_servis', false)
                 ->whereNotNull('servis_reset_note')
+                ->where($excludeCeker)
                 ->latest()
                 ->first();
 
-            // Hitung total giling_kotor yang counted_for_servis = true
-            $total = DB::table('buku_stok_beras')
-                ->where('counted_for_servis', true)
-                ->sum('giling_kotor') ?? 0;
-
-            // Hitung total giling kotor untuk servis counter (hanya yang counted_for_servis = true)
             $total = BukuStokBeras::where('counted_for_servis', true)
+                ->where($excludeCeker)
                 ->sum('giling_kotor') ?? 0;
 
             return response()->json([
-                'success' => true,
-                'total' => $total ?? 0,
+                'success'           => true,
+                'total'             => $total ?? 0,
                 'servis_reset_note' => $lastNote?->servis_reset_note ?? '-',
-                'nama_petani'      => $lastRecord?->nama_petani ?? '-',
+                'nama_petani'       => $lastRecord?->nama_petani ?? '-',
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -146,6 +145,71 @@ class BukuStokController extends Controller
         }
     }
 
+    public function getBuruhCounter()
+    {
+        try {
+            $excludeCeker = function ($q) {
+                $q->where('petani_id', '!=', 330)
+                    ->orWhereNull('petani_id');
+            };
+
+            $lastRecord = BukuStokBeras::where('counted_buruh_giling', true)
+                ->whereNotNull('nama_petani')
+                ->where($excludeCeker)
+                ->latest()
+                ->first();
+
+            $lastNote = BukuStokBeras::where('counted_buruh_giling', true)
+                ->whereNotNull('buruh_reset_note')
+                ->where($excludeCeker)
+                ->latest()
+                ->first();
+
+            $total = BukuStokBeras::where('counted_buruh_giling', false)
+                ->where($excludeCeker)
+                ->sum('giling_kotor') ?? 0;
+
+            return response()->json([
+                'success'          => true,
+                'total'            => $total ?? 0,
+                'buruh_reset_note' => $lastNote?->buruh_reset_note ?? '-',
+                'nama_petani'      => $lastRecord?->nama_petani ?? '-',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function resetBuruhCounter(Request $request)
+    {
+        try {
+            // Set semua data yang counted_for_servis = true menjadi false
+            // dan simpan keterangan reset
+            DB::table('buku_stok_beras')
+                ->where('counted_buruh_giling', false)
+                ->update([
+                    'counted_buruh_giling' => true,
+                    'buruh_reset_note' => $request->keterangan . ' (Reset: ' . now()->format('d-m-Y H:i') . ')',
+                    'updated_at' => now()
+                ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Counter buruh giling berhasil direset'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+
+
 
 
     /* =====================================================
@@ -166,6 +230,11 @@ class BukuStokController extends Controller
     {
         // Hitung total giling kotor untuk servis counter (hanya yang counted_for_servis = true)
         $totalGilingKotor = BukuStokBeras::where('counted_for_servis', true)
+            ->where('petani_id', '!=', 330)
+            ->sum('giling_kotor') ?? 0;
+        // Hitung total giling kotor untuk servis counter (hanya yang counted_for_servis = true)
+        $buruhGilingKotor = BukuStokBeras::where('counted_buruh_giling', false)
+            ->where('petani_id', '!=', 330)
             ->sum('giling_kotor') ?? 0;
 
         return view('laravel-examples/buku-gilingan', [
@@ -209,6 +278,8 @@ class BukuStokController extends Controller
             'stokGlobal' => $this->stokGlobal(),
             // Total Giling Kotor untuk Counter Servis
             'totalGilingKotor' => $totalGilingKotor,
+            // Total Giling Kotor untuk Counter Buruh
+            'buruhGilingKotor' => $buruhGilingKotor,
         ]);
     }
 

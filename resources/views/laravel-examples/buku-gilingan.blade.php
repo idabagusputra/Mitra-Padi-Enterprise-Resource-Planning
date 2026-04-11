@@ -1525,6 +1525,18 @@
                 <option value="0">Belum Lunas</option>
             </select>
         </div>
+
+         <div class="status-filter-wrapper" style="cursor: pointer;" onclick="openBuruhModal()">
+            <div class="servis-counter-box">
+                <div class="servis-label">BURUH</div>
+                <div class="servis-value" id="buruh-counter-display">
+                    {{ number_format($buruhGilingKotor ?? 0, 0, ',', '.') }} Kg
+
+                </div>
+            </div>
+        </div>
+
+
         <div class="status-filter-wrapper" style="cursor: pointer;" onclick="openServisModal()">
             <div class="servis-counter-box">
                 <div class="servis-label">Servis Oli</div>
@@ -1534,6 +1546,7 @@
                 </div>
             </div>
         </div>
+
         <div class="status-filter-wrapper">
             <button type="button" id="btn-bayar-operator" class="btn btn-primary">
                 <i class="bi bi-currency-exchange"></i>
@@ -2849,6 +2862,62 @@
             <i class="bi bi-x-circle"></i> Batal
         </button>
         <button class="edit-btn edit-btn-submit" onclick="resetServisCounter()" style="background: linear-gradient(135deg, #f5365c 0%, #f56036 100%);">
+            <i class="bi bi-arrow-clockwise"></i> Reset Counter
+        </button>
+    </div>
+</div>
+
+
+
+<!-- Modal Konfirmasi Reset Buruh -->
+<div class="modal-overlay" id="modal-overlay-buruh"></div>
+
+<div class="edit-modal" id="modal-buruh-reset" style="max-width: 500px;">
+    <div class="edit-modal-header">
+        <h5 class="edit-modal-title">
+            <i class="bi bi-wrench-adjustable-circle"></i>
+            Reset Counter Buruh Giling
+        </h5>
+        <button class="edit-modal-close" onclick="closeBuruhModal()">&times;</button>
+    </div>
+    <div class="edit-modal-body">
+        <div class="alert alert-warning" style="margin-bottom: 1rem; padding: 0.75rem; border-radius: 8px; background: #fff5e5; border: 1px solid #ffcc80; font-size: 0.85rem;">
+            <i class="bi bi-exclamation-triangle-fill" style="margin-right: 0.5rem; color: #f5365c;"></i>
+            <strong>Perhatian:</strong> Aksi ini akan mereset counter buruh giling menjadi 0 Kg dan memulai perhitungan baru.
+        </div>
+
+        <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+            <table style="width: 100%; font-size: 0.9rem;">
+                <tr>
+                    <td style="padding: 0.25rem 0;"><strong>Buruh Giling Sebelumnya:</strong></td>
+                    <td id="buruh-reset-note" style="text-align: right; font-weight: bold; color: #185FA5;">-</td>
+                </tr>
+                <tr>
+                    <td style="padding: 0.25rem 0;"><strong>Batas Petani:</strong></td>
+                    <td id="buruh-nama-petani" style="text-align: right; font-weight: bold; color: #127d03;">-</td>
+                </tr>
+                <tr>
+                    <td style="padding: 0.25rem 0;"><strong>Total Giling:</strong></td>
+                    <td id="buruh-current-value" style="text-align: right; font-weight: bold; color: #cd0101;">-</td>
+                </tr>
+                {{-- <tr>
+                    <td style="padding: 0.25rem 0;"><strong>Setelah Reset:</strong></td>
+                    <td style="text-align: right; font-weight: bold; color: #17ad37;">0.00 Kg</td>
+                </tr> --}}
+            </table>
+        </div>
+
+        <div class="edit-form-group">
+            <label class="edit-form-label">Keterangan Reset (Opsional)</label>
+            <textarea class="edit-form-control" id="buruh-keterangan" rows="2"
+                      placeholder="Masukan Keterangan"></textarea>
+        </div>
+    </div>
+    <div class="edit-modal-footer">
+        <button class="edit-btn edit-btn-cancel" onclick="closeBuruhModal()">
+            <i class="bi bi-x-circle"></i> Batal
+        </button>
+        <button class="edit-btn edit-btn-submit" onclick="resetBuruhCounter()" style="background: linear-gradient(135deg, #f5365c 0%, #f56036 100%);">
             <i class="bi bi-arrow-clockwise"></i> Reset Counter
         </button>
     </div>
@@ -5003,6 +5072,110 @@ document.addEventListener('keydown', function(e) {
         const modal = document.getElementById('modal-servis-reset');
         if (modal && modal.classList.contains('active')) {
             closeServisModal();
+        }
+    }
+});
+
+
+
+// ============================================
+// SERVIS OLI COUNTER FUNCTIONS
+// ============================================
+let currentBuruhTotal = 0;
+
+function openBuruhModal() {
+    if (isSubmitting) return;
+
+    // Fetch current total
+    fetch('/buku-stok/get-buruh-counter')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                currentBuruhTotal = parseFloat(data.total) || 0;
+                // Update display in modal
+                document.getElementById('buruh-current-value').textContent =
+                    smartFormatNumber(currentBuruhTotal) + ' Kg';
+
+                     // Tampilkan servis_reset_note & nama_petani
+        document.getElementById('buruh-reset-note').textContent = data.buruh_reset_note;
+        document.getElementById('buruh-nama-petani').textContent = data.nama_petani;
+
+                // Show modal
+                document.getElementById('modal-overlay-buruh').classList.add('active');
+                document.getElementById('modal-buruh-reset').classList.add('active');
+                document.body.style.overflow = 'hidden';
+            } else {
+                alert('Gagal mengambil data counter: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan saat mengambil data');
+        });
+}
+
+function closeBuruhModal() {
+    if (isSubmitting) return;
+    document.getElementById('modal-overlay-buruh').classList.remove('active');
+    document.getElementById('modal-buruh-reset').classList.remove('active');
+    document.body.style.overflow = '';
+    document.getElementById('buruh-keterangan').value = '';
+}
+
+function resetBuruhCounter() {
+    const keterangan = document.getElementById('buruh-keterangan').value.trim();
+
+    if (!confirm('Apakah Anda yakin ingin mereset counter buruh menjadi 0 Kg?')) {
+        return;
+    }
+
+    const submitBtn = event.target;
+    const originalHTML = submitBtn.innerHTML;
+
+    const success = preventDoubleSubmit(submitBtn, () => {
+        submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Mereset...';
+
+        return fetch('/buku-stok/reset-buruh-counter', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('[name="_token"]').value,
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                keterangan: keterangan
+            })
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                showToast('✓ Counter buruh giling berhasil direset', 'success');
+                closeBuruhModal();
+
+                // Update display
+                document.getElementById('buruh-counter-display').textContent = '0 Kg';
+                // Optional: reload after 1 second to refresh all data
+                setTimeout(() => location.reload(), 1000);
+            } else {
+                throw new Error(result.message || 'Gagal mereset counter');
+            }
+        })
+        .catch(error => {
+            alert('Error: ' + error.message);
+            resetSubmitButton(submitBtn, originalHTML);
+        });
+    });
+
+    if (!success) return;
+}
+
+// Close servis modal dengan ESC key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        const modal = document.getElementById('modal-buruh-reset');
+        if (modal && modal.classList.contains('active')) {
+            closeBuruhModal();
         }
     }
 });
