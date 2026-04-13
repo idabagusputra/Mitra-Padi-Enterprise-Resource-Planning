@@ -482,6 +482,8 @@ class BukuStokController extends Controller
 
             // Gunakan status dari input jika ada, jika tidak default 0
             $status = isset($row['status']) ? (int)$row['status'] : 0;
+            // Gunakan status dari input jika ada, jika tidak default 0
+            $statusBuruh = isset($row['counted_buruh_giling']) ? (int)$row['counted_buruh_giling'] : 0;
 
             $buku->update([
                 'tanggal'        => $request->tanggal,
@@ -492,8 +494,9 @@ class BukuStokController extends Controller
                 'beras_pulang'   => $request->beras_pulang,
                 'jual'           => $jual,
                 'jual_kotor'     => $jualK,
-                'status'      => $status,
-                'harga'       => $request->harga ?? 0,
+                'status'        => $status,
+                'counted_buruh_giling'      => $statusBuruh,
+                'harga'         => $request->harga ?? 0,
             ]);
 
             // 🔥 TAMBAHAN INI
