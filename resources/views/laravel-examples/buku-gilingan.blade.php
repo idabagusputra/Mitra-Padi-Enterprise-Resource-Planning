@@ -1712,7 +1712,8 @@
         giling_kotor: {{ $item->giling_kotor ?? 0 }},
         beras_pulang: {{ $item->beras_pulang ?? 0 }},
         harga: {{ $item->harga ?? 0 }},
-        status: {{ $item->status ? 1 : 0 }}
+        status: {{ $item->status ? 1 : 0 }},
+        counted_buruh_giling: {{ $item->counted_buruh_giling ?? 0 }}
     })">
         <i class="bi bi-pencil-square fs-5"></i>
     </button>
@@ -2298,6 +2299,13 @@
                 <select class="edit-form-control" id="edit-buku-beras-status">
                     <option value="0">Belum Lunas</option>
                     <option value="1">Lunas</option>
+                </select>
+            </div>
+            <div class="edit-form-group">
+                <label class="edit-form-label">Status Buruh Giling</label>
+                <select class="edit-form-control" id="edit-buku-beras-status">
+                    <option value="0">Terbayar</option>
+                    <option value="1">Belum Terbayar</option>
                 </select>
             </div>
         </form>
@@ -3675,6 +3683,7 @@ function populateModalFields(type, data) {
             document.getElementById('edit-buku-beras-beras-pulang').value = formatNumber(data.beras_pulang || 0);
             document.getElementById('edit-buku-beras-harga').value = formatNumber(data.harga || 0);
             document.getElementById('edit-buku-beras-status').value = data.status || 0;
+            document.getElementById('edit-buku-beras-buruh-status').value = data.counted_buruh_giling || 0;
             break;
 
         case 'pinjaman-beras':
@@ -3833,6 +3842,7 @@ function prepareEditData(type) {
                 beras_pulang: parseFormattedNumber(document.getElementById('edit-buku-beras-beras-pulang').value),
                 harga: parseFormattedNumber(document.getElementById('edit-buku-beras-harga').value),
                 status: document.getElementById('edit-buku-beras-status').value
+                counted_buruh_giling: document.getElementById('edit-buku-beras-buruh-status').value
             };
 
         case 'pinjaman-beras':
