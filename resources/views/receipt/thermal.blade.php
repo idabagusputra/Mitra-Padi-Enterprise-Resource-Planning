@@ -420,7 +420,8 @@
     @empty
         <tr class="calculation-row">
             <td colspan="4" style="text-align: justify; text-align-last: justify; font-weight: bold;">
-                TIDAK ADA UTANG / PINJAMAN DANA
+                TIDAK MEMILIKI UTANG / PINJAMAN DANA
+                TIDAK MEMILIKI UTANG / PEMINJAMAN DANA
             </td>
         </tr>
     @endforelse
