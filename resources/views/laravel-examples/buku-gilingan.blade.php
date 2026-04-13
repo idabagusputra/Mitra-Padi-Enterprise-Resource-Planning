@@ -2308,8 +2308,7 @@
         <option value="0">Terbayar</option>
         <option value="1">Belum Terbayar</option>
     </select>
-</div>ct>
-            </div>
+</div>
         </form>
     </div>
     <div class="edit-modal-footer">
