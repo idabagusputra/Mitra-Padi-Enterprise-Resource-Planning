@@ -3841,7 +3841,7 @@ function prepareEditData(type) {
                 giling_kotor: parseFormattedNumber(document.getElementById('edit-buku-beras-giling-kotor').value),
                 beras_pulang: parseFormattedNumber(document.getElementById('edit-buku-beras-beras-pulang').value),
                 harga: parseFormattedNumber(document.getElementById('edit-buku-beras-harga').value),
-                status: document.getElementById('edit-buku-beras-status').value
+                status: document.getElementById('edit-buku-beras-status').value,
                 counted_buruh_giling: document.getElementById('edit-buku-beras-buruh-status').value
             };
 
