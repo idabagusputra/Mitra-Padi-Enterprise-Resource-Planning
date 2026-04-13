@@ -2300,6 +2300,13 @@
                     <option value="1">Lunas</option>
                 </select>
             </div>
+            <div class="edit-form-group">
+                <label class="edit-form-label">Status Buruh</label>
+                <select class="edit-form-control" id="edit-buku-beras-buruh-status">
+                    <option value="0">Belum Terhitung</option>
+                    <option value="1">Sudah Terhitung</option>
+                </select>
+            </div>
         </form>
     </div>
     <div class="edit-modal-footer">
@@ -3675,6 +3682,7 @@ function populateModalFields(type, data) {
             document.getElementById('edit-buku-beras-beras-pulang').value = formatNumber(data.beras_pulang || 0);
             document.getElementById('edit-buku-beras-harga').value = formatNumber(data.harga || 0);
             document.getElementById('edit-buku-beras-status').value = data.status || 0;
+            document.getElementById('edit-buku-beras-buruh-status').value = data.counted_buruh_giling || 0;
             break;
 
         case 'pinjaman-beras':
@@ -3833,6 +3841,7 @@ function prepareEditData(type) {
                 beras_pulang: parseFormattedNumber(document.getElementById('edit-buku-beras-beras-pulang').value),
                 harga: parseFormattedNumber(document.getElementById('edit-buku-beras-harga').value),
                 status: document.getElementById('edit-buku-beras-status').value
+                status: document.getElementById('edit-buku-beras-buruh-status').value
             };
 
         case 'pinjaman-beras':
