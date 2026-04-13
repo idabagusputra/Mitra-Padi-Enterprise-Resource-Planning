@@ -2305,8 +2305,8 @@
 <div class="edit-form-group">
     <label class="edit-form-label">Status Buruh Giling</label>
     <select class="edit-form-control" id="edit-buku-beras-buruh-status">
-        <option value="0">Terbayar</option>
-        <option value="1">Belum Terbayar</option>
+        <option value="0">Belum Terbayar</option>
+        <option value="1">Sudah Terbayar</option>
     </select>
 </div>
         </form>
