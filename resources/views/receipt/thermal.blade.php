@@ -361,44 +361,73 @@
                     <th>Total</th>
                 </tr>
             </thead>
-            <tbody>
-                @php
-$filteredKredits = $giling->petani->kredits->where('status', false)->sortBy('tanggal');
-$pembayaranKredit = $giling->pembayaranKredits->first();
-$bungaRate = $pembayaranKredit ? $pembayaranKredit->bunga : 0;
-@endphp
 
-@forelse ($filteredKredits as $index => $kredit)
-@php
-$lamaBulan = $pembayaranKredit ? $pembayaranKredit->hitungLamaHutangBulan($kredit->tanggal) : 0;
-$bunga = $kredit->jumlah * ($bungaRate / 100) * $lamaBulan;
-$totalHutang = $kredit->jumlah + $bunga;
-@endphp
-<tr class="calculation-row">
-    <td>{{ $loop->iteration }}. {{ \Carbon\Carbon::parse($kredit->tanggal)->format('d/m/Y') }}</td>
-    <td>Rp {{ number_format($kredit->jumlah) }}</td>
-    <td>{{ $lamaBulan }} Bln ({{ floor($bungaRate) }}%)</td>
-    <td class="bold">Rp {{ number_format($totalHutang) }}</td>
-</tr>
 
-@if($loop->last && $bungaRate > 0)
-<tr class="calculation-row">
-    <td colspan="4" style="text-align: justify; text-align-last: justify;">BUNGA TERHITUNG DARI TANGGAL UTANG SAMPAI TANGGAL GABAH MASUK : <strong>{{ $giling->created_at->addHours(0)->format('d/m/Y') }}</strong></td>
-</tr>
-@endif
 
-{{-- Kondisi baru: tampil ketika bulan = 0 ATAU bunga = 0 (data pertama) --}}
-@if($loop->first && ($lamaBulan == 0 || $bunga == 0))
-<tr class="calculation-row">
-    <td colspan="4" style="text-align: justify; text-align-last: justify;">PINJAMAN DANA TIDAK DIKENAKAN BUNGA</td>
-</tr>
-@endif
-@empty
-<tr class="calculation-row">
-    <td colspan="4" style="text-align: justify; text-align-last: justify;">TIDAK ADA UTANG / PINJAMAN DANA</td>
-</tr>
-@endforelse
-            </tbody>
+<tbody>
+    @php
+        $filteredKredits = $giling->petani->kredits->where('status', false)->sortBy('tanggal');
+        $pembayaranKredit = $giling->pembayaranKredits->first();
+        $bungaRate = $pembayaranKredit ? $pembayaranKredit->bunga : 0;
+        $firstLamaBulan = 0;
+        $firstBunga = 0;
+    @endphp
+
+    @forelse ($filteredKredits as $index => $kredit)
+        @php
+            $lamaBulan = $pembayaranKredit ? $pembayaranKredit->hitungLamaHutangBulan($kredit->tanggal) : 0;
+            $bunga = $kredit->jumlah * ($bungaRate / 100) * $lamaBulan;
+            $totalHutang = $kredit->jumlah + $bunga;
+            $keterangan = $kredit->keterangan;
+
+            if ($loop->first) {
+                $firstLamaBulan = $lamaBulan;
+                $firstBunga = $bunga;
+            }
+        @endphp
+
+        <tr class="calculation-row">
+            <td>{{ $loop->iteration }}. {{ \Carbon\Carbon::parse($kredit->tanggal)->format('d/m/Y') }}</td>
+            <td>Rp {{ number_format($kredit->jumlah) }}</td>
+            <td>{{ $lamaBulan }} Bln ({{ floor($bungaRate) }}%)</td>
+            <td class="bold">Rp {{ number_format($totalHutang) }}</td>
+        </tr>
+        @if (!empty($keterangan))
+        <tr class="calculation-row">
+            <td colspan="4" style="text-align: justify; text-align-last: justify;">
+                {{ $keterangan }}
+            </td>
+        </tr>
+        @endif
+
+        @if ($loop->last)
+            @if ($bungaRate > 0)
+                <tr class="calculation-row">
+                    <td colspan="4" style="text-align: justify; text-align-last: justify;">
+                        BUNGA TERHITUNG DARI TANGGAL UTANG SAMPAI TANGGAL GABAH MASUK :
+                        <strong>{{ $giling->created_at->format('d/m/Y') }}</strong>
+                    </td>
+                </tr>
+            @elseif ($firstLamaBulan == 0 || $firstBunga == 0)
+                <tr class="calculation-row">
+                    <td colspan="4" style="text-align: justify; text-align-last: justify;">
+                        PINJAMAN DANA TIDAK DIKENAKAN BUNGA
+                    </td>
+                </tr>
+            @endif
+        @endif
+
+    @empty
+        <tr class="calculation-row">
+            <td colspan="4" style="text-align: justify; text-align-last: justify;">
+                TIDAK ADA UTANG / PINJAMAN DANA
+            </td>
+        </tr>
+    @endforelse
+</tbody>
+
+
+
         </table>
 
 
