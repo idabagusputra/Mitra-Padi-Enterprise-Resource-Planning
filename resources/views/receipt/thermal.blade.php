@@ -420,7 +420,7 @@
 @empty
     <tr class="calculation-row">
         <td colspan="4" style="text-align: justify; text-align-last: justify; font-weight: bold; padding-top: 8px; padding-bottom: 8px;">
-            TIDAK ADA UTANG / PEMINJAMAN DANA
+            TIDAK MEMILIKI UTANG / PINJAMAN DANA
         </td>
     </tr>
 @endforelse
@@ -438,30 +438,40 @@
         </table>
 
         <table>
-    @foreach($giling->daftarGiling as $index => $daftar)
-        <tr class="total">
-            <td>Total Ambil</td>
-            <td>:</td>
-            <td>Rp {{ number_format($daftar->total_pengambilan) }}</td>
-        </tr>
+            @foreach($giling->daftarGiling as $index => $daftar)
 
-        <tr class="total">
-            <td>Total Hutang</td>
-            <td>:</td>
-            <td>Rp {{ number_format($daftar->total_hutang) }}</td>
-        </tr>
+            <!-- <tr class="total">
+                <td>Dana Giling</td>
+                <td>:</td>
+                <td>Rp {{ number_format($daftar->dana_jual_beras - $daftar->total_pengambilan , 2) }}</td>
+            </tr> -->
 
-        <tr>
-            <td colspan="3" style="padding: 4px 0;"></td>
-        </tr>
+            <tr class="total">
+                <td>Total Ambil</td>
+                <td>:</td>
+                <td>Rp {{ number_format($daftar->total_pengambilan) }}</td>
+            </tr>
 
-        <tr style="border-top: 2px solid #000; border-bottom: 2px solid #000;">
-            <td style="font-weight: bold; font-size: 1.1em; padding: 6px 4px;">SISA DANA</td>
-            <td style="font-weight: bold; font-size: 1.1em; padding: 6px 4px;">:</td>
-            <td style="font-weight: bold; font-size: 1.1em; padding: 6px 4px;">Rp {{ number_format($daftar->dana_penerima) }}</td>
-        </tr>
-    @endforeach
-</table>
+            <tr class="total">
+                <td>Total Hutang</td>
+                <td>:</td>
+                <td>Rp {{ number_format($daftar->total_hutang) }}</td>
+            </tr>
+
+            <!-- <tr class="total">
+                <td>Total Pengambilan</td>
+                <td>:</td>
+                <td>Rp {{ number_format($giling->calculateTotalPengambilan(), 2) }}</td>
+            </tr> -->
+
+
+            <tr class="total">
+                <td>Sisa Dana</td>
+                <td>:</td>
+                <td>Rp {{ number_format($daftar->dana_penerima) }}</td>
+            </tr>
+            @endforeach
+        </table>
 
         <table>
             <div></div>
