@@ -2301,12 +2301,14 @@
                     <option value="1">Lunas</option>
                 </select>
             </div>
-            <div class="edit-form-group">
-                <label class="edit-form-label">Status Buruh Giling</label>
-                <select class="edit-form-control" id="edit-buku-beras-status">
-                    <option value="0">Terbayar</option>
-                    <option value="1">Belum Terbayar</option>
-                </select>
+            <!-- AFTER (correct): -->
+<div class="edit-form-group">
+    <label class="edit-form-label">Status Buruh Giling</label>
+    <select class="edit-form-control" id="edit-buku-beras-buruh-status">
+        <option value="0">Terbayar</option>
+        <option value="1">Belum Terbayar</option>
+    </select>
+</div>ct>
             </div>
         </form>
     </div>
