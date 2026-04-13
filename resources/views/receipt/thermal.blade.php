@@ -343,7 +343,7 @@
             @endforeach
             @else
 <tr class="calculation-row">
-    <td colspan="4" style="text-align: justify; text-align-last: justify; font-weight: bold;">TIDAK ADA PENGAMBILAN (KARUNG PRIBADI)</td>
+    <td colspan="4" style="text-align: justify; text-align-last: justify;">TIDAK ADA PENGAMBILAN (KARUNG PRIBADI)</td>
 </tr>
 @endif
         </table>
@@ -419,8 +419,9 @@
 
 @empty
     <tr class="calculation-row">
-        <td colspan="4" style="text-align: justify; text-align-last: justify; font-weight: bold; padding-top: 8px; padding-bottom: 8px;">
-            TIDAK MEMILIKI UTANG / PINJAMAN DANA
+        <td colspan="4" style="text-align: justify; text-align-last: justify; padding-top: 8px; padding-bottom: 8px;">
+            TIDAK MEMILIKI UTANG / PEMINJAMAN DANA
+
         </td>
     </tr>
 @endforelse
