@@ -1713,7 +1713,7 @@
         beras_pulang: {{ $item->beras_pulang ?? 0 }},
         harga: {{ $item->harga ?? 0 }},
         status: {{ $item->status ? 1 : 0 }},
-        counted_buruh_giling: {{ $item->counted_buruh_giling ?? 0 }}
+        counted_buruh_giling: {{ $item->counted_buruh_giling ? 1 : 0 }}
     })">
         <i class="bi bi-pencil-square fs-5"></i>
     </button>
