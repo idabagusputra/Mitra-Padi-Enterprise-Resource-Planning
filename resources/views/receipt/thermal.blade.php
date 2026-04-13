@@ -352,31 +352,6 @@
             <div></div>
         </table>
 
-
-<table>
-            @foreach($giling->daftarGiling as $index => $daftar)
-
-            <!-- <tr class="total">
-                <td>Dana Giling</td>
-                <td>:</td>
-                <td>Rp {{ number_format($daftar->dana_jual_beras - $daftar->total_pengambilan , 2) }}</td>
-            </tr> -->
-
-            <tr class="total">
-                <td>Total Ambil</td>
-                <td>:</td>
-                <td>Rp {{ number_format($daftar->total_pengambilan) }}</td>
-            </tr>
-
-            @endforeach
-        </table>
-
-
-
-        <table>
-            <div></div>
-        </table>
-
         <table>
             <thead>
                 <tr class="bold-border-top">
@@ -445,7 +420,7 @@
     @empty
         <tr class="calculation-row">
             <td colspan="4" style="text-align: justify; text-align-last: justify; font-weight: bold;">
-                TIDAK MEMILIKI UTANG / PINJAMAN DANA
+                TIDAK MEMILIKI UTANG / PEMINJAMAN DANA
 
             </td>
         </tr>
@@ -472,11 +447,11 @@
                 <td>Rp {{ number_format($daftar->dana_jual_beras - $daftar->total_pengambilan , 2) }}</td>
             </tr> -->
 
-            {{-- <tr class="total">
+            <tr class="total">
                 <td>Total Ambil</td>
                 <td>:</td>
                 <td>Rp {{ number_format($daftar->total_pengambilan) }}</td>
-            </tr> --}}
+            </tr>
 
             <tr class="total">
                 <td>Total Hutang</td>
