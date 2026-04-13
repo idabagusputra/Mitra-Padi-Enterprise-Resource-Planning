@@ -420,7 +420,7 @@
     @empty
         <tr class="calculation-row">
             <td colspan="4" style="text-align: justify; text-align-last: justify; font-weight: bold;">
-                TIDAK MEMILIKI UTANG / PEMINJAMAN DANA
+                TIDAK MEMILIKI UTANG / PINJAMAN DANA
 
             </td>
         </tr>
