@@ -27,6 +27,7 @@ class BukuStokBeras extends Model
         'jual_kotor',
         'global_beras',
         'status',
+        'counted_buruh_giling',
         'keterangan_operator_gajian',
         'harga',
     ];
