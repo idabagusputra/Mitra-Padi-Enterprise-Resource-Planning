@@ -4,6 +4,27 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <style>
+
+        .sisa-dana-row td {
+    padding: 6px 2px 4px 2px;
+    border-top: 2px solid #000;
+    border-bottom: 3px double #000;
+    text-align: center;
+}
+
+.sisa-dana-label {
+    font-size: 9pt;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+}
+
+.sisa-dana-amount {
+    font-size: 16pt;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
         body {
             font-family: sans-serif;
             font-size: 10pt;
@@ -465,11 +486,12 @@
             </tr> -->
 
 
-            <tr class="total">
-                <td>Sisa Dana</td>
-                <td>:</td>
-                <td>Rp {{ number_format($daftar->dana_penerima) }}</td>
-            </tr>
+            <tr class="sisa-dana-row">
+    <td colspan="3">
+        <div class="sisa-dana-label">✦ SISA DANA ✦</div>
+        <div class="sisa-dana-amount">Rp {{ number_format($daftar->dana_penerima) }}</div>
+    </td>
+</tr>
             @endforeach
         </table>
 
