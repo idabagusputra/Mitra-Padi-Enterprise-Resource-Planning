@@ -422,6 +422,9 @@ class BukuStokController extends Controller
                 // Gunakan status dari input jika ada, jika tidak default 0
                 $harga = isset($row['harga']) ? (float)$row['harga'] : 0;
 
+                // Gunakan status dari input jika ada, jika tidak default 0
+                $statusBuruh = isset($row['counted_buruh_giling']) ? (int)$row['counted_buruh_giling'] : 0;
+
 
                 $buku = BukuStokBeras::create([
                     'petani_id'      => $petani->id,
@@ -436,6 +439,7 @@ class BukuStokController extends Controller
                     'jual'           => $jual,
                     'jual_kotor'     => $jualK,
                     'status'      => $row['status'],
+                    'counted_buruh_giling'      => $statusBuruh,
                     'harga'       => $harga,
 
                 ]);
