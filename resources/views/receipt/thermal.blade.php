@@ -400,31 +400,30 @@
         </tr>
         @endif
 
-      @if ($loop->last)
-    @if ($bungaRate > 0)
+        @if ($loop->last)
+            @if ($bungaRate > 0)
+                <tr class="calculation-row">
+                    <td colspan="4" style="text-align: justify; text-align-last: justify;">
+                        BUNGA TERHITUNG DARI TANGGAL UTANG SAMPAI TANGGAL GABAH MASUK :
+                        <strong>{{ $giling->created_at->format('d/m/Y') }}</strong>
+                    </td>
+                </tr>
+            @elseif ($firstLamaBulan == 0 || $firstBunga == 0)
+                <tr class="calculation-row">
+                    <td colspan="4" style="text-align: justify; text-align-last: justify; font-weight: bold;">
+                        PINJAMAN DANA TIDAK DIKENAKAN BUNGA
+                    </td>
+                </tr>
+            @endif
+        @endif
+
+    @empty
         <tr class="calculation-row">
-            <td colspan="4" style="text-align: justify; text-align-last: justify; padding-top: 8px; padding-bottom: 8px;">
-                BUNGA TERHITUNG DARI TANGGAL UTANG SAMPAI TANGGAL GABAH MASUK :
-                <strong>{{ $giling->created_at->format('d/m/Y') }}</strong>
+            <td colspan="4" style="text-align: justify; text-align-last: justify; font-weight: bold;">
+                TIDAK ADA UTANG / PINJAMAN DANA
             </td>
         </tr>
-    @elseif ($firstLamaBulan == 0 || $firstBunga == 0)
-        <tr class="calculation-row">
-            <td colspan="4" style="text-align: justify; text-align-last: justify; font-weight: bold; padding-top: 8px; padding-bottom: 8px;">
-                PINJAMAN DANA TIDAK DIKENAKAN BUNGA
-            </td>
-        </tr>
-    @endif
-@endif
-
-@empty
-    <tr class="calculation-row">
-        <td colspan="4" style="text-align: justify; text-align-last: justify; padding-top: 8px; padding-bottom: 8px;">
-            TIDAK MEMILIKI UTANG / PEMINJAMAN DANA
-
-        </td>
-    </tr>
-@endforelse
+    @endforelse
 </tbody>
 
 
