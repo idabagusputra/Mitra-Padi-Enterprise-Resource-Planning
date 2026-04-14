@@ -2909,6 +2909,10 @@
                     <td style="padding: 0.25rem 0;"><strong>Total Giling:</strong></td>
                     <td id="buruh-current-value" style="text-align: right; font-weight: bold; color: #cd0101;">-</td>
                 </tr>
+                <tr>
+                    <td style="padding: 0.25rem 0;"><strong>Total Ongkos:</strong></td>
+                    <td id="ongkos-current-value" style="text-align: right; font-weight: bold; color: #cd0101;">-</td>
+                </tr>
                 {{-- <tr>
                     <td style="padding: 0.25rem 0;"><strong>Setelah Reset:</strong></td>
                     <td style="text-align: right; font-weight: bold; color: #17ad37;">0.00 Kg</td>
@@ -5106,6 +5110,10 @@ function openBuruhModal() {
                 // Update display in modal
                 document.getElementById('buruh-current-value').textContent =
                     smartFormatNumber(currentBuruhTotal) + ' Kg';
+
+                    // Update display in modal
+               document.getElementById('ongkos-current-value').textContent =
+    'Rp ' + smartFormatNumber(currentBuruhTotal * 80);
 
                      // Tampilkan servis_reset_note & nama_petani
         document.getElementById('buruh-reset-note').textContent = data.buruh_reset_note;
