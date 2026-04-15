@@ -760,7 +760,7 @@
     background-color: #ffffff;
     cursor: pointer;
     transition: all 0.3s ease;
-    min-width: 160px;
+    min-width: 0px;
 }
 
 .status-filter-wrapper .form-select:focus {
