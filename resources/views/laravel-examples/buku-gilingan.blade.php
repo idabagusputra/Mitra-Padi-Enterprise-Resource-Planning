@@ -3697,7 +3697,7 @@ function populateModalFields(type, data) {
             document.getElementById('edit-buku-beras-harga').value = formatNumber(data.harga || 0);
             document.getElementById('edit-buku-beras-status').value = data.status || 0;
             document.getElementById('edit-buku-beras-buruh-status').value = data.counted_buruh_giling || 0;
-            document.getElementById('edit-buku-beras-buruh-status').value = data.counted_for_service || 0;
+            document.getElementById('edit-buku-beras-servis-status').value = data.counted_for_service || 0;
             break;
 
         case 'pinjaman-beras':
