@@ -426,7 +426,7 @@ class BukuStokController extends Controller
                 $statusBuruh = isset($row['counted_buruh_giling']) ? (int)$row['counted_buruh_giling'] : 0;
 
                 // Gunakan status dari input jika ada, jika tidak default 0
-                $statusServis = isset($row['counted_for_service']) ? (int)$row['counted_for_service'] : 0;
+                $statusServis = isset($row['counted_for_servis']) ? (int)$row['counted_for_servis'] : 0;
 
 
                 $buku = BukuStokBeras::create([
@@ -443,7 +443,7 @@ class BukuStokController extends Controller
                     'jual_kotor'     => $jualK,
                     'status'      => $row['status'],
                     'counted_buruh_giling'      => $statusBuruh,
-                    'counted_for_service'      => $statusServis,
+                    'counted_for_servis'      => $statusServis,
                     'harga'       => $harga,
 
                 ]);
