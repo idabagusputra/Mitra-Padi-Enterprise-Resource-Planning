@@ -756,7 +756,7 @@
     font-size: 0.9rem;
     font-weight: 500;
     color: #344767;
-    padding: 0 2.5rem 0 1rem;
+    padding: 0 1rem;
     background-color: #ffffff;
     cursor: pointer;
     transition: all 0.3s ease;
