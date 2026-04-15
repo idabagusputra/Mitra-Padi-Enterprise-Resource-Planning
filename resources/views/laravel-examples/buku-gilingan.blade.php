@@ -1714,7 +1714,7 @@
         harga: {{ $item->harga ?? 0 }},
         status: {{ $item->status ? 1 : 0 }},
         counted_buruh_giling: {{ $item->counted_buruh_giling ? 1 : 0 }},
-        counted_for_service: {{ $item->counted_for_service ? 1 : 0 }}
+         counted_for_servis: {{ $item-> counted_for_servis ? 1 : 0 }}
     })">
         <i class="bi bi-pencil-square fs-5"></i>
     </button>
@@ -3697,7 +3697,7 @@ function populateModalFields(type, data) {
             document.getElementById('edit-buku-beras-harga').value = formatNumber(data.harga || 0);
             document.getElementById('edit-buku-beras-status').value = data.status || 0;
             document.getElementById('edit-buku-beras-buruh-status').value = data.counted_buruh_giling || 0;
-            document.getElementById('edit-buku-beras-servis-status').value = data.counted_for_service || 0;
+            document.getElementById('edit-buku-beras-servis-status').value = data. counted_for_servis || 0;
             break;
 
         case 'pinjaman-beras':
@@ -3857,7 +3857,7 @@ function prepareEditData(type) {
                 harga: parseFormattedNumber(document.getElementById('edit-buku-beras-harga').value),
                 status: document.getElementById('edit-buku-beras-status').value,
                 counted_buruh_giling: document.getElementById('edit-buku-beras-buruh-status').value
-                counted_for_service: document.getElementById('edit-buku-beras-servis-status').value
+                 counted_for_servis: document.getElementById('edit-buku-beras-servis-status').value
             };
 
         case 'pinjaman-beras':
