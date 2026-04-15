@@ -2309,6 +2309,13 @@
         <option value="1">Sudah Terbayar</option>
     </select>
 </div>
+<div class="edit-form-group">
+    <label class="edit-form-label">Status Servis</label>
+    <select class="edit-form-control" id="edit-buku-beras-servis-status">
+        <option value="1">Belum Terhitung</option>
+        <option value="0">Sudah Terhitung</option>
+    </select>
+</div>
         </form>
     </div>
     <div class="edit-modal-footer">
@@ -3689,6 +3696,7 @@ function populateModalFields(type, data) {
             document.getElementById('edit-buku-beras-harga').value = formatNumber(data.harga || 0);
             document.getElementById('edit-buku-beras-status').value = data.status || 0;
             document.getElementById('edit-buku-beras-buruh-status').value = data.counted_buruh_giling || 0;
+            document.getElementById('edit-buku-beras-buruh-status').value = data.counted_for_service || 0;
             break;
 
         case 'pinjaman-beras':
@@ -3848,6 +3856,7 @@ function prepareEditData(type) {
                 harga: parseFormattedNumber(document.getElementById('edit-buku-beras-harga').value),
                 status: document.getElementById('edit-buku-beras-status').value,
                 counted_buruh_giling: document.getElementById('edit-buku-beras-buruh-status').value
+                counted_for_service: document.getElementById('edit-buku-beras-servis-status').value
             };
 
         case 'pinjaman-beras':
