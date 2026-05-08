@@ -253,11 +253,11 @@ class KreditTitipanPetaniController extends Controller
             // Simpan model ke database
             $kredit->save();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Kredit berhasil ditambahkan',
-                'data' => $kredit,
-            ]);
+            // return response()->json([
+            //     'success' => true,
+            //     'message' => 'Kredit berhasil ditambahkan',
+            //     'data' => $kredit,
+            // ]);
         } catch (\Exception $e) {
             Log::error('Error creating kredit: ' . $e->getMessage());
             return response()->json(['success' => false, 'message' => 'Terjadi kesalahan saat menambahkan kredit'], 500);
