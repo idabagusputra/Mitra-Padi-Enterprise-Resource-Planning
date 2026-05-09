@@ -444,7 +444,7 @@
                                             <div class="modal-body">
                                                 <div class="form-group">
                                                     <label for="petani_id">Petani</label>
-                                                    <select class="form-control" id="petani_id" name="petani_id" required>
+                                                    <select class="form-control" id="petani_id_{{ $kredit->id }}" name="petani_id" required>
                                                         @foreach($petanis as $petani)
                                                         <option value="{{ $petani->id }}" {{ $kredit->petani_id == $petani->id ? 'selected' : '' }}>{{ $petani->nama }}</option>
                                                         @endforeach
@@ -452,19 +452,19 @@
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="tanggal">Tanggal</label>
-                                                    <input type="date" class="form-control" id="tanggal" name="tanggal" value="{{ date('Y-m-d', strtotime($kredit->tanggal)) }}" required>
+                                                    <input type="date" class="form-control" id="tanggal_{{ $kredit->id }}" name="tanggal" value="{{ date('Y-m-d', strtotime($kredit->tanggal)) }}" required>
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="jumlah">Jumlah</label>
-                                                    <input type="text" inputmode="numeric" class="form-control number-format" id="jumlah" name="jumlah" step="0.01" value="{{ number_format($kredit->jumlah, 0, '', '') }}" required>
+                                                    <input type="text" inputmode="numeric" class="form-control number-format" id="jumlah_{{ $kredit->id }}" name="jumlah" step="0.01" value="{{ number_format($kredit->jumlah, 0, '', '') }}" required>
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="keterangan">Keterangan</label>
-                                                    <textarea class="form-control" id="keterangan" name="keterangan" required>{{ $kredit->keterangan }}</textarea>
+                                                    <textarea class="form-control" id="keterangan" name="keterangan_{{ $kredit->id }}" required>{{ $kredit->keterangan }}</textarea>
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="status">Status</label>
-                                                    <select class="form-control" id="status" name="status" required>
+                                                    <select class="form-control" id="status_{{ $kredit->id }}" name="status" required>
                                                         <option value="0" {{ $kredit->status == 0 ? 'selected' : '' }}>Belum Lunas</option>
                                                         <option value="1" {{ $kredit->status == 1 ? 'selected' : '' }}>Lunas</option>
                                                     </select>
@@ -605,7 +605,7 @@
 
         <script>
             document.addEventListener('DOMContentLoaded', function() {
-                const petaniIdInput = document.getElementById('petani_id');
+                const petaniIdInput = document.querySelector('#addKreditModal #petani_id');
 
                 // Fungsi untuk setup autocomplete
                 // Fungsi untuk setup autocomplete
