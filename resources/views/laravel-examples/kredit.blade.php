@@ -445,11 +445,11 @@
                                                 <div class="form-group">
                                                     <label for="petani_id">Petani</label>
                                                     <div class="position-relative">
-                                                        <input type="text" class="form-control" id="edit_petani_search_{{ $kredit->id }}" placeholder="Search for a petani..." autocomplete="off" required
+                                                        <input type="text" class="form-control" id="edit_petani_search" placeholder="Search for a petani..." autocomplete="off" required
                                                             value="{{ $kredit->petani->nama ?? '' }}">
-                                                        <input type="hidden" id="petani_id_{{ $kredit->id }}" name="petani_id" required
+                                                        <input type="hidden" id="petani_id" name="petani_id" required
                                                             value="{{ $kredit->petani_id }}">
-                                                        <div id="edit_petani_search_results_{{ $kredit->id }}" class="dropdown-menu w-100" style="display: none; position: absolute; max-height: 200px; overflow-y: auto; z-index: 1000;"></div>
+                                                        <div id="edit_petani_search_results" class="dropdown-menu w-100" style="display: none; position: absolute; max-height: 200px; overflow-y: auto; z-index: 1000;"></div>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
@@ -771,32 +771,16 @@ infoSpan.textContent = ` - ${petani.alamat} - (Hutang: Rp ${petani.total_hutang.
                     }
                 });
 
-                // // Setup autocomplete for modal petani search
-                // setupAutocomplete('edit_petani_search', 'edit_petani_search_results', '/search-petani', function(petani) {
-                //     if (petaniIdInput) {
-                //         petaniIdInput.value = petani.id;
-                //         input.value = `${petani.nama} - ${petani.alamat}`; // Update input to show both name and address
-                //         console.log('Petani selected:', petani.nama, 'Alamat:', petani.alamat, 'ID:', petani.id);
-                //     } else {
-                //         console.error('petaniIdInput not found');
-                //     }
-                // });
-
-                // GANTI dengan ini:
-document.querySelectorAll('[id^="editKreditModal"]').forEach(function(modal) {
-    const kreditId = modal.id.replace('editKreditModal', '');
-    setupAutocomplete(
-        `edit_petani_search_${kreditId}`,
-        `edit_petani_search_results_${kreditId}`,
-        '/search-petani',
-        function(petani) {
-            const hiddenInput = document.getElementById(`edit_petani_id_${kreditId}`);
-            if (hiddenInput) {
-                hiddenInput.value = petani.id;
-            }
-        }
-    );
-});
+                // Setup autocomplete for modal petani search
+                setupAutocomplete('edit_petani_search', 'edit_petani_search_results', '/search-petani', function(petani) {
+                    if (petaniIdInput) {
+                        petaniIdInput.value = petani.id;
+                        input.value = `${petani.nama} - ${petani.alamat}`; // Update input to show both name and address
+                        console.log('Petani selected:', petani.nama, 'Alamat:', petani.alamat, 'ID:', petani.id);
+                    } else {
+                        console.error('petaniIdInput not found');
+                    }
+                });
 
                 // Handle form submission for editing kredit
                 document.querySelectorAll('form[id^="editKreditForm"]').forEach(form => {
