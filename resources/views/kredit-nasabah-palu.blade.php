@@ -940,27 +940,6 @@
 
 
 
-// Tambahkan ini di dalam DOMContentLoaded, setelah semua kode yang ada
-
-document.querySelectorAll('[id^="editKreditModal"]').forEach(function(modal) {
-    modal.addEventListener('show.bs.modal', function() {
-        const form = this.querySelector('form');
-        if (!form) return;
-
-        // Reset semua field ke nilai default dari HTML (nilai dari server/Blade)
-        form.reset();
-
-        // Re-format ulang semua number input setelah reset
-        // karena reset mengembalikan ke value mentah tanpa format koma
-        form.querySelectorAll('.number-format').forEach(function(input) {
-            let raw = input.value.replace(/,/g, '');
-            input.value = raw.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-        });
-    });
-});
-
-
-
         });
     </script>
 
