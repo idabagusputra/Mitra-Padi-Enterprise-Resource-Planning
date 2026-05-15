@@ -4517,7 +4517,7 @@ async function openModalOperator() {
             noPriceEl.style.color = '#f5365c'; // merah — perlu diisi
         } else {
             noPriceEl.textContent = '✓ Semua Terisi';
-            noPriceEl.style.color = '#2dce89'; // hijau — semua valid
+            noPriceEl.style.color = '#17ad37'; // hijau — semua valid
         }
 
         // Setup number formatting untuk input harga rata default
