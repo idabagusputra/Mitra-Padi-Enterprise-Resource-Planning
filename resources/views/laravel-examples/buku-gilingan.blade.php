@@ -4406,19 +4406,77 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+// async function openModalOperator() {
+//     if (isSubmitting) return;
+//     try {
+//         const response = await fetch('/buku-stok/get-unpaid-operator');
+//         const data = await response.json();
+
+//         if (!data.success) {
+//             alert('Gagal mengambil data: ' + data.message);
+//             return;
+//         }
+
+//         operatorData = data.data;
+
+//         if (operatorData.length === 0) {
+//             alert('Tidak ada data giling yang belum dibayar operator.');
+//             return;
+//         }
+
+//         // Hitung summary
+//         let totalGiling = 0;
+//         let totalHarga = 0;
+//         let noPrice = 0;
+
+//         operatorData.forEach(item => {
+//             const giling = parseFloat(item.giling_kotor) || 0;
+//             const harga = parseFloat(item.harga) || 0;
+//             totalGiling += giling;
+
+//             if (harga > 0) {
+//                 totalHarga += (giling * harga);
+//             } else {
+//                 noPrice++;
+//             }
+//         });
+
+//         const hargaRata = totalGiling > 0 ? totalHarga / totalGiling : 0;
+
+//         // Update summary display
+//         document.getElementById('summary-total-data').textContent = operatorData.length + ' data';
+//         document.getElementById('summary-total-giling').textContent = smartFormatNumber(totalGiling) + ' Kg';
+//         document.getElementById('summary-no-price').textContent = noPrice + ' data';
+//         document.getElementById('summary-total-harga').textContent = 'Rp ' + smartFormatNumber(totalHarga);
+//         document.getElementById('summary-harga-rata').textContent = 'Rp ' + smartFormatNumber(hargaRata) + '/Kg';
+
+//         // Setup number formatting for harga rata input
+//         const hargaInput = document.getElementById('operator-harga-rata-default');
+//         setupNumberFormatting(hargaInput);
+//         hargaInput.value = '';
+
+//         // Show modal konfirmasi (menggunakan custom modal dari kode lama)
+//         document.getElementById('modal-overlay-operator').classList.add('active');
+//         document.getElementById('modal-bayar-operator').classList.add('active');
+//         document.body.style.overflow = 'hidden';
+
+
+//     } catch (error) {
+//         console.error('Error:', error);
+//         alert('Terjadi kesalahan saat mengambil data');
+//     }
+// }
+
 async function openModalOperator() {
     if (isSubmitting) return;
     try {
         const response = await fetch('/buku-stok/get-unpaid-operator');
         const data = await response.json();
-
         if (!data.success) {
             alert('Gagal mengambil data: ' + data.message);
             return;
         }
-
         operatorData = data.data;
-
         if (operatorData.length === 0) {
             alert('Tidak ada data giling yang belum dibayar operator.');
             return;
@@ -4432,13 +4490,16 @@ async function openModalOperator() {
         operatorData.forEach(item => {
             const giling = parseFloat(item.giling_kotor) || 0;
             const harga = parseFloat(item.harga) || 0;
+
             totalGiling += giling;
 
             if (harga > 0) {
                 totalHarga += (giling * harga);
-            } else {
+            } else if (item.status == 0) {
+                // Harga 0 + belum lunas = belum diisi, tidak dihitung ke total
                 noPrice++;
             }
+            // Harga 0 + status == 1 = harga memang 0 (valid), tetap dihitung (giling * 0 = 0)
         });
 
         const hargaRata = totalGiling > 0 ? totalHarga / totalGiling : 0;
@@ -4446,20 +4507,28 @@ async function openModalOperator() {
         // Update summary display
         document.getElementById('summary-total-data').textContent = operatorData.length + ' data';
         document.getElementById('summary-total-giling').textContent = smartFormatNumber(totalGiling) + ' Kg';
-        document.getElementById('summary-no-price').textContent = noPrice + ' data';
         document.getElementById('summary-total-harga').textContent = 'Rp ' + smartFormatNumber(totalHarga);
         document.getElementById('summary-harga-rata').textContent = 'Rp ' + smartFormatNumber(hargaRata) + '/Kg';
 
-        // Setup number formatting for harga rata input
+        // Tampilan no-price dinamis berdasarkan status == 0 saja
+        const noPriceEl = document.getElementById('summary-no-price');
+        if (noPrice > 0) {
+            noPriceEl.textContent = noPrice + ' data';
+            noPriceEl.style.color = '#f5365c'; // merah — perlu diisi
+        } else {
+            noPriceEl.textContent = '✓ Semua Terisi';
+            noPriceEl.style.color = '#2dce89'; // hijau — semua valid
+        }
+
+        // Setup number formatting untuk input harga rata default
         const hargaInput = document.getElementById('operator-harga-rata-default');
         setupNumberFormatting(hargaInput);
         hargaInput.value = '';
 
-        // Show modal konfirmasi (menggunakan custom modal dari kode lama)
+        // Show modal
         document.getElementById('modal-overlay-operator').classList.add('active');
         document.getElementById('modal-bayar-operator').classList.add('active');
         document.body.style.overflow = 'hidden';
-
 
     } catch (error) {
         console.error('Error:', error);
