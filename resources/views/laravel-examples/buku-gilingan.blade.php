@@ -4497,10 +4497,15 @@ async function lanjutkanBayarOperator() {
         const giling = parseFloat(item.giling_kotor) || 0;
         let harga = parseFloat(item.harga) || 0;
 
-        // Jika tidak ada harga, gunakan harga default
-        if (harga === 0 && hargaRataDefault > 0) {
-            harga = hargaRataDefault;
-        }
+        // // Jika tidak ada harga, gunakan harga default
+        // if (harga === 0 && hargaRataDefault > 0) {
+        //     harga = hargaRataDefault;
+        // }
+
+        // SESUDAH — tambahkan pengecekan status
+if (harga === 0 && hargaRataDefault > 0 && item.status == 0) {
+    harga = hargaRataDefault;
+}
 
         totalGiling += giling;
         totalHarga += (giling * harga);
@@ -4553,9 +4558,14 @@ function generateNotaOperator(data, keterangan, hargaRataDefault, totalGiling, t
         const giling = parseFloat(item.giling_kotor) || 0;
         let harga = parseFloat(item.harga) || 0;
 
-        if (harga === 0 && hargaRataDefault > 0) {
-            harga = hargaRataDefault;
-        }
+        // if (harga === 0 && hargaRataDefault > 0) {
+        //     harga = hargaRataDefault;
+        // }
+
+        // SESUDAH — tambahkan pengecekan status
+if (harga === 0 && hargaRataDefault > 0 && item.status == 0) {
+    harga = hargaRataDefault;
+}
 
         const subtotal = giling * harga;
 
