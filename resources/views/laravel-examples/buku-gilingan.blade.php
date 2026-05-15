@@ -258,6 +258,17 @@
     box-shadow: 0 6px 20px rgba(203, 12, 159, 0.4);
 }
 
+.edit-btn-printburuh {
+    background: linear-gradient(135deg, #185FA5 0%, #0d3b7a 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(12, 44, 203, 0.3);
+}
+
+.edit-btn-printburuh:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(12, 44, 203, 0.4);
+}
+
 /* Edit Button in Table */
 .btn-edit {
     background: none;
@@ -333,6 +344,33 @@
 .edit-modal::-webkit-scrollbar-track {
     background: #f1f1f1;
     border-radius: 4px;
+}
+
+/* Tombol Print Nota Buruh — ukuran & animasi sama dengan edit-btn-cancel */
+.edit-btn-print-buruh {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.45rem 1rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    background: linear-gradient(135deg, #880E4F 0%, #C2185B 60%, #E91E63 100%);
+    color: #fff;
+    box-shadow: 0 2px 6px rgba(194, 24, 91, 0.25);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+}
+.edit-btn-print-buruh:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(194, 24, 91, 0.35);
+    filter: brightness(1.08);
+}
+.edit-btn-print-buruh:active {
+    transform: translateY(0px);
+    box-shadow: 0 2px 6px rgba(194, 24, 91, 0.2);
+    filter: brightness(0.96);
 }
 
 .edit-modal::-webkit-scrollbar-thumb {
@@ -2934,14 +2972,148 @@
                       placeholder="Masukan Keterangan"></textarea>
         </div>
     </div>
-    <div class="edit-modal-footer">
+    {{-- <div class="edit-modal-footer">
         <button class="edit-btn edit-btn-cancel" onclick="closeBuruhModal()">
             <i class="bi bi-x-circle"></i> Batal
         </button>
         <button class="edit-btn edit-btn-submit" onclick="resetBuruhCounter()" style="background: linear-gradient(135deg, #f5365c 0%, #f56036 100%);">
             <i class="bi bi-arrow-clockwise"></i> Reset Counter
         </button>
+    </div> --}}
+
+    <div class="edit-modal-footer">
+    <button class="edit-btn edit-btn-cancel" onclick="closeBuruhModal()">
+        <i class="bi bi-x-circle"></i> Batal
+    </button>
+    <!-- TOMBOL BARU: Print Nota -->
+    <button class="edit-btn edit-btn-printburuh" onclick="openNotaBuruh()"
+        style="background: linear-gradient(135deg, #185FA5 0%, #0d3b7a 100%); color: #fff; border: none;">
+        <i class="bi bi-printer-fill"></i> Cetak Nota
+    </button>
+    <button class="edit-btn edit-btn-submit" onclick="resetBuruhCounter()"
+        style="background: linear-gradient(135deg, #f5365c 0%, #f56036 100%);">
+        <i class="bi bi-arrow-clockwise"></i> Reset Counter
+    </button>
+</div>
+
+
+<!-- ================================================ -->
+<!-- OVERLAY NOTA BURUH — di luar modal lainnya       -->
+<!-- ================================================ -->
+<div class="modal-overlay" id="modal-overlay-nota-buruh" onclick="closeNotaBuruh()"></div>
+
+<div class="edit-modal" id="modal-nota-buruh" style="max-width: 400px;">
+
+    <!-- Header Pink -->
+    <div class="edit-modal-header" style="
+
+        padding: 1rem 1.25rem;
+        flex-shrink: 0;
+    ">
+        <h5 class="edit-modal-title" style="color:#cb0c9f; display:flex; align-items:center; gap:0.5rem; font-size:1rem;">
+            <i class="bi bi-receipt-cutoff" style="color:#cb0c9f;"></i>
+            Nota Gaji Buruh Giling
+        </h5>
+        <button class="edit-modal-close" onclick="closeNotaBuruh()"
+            style="opacity:0.85; font-size:1.4rem; line-height:1; background:none; border:none; cursor:pointer;">
+            &times;
+        </button>
     </div>
+
+    <!-- Body Scrollable -->
+    <div class="edit-modal-body" style="
+        overflow-y: auto;
+
+        padding: 1.25rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
+        max-height: 65vh;
+    ">
+        <!-- Spinner Loading -->
+        <div id="nota-buruh-loading" style="
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2.5rem 1rem;
+            gap: 0.75rem;
+            width: 100%;
+        ">
+            <div style="
+                width: 2rem; height: 2rem;
+                border: 3px solid #f8bbd0;
+                border-top-color: #C2185B;
+                border-radius: 50%;
+                animation: spin-nota-buruh 0.7s linear infinite;
+            "></div>
+            <span style="color:#C2185B; font-size:0.82rem; font-weight:600;">Menyiapkan nota...</span>
+        </div>
+
+        <!-- Iframe Nota -->
+       <!-- Iframe Nota — wrapper tanpa overflow hidden -->
+<div id="nota-buruh-iframe-wrapper" style="
+    display: none;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(194,24,91,0.15);
+    overflow: visible;
+    width: 100%;
+    max-width: 310px;
+    border: 1px solid #f8bbd0;
+">
+    <iframe
+        id="nota-iframe-buruh"
+        style="
+            width: 310px;
+            height: 520px;
+            max-height: 52vh;
+            border: none;
+            display: block;
+            border-radius: 8px;
+            overflow-y: auto;
+        "
+        scrolling="yes">
+    </iframe>
+</div>
+
+        <!-- Info -->
+        <p id="nota-buruh-info" style="
+            display: none;
+            font-size: 0.72rem;
+            color: #ad6080;
+            text-align: center;
+            margin: 0;
+        ">
+            <i class="bi bi-info-circle"></i>
+            Preview nota 80mm &mdash; cetak ke thermal printer via tombol <strong>Cetak</strong>.
+        </p>
+    </div>
+
+   <div class="edit-modal-footer" style="
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #f8bbd0;
+    background: #fff;
+    padding: 0.85rem 1.25rem;
+    flex-shrink: 0;
+">
+    <button class="edit-btn edit-btn-cancel" onclick="closeNotaBuruh()" style="margin: 0;">
+        <i class="bi bi-x-circle"></i> Tutup
+    </button>
+    <button class="edit-btn edit-btn-printburuh" onclick="printNotaBuruh()">
+        <i class="bi bi-printer-fill"></i> Cetak Nota
+    </button>
+</div>
+</div>
+
+<style>
+@keyframes spin-nota-buruh {
+    to { transform: rotate(360deg); }
+}
+</style>
 </div>
 
 
@@ -5106,42 +5278,424 @@ document.addEventListener('keydown', function(e) {
 // ============================================
 // SERVIS OLI COUNTER FUNCTIONS
 // ============================================
+let buruhDataDetail = [];
 let currentBuruhTotal = 0;
 
+// function openBuruhModal() {
+//     if (isSubmitting) return;
+
+//     // Fetch current total
+//     fetch('/buku-stok/get-buruh-counter')
+//         .then(response => response.json())
+//         .then(data => {
+//             if (data.success) {
+//                 currentBuruhTotal = parseFloat(data.total) || 0;
+//                 // Update display in modal
+//                 document.getElementById('buruh-current-value').textContent =
+//                     smartFormatNumber(currentBuruhTotal) + ' Kg';
+
+//                     // Update display in modal
+//                document.getElementById('ongkos-current-value').textContent =
+//     'Rp ' + smartFormatNumber(currentBuruhTotal * 80);
+
+//                      // Tampilkan servis_reset_note & nama_petani
+//         document.getElementById('buruh-reset-note').textContent = data.buruh_reset_note;
+//         document.getElementById('buruh-nama-petani').textContent = data.nama_petani;
+
+//                 // Show modal
+//                 document.getElementById('modal-overlay-buruh').classList.add('active');
+//                 document.getElementById('modal-buruh-reset').classList.add('active');
+//                 document.body.style.overflow = 'hidden';
+//             } else {
+//                 alert('Gagal mengambil data counter: ' + data.message);
+//             }
+//         })
+//         .catch(error => {
+//             console.error('Error:', error);
+//             alert('Terjadi kesalahan saat mengambil data');
+//         });
+// }
+
+// ============================================
+// BUKA MODAL BURUH — versi lengkap (ganti fungsi lama sepenuhnya)
+// ============================================
 function openBuruhModal() {
     if (isSubmitting) return;
 
-    // Fetch current total
     fetch('/buku-stok/get-buruh-counter')
         .then(response => response.json())
         .then(data => {
-            if (data.success) {
-                currentBuruhTotal = parseFloat(data.total) || 0;
-                // Update display in modal
-                document.getElementById('buruh-current-value').textContent =
-                    smartFormatNumber(currentBuruhTotal) + ' Kg';
-
-                    // Update display in modal
-               document.getElementById('ongkos-current-value').textContent =
-    'Rp ' + smartFormatNumber(currentBuruhTotal * 80);
-
-                     // Tampilkan servis_reset_note & nama_petani
-        document.getElementById('buruh-reset-note').textContent = data.buruh_reset_note;
-        document.getElementById('buruh-nama-petani').textContent = data.nama_petani;
-
-                // Show modal
-                document.getElementById('modal-overlay-buruh').classList.add('active');
-                document.getElementById('modal-buruh-reset').classList.add('active');
-                document.body.style.overflow = 'hidden';
-            } else {
+            if (!data.success) {
                 alert('Gagal mengambil data counter: ' + data.message);
+                return;
             }
+
+            // Simpan total
+            currentBuruhTotal = parseFloat(data.total) || 0;
+
+            // ⬇ KUNCI: pastikan field 'data' dari API ditangkap dengan benar
+            buruhDataDetail = Array.isArray(data.data) ? data.data : [];
+
+            // Debug — hapus setelah berhasil
+            console.log('[Buruh] total:', currentBuruhTotal);
+            console.log('[Buruh] detail petani:', buruhDataDetail);
+
+            // Update tampilan modal
+            document.getElementById('buruh-current-value').textContent =
+                smartFormatNumber(currentBuruhTotal) + ' Kg';
+            document.getElementById('ongkos-current-value').textContent =
+                'Rp ' + smartFormatNumber(currentBuruhTotal * 80);
+            document.getElementById('buruh-reset-note').textContent = data.buruh_reset_note || '-';
+            document.getElementById('buruh-nama-petani').textContent = data.nama_petani || '-';
+
+            // Tampilkan modal
+            document.getElementById('modal-overlay-buruh').classList.add('active');
+            document.getElementById('modal-buruh-reset').classList.add('active');
+            document.body.style.overflow = 'hidden';
         })
         .catch(error => {
-            console.error('Error:', error);
+            console.error('Error openBuruhModal:', error);
             alert('Terjadi kesalahan saat mengambil data');
         });
 }
+
+function generateNotaBuruh(data, keterangan, totalGiling, totalOngkos) {
+    const TARIF_PER_KG = 80;
+    const now = new Date();
+    const tanggal = now.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    const waktu = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+
+    // Jika tidak ada data detail, buat satu baris ringkasan
+    let itemsHTML = '';
+    if (data && data.length > 0) {
+        data.forEach((item, index) => {
+            const giling = parseFloat(item.giling_kotor) || 0;
+            const subtotal = giling * TARIF_PER_KG;
+            itemsHTML += `
+            <tr>
+                <td style="padding: 2mm 0; border-bottom: 1px dotted #999; vertical-align: top;">${index + 1}. ${item.nama_petani || '-'}</td>
+                <td style="padding: 2mm 0; text-align: right; border-bottom: 1px dotted #999; white-space: nowrap;">${smartFormatNumber(giling)} Kg</td>
+
+            </tr>`;
+        });
+    } else {
+        // Fallback: tidak ada data detail
+        itemsHTML = `
+        <tr>
+            <td colspan="4" style="text-align:center; padding: 3mm 0; color: #888; font-style: italic;">
+                Tidak ada detail petani
+            </td>
+        </tr>`;
+    }
+
+    return `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=80mm">
+    <title>Nota Gaji Buruh</title>
+    <style>
+        @page {
+            size: 80mm auto;
+            margin: 0;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            width: 80mm;
+            margin: 0 auto;
+            padding: 4mm 3mm;
+            font-family: 'Arial', sans-serif;
+            font-size: 12px;
+            line-height: 1.4;
+            color: #000;
+            background: white;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 3mm;
+            padding-bottom: 3mm;
+            border-bottom: 2px solid #000;
+        }
+        .header-logo {
+            width: 100%;
+            max-width: 80mm;
+            height: auto;
+            display: block;
+            object-fit: contain;
+        }
+        .nota-label {
+            font-size: 13px;
+            font-weight: bold;
+            margin: 2mm 0;
+            padding: 1.5mm 0;
+            background: #000;
+            color: #fff;
+        }
+        .date-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 2mm 0;
+            margin-bottom: 2mm;
+            border-bottom: 1px dashed #000;
+        }
+        .keterangan {
+            background: #f0f0f0;
+            padding: 2mm;
+            margin-bottom: 3mm;
+            border-left: 3px solid #000;
+            font-size: 11px;
+        }
+        .keterangan strong { display: block; margin-bottom: 1mm; }
+        .tarif-badge {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #1a1a2e;
+            color: #fff;
+            padding: 2mm 3mm;
+            border-radius: 2mm;
+            margin-bottom: 3mm;
+            font-size: 11px;
+        }
+        .tarif-badge .tarif-label { font-size: 10px; opacity: 0.8; }
+        .tarif-badge .tarif-value { font-weight: bold; font-size: 13px; }
+        table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 3mm;
+    font-size: 12px;
+    font-weight: bold;
+}
+        th {
+            font-weight: bold;
+            padding: 2mm 0;
+            border-top: 2px solid #000;
+            border-bottom: 2px solid #000;
+            text-align: left;
+        }
+        th.right { text-align: right; }
+        .summary {
+            border-top: 2px solid #000;
+            padding-top: 2mm;
+            margin-top: 2mm;
+        }
+        .sum-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 2mm;
+            margin: 1mm 0;
+            background: #f0f0f0;
+            font-size: 11.5px;
+            font-weight: bold;
+        }
+        .grand-total {
+            background: #000;
+            color: #fff;
+            padding: 3mm;
+            margin-top: 3mm;
+            text-align: center;
+        }
+        .grand-total .label { font-size: 13px; font-weight: bold; margin-bottom: 1mm; }
+        .grand-total .amount { font-size: 18px; font-weight: bold; }
+        .footer {
+            text-align: center;
+            margin-top: 4mm;
+            padding-top: 3mm;
+            border-top: 2px solid #000;
+        }
+        @media print {
+            body { width: 80mm; margin: 0; padding: 4mm 3mm; }
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            .grand-total { background: #000 !important; color: #fff !important; }
+            .tarif-badge { background: #1a1a2e !important; color: #fff !important; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="{{ asset('logo_gilingan.png') }}" alt="Putra Manuaba" class="header-logo">
+        <div class="nota-label">DETAIL ONGKOS GILING</div>
+
+    </div>
+
+    <div class="date-row">
+        <span>${tanggal}</span>
+        <span>${waktu}</span>
+    </div>
+
+    ${keterangan ? `
+    <div class="keterangan">
+        <strong>Keterangan:</strong>
+        <div>${keterangan}</div>
+    </div>` : ''}
+
+
+
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 50%;">Petani</th>
+                <th class="right" style="width: 50%;">Giling Kotor</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            ${itemsHTML}
+        </tbody>
+    </table>
+
+    <div class="summary">
+        <div class="sum-row">
+            <span>TOTAL PETANI</span>
+            <span>${data ? data.length : 0} Orang</span>
+        </div>
+        <div class="sum-row">
+            <span>TOTAL GILING</span>
+            <span>${smartFormatNumber(totalGiling)} Kg</span>
+        </div>
+        <div class="sum-row">
+            <span>ONGKOS GILING</span>
+            <span>Rp ${smartFormatNumber(TARIF_PER_KG)} / Kg</span>
+        </div>
+    </div>
+
+    <div class="grand-total">
+        <div class="label">TOTAL ONGKOS GILING</div>
+        <div class="amount">Rp ${smartFormatNumber(totalOngkos)}</div>
+    </div>
+
+    <div class="footer">
+        <img src="{{ asset('footer.png') }}" alt="Putra Manuaba" class="header-logo">
+    </div>
+
+     <!-- Titik-titik di kiri dan kanan sebanyak 4 baris -->
+        <table style="width: 100%; border-collapse: collapse; margin: 5px 0;">
+            <tr>
+                <td style="width: 50%; text-align: left; padding: 1px 0;">.</td>
+                <td style="width: 50%; text-align: right; padding: 1px 0;">.</td>
+            </tr>
+            <tr>
+                <td style="width: 50%; text-align: left; padding: 1px 0;">.</td>
+                <td style="width: 50%; text-align: right; padding: 1px 0;">.</td>
+            </tr>
+            <tr>
+                <td style="width: 50%; text-align: left; padding: 1px 0;">.</td>
+                <td style="width: 50%; text-align: right; padding: 1px 0;">.</td>
+            </tr>
+            <tr>
+                <td style="width: 50%; text-align: left; padding: 1px 0;">.</td>
+                <td style="width: 50%; text-align: right; padding: 1px 0;">.</td>
+            </tr>
+        </table>
+</body>
+</html>`;
+}
+
+function openNotaBuruh() {
+    const keterangan  = document.getElementById('buruh-keterangan').value.trim();
+    const totalGiling = currentBuruhTotal;
+    const totalOngkos = totalGiling * 80;
+
+    // Reset ke loading state
+    document.getElementById('nota-buruh-loading').style.display        = 'flex';
+    document.getElementById('nota-buruh-iframe-wrapper').style.display  = 'none';
+    document.getElementById('nota-buruh-info').style.display            = 'none';
+
+    // Buka modal
+    document.getElementById('modal-overlay-nota-buruh').classList.add('active');
+    document.getElementById('modal-nota-buruh').classList.add('active');
+    document.body.style.overflow = 'hidden';
+
+    // Generate HTML nota
+    const notaHTML = generateNotaBuruh(buruhDataDetail, keterangan, totalGiling, totalOngkos);
+
+    const iframe = document.getElementById('nota-iframe-buruh');
+
+    // Reset dulu sebelum assign srcdoc baru
+    iframe.onload = null;
+    iframe.removeAttribute('srcdoc');
+
+    // Delay kecil agar reset sempurna sebelum load konten baru
+    setTimeout(function() {
+        iframe.onload = function() {
+            document.getElementById('nota-buruh-loading').style.display        = 'none';
+            document.getElementById('nota-buruh-iframe-wrapper').style.display  = 'block';
+            document.getElementById('nota-buruh-info').style.display            = 'block';
+
+            // Inject scroll style ke dalam iframe agar konten bisa scroll
+            try {
+                var iDoc = iframe.contentDocument || iframe.contentWindow.document;
+                var scrollStyle = iDoc.createElement('style');
+                scrollStyle.textContent = 'html,body{overflow-y:auto!important;height:auto!important;}';
+                iDoc.head.appendChild(scrollStyle);
+            } catch(e) {}
+        };
+
+        iframe.srcdoc = notaHTML;
+    }, 50);
+}
+
+function closeNotaBuruh() {
+    document.getElementById('modal-overlay-nota-buruh').classList.remove('active');
+    document.getElementById('modal-nota-buruh').classList.remove('active');
+    document.body.style.overflow = '';
+
+    // Reset ke state awal
+    var iframe = document.getElementById('nota-iframe-buruh');
+    iframe.onload = null;
+    iframe.removeAttribute('srcdoc');
+    iframe.style.height = '500px';
+
+    document.getElementById('nota-buruh-loading').style.display       = 'flex';
+    document.getElementById('nota-buruh-iframe-wrapper').style.display = 'none';
+    document.getElementById('nota-buruh-info').style.display           = 'none';
+}
+
+function printNotaBuruh() {
+    const iframe = document.getElementById('nota-iframe-buruh');
+    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+
+    const printStyle = iframeDoc.createElement('style');
+    printStyle.id = 'print-style-buruh-override';
+    printStyle.textContent = `
+        @media print {
+            @page { size: 80mm 1000mm; margin: 0; }
+            html, body { width: 80mm !important; height: auto !important; overflow: visible !important; margin: 0 !important; padding: 0 !important; }
+            body { padding: 4mm 3mm !important; }
+            * { page-break-before: avoid !important; page-break-after: avoid !important; page-break-inside: avoid !important; break-before: avoid !important; break-after: avoid !important; break-inside: avoid !important; }
+        }`;
+
+    const oldStyle = iframeDoc.getElementById('print-style-buruh-override');
+    if (oldStyle) oldStyle.remove();
+    iframeDoc.head.appendChild(printStyle);
+
+    setTimeout(() => {
+        const contentHeight = iframeDoc.body.scrollHeight;
+        const heightInMM = Math.ceil(contentHeight * 0.264583);
+
+        printStyle.textContent = `
+            @media print {
+                @page { size: 80mm ${heightInMM}mm; margin: 0; }
+                html, body { width: 80mm !important; height: ${heightInMM}mm !important; overflow: visible !important; margin: 0 !important; padding: 0 !important; }
+                body { padding: 4mm 3mm !important; }
+                * { page-break-before: avoid !important; page-break-after: avoid !important; page-break-inside: avoid !important; break-before: avoid !important; break-after: avoid !important; break-inside: avoid !important; }
+            }`;
+
+        iframe.contentWindow.focus();
+        iframe.contentWindow.print();
+    }, 100);
+}
+
+// Inisialisasi modal Bootstrap untuk nota buruh
+document.addEventListener('DOMContentLoaded', function () {
+    const notaBuruhModalEl = document.getElementById('notaBuruhModal');
+    if (notaBuruhModalEl) {
+        window.notaBuruhModal = new bootstrap.Modal(notaBuruhModalEl);
+    }
+});
 
 function closeBuruhModal() {
     if (isSubmitting) return;

@@ -169,11 +169,18 @@ class BukuStokController extends Controller
                 ->where($excludeCeker)
                 ->sum('giling_kotor') ?? 0;
 
+            // Di dalam method getBuruhCounter() atau sejenisnya
+            $petaniList = BukuStokBeras::where('counted_buruh_giling', 0) // sesuaikan kondisi filter kamu
+                ->select('nama_petani', 'giling_kotor')
+                ->orderBy('created_at', 'asc')
+                ->get();
+
             return response()->json([
                 'success'          => true,
                 'total'            => $total ?? 0,
                 'buruh_reset_note' => $lastNote?->buruh_reset_note ?? '-',
                 'nama_petani'      => $lastRecord?->nama_petani ?? '-',
+                'data'             => $petaniList, // ← INI yang wajib ditambahkan
             ]);
         } catch (\Exception $e) {
             return response()->json([
