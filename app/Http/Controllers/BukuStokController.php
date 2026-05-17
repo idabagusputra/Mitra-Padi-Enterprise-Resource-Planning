@@ -435,6 +435,9 @@ class BukuStokController extends Controller
                 // Gunakan status dari input jika ada, jika tidak default 0
                 $statusServis = isset($row['counted_for_servis']) ? (int)$row['counted_for_servis'] : 1;
 
+                // ✅ Ringkas
+                $statusOperator = $row['keterangan_operator_gajian'] ?? null;
+
 
                 $buku = BukuStokBeras::create([
                     'petani_id'      => $petani->id,
@@ -451,6 +454,7 @@ class BukuStokController extends Controller
                     'status'      => $row['status'],
                     'counted_buruh_giling'      => $statusBuruh,
                     'counted_for_servis'      => $statusServis,
+                    'keterangan_operator_gajian'      => $statusOperator,
                     'harga'       => $harga,
 
                 ]);
@@ -499,6 +503,8 @@ class BukuStokController extends Controller
             $status = isset($row['status']) ? (int)$row['status'] : 0;
             // Gunakan status dari input jika ada, jika tidak default 0
             $statusBuruh = isset($row['counted_buruh_giling']) ? (int)$row['counted_buruh_giling'] : 0;
+            // ✅ Ringkas
+            $statusOperator = $row['keterangan_operator_gajian'] ?? null;
 
             $buku->update([
                 'tanggal'        => $request->tanggal,
@@ -511,6 +517,7 @@ class BukuStokController extends Controller
                 'jual_kotor'     => $jualK,
                 'status'        => $status,
                 'counted_buruh_giling'      => $statusBuruh,
+                'counted_operator_gajian'      => $statusOperator,
                 'harga'         => $request->harga ?? 0,
             ]);
 
@@ -960,12 +967,17 @@ class BukuStokController extends Controller
 
             $keteranganFinal = trim($keterangan) . "\n" . now()->format('d-m-Y');
 
-            // Update data yang sudah punya harga
+            // // Update data yang sudah punya harga
+            // BukuStokBeras::whereIn('id', $ids)
+            //     ->where(function ($q) {
+            //         $q->whereNotNull('harga')
+            //             ->where('harga', '>', 0);
+            //     })
+            //     ->update(['keterangan_operator_gajian' => $keteranganFinal]);
+
+            // Update keterangan untuk SEMUA data yang belum punya keterangan
             BukuStokBeras::whereIn('id', $ids)
-                ->where(function ($q) {
-                    $q->whereNotNull('harga')
-                        ->where('harga', '>', 0);
-                })
+                ->whereNull('keterangan_operator_gajian')
                 ->update(['keterangan_operator_gajian' => $keteranganFinal]);
 
             // Update data yang belum punya harga dengan harga rata-rata

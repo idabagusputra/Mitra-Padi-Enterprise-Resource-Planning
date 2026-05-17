@@ -1751,6 +1751,7 @@
         beras_pulang: {{ $item->beras_pulang ?? 0 }},
         harga: {{ $item->harga ?? 0 }},
         status: {{ $item->status ? 1 : 0 }},
+        keterangan_operator_gajian: {{ json_encode($item->keterangan_operator_gajian ?? null) }},
         counted_buruh_giling: {{ $item->counted_buruh_giling ? 1 : 0 }},
         counted_for_servis: {{ $item->counted_for_servis ? 1 : 0 }}
     })">
@@ -2333,6 +2334,9 @@
                 </small>
             </div>
 
+
+
+
             <div class="edit-form-group">
                 <label class="edit-form-label">Status</label>
                 <select class="edit-form-control" id="edit-buku-beras-status">
@@ -2355,6 +2359,19 @@
         <option value="0">Sudah Terhitung</option>
     </select>
 </div>
+
+
+ <div class="edit-form-group">
+                <label class="edit-form-label">Status Operator</label>
+                <!-- ✅ Tanpa number-format -->
+<input type="text" class="edit-form-control" id="edit-buku-beras-operator-status">
+                <small class="text-muted" style="display: block; margin-top: 0.5rem; font-size: 0.75rem;">
+                    <i class="bi bi-info-circle"></i> Akan null jika tidak ada
+                </small>
+            </div>
+
+
+
         </form>
     </div>
     <div class="edit-modal-footer">
@@ -3886,6 +3903,7 @@ function populateModalFields(type, data) {
             document.getElementById('edit-buku-beras-id').value = data.id;
             document.getElementById('edit-buku-beras-tanggal').value = data.tanggal;
             document.getElementById('edit-buku-beras-petani-search').value = data.nama_petani;
+            document.getElementById('edit-buku-beras-operator-status').value = data.keterangan_operator_gajian;
             document.getElementById('edit-buku-beras-petani-id').value = data.petani_id;
             document.getElementById('edit-buku-beras-jemur').value = formatNumber(data.jemur || 0);
             document.getElementById('edit-buku-beras-giling-kotor').value = formatNumber(data.giling_kotor || 0);
@@ -4052,6 +4070,7 @@ function prepareEditData(type) {
                 beras_pulang: parseFormattedNumber(document.getElementById('edit-buku-beras-beras-pulang').value),
                 harga: parseFormattedNumber(document.getElementById('edit-buku-beras-harga').value),
                 status: document.getElementById('edit-buku-beras-status').value,
+                keterangan_operator_gajian: document.getElementById('edit-buku-beras-operator-status').value,
                 counted_buruh_giling: document.getElementById('edit-buku-beras-buruh-status').value,
                 counted_for_servis: document.getElementById('edit-buku-beras-servis-status').value
             };
