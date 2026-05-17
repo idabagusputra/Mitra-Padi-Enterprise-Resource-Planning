@@ -2751,42 +2751,66 @@
         <button class="edit-modal-close" onclick="closeModalOperator()">&times;</button>
     </div>
     <div class="edit-modal-body">
-        <div class="alert alert-info" style="margin-bottom: 1rem; padding: 0.75rem; border-radius: 8px; background: #e7f3ff; border: 1px solid #b3d9ff; font-size: 0.85rem;">
+        <div class="alert alert-info" style="margin-bottom: 1rem; padding: 0.75rem; border-radius: 8px; background: #e7f3ff; border: 1px solid #b3d9ff; font-size: 0.7rem;">
             <i class="bi bi-info-circle-fill" style="margin-right: 0.5rem;"></i>
             <strong>Informasi:</strong> Sistem akan membuat nota untuk semua data giling yang belum dibayar operator.
         </div>
 
         <div id="operator-summary" style="background: #f8f9fa; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
-            <table style="width: 100%; font-size: 0.9rem;">
-                <tr>
-                    <td style="padding: 0.25rem 0;"><strong>Total Data:</strong></td>
-                    <td id="summary-total-data" style="text-align: right;">-</td>
-                </tr>
-                <tr>
-                    <td style="padding: 0.25rem 0;"><strong>Total Giling Kotor:</strong></td>
-                    <td id="summary-total-giling" style="text-align: right;">-</td>
-                </tr>
-                <tr>
-                    <td style="padding: 0.25rem 0;"><strong>Data Belum Ada Harga:</strong></td>
-                    <td id="summary-no-price" style="text-align: right; color: #f5365c; font-weight: 600;">-</td>
-                </tr>
-                <tr style="border-top: 1px solid #dee2e6;">
-                    <td style="padding: 0.5rem 0;"><strong>Total Harga:</strong></td>
-                    <td id="summary-total-harga" style="text-align: right; font-weight: bold; color: #cb0c9f;">-</td>
-                </tr>
-                <tr>
-                    <td style="padding: 0.25rem 0;"><strong>Harga Rata-rata:</strong></td>
-                    <td id="summary-harga-rata" style="text-align: right; font-weight: bold; color: #17ad37;">-</td>
-                </tr>
+    <!-- Metric Cards -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;">
+        <div style="background: #fff; border: 1px solid #e9ecef; border-radius: 8px; padding: 0.75rem 1rem;">
+            <p style="font-size: 11px; color: #6b7280; margin: 0 0 3px; text-transform: uppercase; letter-spacing: 0.04em;">Total Data</p>
+            <p id="summary-total-data" style="font-size: 20px; font-weight: 600; margin: 0; color: #111827;">-</p>
+        </div>
+        <div style="background: #fff; border: 1px solid #e9ecef; border-radius: 8px; padding: 0.75rem 1rem;">
+            <p style="font-size: 11px; color: #6b7280; margin: 0 0 3px; text-transform: uppercase; letter-spacing: 0.04em;">Total Giling Kotor</p>
+            <p id="summary-total-giling" style="font-size: 20px; font-weight: 600; margin: 0; color: #111827;">-</p>
+        </div>
+        <div style="background: #fff; border: 1px solid #e9ecef; border-radius: 8px; padding: 0.75rem 1rem;">
+            <p style="font-size: 11px; color: #6b7280; margin: 0 0 3px; text-transform: uppercase; letter-spacing: 0.04em;">Total Harga</p>
+            <p id="summary-total-harga" style="font-size: 16px; font-weight: 600; margin: 0; color: #cb0c9f;">-</p>
+        </div>
+        <div style="background: #fff; border: 1px solid #e9ecef; border-radius: 8px; padding: 0.75rem 1rem;">
+            <p style="font-size: 11px; color: #6b7280; margin: 0 0 3px; text-transform: uppercase; letter-spacing: 0.04em;">Harga Rata-rata</p>
+            <p id="summary-harga-rata" style="font-size: 16px; font-weight: 600; margin: 0; color: #17ad37;">-</p>
+        </div>
+    </div>
+
+    <!-- Status No Price -->
+    <div id="summary-no-price" style="border-radius: 6px; padding: 0.5rem 0.75rem; font-size: 0.82rem; font-weight: 600; background: #f3f4f6; color: #6b7280;">-</div>
+</div>
+
+        <!-- Detail Data Tanpa Harga -->
+<div id="no-price-detail" style="display: none; margin-bottom: 1rem;">
+    <div style="background: #fff5f5; border: 1px solid #f5365c; border-radius: 8px; padding: 1rem;">
+        <div style="font-size: 0.85rem; font-weight: 600; color: #f5365c; margin-bottom: 0.5rem;">
+            <i class="bi bi-exclamation-triangle-fill"></i> Data Belum Ada Harga:
+        </div>
+        <div style="max-height: 150px; overflow-y: auto;">
+            <table style="width: 100%; font-size: 0.8rem; border-collapse: collapse;">
+                <thead>
+                    <tr style="background: #ffd7d7;">
+                        <th style="padding: 0.3rem 0.5rem; text-align: left;">ID</th>
+                        <th style="padding: 0.3rem 0.5rem; text-align: left;">Petani</th>
+                        <th style="padding: 0.3rem 0.5rem; text-align: left;">Tanggal</th>
+                        <th style="padding: 0.3rem 0.5rem; text-align: right;">Giling Kotor</th>
+                    </tr>
+                </thead>
+                <tbody id="no-price-list">
+                    <!-- Diisi oleh JavaScript -->
+                </tbody>
             </table>
         </div>
+    </div>
+</div>
 
         <div class="edit-form-group">
             <label class="edit-form-label">Harga Rata-rata untuk Data Tanpa Harga</label>
             <input type="text" class="edit-form-control number-format" id="operator-harga-rata-default"
                    placeholder="0" inputmode="decimal">
             <small class="text-muted" style="display: block; margin-top: 0.5rem; font-size: 0.75rem;">
-                <i class="bi bi-info-circle"></i> Harga ini akan diterapkan untuk data yang belum memiliki harga & status belum lunas
+                <i class="bi bi-info-circle"></i> Harga ini akan diterapkan untuk data yang belum memiliki harga
             </small>
         </div>
 
@@ -4406,209 +4430,100 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// async function openModalOperator() {
-//     if (isSubmitting) return;
-//     try {
-//         const response = await fetch('/buku-stok/get-unpaid-operator');
-//         const data = await response.json();
-
-//         if (!data.success) {
-//             alert('Gagal mengambil data: ' + data.message);
-//             return;
-//         }
-
-//         operatorData = data.data;
-
-//         if (operatorData.length === 0) {
-//             alert('Tidak ada data giling yang belum dibayar operator.');
-//             return;
-//         }
-
-//         // Hitung summary
-//         let totalGiling = 0;
-//         let totalHarga = 0;
-//         let noPrice = 0;
-
-//         operatorData.forEach(item => {
-//             const giling = parseFloat(item.giling_kotor) || 0;
-//             const harga = parseFloat(item.harga) || 0;
-//             totalGiling += giling;
-
-//             if (harga > 0) {
-//                 totalHarga += (giling * harga);
-//             } else {
-//                 noPrice++;
-//             }
-//         });
-
-//         const hargaRata = totalGiling > 0 ? totalHarga / totalGiling : 0;
-
-//         // Update summary display
-//         document.getElementById('summary-total-data').textContent = operatorData.length + ' data';
-//         document.getElementById('summary-total-giling').textContent = smartFormatNumber(totalGiling) + ' Kg';
-//         document.getElementById('summary-no-price').textContent = noPrice + ' data';
-//         document.getElementById('summary-total-harga').textContent = 'Rp ' + smartFormatNumber(totalHarga);
-//         document.getElementById('summary-harga-rata').textContent = 'Rp ' + smartFormatNumber(hargaRata) + '/Kg';
-
-//         // Setup number formatting for harga rata input
-//         const hargaInput = document.getElementById('operator-harga-rata-default');
-//         setupNumberFormatting(hargaInput);
-//         hargaInput.value = '';
-
-//         // Show modal konfirmasi (menggunakan custom modal dari kode lama)
-//         document.getElementById('modal-overlay-operator').classList.add('active');
-//         document.getElementById('modal-bayar-operator').classList.add('active');
-//         document.body.style.overflow = 'hidden';
-
-
-//     } catch (error) {
-//         console.error('Error:', error);
-//         alert('Terjadi kesalahan saat mengambil data');
-//     }
-// }
-
-// async function openModalOperator() {
-//     if (isSubmitting) return;
-//     try {
-//         const response = await fetch('/buku-stok/get-unpaid-operator');
-//         const data = await response.json();
-//         if (!data.success) {
-//             alert('Gagal mengambil data: ' + data.message);
-//             return;
-//         }
-//         operatorData = data.data;
-//         if (operatorData.length === 0) {
-//             alert('Tidak ada data giling yang belum dibayar operator.');
-//             return;
-//         }
-
-//         // Hitung summary
-//         let totalGiling = 0;
-//         let totalHarga = 0;
-//         let noPrice = 0;
-
-//         operatorData.forEach(item => {
-//             const giling = parseFloat(item.giling_kotor) || 0;
-//             const harga = parseFloat(item.harga) || 0;
-
-//             totalGiling += giling;
-
-//             if (harga > 0) {
-//                 totalHarga += (giling * harga);
-//             } else if (item.status == 0) {
-//                 // Harga 0 + belum lunas = belum diisi, tidak dihitung ke total
-//                 noPrice++;
-//             }
-//             // Harga 0 + status == 1 = harga memang 0 (valid), tetap dihitung (giling * 0 = 0)
-//         });
-
-//         const hargaRata = totalGiling > 0 ? totalHarga / totalGiling : 0;
-
-//         // Update summary display
-//         document.getElementById('summary-total-data').textContent = operatorData.length + ' data';
-//         document.getElementById('summary-total-giling').textContent = smartFormatNumber(totalGiling) + ' Kg';
-//         document.getElementById('summary-total-harga').textContent = 'Rp ' + smartFormatNumber(totalHarga);
-//         document.getElementById('summary-harga-rata').textContent = 'Rp ' + smartFormatNumber(hargaRata) + '/Kg';
-
-//         // Tampilan no-price dinamis berdasarkan status == 0 saja
-//         const noPriceEl = document.getElementById('summary-no-price');
-//         if (noPrice > 0) {
-//             noPriceEl.textContent = noPrice + ' data';
-//             noPriceEl.style.color = '#f5365c'; // merah — perlu diisi
-//         } else {
-//             noPriceEl.textContent = '✓ Semua Terisi';
-//             noPriceEl.style.color = '#17ad37'; // hijau — semua valid
-//         }
-
-//         // Setup number formatting untuk input harga rata default
-//         const hargaInput = document.getElementById('operator-harga-rata-default');
-//         setupNumberFormatting(hargaInput);
-//         hargaInput.value = '';
-
-//         // Show modal
-//         document.getElementById('modal-overlay-operator').classList.add('active');
-//         document.getElementById('modal-bayar-operator').classList.add('active');
-//         document.body.style.overflow = 'hidden';
-
-//     } catch (error) {
-//         console.error('Error:', error);
-//         alert('Terjadi kesalahan saat mengambil data');
-//     }
-// }
-
 async function openModalOperator() {
     if (isSubmitting) return;
     try {
         const response = await fetch('/buku-stok/get-unpaid-operator');
         const data = await response.json();
+
         if (!data.success) {
             alert('Gagal mengambil data: ' + data.message);
             return;
         }
+
         operatorData = data.data;
+
         if (operatorData.length === 0) {
             alert('Tidak ada data giling yang belum dibayar operator.');
             return;
         }
 
-        let totalGiling    = 0;
-        let totalHarga     = 0;
-        let gilingUntukRata = 0; // hanya giling dari item yang punya harga > 0
-        let noPrice        = 0;
+        // Hitung summary
+        let totalGiling = 0;
+        let totalHarga = 0;
+        let noPrice = 0;
 
         operatorData.forEach(item => {
-            const giling      = parseFloat(item.giling_kotor) || 0;
-            const harga       = parseFloat(item.harga) || 0;
-            const sudahLunas  = item.status == 1;
-
+            const giling = parseFloat(item.giling_kotor) || 0;
+            const harga = parseFloat(item.harga) || 0;
             totalGiling += giling;
 
-            if (sudahLunas) {
-                if (harga > 0) {
-                    // Lunas + ada harga → hitung normal, ikut rata-rata
-                    totalHarga      += (giling * harga);
-                    gilingUntukRata += giling;
-                }
-                // Lunas + harga 0 → valid, tidak diganggu gugat,
-                //                    tapi jangan ikutkan dalam rata-rata
+            if (harga > 0) {
+                totalHarga += (giling * harga);
             } else {
-                // Belum lunas
-                if (harga > 0) {
-                    // Ada harga → hitung normal, ikut rata-rata
-                    totalHarga      += (giling * harga);
-                    gilingUntukRata += giling;
-                } else {
-                    // Harga 0 + belum lunas → perlu perhatian
-                    noPrice++;
-                }
+                noPrice++;
             }
         });
 
-        // Rata-rata hanya dari giling yang punya harga (exclude semua harga 0)
-        const hargaRata = gilingUntukRata > 0 ? totalHarga / gilingUntukRata : 0;
+        const hargaRata = totalGiling > 0 ? totalHarga / totalGiling : 0;
 
-        // Update summary display
-        document.getElementById('summary-total-data').textContent    = operatorData.length + ' data';
-        document.getElementById('summary-total-giling').textContent  = smartFormatNumber(totalGiling) + ' Kg';
-        document.getElementById('summary-total-harga').textContent   = 'Rp ' + smartFormatNumber(totalHarga);
-        document.getElementById('summary-harga-rata').textContent    = 'Rp ' + smartFormatNumber(hargaRata) + '/Kg';
+       // Update summary display
+document.getElementById('summary-total-data').textContent = operatorData.length + ' data';
+document.getElementById('summary-total-giling').textContent = smartFormatNumber(totalGiling) + ' Kg';
+document.getElementById('summary-total-harga').textContent = 'Rp ' + smartFormatNumber(totalHarga);
+document.getElementById('summary-harga-rata').textContent = 'Rp ' + smartFormatNumber(hargaRata) + '/Kg';
 
-        const noPriceEl = document.getElementById('summary-no-price');
-        if (noPrice > 0) {
-            noPriceEl.textContent  = noPrice + ' data';
-            noPriceEl.style.color  = '#f5365c'; // merah
-        } else {
-            noPriceEl.textContent  = '✓ Semua Terisi';
-            noPriceEl.style.color  = '#17ad37'; // hijau
-        }
+// Tampilan no-price dinamis
+const noPriceEl = document.getElementById('summary-no-price');
+const noPriceDetail = document.getElementById('no-price-detail');
+const noPriceList = document.getElementById('no-price-list');
 
+if (noPrice > 0) {
+    noPriceEl.textContent = '✗ ' + noPrice + ' Data Belum Ada Harga';
+    noPriceEl.style.background = '#fef2f2';
+    noPriceEl.style.color = '#dc2626';
+    noPriceEl.style.border = '1px solid #fca5a5';
+
+    // Tampilkan detail data tanpa harga
+    noPriceDetail.style.display = 'block';
+    noPriceList.innerHTML = ''; // Reset dulu
+
+    operatorData
+        .filter(item => (parseFloat(item.harga) || 0) === 0)
+        .forEach(item => {
+            const giling = parseFloat(item.giling_kotor) || 0;
+            noPriceList.innerHTML += `
+                <tr style="border-bottom: 1px dotted #ffb3b3;">
+                    <td style="padding: 0.3rem 0.5rem; color: #666;">#${item.id}</td>
+                    <td style="padding: 0.3rem 0.5rem;">${item.nama_petani}</td>
+                    <td style="padding: 0.3rem 0.5rem; color: #666;">${item.tanggal ?? '-'}</td>
+                    <td style="padding: 0.3rem 0.5rem; text-align: right; font-weight: 600;">
+                        ${smartFormatNumber(giling)} Kg
+                    </td>
+                </tr>
+            `;
+        });
+} else {
+    noPriceEl.textContent = '✓ Semua Harga Terisi';
+    noPriceEl.style.background = '#f0fdf4';
+    noPriceEl.style.color = '#16a34a';
+    noPriceEl.style.border = '1px solid #86efac';
+
+    // Sembunyikan detail jika tidak ada no-price
+    noPriceDetail.style.display = 'none';
+    noPriceList.innerHTML = '';
+}
+
+        // Setup number formatting for harga rata input
         const hargaInput = document.getElementById('operator-harga-rata-default');
         setupNumberFormatting(hargaInput);
         hargaInput.value = '';
 
+        // Show modal konfirmasi (menggunakan custom modal dari kode lama)
         document.getElementById('modal-overlay-operator').classList.add('active');
         document.getElementById('modal-bayar-operator').classList.add('active');
         document.body.style.overflow = 'hidden';
+
 
     } catch (error) {
         console.error('Error:', error);
@@ -4627,77 +4542,8 @@ function closeModalOperator() {
     document.getElementById('operator-harga-rata-default').value = '';
 }
 
-// async function lanjutkanBayarOperator() {
-//     const keterangan = document.getElementById('operator-keterangan').value.trim();
-//     const hargaRataInput = document.getElementById('operator-harga-rata-default').value;
-
-//     if (!keterangan) {
-//         alert('Keterangan harus diisi');
-//         return;
-//     }
-
-//     const hargaRataDefault = parseFormattedNumber(hargaRataInput);
-
-//     // Hitung ulang total dengan harga default
-//     let totalGiling = 0;
-//     let totalHarga = 0;
-
-//     operatorData.forEach(item => {
-//         const giling = parseFloat(item.giling_kotor) || 0;
-//         let harga = parseFloat(item.harga) || 0;
-
-//         // // Jika tidak ada harga, gunakan harga default
-//         // if (harga === 0 && hargaRataDefault > 0) {
-//         //     harga = hargaRataDefault;
-//         // }
-
-//         // SESUDAH — tambahkan pengecekan status
-// if (harga === 0 && hargaRataDefault > 0 && item.status == 0) {
-//     harga = hargaRataDefault;
-// }
-
-//         totalGiling += giling;
-//         totalHarga += (giling * harga);
-//     });
-
-//     // Update database dulu
-//     const updateSuccess = await updateOperatorStatus(keterangan, hargaRataDefault);
-
-//     if (!updateSuccess) {
-//         alert('Gagal menyimpan data ke database');
-//         return;
-//     }
-
-//     // Generate nota HTML
-//     const notaHTML = generateNotaOperator(operatorData, keterangan, hargaRataDefault, totalGiling, totalHarga);
-
-//     // Close konfirmasi modal
-//     closeModalOperator();
-
-//     // Show loading
-//     document.getElementById('nota-loading').style.display = 'block';
-//     document.getElementById('nota-iframe-operator').style.display = 'none';
-
-//     // Show nota modal dengan Bootstrap
-//     notaOperatorModal.show();
-
-//     // Load nota ke iframe
-//     setTimeout(() => {
-//         const iframe = document.getElementById('nota-iframe-operator');
-//         const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-
-//         iframeDoc.open();
-//         iframeDoc.write(notaHTML);
-//         iframeDoc.close();
-
-//         // Hide loading, show iframe
-//         document.getElementById('nota-loading').style.display = 'none';
-//         iframe.style.display = 'block';
-//     }, 300);
-// }
-
 async function lanjutkanBayarOperator() {
-    const keterangan   = document.getElementById('operator-keterangan').value.trim();
+    const keterangan = document.getElementById('operator-keterangan').value.trim();
     const hargaRataInput = document.getElementById('operator-harga-rata-default').value;
 
     if (!keterangan) {
@@ -4707,113 +4553,75 @@ async function lanjutkanBayarOperator() {
 
     const hargaRataDefault = parseFormattedNumber(hargaRataInput);
 
+    // Hitung ulang total dengan harga default
     let totalGiling = 0;
-    let totalHarga  = 0;
+    let totalHarga = 0;
 
     operatorData.forEach(item => {
-        const giling     = parseFloat(item.giling_kotor) || 0;
-        let harga        = parseFloat(item.harga) || 0;
-        const sudahLunas = item.status == 1;
+        const giling = parseFloat(item.giling_kotor) || 0;
+        let harga = parseFloat(item.harga) || 0;
 
-        if (!sudahLunas && harga === 0 && hargaRataDefault > 0) {
-            // Hanya belum lunas + harga 0 yang mendapat harga default
+        // Jika tidak ada harga, gunakan harga default
+        if (harga === 0 && hargaRataDefault > 0) {
             harga = hargaRataDefault;
         }
-        // Lunas → apapun harganya tidak diganggu gugat
 
         totalGiling += giling;
-        totalHarga  += (giling * harga);
+        totalHarga += (giling * harga);
     });
 
+    // Update database dulu
     const updateSuccess = await updateOperatorStatus(keterangan, hargaRataDefault);
+
     if (!updateSuccess) {
         alert('Gagal menyimpan data ke database');
         return;
     }
 
+    // Generate nota HTML
     const notaHTML = generateNotaOperator(operatorData, keterangan, hargaRataDefault, totalGiling, totalHarga);
 
+    // Close konfirmasi modal
     closeModalOperator();
 
+    // Show loading
     document.getElementById('nota-loading').style.display = 'block';
     document.getElementById('nota-iframe-operator').style.display = 'none';
 
+    // Show nota modal dengan Bootstrap
     notaOperatorModal.show();
 
+    // Load nota ke iframe
     setTimeout(() => {
-        const iframe    = document.getElementById('nota-iframe-operator');
+        const iframe = document.getElementById('nota-iframe-operator');
         const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+
         iframeDoc.open();
         iframeDoc.write(notaHTML);
         iframeDoc.close();
+
+        // Hide loading, show iframe
         document.getElementById('nota-loading').style.display = 'none';
         iframe.style.display = 'block';
     }, 300);
 }
 
 function generateNotaOperator(data, keterangan, hargaRataDefault, totalGiling, totalHarga) {
-//     const hargaRata = totalGiling > 0 ? (totalHarga / totalGiling) : 0;
-//     const now = new Date();
-//     const tanggal = now.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' });
-//     const waktu = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-
-//     let itemsHTML = '';
-//     data.forEach((item, index) => {
-//         const giling = parseFloat(item.giling_kotor) || 0;
-//         let harga = parseFloat(item.harga) || 0;
-
-//         // if (harga === 0 && hargaRataDefault > 0) {
-//         //     harga = hargaRataDefault;
-//         // }
-
-//         // SESUDAH — tambahkan pengecekan status
-// if (harga === 0 && hargaRataDefault > 0 && item.status == 0) {
-//     harga = hargaRataDefault;
-// }
-
-//         const subtotal = giling * harga;
-
-
-
- // Hitung gilingUntukRata: exclude item lunas yang harganya 0
-    // (setelah default diterapkan ke status 0, item tsb sudah punya harga > 0)
-    let gilingUntukRata = 0;
-    data.forEach(item => {
-        const giling     = parseFloat(item.giling_kotor) || 0;
-        let harga        = parseFloat(item.harga) || 0;
-        const sudahLunas = item.status == 1;
-
-        if (!sudahLunas && harga === 0 && hargaRataDefault > 0) {
-            harga = hargaRataDefault;
-        }
-
-        // Hanya ikutkan dalam rata-rata jika harga akhirnya > 0
-        if (harga > 0) {
-            gilingUntukRata += giling;
-        }
-        // Lunas + harga 0 → tidak masuk gilingUntukRata, tidak merusak rata-rata
-    });
-
-    // Rata-rata hanya dari giling yang benar-benar berkontribusi ke totalHarga
-    const hargaRata = gilingUntukRata > 0 ? (totalHarga / gilingUntukRata) : 0;
-
-    const now     = new Date();
+    const hargaRata = totalGiling > 0 ? (totalHarga / totalGiling) : 0;
+    const now = new Date();
     const tanggal = now.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' });
-    const waktu   = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+    const waktu = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
 
     let itemsHTML = '';
     data.forEach((item, index) => {
-        const giling     = parseFloat(item.giling_kotor) || 0;
-        let harga        = parseFloat(item.harga) || 0;
-        const sudahLunas = item.status == 1;
+        const giling = parseFloat(item.giling_kotor) || 0;
+        let harga = parseFloat(item.harga) || 0;
 
-        if (!sudahLunas && harga === 0 && hargaRataDefault > 0) {
+        if (harga === 0 && hargaRataDefault > 0) {
             harga = hargaRataDefault;
         }
-        // Lunas → tidak diganggu gugat
 
         const subtotal = giling * harga;
-
 
         itemsHTML += `
         <tr>
