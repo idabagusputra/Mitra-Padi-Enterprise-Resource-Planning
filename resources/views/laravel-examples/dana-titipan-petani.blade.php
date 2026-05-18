@@ -460,7 +460,7 @@
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="keterangan">Keterangan</label>
-                                                    <textarea class="form-control" id="keterangan" name="keterangan_{{ $kredit->id }}" required>{{ $kredit->keterangan }}</textarea>
+                                                <textarea class="form-control" id="keterangan_{{ $kredit->id }}" name="keterangan" required>{{ $kredit->keterangan }}</textarea>
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="status">Status</label>
