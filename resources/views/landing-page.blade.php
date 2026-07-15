@@ -152,7 +152,7 @@
             <a href="#" class="logo d-flex align-items-center me-auto me-xl-0">
                 <!-- Uncomment the line below if you also wish to use an image logo -->
                 <!-- <img src="assets/img/logo.png" alt=""> -->
-                <h1 class="sitename">Mitra Padi</h1>
+                <h1 class="sitename">Putra Manuaba</h1>
             </a>
 
             <nav id="navmenu" class="navmenu">
@@ -205,9 +205,9 @@
                             </div>
 
                             <h1 class="mb-4">
-                                Mitra Padi <br>
+                                Selamat Datang <br>
 
-                                <span class="accent-text">UD Penggilingan Padi Putra Manuaba</span>
+                                <span class="accent-text">CV Penggilingan Padi Putra Manuaba</span>
                             </h1>
 
                             <p class="mb-4 md-5">
@@ -316,9 +316,9 @@
                     <div data-aos="fade-up" data-aos-delay="200">
                         <span class="about-meta">Tentang Kami</span>
 
-                        <h2 class="about-title">UD Penggilingan Padi Putra Manuaba</h2>
+                        <h2 class="about-title">CV Penggilingan Padi Putra Manuaba</h2>
                         <img src="assets/img/gilinganTampakAtas.webp" alt="" class="img-fluid mb-3 rounded-4 hide-on-web">
-                        <p class="about-description"> Pabrik pengolahan padi yang beroperasi di wilayah Desa Tolai, mengubah padi (gabah) menjadi beras mentah melalui serangkaian proses yang meliputi penerimaan, pembersihan, pengeringan, penggilingan, sortasi, dan pengemasan, dengan tujuan membantu petani setempat dalam mengolah dan mendistribusikan hasil panen mereka ke pasar atau konsumen.</p>
+                        <p class="about-description"> Pabrik pengolahan padi yang beroperasi sejak tahun 2013 di wilayah Desa Tolai, mengubah padi (gabah) menjadi beras mentah melalui serangkaian proses yang meliputi penerimaan, pembersihan, pengeringan, penggilingan, sortasi, dan pengemasan, dengan tujuan membantu petani setempat dalam mengolah dan mendistribusikan hasil panen mereka ke pasar atau konsumen.</p>
 
                         <div class="row feature-list-wrapper">
                             <div class="col-md-6">
@@ -406,7 +406,7 @@
             <!-- Section Title -->
             <div class="container section-title" data-aos="fade-up">
                 <h2>Keunggulan</h2>
-                <p>UD Penggilingan Padi Putra Manuaba menghadirkan teknologi dan proses pengolahan padi yang efisien dan berkualitas, mendukung petani lokal dalam menghasilkan beras bermutu tinggi.</p>
+                <p>CV Penggilingan Padi Putra Manuaba menghadirkan teknologi dan proses pengolahan padi yang efisien dan berkualitas, mendukung petani lokal dalam menghasilkan beras bermutu tinggi.</p>
             </div><!-- End Section Title -->
 
             <div class="container">
