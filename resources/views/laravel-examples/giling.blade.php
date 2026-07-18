@@ -809,7 +809,7 @@ function addPengambilanKarungKonga(jumlah) {
             </div>
             <div class="col-md-3">
                 <div class="form-group mb-0">
-                    <input type="text" name="pengambilans[${pengambilanCount}][harga]" class="form-control number-format pengambilan-w" placeholder="Harga" inputmode="numeric" data-raw-value="4500" value="4500">
+                    <input type="text" name="pengambilans[${pengambilanCount}][harga]" class="form-control number-format pengambilan-w" placeholder="Harga" inputmode="numeric" data-raw-value="5000" value="5000">
                 </div>
             </div>
             <div class="col-md-2">
@@ -956,7 +956,7 @@ function addPengambilanKarungKonga(jumlah) {
             </div>
             <div class="col-md-3">
                 <div class="form-group mb-0">
-                    <input type="text" name="pengambilans[${pengambilanCount}][harga]" class="form-control number-format pengambilan-w" placeholder="Harga" inputmode="numeric" data-raw-value="" value="4500">
+                    <input type="text" name="pengambilans[${pengambilanCount}][harga]" class="form-control number-format pengambilan-w" placeholder="Harga" inputmode="numeric" data-raw-value="" value="5000">
                 </div>
             </div>
             <div class="col-md-2">
