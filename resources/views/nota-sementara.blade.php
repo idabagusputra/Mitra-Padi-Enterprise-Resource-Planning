@@ -1167,7 +1167,7 @@
                                 <div class="form-group mb-0">
                                     <label class="form-label">Harga</label>
                                     <input type="text" name="pengambilans[${pengambilanCount}][harga]"
-                                           class="form-control number-format" placeholder="Harga" inputmode="numeric" data-raw-value="" value="4,500">
+                                           class="form-control number-format" placeholder="Harga" inputmode="numeric" data-raw-value="" value="5,000">
                                 </div>
                             </div>
                             <div class="col-md-2 col-4 d-none">
@@ -2184,7 +2184,7 @@ link.href = canvas.toDataURL('image/jpeg', 1.0); // Gunakan JPEG untuk ukuran fi
             document.getElementById('biaya_buruh_giling').value = '80';
             document.getElementById('biaya_buruh_jemur').value = '8,000';
             document.getElementById('harga_konga').value = '300,000';
-            document.getElementById('harga_menir').value = '4,500';
+            document.getElementById('harga_menir').value = '5,000';
             document.getElementById('bunga').value = '2';
             document.getElementById('harga_jual').value = '0';
             // Tambahkan paling bawah sebelum penutup });
