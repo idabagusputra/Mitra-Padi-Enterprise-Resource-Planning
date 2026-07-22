@@ -171,6 +171,7 @@ class BukuStokController extends Controller
 
             // Di dalam method getBuruhCounter() atau sejenisnya
             $petaniList = BukuStokBeras::where('counted_buruh_giling', 0) // sesuaikan kondisi filter kamu
+                ->where($excludeCeker)   // tambahkan ini
                 ->select('nama_petani', 'giling_kotor')
                 ->orderBy('created_at', 'asc')
                 ->get();
