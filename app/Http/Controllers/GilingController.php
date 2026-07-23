@@ -414,6 +414,7 @@ class GilingController extends Controller
 
                 $sisaKredit = Kredit::create([
                     'petani_id' => $petani->id,
+                    'sisa_id' => $pembayaranKredit->id,
                     'pKredit_id' => $pembayaranKredit->id,
                     'tanggal' => $tanggalgabahmasuk,
                     'created_at' => $tanggalgabahmasuk,

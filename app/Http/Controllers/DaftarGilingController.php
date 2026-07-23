@@ -375,7 +375,11 @@ class DaftarGilingController extends Controller
             }
 
             // Pisahkan Kredit berdasarkan status
-            $newKredits = $kredits->where('status', false);
+            // $newKredits = $kredits->where('status', false);
+            // Kredit "Sisa Utang" baru yang dibuat dari PembayaranKredit ini (untuk dihapus)
+            $newKredits = Kredit::whereIn('sisa_id', $pembayaranKreditIds)
+                ->where('status', false)
+                ->get();
             $updatedKredits = $kredits->where('status', true);
 
             // Hapus kredit baru
