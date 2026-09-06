@@ -934,6 +934,7 @@ class BukuStokController extends Controller
                 ->whereNull('deleted_at')
                 ->where('petani_id', '!=', 330) // Tambahkan filter untuk exclude petani_id 330
                 ->where('petani_id', '!=', 369) // Tambahkan filter untuk exclude petani_id 369
+                ->where('petani_id', '!=', 376) // Tambahkan filter untuk exclude petani_id 376
                 ->whereNotIn('id', [180, 257, 309]) // Exclude data dengan id 180, 257, 309
                 ->orderBy('id', 'asc')
                 ->get()
