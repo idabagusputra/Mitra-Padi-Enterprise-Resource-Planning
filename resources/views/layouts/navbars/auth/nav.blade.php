@@ -14,6 +14,178 @@
 <style>
     /* Tambahkan style ini di bagian atas nav.blade.php */
 
+    /* === Oli Warning Modal - Soft UI Style === */
+.modal-oli .modal-dialog {
+    max-width: 420px;
+}
+
+.modal-oli .modal-content {
+    border-radius: 1rem;
+    border: none;
+    overflow: hidden;
+    box-shadow: 0 20px 27px 0 rgba(0, 0, 0, 0.15);
+    animation: oliModalPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes oliModalPop {
+    0% { transform: scale(0.85) translateY(20px); opacity: 0; }
+    100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.modal-oli .modal-backdrop-blur {
+    backdrop-filter: blur(2px);
+}
+
+.oli-header-danger {
+    background: linear-gradient(310deg, #ea0606 0%, #ff667c 100%);
+}
+
+.oli-header-warning {
+    background: linear-gradient(310deg, #f53939 0%, #fbcf33 100%);
+}
+
+.oli-header-common {
+    padding: 1.5rem 1.5rem 4rem 1.5rem;
+    text-align: center;
+    position: relative;
+    color: #fff;
+}
+
+.oli-icon-wrap {
+    width: 84px;
+    height: 84px;
+    margin: 0 auto;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.oli-icon-wrap::before,
+.oli-icon-wrap::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    animation: oliPing 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.oli-icon-wrap::after {
+    animation-delay: 1s;
+}
+
+@keyframes oliPing {
+    0% { transform: scale(1); opacity: 0.8; }
+    75%, 100% { transform: scale(1.6); opacity: 0; }
+}
+
+.oli-icon-wrap i {
+    font-size: 2.2rem;
+    color: #fff;
+    animation: oliShake 2.5s ease-in-out infinite;
+    z-index: 1;
+}
+
+@keyframes oliShake {
+    0%, 100% { transform: rotate(0deg); }
+    5% { transform: rotate(-8deg); }
+    10% { transform: rotate(8deg); }
+    15% { transform: rotate(-6deg); }
+    20% { transform: rotate(0deg); }
+}
+
+.oli-card-float {
+    background: #fff;
+    border-radius: 0.85rem;
+    margin: -3rem 1.25rem 0 1.25rem;
+    padding: 1.25rem 1.25rem 1rem 1.25rem;
+    position: relative;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    animation: oliCardRise 0.5s 0.15s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes oliCardRise {
+    0% { transform: translateY(15px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+}
+
+.oli-title {
+    font-weight: 700;
+    font-size: 1.05rem;
+    margin-bottom: 0.35rem;
+}
+
+.oli-desc {
+    font-size: 0.85rem;
+    color: #67748e;
+    margin-bottom: 1rem;
+}
+
+.oli-progress-track {
+    width: 100%;
+    height: 8px;
+    border-radius: 10px;
+    background: #eef1f5;
+    overflow: hidden;
+    margin-bottom: 0.4rem;
+}
+
+.oli-progress-fill {
+    height: 100%;
+    border-radius: 10px;
+    width: 0%;
+    transition: width 1s ease-in-out 0.3s;
+}
+
+.oli-progress-fill.fill-danger {
+    background: linear-gradient(310deg, #ea0606 0%, #ff667c 100%);
+}
+
+.oli-progress-fill.fill-warning {
+    background: linear-gradient(310deg, #f53939 0%, #fbcf33 100%);
+}
+
+.oli-progress-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.7rem;
+    color: #adb5bd;
+    margin-bottom: 1rem;
+}
+
+.oli-badge-kg {
+    font-weight: 700;
+}
+
+.oli-btn-close {
+    width: 100%;
+    border: none;
+    border-radius: 0.6rem;
+    padding: 0.65rem;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #fff;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.oli-btn-close:active {
+    transform: scale(0.97);
+}
+
+.oli-btn-danger {
+    background: linear-gradient(310deg, #ea0606 0%, #ff667c 100%);
+    box-shadow: 0 4px 12px rgba(234, 6, 6, 0.35);
+}
+
+.oli-btn-warning {
+    background: linear-gradient(310deg, #f53939 0%, #fbcf33 100%);
+    box-shadow: 0 4px 12px rgba(245, 57, 57, 0.3);
+}
+
+
     /* Style untuk backdrop modal */
     .modal-backdrop {
         background-color: rgba(0, 0, 0, 0.3) !important;
@@ -276,39 +448,59 @@
 
 
 @if($oliStatus)
-<div class="modal fade" id="oliWarningModal" tabindex="-1" aria-labelledby="oliWarningModalLabel" aria-hidden="true">
+<div class="modal fade modal-oli" id="oliWarningModal" tabindex="-1" aria-labelledby="oliWarningModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0">
-            <div class="modal-header {{ $oliStatus === 'danger' ? 'bg-danger' : 'bg-warning' }} text-white">
-                <h5 class="modal-title" id="oliWarningModalLabel">
-                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                    {{ $oliStatus === 'danger' ? 'PERINGATAN KERAS' : 'Peringatan' }}
-                </h5>
+        <div class="modal-content">
+
+            <div class="oli-header-common {{ $oliStatus === 'danger' ? 'oli-header-danger' : 'oli-header-warning' }}">
+                <div class="oli-icon-wrap">
+                    <i class="bi bi-droplet-half"></i>
+                </div>
             </div>
-            <div class="modal-body text-center py-4">
-                @if($oliStatus === 'danger')
-                    <i class="bi bi-exclamation-octagon-fill text-danger" style="font-size: 3rem;"></i>
-                    <h5 class="mt-3 text-danger fw-bold">Oli Mesin Harus SEGERA Diganti!</h5>
-                    <p class="mb-0">
-                        Total giling kotor telah mencapai
-                        <strong>{{ number_format($totalGilingKotor) }} kg</strong>,
-                        melebihi batas aman 90.000 kg.
-                    </p>
-                @else
-                    <i class="bi bi-exclamation-triangle-fill text-warning" style="font-size: 3rem;"></i>
-                    <h5 class="mt-3 text-warning fw-bold">Perhatian: Oli Mesin Mendekati Batas</h5>
-                    <p class="mb-0">
+
+            <div class="oli-card-float">
+                <div class="text-center">
+                    <span class="badge {{ $oliStatus === 'danger' ? 'bg-danger' : 'bg-warning text-dark' }} mb-2" style="letter-spacing: 0.5px;">
+                        {{ $oliStatus === 'danger' ? 'DANGER' : 'PERHATIAN' }}
+                    </span>
+                    <h6 class="oli-title" id="oliWarningModalLabel">
+                        @if($oliStatus === 'danger')
+                            Oli Mesin Harus Segera Diganti!
+                        @else
+                            Oli Mesin Mendekati Batas Servis
+                        @endif
+                    </h6>
+                    <p class="oli-desc mb-3">
                         Total giling kotor saat ini
-                        <strong>{{ number_format($totalGilingKotor) }} kg</strong>,
-                        sudah melebihi 80.000 kg. Segera jadwalkan penggantian oli.
+                        <span class="oli-badge-kg">{{ number_format($totalGilingKotor) }} Kg</span>.
+                        @if($oliStatus === 'danger')
+                            Sudah melewati batas aman 90.000 Kg, segera jadwalkan servis oli.
+                        @else
+                            Sudah melewati 80.000 Kg, mohon segera dijadwalkan.
+                        @endif
                     </p>
-                @endif
-            </div>
-            <div class="modal-footer justify-content-center">
-                <button type="button" class="btn {{ $oliStatus === 'danger' ? 'btn-danger' : 'btn-warning' }}" data-bs-dismiss="modal">
-                    Mengerti
+                </div>
+
+                <div class="oli-progress-track">
+                    <div class="oli-progress-fill {{ $oliStatus === 'danger' ? 'fill-danger' : 'fill-warning' }}"
+                         data-target="{{ min(100, round(($totalGilingKotor / 100000) * 100)) }}">
+                    </div>
+                </div>
+                <div class="oli-progress-labels">
+                    <span>0 Kg</span>
+                    <span>80rb</span>
+                    <span>90rb</span>
+                    <span>100rb+</span>
+                </div>
+
+                <button type="button"
+                    class="oli-btn-close {{ $oliStatus === 'danger' ? 'oli-btn-danger' : 'oli-btn-warning' }}"
+                    data-bs-dismiss="modal">
+                    <i class="bi bi-check-circle-fill me-1"></i> Mengerti, Saya Akan Jadwalkan
                 </button>
             </div>
+
+            <div class="pb-3"></div>
         </div>
     </div>
 </div>
@@ -395,6 +587,17 @@ if (isIOS) {
             keyboard: false
         });
         oliModal.show();
+
+        // Animasi progress bar mengisi setelah modal tampil
+        oliModalEl.addEventListener('shown.bs.modal', function() {
+            const fillEl = oliModalEl.querySelector('.oli-progress-fill');
+            if (fillEl) {
+                const target = fillEl.getAttribute('data-target');
+                requestAnimationFrame(() => {
+                    fillEl.style.width = target + '%';
+                });
+            }
+        });
     }
 @endif
 
