@@ -1,3 +1,16 @@
+@php
+    $totalGilingKotor = \App\Models\BukuStokBeras::where('counted_for_servis', true)
+        ->where('petani_id', '!=', 330)
+        ->sum('giling_kotor') ?? 0;
+
+    $oliStatus = null;
+    if ($totalGilingKotor > 50000) {
+        $oliStatus = 'danger';
+    } elseif ($totalGilingKotor > 80000) {
+        $oliStatus = 'warning';
+    }
+@endphp
+
 <style>
     /* Tambahkan style ini di bagian atas nav.blade.php */
 
@@ -262,6 +275,45 @@
 </div>
 
 
+@if($oliStatus)
+<div class="modal fade" id="oliWarningModal" tabindex="-1" aria-labelledby="oliWarningModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0">
+            <div class="modal-header {{ $oliStatus === 'danger' ? 'bg-danger' : 'bg-warning' }} text-white">
+                <h5 class="modal-title" id="oliWarningModalLabel">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    {{ $oliStatus === 'danger' ? 'PERINGATAN KERAS' : 'Peringatan' }}
+                </h5>
+            </div>
+            <div class="modal-body text-center py-4">
+                @if($oliStatus === 'danger')
+                    <i class="bi bi-exclamation-octagon-fill text-danger" style="font-size: 3rem;"></i>
+                    <h5 class="mt-3 text-danger fw-bold">Oli Mesin Harus SEGERA Diganti!</h5>
+                    <p class="mb-0">
+                        Total giling kotor telah mencapai
+                        <strong>{{ number_format($totalGilingKotor) }} kg</strong>,
+                        melebihi batas aman 90.000 kg.
+                    </p>
+                @else
+                    <i class="bi bi-exclamation-triangle-fill text-warning" style="font-size: 3rem;"></i>
+                    <h5 class="mt-3 text-warning fw-bold">Perhatian: Oli Mesin Mendekati Batas</h5>
+                    <p class="mb-0">
+                        Total giling kotor saat ini
+                        <strong>{{ number_format($totalGilingKotor) }} kg</strong>,
+                        sudah melebihi 80.000 kg. Segera jadwalkan penggantian oli.
+                    </p>
+                @endif
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn {{ $oliStatus === 'danger' ? 'btn-danger' : 'btn-warning' }}" data-bs-dismiss="modal">
+                    Mengerti
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+@endif
+
 <!-- Tambahkan Script -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
@@ -334,6 +386,17 @@ if (isIOS) {
                 }
             });
         });
+
+        @if($oliStatus)
+    var oliModalEl = document.getElementById('oliWarningModal');
+    if (oliModalEl) {
+        var oliModal = new bootstrap.Modal(oliModalEl, {
+            backdrop: 'static',
+            keyboard: false
+        });
+        oliModal.show();
+    }
+@endif
 
         // Function to convert PDF to JPG without using canvas element
 async function convertPdfToJpg(pdfUrl) {
