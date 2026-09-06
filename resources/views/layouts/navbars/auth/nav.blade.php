@@ -4,7 +4,7 @@
         ->sum('giling_kotor') ?? 0;
 
     $oliStatus = null;
-    if ($totalGilingKotor > 50000) {
+    if ($totalGilingKotor > 90000) {
         $oliStatus = 'danger';
     } elseif ($totalGilingKotor > 30000) {
         $oliStatus = 'warning';
