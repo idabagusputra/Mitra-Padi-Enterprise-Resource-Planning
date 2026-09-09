@@ -6,7 +6,7 @@
     $oliStatus = null;
     if ($totalGilingKotor > 90000) {
         $oliStatus = 'danger';
-    } elseif ($totalGilingKotor > 800000) {
+    } elseif ($totalGilingKotor > 80000) {
         $oliStatus = 'warning';
     }
 @endphp
@@ -579,27 +579,62 @@ if (isIOS) {
             });
         });
 
-        @if($oliStatus)
-    var oliModalEl = document.getElementById('oliWarningModal');
-    if (oliModalEl) {
-        var oliModal = new bootstrap.Modal(oliModalEl, {
-            backdrop: 'static',
-            keyboard: false
-        });
-        oliModal.show();
+//         @if($oliStatus)
+//     var oliModalEl = document.getElementById('oliWarningModal');
+//     if (oliModalEl) {
+//         var oliModal = new bootstrap.Modal(oliModalEl, {
+//             backdrop: 'static',
+//             keyboard: false
+//         });
+//         oliModal.show();
 
-        // Animasi progress bar mengisi setelah modal tampil
-        oliModalEl.addEventListener('shown.bs.modal', function() {
-            const fillEl = oliModalEl.querySelector('.oli-progress-fill');
-            if (fillEl) {
-                const target = fillEl.getAttribute('data-target');
-                requestAnimationFrame(() => {
-                    fillEl.style.width = target + '%';
+//         // Animasi progress bar mengisi setelah modal tampil
+//         oliModalEl.addEventListener('shown.bs.modal', function() {
+//             const fillEl = oliModalEl.querySelector('.oli-progress-fill');
+//             if (fillEl) {
+//                 const target = fillEl.getAttribute('data-target');
+//                 requestAnimationFrame(() => {
+//                     fillEl.style.width = target + '%';
+//                 });
+//             }
+//         });
+//     }
+// @endif
+
+
+@if($oliStatus)
+    (function() {
+        var STORAGE_KEY = 'oliWarningLastShown';
+        var today = new Date().toISOString().split('T')[0]; // format: YYYY-MM-DD
+        var lastShown = localStorage.getItem(STORAGE_KEY);
+
+        if (lastShown !== today) {
+            var oliModalEl = document.getElementById('oliWarningModal');
+            if (oliModalEl) {
+                var oliModal = new bootstrap.Modal(oliModalEl, {
+                    backdrop: 'static',
+                    keyboard: false
+                });
+                oliModal.show();
+
+                // Tandai sudah ditampilkan hari ini
+                localStorage.setItem(STORAGE_KEY, today);
+
+                // Animasi progress bar mengisi setelah modal tampil
+                oliModalEl.addEventListener('shown.bs.modal', function() {
+                    const fillEl = oliModalEl.querySelector('.oli-progress-fill');
+                    if (fillEl) {
+                        const target = fillEl.getAttribute('data-target');
+                        requestAnimationFrame(() => {
+                            fillEl.style.width = target + '%';
+                        });
+                    }
                 });
             }
-        });
-    }
+        }
+    })();
 @endif
+
 
         // Function to convert PDF to JPG without using canvas element
 async function convertPdfToJpg(pdfUrl) {
