@@ -6,7 +6,7 @@
     $oliStatus = null;
     if ($totalGilingKotor > 90000) {
         $oliStatus = 'danger';
-    } elseif ($totalGilingKotor > 80000) {
+    } elseif ($totalGilingKotor > 800000) {
         $oliStatus = 'warning';
     }
 @endphp
