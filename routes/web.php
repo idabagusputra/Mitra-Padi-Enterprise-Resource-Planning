@@ -388,6 +388,13 @@ Route::get('/kalkulator', function (Request $request) {
     return view('kalkulator');
 });
 
+Route::get('/Ulans-Birthday', function (Request $request) {
+    if ($request->user()) {
+        return redirect('/Ulans-Birthdays');
+    }
+    return view('ulan');
+});
+
 
 Route::get('/nota', function (Request $request) {
     if ($request->user()) {
