@@ -195,7 +195,7 @@ const C={
   name:"Tante Ulan",
   from:"Putra",
   message:[
-    "Selamat ulang tahun TANTE. Panjang umur dan sehat selalu!",
+    "Selamat ulang tahun ke-24 TANTE. Panjang umur dan sehat selalu!",
     "This is your day! Semoga hari ini pekerjaannya lancar dan menyenangkan ya ges.",
     "Karena belum bisa unboxing Hirononya sekarang, ayo coba online dulu ya. Click lanjut dibawah!"
   ],
