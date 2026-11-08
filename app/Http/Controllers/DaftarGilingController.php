@@ -13,6 +13,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB; // Tambahkan ini
 use Illuminate\Support\Facades\Log; // Tambahkan ini
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Cache;
 
 class DaftarGilingController extends Controller
 {
@@ -146,6 +148,60 @@ class DaftarGilingController extends Controller
         ], 404);
     }
     // ... (other methods remain the same)
+
+    public function receipt(string $id)
+    {
+        $headers = [
+            'Content-Type'        => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="receipt-' . $id . '.pdf"',
+            'Cache-Control'       => 'public, max-age=86400',
+        ];
+
+        // 1. Cek di public_html dulu
+        $localPath = public_path("receipts/receipt-{$id}.pdf");
+        if (is_file($localPath)) {
+            return response()->file($localPath, $headers);
+        }
+
+        // 2. Kalau tidak ada, cari di R2 berdasarkan prefix ID
+        try {
+            /** @var \Illuminate\Filesystem\AwsS3V3Adapter $disk */
+            $disk = Storage::disk('r2');
+
+            $key = Cache::remember("r2_receipt_key_{$id}", now()->addDay(), function () use ($disk, $id) {
+                $files = $disk->files('Nota_Giling');
+
+                foreach ($files as $file) {
+                    if (str_starts_with(basename($file), "{$id}_")) {
+                        return $file;
+                    }
+                }
+
+                return null;
+            });
+
+            if ($key) {
+                $stream = $disk->readStream($key);
+
+                if ($stream) {
+                    return response()->stream(function () use ($stream) {
+                        fpassthru($stream);
+                        if (is_resource($stream)) fclose($stream);
+                    }, 200, $headers);
+                }
+            }
+        } catch (\Throwable $e) {
+            Log::error("Gagal mengambil PDF dari R2 (ID {$id}): " . $e->getMessage());
+        }
+
+        // 3. Cadangan terakhir: pakai s3_url yang tersimpan di database (kalau ada)
+        $row = DB::table('daftar_gilings')->where('id', $id)->first();
+        if ($row && !empty($row->s3_url)) {
+            return redirect()->away($row->s3_url);
+        }
+
+        abort(404, 'PDF tidak ditemukan');
+    }
 
     public function search(Request $request)
     {

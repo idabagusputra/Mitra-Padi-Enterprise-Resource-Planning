@@ -525,76 +525,154 @@
 
         let scrollPosition = 0;
 
-        document.querySelectorAll('.view-pdf-btn').forEach(function(button) {
-            button.addEventListener('click', function(e) {
-                e.preventDefault();
-                scrollPosition = window.pageYOffset;
-                const gilingId = this.getAttribute('data-id');
-                const pdfPath = `/receipts/receipt-${gilingId}.pdf`;
+        // document.querySelectorAll('.view-pdf-btn').forEach(function(button) {
+        //     button.addEventListener('click', function(e) {
+        //         e.preventDefault();
+        //         scrollPosition = window.pageYOffset;
+        //         const gilingId = this.getAttribute('data-id');
+        //         const pdfPath = `/receipts/receipt-${gilingId}.pdf`;
 
-                // Set src viewer PDF
-                document.getElementById('pdfViewer').src = pdfPath;
+        //         // Set src viewer PDF
+        //         document.getElementById('pdfViewer').src = pdfPath;
 
-                // Update modal title
-                document.getElementById('pdfModalLabel').textContent = `Receipt #${gilingId}`;
+        //         // Update modal title
+        //         document.getElementById('pdfModalLabel').textContent = `Receipt #${gilingId}`;
 
-                const modalElement = document.getElementById('pdfModal');
-                const pdfModal = new bootstrap.Modal(modalElement);
+        //         const modalElement = document.getElementById('pdfModal');
+        //         const pdfModal = new bootstrap.Modal(modalElement);
 
-                // Handle modal events to fix mobile scrolling
-                modalElement.addEventListener('shown.bs.modal', function() {
-                    document.body.style.overflow = 'hidden';
-                });
+        //         // Handle modal events to fix mobile scrolling
+        //         modalElement.addEventListener('shown.bs.modal', function() {
+        //             document.body.style.overflow = 'hidden';
+        //         });
 
-                modalElement.addEventListener('hidden.bs.modal', function() {
-                    document.body.style.overflow = 'auto';
-                    document.body.style.position = 'relative';
-                    // Reset any inline styles that might affect scrolling
-                    window.scrollTo(0, window.scrollY);
-                });
+        //         modalElement.addEventListener('hidden.bs.modal', function() {
+        //             document.body.style.overflow = 'auto';
+        //             document.body.style.position = 'relative';
+        //             // Reset any inline styles that might affect scrolling
+        //             window.scrollTo(0, window.scrollY);
+        //         });
 
-                // Add click event listener to close modal when clicking outside
-                modalElement.addEventListener('click', function(event) {
-                    if (event.target === modalElement) {
-                        pdfModal.hide();
-                    }
-                });
+        //         // Add click event listener to close modal when clicking outside
+        //         modalElement.addEventListener('click', function(event) {
+        //             if (event.target === modalElement) {
+        //                 pdfModal.hide();
+        //             }
+        //         });
 
-                // Add click event listener for close buttons
-                document.querySelectorAll('[data-bs-dismiss="modal"]').forEach(button => {
-                    button.addEventListener('click', () => {
-                        pdfModal.hide();
-                    });
-                });
+        //         // Add click event listener for close buttons
+        //         document.querySelectorAll('[data-bs-dismiss="modal"]').forEach(button => {
+        //             button.addEventListener('click', () => {
+        //                 pdfModal.hide();
+        //             });
+        //         });
 
-                pdfModal.show();
+        //         pdfModal.show();
 
-                // Add print functionality
-                document.getElementById('printPdf').addEventListener('click', function() {
-                    const pdfViewer = document.getElementById('pdfViewer');
-                    const pdfUrl = pdfViewer.getAttribute('src');
-                    const fullPdfUrl = `https://mitrapadi.com/receipts/receipt-${gilingId}.pdf`;
+        //         // Add print functionality
+        //         document.getElementById('printPdf').addEventListener('click', function() {
+        //             const pdfViewer = document.getElementById('pdfViewer');
+        //             const pdfUrl = pdfViewer.getAttribute('src');
+        //             const fullPdfUrl = `https://mitrapadi.com/receipts/receipt-${gilingId}.pdf`;
 
-                    // Bangun URL untuk ESC/POS
-                    const escposUrl = `print://escpos.org/escpos/bt/print?srcTp=uri&srcObj=pdf&numCopies=1&src=${encodeURIComponent(fullPdfUrl)}`;
+        //             // Bangun URL untuk ESC/POS
+        //             const escposUrl = `print://escpos.org/escpos/bt/print?srcTp=uri&srcObj=pdf&numCopies=1&src=${encodeURIComponent(fullPdfUrl)}`;
 
-                    // Debug
-                    console.log(JSON.stringify({
-                        pdf_url: fullPdfUrl,
-                        print_url: escposUrl
-                    }, null, 2));
+        //             // Debug
+        //             console.log(JSON.stringify({
+        //                 pdf_url: fullPdfUrl,
+        //                 print_url: escposUrl
+        //             }, null, 2));
 
-                    // Panggil URL cetak
-                    window.location.href = escposUrl;
-                });
+        //             // Panggil URL cetak
+        //             window.location.href = escposUrl;
+        //         });
 
-                // // Event listener for Print button
-                // document.getElementById('printPdf').addEventListener('click', function() {
-                //     const pdfViewer = document.getElementById('pdfViewer').contentWindow;
-                //     pdfViewer.print();
-                // });
+        //         // // Event listener for Print button
+        //         // document.getElementById('printPdf').addEventListener('click', function() {
+        //         //     const pdfViewer = document.getElementById('pdfViewer').contentWindow;
+        //         //     pdfViewer.print();
+        //         // });
+        //     });
+        // });
+
+
+
+
+
+
+
+document.querySelectorAll('.view-pdf-btn').forEach(function(button) {
+    button.addEventListener('click', function(e) {
+        e.preventDefault();
+        scrollPosition = window.pageYOffset;
+        const gilingId = this.getAttribute('data-id');
+
+        // ✅ GANTI 1: pakai route Laravel (fallback R2 diurus controller)
+        const pdfPath = `{{ url('/receipt-file') }}/${gilingId}`;
+
+        // Set src viewer PDF
+        document.getElementById('pdfViewer').src = pdfPath;
+
+        // Update modal title
+        document.getElementById('pdfModalLabel').textContent = `Receipt #${gilingId}`;
+
+        const modalElement = document.getElementById('pdfModal');
+        const pdfModal = new bootstrap.Modal(modalElement);
+
+        // Handle modal events to fix mobile scrolling
+        modalElement.addEventListener('shown.bs.modal', function() {
+            document.body.style.overflow = 'hidden';
+        });
+
+        modalElement.addEventListener('hidden.bs.modal', function() {
+            document.body.style.overflow = 'auto';
+            document.body.style.position = 'relative';
+            // Reset any inline styles that might affect scrolling
+            window.scrollTo(0, window.scrollY);
+        });
+
+        // Add click event listener to close modal when clicking outside
+        modalElement.addEventListener('click', function(event) {
+            if (event.target === modalElement) {
+                pdfModal.hide();
+            }
+        });
+
+        // Add click event listener for close buttons
+        document.querySelectorAll('[data-bs-dismiss="modal"]').forEach(button => {
+            button.addEventListener('click', () => {
+                pdfModal.hide();
             });
         });
+
+        pdfModal.show();
+
+        // Add print functionality
+        // ✅ GANTI 2: pakai onclick (bukan addEventListener) supaya tidak menumpuk tiap klik
+        document.getElementById('printPdf').onclick = function() {
+            // URL yang sama dengan viewer, jadi berlaku untuk file di hosting maupun R2
+            const fullPdfUrl = pdfPath;
+
+            // Bangun URL untuk ESC/POS
+            const escposUrl = `print://escpos.org/escpos/bt/print?srcTp=uri&srcObj=pdf&numCopies=1&src=${encodeURIComponent(fullPdfUrl)}`;
+
+            // Debug
+            console.log(JSON.stringify({
+                pdf_url: fullPdfUrl,
+                print_url: escposUrl
+            }, null, 2));
+
+            // Panggil URL cetak
+            window.location.href = escposUrl;
+        };
+    });
+});
+
+
+
+
+
 
 
         // Dalam event hidden.bs.modal

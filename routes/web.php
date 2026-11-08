@@ -334,6 +334,8 @@ Route::group(['middleware' => 'auth'], function () {
 });
 
 
+
+
 // Pinjaman Konga
 Route::post('/pinjaman-konga/store', [BukuStokController::class, 'storePinjamanKonga'])
     ->name('pinjaman-konga.store');
@@ -379,6 +381,15 @@ Route::post('/buku-stok/reset-buruh-counter', [BukuStokController::class, 'reset
 
 // Tambahkan route ini di sekitar route buku-stok yang sudah ada
 Route::post('/buku-stok/update-stok-global', [BukuStokController::class, 'updateStokGlobal'])->name('buku-stok.update-stok-global');
+
+
+
+
+Route::get('/receipt-file/{id}', [DaftarGilingController::class, 'receipt'])
+    ->where('id', '[0-9]+')
+    ->name('receipts.show');
+
+
 
 // ✅ PINDAHKAN route /kalkulator ke LUAR group guest
 Route::get('/kalkulator', function (Request $request) {
